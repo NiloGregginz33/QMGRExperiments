@@ -1,4 +1,5 @@
 #This is the same as the last experiment but im checking for time dependency of radiation emission
+#This is bc I wanna set up a situation where the hawking radiation is charged
 
 from qiskit_aer import Aer
 from qiskit import QuantumCircuit
