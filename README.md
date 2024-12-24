@@ -95,4 +95,6 @@ Code https://github.com/NiloGregginz33/QMGRExperiments Closing Notes I’ve done
 
 I’d love feedback on:
 
-Whether the methodology and results align with established physics, or if any of these experiments have been done before this on this topic.w Any suggestions for refining the model or testing additional scenarios. Thank you for reading, and I appreciate any insights you can offer!
+Whether the methodology and results align with established physics, or if any of these experiments have been done before this on this topic. Any suggestions for refining the model or testing additional scenarios. 
+
+Thank you for reading, and I appreciate any insights you can offer!
