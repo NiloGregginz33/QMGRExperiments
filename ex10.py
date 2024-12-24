@@ -18,7 +18,11 @@ def create_color_charge_circuit(color_charge):
     if color_charge == "red":
         qc.rx(np.pi / 2, 0)  # Rotate to simulate "red" charge
     elif color_charge == "green":
-        qc.ry(np.pi / 2, 0)  # Rotate to simulate "green" charge
+        qc.ry(np.pi / 3.5, 0)
+        qc.rz(np.pi / 3.5, 0)
+        qc.rx(np.pi / 3.5, 0)# Rotate to simulate "green" charge
+        state = Statevector.from_instruction(qc)  # Debugging statevector
+        print(f"Statevector for {color_charge} charge:", state)
     elif color_charge == "blue":
         qc.rz(np.pi / 2, 0)  # Rotate to simulate "blue" charge
 
