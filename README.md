@@ -1,4 +1,6 @@
-I’ve been working on a series of quantum circuit experiments to explore information preservation in Hawking radiation, focusing on whether injected properties like charge and spin are encoded in the emitted radiation. My goal is to simulate a black hole's behavior in an idealized setting and analyze how quantum information evolves in the process. I’d appreciate feedback on the methodology, the results, and how closely this aligns with established theories. This is not for school, I just need to know so I can move forward. All the code is linked on my github if you want to see the results for yourself, or so someone can tell me if I did something wrong in what/how I found something or the methodology. If Im not using the right word for something, please correct me but be patient, I really do want to learn but what I found I think is quite weird. Sorry if I do not ask the question in a way or phrase this post in a way that seems off-topic, irrelevant, informal, or asks you to review code. I want to learn and thats what im here for. I do want to test for spin, maybe how the black hole stores the mass. I think if charge can be preserved then maybe something like color can too since the 3 forces unify though I dont want to speculate too much. This builds on the holographic principle. I also tested what negative energy does in ex5 but it seems to indicate negative energy influences radiation states as well. More work needs to be done.
+I’ve been working on a series of quantum circuit experiments to explore information preservation in Hawking radiation, focusing on whether injected properties like charge and spin are encoded in the emitted radiation. My goal is to simulate a black hole's behavior in an idealized setting and analyze how quantum information evolves in the process. I’d appreciate feedback on the methodology, the results, and how closely this aligns with established theories. This is not for school, I just need to know so I can move forward. All the code is linked on my github if you want to see the results for yourself, or so someone can tell me if I did something wrong in what/how I found something or the methodology. If Im not using the right word for something, please correct me but be patient, I really do want to learn but what I found I think is quite weird. Sorry if I do not ask the question in a way or phrase this post in a way that seems off-topic, irrelevant, informal, or asks you to review code. I want to learn and thats what im here for. 
+
+I do want to test for spin, maybe how the black hole stores the mass. I think if charge can be preserved then maybe something like color can too since the 3 forces unify though I dont want to speculate too much. This builds on the holographic principle. I also tested what negative energy does in ex5 but it seems to indicate negative energy influences radiation states as well. More work needs to be done. 
 
 Simulating a Black Hole In my experiments, I model the black hole and radiation system as follows:
 
@@ -22,17 +24,28 @@ Limitations of the Simulation While the quantum circuit captures certain aspects
 
 No Spatial Geometry:
 
-The simulation does not account for the curved spacetime geometry near a black hole, which plays a significant role in Hawking radiation. Information Encoding Simplified:
+The simulation does not account for the curved spacetime geometry near a black hole, which plays a significant role in Hawking radiation. 
+Information Encoding Simplified:
 
-The black hole qubit directly interacts with the radiation qubits, but the real-world mechanism for encoding information in Hawking radiation remains an open question. No Event Horizon Constraints:
+The black hole qubit directly interacts with the radiation qubits, but the real-world mechanism for encoding information in Hawking radiation remains an open question. 
 
-In reality, the event horizon prevents signals from escaping a black hole. This simulation treats the black hole as a quantum system without such spatial constraints. Idealized Dynamics:
+No Event Horizon Constraints:
+
+In reality, the event horizon prevents signals from escaping a black hole. This simulation treats the black hole as a quantum system without such spatial constraints.
+
+Idealized Dynamics:
 
 The system assumes perfect unitary evolution and ignores potential complications from decoherence or quantum gravity effects. Despite these simplifications, the model aims to test whether key principles—such as information preservation and entanglement—can be explored in a controlled, quantum mechanical context.
 
 Experimental Goals The primary questions driving this work are:
 
-Information Encoding: Does the radiation qubits’ state reflect the black hole’s quantum properties, such as injected charge or spin? Static vs. Dynamic Behavior: Does the black hole encode information globally in a time-independent manner (static encoding), or does the radiation evolve dynamically based on the timing of interactions? Insights into the Information Paradox: Can the results offer new insights into how black holes preserve information, consistent with unitarity? Methodology Here’s an overview of how the experiments are set up:
+Information Encoding: Does the radiation qubits’ state reflect the black hole’s quantum properties, such as injected charge or spin? 
+
+Static vs. Dynamic Behavior: Does the black hole encode information globally in a time-independent manner (static encoding), or does the radiation evolve dynamically based on the timing of interactions? 
+
+Insights into the Information Paradox: Can the results offer new insights into how black holes preserve information, consistent with unitarity? 
+
+Methodology Here’s an overview of how the experiments are set up:
 
 System Initialization:
 
@@ -52,11 +65,17 @@ Radiation qubits are measured to analyze how information is encoded. Entanglemen
 
 Results 
 
-Experiment A: Static Behavior Measurement: The radiation collapsed into a single dominant state (0000) with 100% probability. Implication: This suggests limited entanglement or static encoding, where the radiation doesn’t reflect dynamic changes in the black hole’s state. 
+Experiment A: Static Behavior Measurement: The radiation collapsed into a single dominant state (0000) with 100% probability. 
+
+Implication: This suggests limited entanglement or static encoding, where the radiation doesn’t reflect dynamic changes in the black hole’s state. 
 
 Experiment B: Dynamic Behavior Measurement: Outcomes showed a diverse distribution (0000, 0101, 1111, 1010) with nearly equal probabilities. 
 
-Implication: This suggests time-dependent encoding, where radiation qubits retain memory of past charge injections. Charge Preservation Across all experiments, the emitted radiation consistently encoded injected charge states, supporting the hypothesis that information is preserved. 
+Implication: This suggests time-dependent encoding, where radiation qubits retain memory of past charge injections. 
+
+Charge Preservation 
+
+Across all experiments, the emitted radiation consistently encoded injected charge states, supporting the hypothesis that information is preserved. 
 
 Questions for the Community
 
@@ -66,9 +85,13 @@ Are the idealizations (e.g., no spatial geometry or event horizon) reasonable fo
 
 Are there improvements I could make to better simulate the entanglement and evaporation process? Static vs. Dynamic Encoding:
 
-Do the results suggest new insights into whether information release is time-dependent or global? Implications for the Information Paradox:
+Do the results suggest new insights into whether information release is time-dependent or global? 
 
-Can these findings contribute to understanding how black holes preserve information, or do they merely confirm existing assumptions? Code https://github.com/NiloGregginz33/QMGRExperiments Closing Notes I’ve done my best to set up this simulation based on theoretical insights, but I’m not a physicist by training.
+Implications for the Information Paradox:
+
+Can these findings contribute to understanding how black holes preserve information, or do they merely confirm existing assumptions? 
+
+Code https://github.com/NiloGregginz33/QMGRExperiments Closing Notes I’ve done my best to set up this simulation based on theoretical insights, but I’m not a physicist by training.
 
 I’d love feedback on:
 
