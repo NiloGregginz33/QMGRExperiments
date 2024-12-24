@@ -1,6 +1,47 @@
-# QMGRExperiments
-There are a lot of the resolutions to the black hole information paradox. I've heard of preserving information on the hawking radiation. So I wondered what would happen if i sent some entangled pairs into a simulated black hole while preventing wavefunction collapse and just looked at how the charge of what i put in affected the charge of the information out. 
+I’ve been working on a series of quantum circuit experiments to explore information preservation in Hawking radiation, focusing on whether injected properties like charge and spin are encoded in the emitted radiation. My goal is to simulate a black hole's behavior in an idealized setting and analyze how quantum information evolves in the process. I’d appreciate feedback on the methodology, the results, and how closely this aligns with established theories. This is not for school, I just need to know so I can move forward. All the code is linked on my github if you want to see the results for yourself, or so someone can tell me if I did something wrong in what/how I found something or the methodology. If Im not using the right word for something, please correct me but be patient, I really do want to learn but what I found I think is quite weird. Sorry if I do not ask the question in a way or phrase this post in a way that seems off-topic, irrelevant, informal, or asks you to review code. I want to learn and thats what im here for. I do want to test for spin, maybe how the black hole stores the mass. I think if charge can be preserved then maybe something like color can too since the 3 forces unify though I dont want to speculate too much. This builds on the holographic principle.
 
-I dont know if what im saying is going to make sense, but I started to wonder about this question because most of the electrons mass comes from the higgs field if not all of it. I wonder if the Hawking radiation has a charge to it if u "inject" it with charged particles, how would that change the charge of the hawking radiation? If black holes only have charge mass and angular momentum I just made a guess and thought the charge should be conserved too. I think if charge is conserved because we think that EM radiation, strong, and weak forces unify, maybe that information is preserved as well though I am not completely sure if electric charge is special because of the fact black holes dont appear to have a property like color charge. Im going to keep running experiments as I think of questions. As far as I know, this experiment implies charge is a property that is conserved with hawking radiation.
+Simulating a Black Hole In my experiments, I model the black hole and radiation system as follows:
 
-I am not a physict and do not know if this is a reasonable thing to say I would love feedback ultimately im just trying to learn
+Black Hole as a Qubit:
+
+A single qubit represents the black hole’s quantum state, capturing the fundamental idea that black holes have a finite set of quantum properties (mass, charge, spin) encoded in their event horizon. Radiation as Qubits:
+
+Additional qubits represent the emitted Hawking radiation, which entangle with the black hole qubit as the system evolves. Evaporation Process:
+
+Radiation qubits are sequentially entangled with the black hole qubit to mimic the emission of Hawking radiation over time. Charge Injection:
+
+I simulate charge injections into the black hole using Pauli gates (X for positive charge, Z for negative charge) to analyze whether these properties are encoded in the radiation. Limitations of the Simulation While the quantum circuit captures certain aspects of black hole physics, there are critical limitations:
+
+No Spatial Geometry:
+
+The simulation does not account for the curved spacetime geometry near a black hole, which plays a significant role in Hawking radiation. Information Encoding Simplified:
+
+The black hole qubit directly interacts with the radiation qubits, but the real-world mechanism for encoding information in Hawking radiation remains an open question. No Event Horizon Constraints:
+
+In reality, the event horizon prevents signals from escaping a black hole. This simulation treats the black hole as a quantum system without such spatial constraints. Idealized Dynamics:
+
+The system assumes perfect unitary evolution and ignores potential complications from decoherence or quantum gravity effects. Despite these simplifications, the model aims to test whether key principles—such as information preservation and entanglement—can be explored in a controlled, quantum mechanical context.
+
+Experimental Goals The primary questions driving this work are:
+
+Information Encoding: Does the radiation qubits’ state reflect the black hole’s quantum properties, such as injected charge or spin? Static vs. Dynamic Behavior: Does the black hole encode information globally in a time-independent manner (static encoding), or does the radiation evolve dynamically based on the timing of interactions? Insights into the Information Paradox: Can the results offer new insights into how black holes preserve information, consistent with unitarity? Methodology Here’s an overview of how the experiments are set up:
+
+System Initialization:
+
+The black hole qubit is initialized in a superposition state, entangled with radiation qubits via controlled gates (CX). Charge Injections:
+
+I alternate between injecting positive (X gate) and negative (Z gate) charges into the black hole qubit, testing how these affect the radiation’s quantum state. Evaporation Simulation:
+
+Radiation qubits are sequentially entangled with the black hole qubit to mimic the gradual release of Hawking radiation. Measurements:
+
+Radiation qubits are measured to analyze how information is encoded. Entanglement entropy and statevector evolution are tracked to study the distribution of information. Results Experiment A: Static Behavior Measurement: The radiation collapsed into a single dominant state (0000) with 100% probability. Implication: This suggests limited entanglement or static encoding, where the radiation doesn’t reflect dynamic changes in the black hole’s state. Experiment B: Dynamic Behavior Measurement: Outcomes showed a diverse distribution (0000, 0101, 1111, 1010) with nearly equal probabilities. Implication: This suggests time-dependent encoding, where radiation qubits retain memory of past charge injections. Charge Preservation Across all experiments, the emitted radiation consistently encoded injected charge states, supporting the hypothesis that information is preserved. Questions for the Community How well does this simulation capture key aspects of black hole physics?
+
+Are the idealizations (e.g., no spatial geometry or event horizon) reasonable for exploring information preservation? Does the methodology align with theoretical models?
+
+Are there improvements I could make to better simulate the entanglement and evaporation process? Static vs. Dynamic Encoding:
+
+Do the results suggest new insights into whether information release is time-dependent or global? Implications for the Information Paradox:
+
+Can these findings contribute to understanding how black holes preserve information, or do they merely confirm existing assumptions? Code https://github.com/NiloGregginz33/QMGRExperiments Closing Notes I’ve done my best to set up this simulation based on theoretical insights, but I’m not a physicist by training. I’d love feedback on:
+
+Whether the methodology and results align with established physics, or if any of these experiments have been done before this on this topic.w Any suggestions for refining the model or testing additional scenarios. Thank you for reading, and I appreciate any insights you can offer!
