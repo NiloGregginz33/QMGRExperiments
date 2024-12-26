@@ -113,7 +113,7 @@ Sorry for doubting you Dr Susskind, ppl on stack exchange just said idk so I had
 
 So this basically means nothing new, a very good sign I think :)
 
-and seems like yes, Leonard Susskind is not just talking theoretically anymore this means bc I just showed that not only does it work with the Hawking Radiation found on black holes millions of years far and into the future, but also rather on real physical quantum systems and states we can see and manipulate clearly on earth here and now that also exhibit this same behavior (Hawking Radiation)
+and seems like yes, Leonard Susskind is not just talking theoretically anymore this means bc I just showed that not only does it work with the Hawking Radiation found on black holes millions of years far and into the future, but also rather on real physical quantum systems and states we can see and manipulate clearly on earth here and now that also exhibit this same behavior (Hawking Radiation) 
 
 Leonard Susskind probably already said all this at some point but I was in the other room watching Netflix.
 
