@@ -117,4 +117,7 @@ and seems like yes, Leonard Susskind is not just talking theoretically anymore t
 
 Leonard Susskind probably already said all this at some point but I was in the other room watching Netflix.
 
+at least a couple things that matter, i wanted to capture the idea for electric charge and the color charges needed answering. in my mind the electric charge beimg captured tells me the credebility of of the people I respect on youtube. color charge was just a question bc like black holes dont have color. I really care how it evolves over time but i feel like thats a bit much rn. Simply knowing it can be both feels like an answer to me for rn. 
+
+
 Thank you for reading, and I appreciate any insights you can offer!
