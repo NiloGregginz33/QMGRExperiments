@@ -81,7 +81,7 @@ Implication: This suggests time-dependent encoding, where radiation qubits retai
 
 Charge Preservation 
 
-Across all experiments, the emitted radiation consistently encoded injected charge states, supporting the hypothesis that information is preserved. except when dealing with green color charge specifically
+Across all experiments, the emitted radiation consistently encoded injected charge states, supporting the hypothesis that information is preserved. except when dealing with green color charge specifically (mistake)
 
 Questions for the Community
 
