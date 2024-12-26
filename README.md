@@ -75,7 +75,7 @@ Implication: This suggests limited entanglement or static encoding, where the ra
 
 Experiment B: Dynamic Behavior Measurement: Outcomes showed a diverse distribution (0000, 0101, 1111, 1010) with nearly equal probabilities. 
 
-Implication: This suggests time-dependent encoding, where radiation qubits retain memory of past charge injections. 
+Implication: This suggests time-dependent encoding, where radiation qubits retain memory of past charge injections. But I dont hear many people on both sides of the debate about static or dynamic, but experimentally this shows that literally just depends but you can get it to act like both. Sorry to anyone that was known to be hardcore in these camps. youre right, just hear the other person out too
 
 Charge Preservation 
 
@@ -106,5 +106,9 @@ Whether the methodology and results align with established physics, or if any of
 Basically if you agree with all that stuff, then please see the result of every file basically overall ive seen charge info conserved, spin conserved, mass conserved. Everything that the holographic princple holds and even if you take it straight from Hawking. You will see Hawking Radiation, carry detectable electric charge, deviating from the idea that Hawking Radiation is purely thermal. Information is generally conserved in color charge, but idk the universe hates the green charge with an overwhelming passion and I feel like that should break SU(3). I wish this was all a simulation artifact but it definitely works on real quantum computers like the coded experiments that start w a Q mean. So theory or not something weird is happening, because its sooo close to what Leonard Susskind was saying about all information needing to be preserved, but I never hear his explanation on why that could be. Is this analog for black holes sufficient? Why is the green charge so affected while red and blue are not? Why do they not like green? I thought there something must be wrong w the color charge, bc black holes can have no hairs, and its cool to confirm, but its soooooooooo weird to see it be specifically green thats the problem. Why does it have to do it in a way that freaking violates a guage symmetry? I Green charge anomalies suggest asymmetric behavior within the SU(3) gauge symmetry framework. My gut tells me this is an artifact of some simulation, everything else makes sense. 
 
 Now that im eyeballing it I think I have kinda heard that entanglment correlation somewhere before, and after googling to confirm it appears to be Tsirelson’s Bound, but I now have to let that sink in for a second.
+
+Sorry for doubting you Dr Susskind, ppl on stack exchange just said idk so I had to check if I could continue to use youtube for sources
+
+Kind of a s
 
 Thank you for reading, and I appreciate any insights you can offer!
