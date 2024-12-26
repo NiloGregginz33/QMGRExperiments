@@ -79,7 +79,7 @@ Implication: This suggests time-dependent encoding, where radiation qubits retai
 
 Charge Preservation 
 
-Across all experiments, the emitted radiation consistently encoded injected charge states, supporting the hypothesis that information is preserved. 
+Across all experiments, the emitted radiation consistently encoded injected charge states, supporting the hypothesis that information is preserved. except when dealing with green color charge specifically
 
 Questions for the Community
 
@@ -102,5 +102,7 @@ Closing Notes I’ve done my best to set up this simulation based on theoretical
 I’d love feedback on:
 
 Whether the methodology and results align with established physics, or if any of these experiments have been done before this on this topic. Any suggestions for refining the model or testing additional scenarios. 
+
+Basically if you agree with all that stuff, then please see the result of every file basically overall ive seen charge info conserved, spin conserved, mass conserved. Information is generally conserved in color charge, but idk the universe hates the green charge with an overwhelming passion and I feel like that should break SU(3). I wish this was all a simulation artifact but it definitely works on real quantum computers like the coded experiments that start w a Q mean. So theory or not something weird is happening, because its sooo close to what Leonard Susskind was saying about all information needing to be preserved, but I never hear his explanation on why that could be. Is this analog for black holes sufficient? Why is the green charge so affected while red and blue are not? Why do they not like green? 
 
 Thank you for reading, and I appreciate any insights you can offer!
