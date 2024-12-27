@@ -9,4 +9,4 @@ Qubit 2: Entropy = 1.0000
 Qubit 3: Entropy = 1.0000
 
 
-This attempt to break into subsystems was just an organizational thing at that time
+This attempt to break into subsystems was just an organizational thing at that time, but paying attention to subsytem entropy does give a clearer view
