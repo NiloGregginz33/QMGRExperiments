@@ -151,3 +151,5 @@ Bc this now seems like something more fundamental idk the words kinda make it so
 Extend entropy calculations to include correlations between static and dynamic modes of encoding, possibly using subsystem entropies or generalized entanglement entropy. 
 
 Hit on the credebility of firewall paradox too kinda huh
+
+Probably means Maldecena is right too
