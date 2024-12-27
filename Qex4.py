@@ -1,6 +1,8 @@
 from qiskit import QuantumCircuit, transpile, ClassicalRegister
 from qiskit_ibm_runtime import QiskitRuntimeService, Session, Sampler
 from collections import Counter
+from qiskit.quantum_info import Statevector, partial_trace, entropy
+import numpy as np
 
 # Extract counts from BitArray
 def extract_counts_from_bitarray(bit_array):
@@ -76,6 +78,23 @@ def create_circuit(apply_positive_charge, apply_negative_charge):
         qc.z(0)  # Negative charge (Pauli-Z gate on Black Hole)
     
     return qc
+
+# Function to calculate Shannon entropy
+def calculate_shannon_entropy(counts, num_shots):
+    probabilities = {key: value / num_shots for key, value in counts.items()}
+    entropy = -sum(p * np.log2(p) for p in probabilities.values() if p > 0)
+    return entropy
+
+# Function to calculate von Neumann entropy
+def calculate_von_neumann_entropy(qc, num_radiation_qubits):
+    state = Statevector.from_instruction(qc)  # Get statevector
+    total_entropy = entropy(state)  # Full system entropy
+
+    # Calculate entanglement entropy for subsystems
+    black_hole_entropy = entropy(partial_trace(state, range(1, num_radiation_qubits + 1)))  # Trace out radiation
+    radiation_entropy = entropy(partial_trace(state, [0]))  # Trace out black hole
+
+    return total_entropy, black_hole_entropy, radiation_entropy
 
 # Analyze phase shifts in the quantum state
 def analyze_phases(qc):
@@ -155,6 +174,12 @@ def create_circuit_with_prolonged_charges(num_iterations, cycle_length, num_radi
             qc.h(0)  # Superposition on Black Hole
             qc.cx(0, j)  # Entangle with radiation qubit j
 
+    
+    # Add classical registers for measurement
+    classical_register = ClassicalRegister(num_radiation_qubits + 1)
+    qc.add_register(classical_register)
+    qc.measure(range(num_radiation_qubits + 1), range(num_radiation_qubits + 1))
+
     return qc
 
 def create_circuit_with_time_gaps(num_injections, num_radiation_qubits, gap_cycles):
@@ -177,8 +202,31 @@ def create_circuit_with_time_gaps(num_injections, num_radiation_qubits, gap_cycl
         for _ in range(gap_cycles):
             qc.id(0)  # Idle gate to simulate a time gap
 
+    # Add classical registers for measurement
+    classical_register = ClassicalRegister(num_radiation_qubits + 1)
+    qc.add_register(classical_register)
+    qc.measure(range(num_radiation_qubits + 1), range(num_radiation_qubits + 1))
+
+
     return qc
 
+# Function to calculate von Neumann entropy for the unmeasured circuit
+def calculate_von_neumann_entropy_unmeasured(qc, num_radiation_qubits):
+    try:
+        # Get the statevector from the unmeasured circuit
+        state = Statevector.from_instruction(qc)
+        
+        # Compute total system entropy
+        total_entropy = entropy(state)
+
+        # Compute entropies of subsystems
+        black_hole_entropy = entropy(partial_trace(state, range(1, num_radiation_qubits + 1)))  # Trace out radiation
+        radiation_entropy = entropy(partial_trace(state, [0]))  # Trace out black hole
+
+        return total_entropy, black_hole_entropy, radiation_entropy
+    except Exception as e:
+        print(f"Error calculating von Neumann entropy: {e}")
+        return None, None, None
 
 def process_sampler_result(result, shots=8192):
     """
@@ -221,9 +269,14 @@ def process_sampler_result(result, shots=8192):
         print(f"Error processing sampler result: {e}")
         return {}
 
+# Parameters for the circuit
+num_injections = 5  # 5 charge injections
+num_radiation_qubits = 3  # 3 radiation qubits entangled with the black hole
+gap_cycles = 50  # 50 idle cycles between injections
 
-# Generate the circuit
-qc = create_ex1_circuit()
+# Create the quantum circuit
+qc = create_circuit_with_time_gaps(num_injections, num_radiation_qubits, gap_cycles)
+
 
 # Transpile the circuit for the backend
 transpiled_qc = transpile(qc, backend=best_backend)
@@ -242,7 +295,7 @@ with Session(backend=best_backend) as session:  # Attach backend to session
         # Navigate to the `BitArray`
         pub_result = result._pub_results[0]  # Access the first `SamplerPubResult`
         data_bin = pub_result.data  # Access `DataBin`
-        bit_array = data_bin.meas  # Access `BitArray`
+        bit_array = data_bin.c0  # Access `BitArray`
 
         
         # Use the function to extract counts
@@ -288,7 +341,23 @@ with Session(backend=best_backend) as session:  # Attach backend to session
             print(f"{bitstring}: {count}")
 
         print("BitArray Internal Variables:", bit_array.__dict__)
+        # Total number of shots
+        num_shots = sum(counts.values())
 
+        # Shannon Entropy
+        shannon_entropy = calculate_shannon_entropy(counts, num_shots)
+        print(f"Shannon Entropy (Measurement Distribution): {shannon_entropy:.4f}")
+        # Von Neumann Entropy for unmeasured circuit
+        unmeasured_qc = qc.copy()  # Copy the circuit before adding measurements
+        unmeasured_qc.data = [instr for instr in unmeasured_qc.data if instr[0].name != "measure"]  # Remove measurement ops
+
+        total_entropy, black_hole_entropy, radiation_entropy = calculate_von_neumann_entropy_unmeasured(unmeasured_qc, num_radiation_qubits)
+        if total_entropy is not None:
+            print(f"Total Entropy (Full System): {total_entropy:.4f}")
+            print(f"Entropy (Black Hole Subsystem): {black_hole_entropy:.4f}")
+            print(f"Entropy (Radiation Subsystem): {radiation_entropy:.4f}")
+        else:
+            print("Von Neumann entropy calculation failed.")
 
     except Exception as e:
-        print(f"Error extracting counts from result: {e}")
+        print(f"Error processing result for entropy analysis: {e}")
