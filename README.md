@@ -123,6 +123,7 @@ at least a couple things that matter, i wanted to capture the idea for electric 
 
 Thank you for reading, and I appreciate any insights you can offer!
 
+Also although I did mostly do this to say Leonard Susskind is right, I also wanna say Matt from PBS Space Time, Lex Fridman, 3b1b, and Isaac Arthur are super helpful.
 
 
 KEY INSIGHT:
@@ -130,7 +131,7 @@ and seems like yes, Leonard Susskind is not just talking theoretically anymore t
 accessible to all from me, and IBM Q computers stood out bc they are literally free access open source to their equipment so I figured why not share how to use the tools that are available.
 
 WHY IT MATTERS:
-SHOWS PHYSICAL EVIDENCE THAT PERFECTLY ALIGNS WITH THEORETICAL PREDICTIONS, IN FAVOR OF SUSSKINDS ARGUMENTS IN A WAY ANYONE WITH A LATOP CAN REPLICATE EASILY. NEVER B
+SHOWS PHYSICAL EVIDENCE THAT PERFECTLY ALIGNS WITH THEORETICAL PREDICTIONS, IN FAVOR OF SUSSKINDS ARGUMENTS IN A WAY ANYONE WITH A LAPTOP CAN REPLICATE EASILY AT HOME
 
 WHAT I WANTED TO SEE:
 IF YOU COULD TRUST YOUTUBE
@@ -141,4 +142,10 @@ EXPLAINING TO SOMEONE I CARE ABOUT WHY I TRUST THIS LEONARD SUSSKIND GUY SO MUCH
 MOTIVATIONS_REFLECTION:
 ACTUALLY KINDA FUN OVERALL, SHOULD PROBABLY LISTEN TO HER MORE OFTEN
 
+NEXT STEPS FOR PEOPLE SMARTER THAN ME:
+Youre going to need a hamiltonian with both time independent and time dependent components, idk the ratio of flavors tho 
 
+NONDUALISM
+Bc this now seems like something more fundamental idk the words kinda make it sound like ppl gotta think in QM or GM
+
+Extend entropy calculations to include correlations between static and dynamic modes of encoding, possibly using subsystem entropies or generalized entanglement entropy. 
