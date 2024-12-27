@@ -117,6 +117,23 @@ and seems like yes, Leonard Susskind is not just talking theoretically anymore t
 
 Leonard Susskind probably already said all this at some point but I was in the other room watching Netflix.
 
-at least a couple things that matter, i wanted to capture the idea for electric charge spin mass and the color charges needed answering. in my mind the electric charge beimg captured tells me the credebility of of the people I respect on youtube. color charge was just a question bc like black holes dont have color. I really care how it evolves over time but i feel like thats a bit much rn. Simply knowing it can be both static and dynamic feels like an answer to me for rn. And depends on what you inject right or radiate away. i dont know exactly how things like dyanmic vs stable lose leaning meaning bc they are dependent on what you want and the universe is more like a buddhist monk, non dual and it has the power to pick and choose. No idea how to find out more about that rn. seems out of my league. 
+at least a couple things that matter, i wanted to capture the idea for electric charge spin mass and color bc in my mind the electric charge being captured tells me the credebility of of the people I respect on youtube. color charge was just a question bc like black holes dont have color. I really care how it evolves over time but i feel like thats a bit much rn. Simply knowing it can be both static and dynamic feels like an answer to me for rn. And depends on what you inject right or radiate away. i dont know exactly how things like dyanmic vs stable lose leaning meaning bc they are dependent on what you want and the universe is more like a buddhist monk, non dual and it has the power to pick and choose. No idea how to find out more about that rn. seems out of my league. 
 
 Thank you for reading, and I appreciate any insights you can offer!
+
+
+
+KEY INSIGHT:
+and seems like yes, Leonard Susskind is not just talking theoretically anymore this means bc I just showed that not only does it work with the Hawking Radiation found on black holes millions of years far and into the future, but also rather on real physical quantum systems and states we can see and manipulate clearly on earth here and now that also exhibit this same behavior mimicking Hawking Radiation,
+accessible to all from me, and IBM Q computers stood out bc they are literally free access to their equipment so I figured why not share how to use the tools that are
+available
+
+WHY IT MATTERS:
+SHOWS PHYSICAL EVIDENCE THAT PERFECTLY ALIGNS WITH THEORETICAL PREDICTIONS, IN FAVOR OF SUSSKINDS ARGUMENTS.
+
+WHAT I WANTED TO SEE:
+IF YOU COULD TRUST YOUTUBE
+
+
+
+
