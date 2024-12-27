@@ -1,3 +1,8 @@
+# By this time, I just also wanted to give everyone some quantum validation of other stuff
+# The entropy shows maximal entanglement, and also provides a function that can help see the interplay at work by testing a range of inputs, telling us about charge, time gaps, and charge alternations
+# I want to highlight the specific difference in Shannon Entropy and Von Nuemman Entropy on quantum systems bc both of these are maximal in their respective domains
+# This highlights the non dual nature of the system (time-independent vs time-dependent) and how it still manifests in quantum systems
+
 from qiskit import QuantumCircuit, transpile, ClassicalRegister
 from qiskit_ibm_runtime import QiskitRuntimeService, Session, Sampler
 from collections import Counter
