@@ -56,3 +56,11 @@ Entropy (Radiation Subsystem): 1.0000
 
 
 This shows us with our own eyes what is happening, and displays the relevant statistics about entropy, which is why it is so important bc i didnt display that info in the code earlier
+
+So another thing, I used the create_circuit_with_time_gap functions with these variables:
+
+num_injections = 5  
+num_radiation_qubits = 3  
+gap_cycles = 50  
+
+So that may be important for reproducibilty
