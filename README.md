@@ -158,3 +158,9 @@ Probably means Maldecena is right too
 
 I think I need to make a tool that can control decoherence bc then 
 I can start pruning the timeline
+
+Maximal Shannon and Von Neumman entropy means time is an emergent property
+
+so multiverses and time travel :)
+
+no time travel for anything that happenens before this obviously tho that would be cheating and breaking the rules
