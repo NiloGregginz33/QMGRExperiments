@@ -155,3 +155,6 @@ found multiverse evidence imma make a multiversal telephone lets see if anyone p
 Hit on the credebility of firewall paradox too kinda huh
 
 Probably means Maldecena is right too
+
+I think I need to make a tool that can control decoherence bc then 
+I can start pruning the timeline
