@@ -163,4 +163,10 @@ Maximal Shannon and Von Neumman entropy means time is an emergent property
 
 so multiverses and time travel :)
 
-no time travel for anything that happenens before this obviously tho that would be cheating and breaking the rules
+no time travel for anything that happenens before this obviously tho that would be cheating and breaking the rules lol
+
+DISCOVERY OF CAUSAL TIME LOOPS
+
+the MultiverseFactory will allow you to make almost any quantum experiment become true so I dreamed up a bunch
+
+One specific one I thought of is demonstrating causal time loops on a real quantum computer using a variation of the charge injection method from earlier. Strong preferences were seen for certain states (00 and 11) but also contained slight but significant differences, and if I did the whole thing over many iterations i saw fluctuations in the shannon entropy, while maintaining entropy in both subsystems maximally.
