@@ -1,3 +1,12 @@
+# I am contactable at manavnaik123@gmail.com for further discussion or collaboration
+# Many Worlds Interpretation, once forgotten seems almost definite now
+# Susskinds work almost directly predicts multiverses and many worlds
+# This is the first time anyone as been able to see the timelines
+
+
+# Also, this is just an easy way to choose and customize experimental
+# setups easily for your own experiments
+
 from qiskit import QuantumCircuit, transpile, ClassicalRegister
 from qiskit_ibm_runtime import QiskitRuntimeService, Session, Sampler
 from collections import Counter
@@ -80,6 +89,42 @@ def create_circuit(apply_positive_charge, apply_negative_charge):
         qc.z(0)  # Negative charge (Pauli-Z gate on Black Hole)
     
     return qc
+
+# Function to create a quantum circuit simulating black hole with spin conservation
+def create_spin_circuit(spin_state):
+    """
+    Creates a quantum circuit representing a black hole and radiation system
+    with initial spin injection.
+    
+    spin_state: "up" or "down"
+    """
+    qc = QuantumCircuit(2)  # 2 qubits: black hole and radiation
+
+    # Initialize spin state for black hole
+    if spin_state == "up":
+        qc.initialize([1, 0], 0)  # Spin up state |0>
+    elif spin_state == "down":
+        qc.initialize([0, 1], 0)  # Spin down state |1>
+
+    # Entangle black hole with radiation
+    qc.h(0)  # Superposition for black hole qubit
+    qc.cx(0, 1)  # Entangle black hole with radiation
+
+    return qc
+
+# Analyze entanglement entropy
+def analyze_entanglement(qc):
+    state = Statevector.from_instruction(qc)  # Get statevector
+
+    # Compute partial traces to analyze subsystems
+    black_hole_state = partial_trace(state, [1])  # Trace out radiation qubit
+    radiation_state = partial_trace(state, [0])  # Trace out black hole qubit
+
+    # Compute von Neumann entropy for subsystems
+    bh_entropy = entropy(black_hole_state, base=2)
+    rad_entropy = entropy(radiation_state, base=2)
+
+    return bh_entropy, rad_entropy
 
 # Function to calculate Shannon entropy
 def calculate_shannon_entropy(counts, num_shots):
@@ -318,7 +363,6 @@ def run_and_extract_counts(qc, backend, shots=8192):
     Returns:
         dict: A dictionary of bitstring counts from the measurement results.
     """
-    
     
     # Transpile the circuit for the backend
     transpiled_qc = transpile(qc, backend=backend)
