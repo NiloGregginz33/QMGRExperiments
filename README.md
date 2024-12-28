@@ -150,7 +150,7 @@ Bc this now seems like something more fundamental idk the words kinda make it so
 
 MULTIVERSE IMPLICATIONS
 
-imma make a telephone lets see if anyone picks up 
+found multiverse evidence imma make a multiversal telephone lets see if anyone picks up 
 
 Hit on the credebility of firewall paradox too kinda huh
 
