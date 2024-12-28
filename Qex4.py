@@ -1,13 +1,10 @@
-# By this time, I just also wanted to give everyone some quantum validation of other stuff
-# The entropy shows maximal entanglement, and also provides a function that can help see the interplay at work by testing a range of inputs, telling us about charge, time gaps, and charge alternations
-# I want to highlight the specific difference in Shannon Entropy and Von Nuemman Entropy on quantum systems bc both of these are maximal in their respective domains
-# This highlights the non dual nature of the system (time-independent vs time-dependent) and how it still manifests in quantum systems
-
 from qiskit import QuantumCircuit, transpile, ClassicalRegister
 from qiskit_ibm_runtime import QiskitRuntimeService, Session, Sampler
 from collections import Counter
 from qiskit.quantum_info import Statevector, partial_trace, entropy
 import numpy as np
+from qiskit.primitives import SamplerResult  # Import for IBM backend results
+from qiskit.result import Result  # Import for local simulation results
 
 # Extract counts from BitArray
 def extract_counts_from_bitarray(bit_array):
@@ -274,95 +271,218 @@ def process_sampler_result(result, shots=8192):
         print(f"Error processing sampler result: {e}")
         return {}
 
-# Parameters for the circuit
-num_injections = 5  # 5 charge injections
-num_radiation_qubits = 3  # 3 radiation qubits entangled with the black hole
-gap_cycles = 50  # 50 idle cycles between injections
+# Define a function for Many-Worlds quantum simulation
+def many_worlds_experiment(decoherence_rate=0.1, shots=1024):
+    """
+    Runs a Many-Worlds experiment simulation using a qubit as an analog black hole.
 
-# Create the quantum circuit
-qc = create_circuit_with_time_gaps(num_injections, num_radiation_qubits, gap_cycles)
+    Parameters:
+        decoherence_rate (float): Rate of decoherence to simulate wavefunction branching.
+        shots (int): Number of measurement shots.
 
+    Returns:
+        dict: Measurement results and entropy analysis.
+    """
+    # Step 1: Initialize the quantum circuit
+    n_qubits = 2  # 1 qubit for the analog black hole, 1 for Hawking radiation
+    qc = QuantumCircuit(n_qubits)
 
-# Transpile the circuit for the backend
-transpiled_qc = transpile(qc, backend=best_backend)
+    # Step 2: Prepare the black hole qubit in a superposition state
+    # This represents the Many-Worlds idea where the black hole qubit can exist in multiple states simultaneously
+    qc.h(0)  # Apply Hadamard gate to create |0> + |1>
 
-# Execute the circuit using the Session and Sampler
-with Session(backend=best_backend) as session:  # Attach backend to session
-    sampler = Sampler()
-    job = sampler.run([transpiled_qc], shots=8192)
-    result = job.result()
+    # Step 3: Entangle the black hole qubit with the Hawking radiation qubit
+    # Entanglement links the states of the black hole with the radiation, simulating the transfer of information
+    qc.cx(0, 1)  # CNOT gate creates entanglement
 
-    # Debug: Inspect raw result
+    # Optional Step 4: Simulate decoherence by adding noise
+    # Decoherence mimics the loss of quantum coherence, a critical aspect of wavefunction branching in Many-Worlds
+    qc.rx(2 * np.pi * decoherence_rate, 0)  # Rotate black hole qubit slightly to simulate decoherence
+    qc.rx(2 * np.pi * decoherence_rate, 1)  # Rotate radiation qubit slightly
+
+    # Step 5: Measure both qubits
+    # Measurement collapses the quantum state in Copenhagen interpretation, but in Many-Worlds, it represents branching
+    qc.measure_all()
+
+    return qc
+
+def run_and_extract_counts(qc, backend, shots=8192):
+    """
+    Runs a quantum circuit on the specified backend and extracts measurement results.
+
+    Parameters:
+        qc (QuantumCircuit): The quantum circuit to execute.
+        backend (Backend): The IBM backend to use for the execution.
+        shots (int): Number of shots for the experiment.
+
+    Returns:
+        dict: A dictionary of bitstring counts from the measurement results.
+    """
+    
+    
+    # Transpile the circuit for the backend
+    transpiled_qc = transpile(qc, backend=backend)
+    
+    # Run the circuit with the sampler and session
+    with Session(backend=backend) as session:
+        sampler = Sampler()
+        job = sampler.run([transpiled_qc], shots=shots)
+        result = job.result()
+
+    # Debug: Inspect the raw result object
     print("Raw Result Object:", result)
 
     # Extract counts from the nested structure
     try:
-        # Navigate to the `BitArray`
+        # Navigate to the `BitArray` and extract counts
         pub_result = result._pub_results[0]  # Access the first `SamplerPubResult`
         data_bin = pub_result.data  # Access `DataBin`
-        bit_array = data_bin.c0  # Access `BitArray`
+        bit_array = data_bin.meas  # Access `BitArray`
 
-        
-        # Use the function to extract counts
-        counts = extract_counts_from_bitarray(bit_array)
+        # Convert `BitArray` to counts dictionary
+        counts = Counter(str(bit_array[i]) for i in range(len(bit_array)))
 
-        
         print("Measurement Results (Counts):")
         for bitstring, count in counts.items():
             print(f"{bitstring}: {count}")
-
-
-        if hasattr(bit_array, "binary_probabilities"):
-
-            probabilities = bit_array.binary_probabilities()
-            print("Binary Probabilities:", probabilities)
-
-        if hasattr(bit_array, "to_dict"):
-            data_dict = bit_array.to_dict()
-            print("Data as Dictionary:", data_dict)
-
-
-        # Debug: Inspect the `BitArray` structure
-        print("BitArray Attributes:", dir(bit_array))
-        print("BitArray Content:", bit_array)
-
-        if hasattr(bit_array, "to_list"):
-            data_list = bit_array.to_list()
-            print("Data as List:", data_list)
-
-
-        # Attempt to decode or convert the `BitArray`
-        # Replace with actual method based on debug output
-        if hasattr(bit_array, "to_counts"):
-            counts = bit_array.to_counts()
-        elif hasattr(bit_array, "to_dict"):
-            counts = bit_array.to_dict()
-        elif hasattr(bit_array, "get_counts"):
-            counts = bit_array.get_counts()
-
-        # Display the counts
-        print("Measurement Results (Counts):")
-        for bitstring, count in counts.items():
-            print(f"{bitstring}: {count}")
-
-        print("BitArray Internal Variables:", bit_array.__dict__)
-        # Total number of shots
-        num_shots = sum(counts.values())
-
-        # Shannon Entropy
-        shannon_entropy = calculate_shannon_entropy(counts, num_shots)
-        print(f"Shannon Entropy (Measurement Distribution): {shannon_entropy:.4f}")
-        # Von Neumann Entropy for unmeasured circuit
-        unmeasured_qc = qc.copy()  # Copy the circuit before adding measurements
-        unmeasured_qc.data = [instr for instr in unmeasured_qc.data if instr[0].name != "measure"]  # Remove measurement ops
-
-        total_entropy, black_hole_entropy, radiation_entropy = calculate_von_neumann_entropy_unmeasured(unmeasured_qc, num_radiation_qubits)
-        if total_entropy is not None:
-            print(f"Total Entropy (Full System): {total_entropy:.4f}")
-            print(f"Entropy (Black Hole Subsystem): {black_hole_entropy:.4f}")
-            print(f"Entropy (Radiation Subsystem): {radiation_entropy:.4f}")
-        else:
-            print("Von Neumann entropy calculation failed.")
 
     except Exception as e:
-        print(f"Error processing result for entropy analysis: {e}")
+        print(f"Error processing result structure: {e}")
+        return {}
+
+    return dict(counts)
+
+def many_world_analysis(qc):
+    # Entropy analysis helps quantify how information spreads, a critical aspect of branching in Many-Worlds
+    state = Statevector.from_instruction(qc)
+    density_matrix = partial_trace(state, [1])  # Trace out the second qubit (radiation)
+    entropy_black_hole = entropy(density_matrix)
+
+# Additional Analysis: Track branching behavior
+# Many-Worlds implies that all outcomes exist; use counts to analyze distribution of outcomes
+    branching_analysis = {key: value / shots for key, value in counts.items()}
+
+# Print results
+    print("Measurement Results:", counts)
+    print("Subsystem Entropy of the Black Hole Qubit:", entropy_black_hole)
+    print("Branching Probabilities (Many-Worlds Perspective):", branching_analysis)
+
+# Save to IBM backend-specific format
+    qc.draw(output='mpl')  # Visualize the circuit
+
+    return "Multiversal Analysis complete"
+
+def run_and_extract_counts_quantum(qc, backend, shots=8192):
+    """
+    Runs a quantum circuit on the specified backend and extracts measurement results.
+
+    Parameters:
+        qc (QuantumCircuit): The quantum circuit to execute.
+        backend (Backend): The IBM backend to use for the execution.
+        shots (int): Number of shots for the experiment.
+
+    Returns:
+        dict: A dictionary of bitstring counts from the measurement results.
+    """
+    from qiskit_ibm_runtime import Session
+
+    # Transpile the circuit for the backend
+    transpiled_qc = transpile(qc, backend=backend)
+    
+    # Run the circuit with the sampler and session
+    with Session(backend=backend) as session:
+        sampler = Sampler()
+        job = sampler.run([transpiled_qc], shots=shots)
+        result = job.result()
+
+    # Debug: Inspect the raw result object
+    print("Raw Result Object:", result)
+
+    try:
+        # Access the first `SamplerPubResult`
+        pub_result = result._pub_results[0]  # Safely access `SamplerPubResult`
+        data_bin = pub_result.data  # Access `DataBin`
+        bit_array = data_bin.meas  # Access the `BitArray`
+
+        print("Bit array: ", bit_array)
+
+        extract_counts_from_bitarray(bit_array)
+
+    except Exception as e:
+        print(e)
+
+    return bit_array
+
+        # Decode the `BitArray` into a list of measurement results
+        #bitstrings = bit_array.to_list()  # Convert `BitArray` to list of bitstrings
+
+        # Count the occurrences of each bitstring
+        #counts = Counter(bitstrings)
+
+##        print("Measurement Results (Counts):")
+##        for bitstring, count in counts.items():
+##            print(f"{bitstring}: {count}")
+##
+##        return dict(counts)
+##
+##    except AttributeError as e:
+##        print(f"Error processing result structure: {e}")
+##        return {}
+
+
+
+def process_bitarray(bit_array):
+    """
+    Decodes a BitArray into a dictionary of measurement counts.
+
+    Parameters:
+        bit_array (BitArray): The measurement results as a BitArray.
+
+    Returns:
+        dict: A dictionary of bitstring counts.
+    """
+    # Decode BitArray into a list of bitstrings
+    bitstrings = [bit_array[i] for i in range(len(bit_array))]
+    
+    # Count occurrences of each bitstring
+    counts = Counter(bitstrings)
+    return dict(counts)
+
+if __name__ == "__main__":
+
+# Parameters for simulation
+    decoherence_rate = 0.1  # Probability of decoherence affecting the system
+    shots = 1024  # Number of measurement shots
+
+# Parameters for the circuit
+    num_injections = 5  # 5 charge injections
+    num_radiation_qubits = 3  # 3 radiation qubits entangled with the black hole
+    gap_cycles = 50  # 50 idle cycles between injections
+
+    qc = many_worlds_experiment(decoherence_rate=0.1, shots=1024)
+
+    ### Transpile the circuit for the backend
+        
+    transpiled_qc = transpile(qc, backend=best_backend)
+    run_and_extract_counts_quantum(transpiled_qc, backend=best_backend)
+    #extract_counts_from_bitarray(bitarray)
+##
+##    # Check for IBM backend result structure
+##    try:
+##        if hasattr(results, "quasi_dists"):
+##            # Extract measurement probabilities for IBM backend
+##            counts = results.quasi_dists[0].binary_probabilities()
+##            print("Measurement Results from IBM Backend:", counts)
+##        elif hasattr(results, "get_counts"):
+##            # Handle AerSimulator or local Qiskit simulator results
+##            counts = results.get_counts()
+##            print("Measurement Results from Local Simulation:", counts)
+##        else:
+##            # If neither, output raw results for inspection
+##            print("Unrecognized result structure:", results)
+##    except Exception as e:
+##        print(f"Error processing results: {e}")
+##
+
+
+
