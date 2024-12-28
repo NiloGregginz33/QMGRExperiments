@@ -148,7 +148,9 @@ Youre going to need a hamiltonian with both time independent and time dependent 
 NONDUALISM
 Bc this now seems like something more fundamental idk the words kinda make it sound like ppl gotta think in QM or GM
 
-Extend entropy calculations to include correlations between static and dynamic modes of encoding, possibly using subsystem entropies or generalized entanglement entropy. 
+MULTIVERSE IMPLICATIONS
+
+imma make a telephone lets see if anyone picks up 
 
 Hit on the credebility of firewall paradox too kinda huh
 
