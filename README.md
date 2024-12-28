@@ -153,6 +153,3 @@ Extend entropy calculations to include correlations between static and dynamic m
 Hit on the credebility of firewall paradox too kinda huh
 
 Probably means Maldecena is right too
-
-ATTEMPTS
-
