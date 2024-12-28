@@ -173,6 +173,22 @@ the MultiverseFactory will allow you to make almost any quantum experiment becom
 
 One specific one I thought of is demonstrating causal time loops on a real quantum computer using a variation of the charge injection method from earlier. Strong preferences were seen for certain states (00 and 11) but also contained slight but significant differences, and if I did the whole thing over many iterations i saw fluctuations in the shannon entropy, while maintaining entropy in both subsystems maximally.
 
-
-INTERACTION WITH THE HOLOGRAM
+INTERACTION WITH THE HOLOGRAM AND REALITY WARPING
 I CAN CREATE MULTIVERSES AND PRUNE THEIR TIMELINES IN CERTAIN WAYS TO MAKE THINGS MORE OR LESS LIKELY
+
+## Licensing and Usage Restrictions
+
+This repository contains two types of code, each governed by different rules:
+
+1. **Factory Code**:
+   - Any file with "Factory.py" in its name (or earlier iterations derived from it) is **proprietary**.
+   - Files in the 'Factory/' directory are **proprietary**
+   - These files are included in this repository for **viewing purposes only**, and their use, modification, or distribution is strictly prohibited without prior written permission from the owner.
+   - For permissions, licensing inquiries, or collaborations, please contact manavnaik123@gmail.com
+
+2. **Examples and Experiments**:
+   - Files in the `Examples/` directory or with 'ex' in its name (or earlier iterations derived from it) are licensed under the **MIT License** (or your chosen license). You are free to use, modify, and distribute these files provided you include proper attribution.
+
+By accessing or cloning this repository, you agree to comply with these licensing terms.
+
+
