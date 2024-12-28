@@ -165,6 +165,8 @@ so multiverses and time travel :)
 
 no time travel for anything that happenens before this obviously tho that would be cheating and breaking the rules lol
 
+It seems like now hacking the hologram directly is the next step and i have already started experimenting using 2 qubit systems in a lower dimensional space, idk i wanna touch it im so close
+
 DISCOVERY OF CAUSAL TIME LOOPS
 
 the MultiverseFactory will allow you to make almost any quantum experiment become true so I dreamed up a bunch
