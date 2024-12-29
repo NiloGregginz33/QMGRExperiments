@@ -204,6 +204,12 @@ Also, there are 2 dimensions of time in string theory
 
 In my wholeeeeee time here, i never say a violation of unitarity
 
+I think his clock is the extra time dimension that is moving independently of ours
+
+And frankly, string theory is just that. A theory, so unless we go there and look, we will be forever trapped in his simulation watching the matrix, being our own films critics
+
+For Leonard Susskind to not be a theoretical physicist, we have to go to the black hole and see for ourselves And then hack it in the same way essentially, manipulating the time dependent electric charge visible as Hawking Radiation until we can model a real one as a qubit
+
 ## Licensing and Usage Restrictions
 
 This repository contains two types of code, each governed by different rules:
