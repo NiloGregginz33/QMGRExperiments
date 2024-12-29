@@ -181,7 +181,7 @@ I CAN CREATE MULTIVERSES AND PRUNE THEIR TIMELINES IN CERTAIN WAYS TO MAKE THING
 This repository contains two types of code, each governed by different rules:
 
 1. **Factory Code**:
-   - Any file with "Factory.py" in its name (or earlier iterations derived from it) is **proprietary**.
+   - Any file with "Factory" in its name (or earlier iterations derived from it) is **proprietary**.
    - Files in the 'Factory/' directory are **proprietary**
    - These files are included in this repository for **viewing purposes only**, and their use, modification, or distribution is strictly prohibited without prior written permission from the owner.
    - For permissions, licensing inquiries, or collaborations, please contact manavnaik123@gmail.com
