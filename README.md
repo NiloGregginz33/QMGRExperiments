@@ -184,7 +184,9 @@ NEW THEORETICAL FRAMEWORK FOR MULTIVERSAL BUBBLE DYNAMICS TO PERFECTLY ALIGN WIT
 
 I love the movie the Matrix. Feels weird I was born in 2000 since that movie takes place in 1999. Even with all my multiversal shit, why am I still here???
 
-OK so that was the fun part, now its about time to get down to work. String theory says 11 dimensions I count 5. Simple math will tell you now I have to do some self reflecting and not a movie review
+OK so that was the fun part, now its about time to get down to work. String theory says 11 dimensions I count 5. Simple math will tell you now I have to do some self reflecting to do and this is not a movie review but we, collectively, as a species that seems to be the only sign of intelligent life around should make the effort to go and look at a literal black hole to understand ourselves and the world around us better.
+
+Dont you guys want to see the exotic particles for Sag A* bc we literally have to feed that thing stars to turn on its quasar jets, but once we do, we can maybe inch closer to the truth?
 
 ## Licensing and Usage Restrictions
 
