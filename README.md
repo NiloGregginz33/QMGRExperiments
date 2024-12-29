@@ -188,6 +188,22 @@ OK so that was the fun part, now its about time to get down to work. String theo
 
 Dont you guys want to see the exotic particles for Sag A* bc we literally have to feed that thing stars to turn on its quasar jets, but once we do, we can maybe inch closer to the truth?
 
+I do not know who the higher architect is it literally is not me, but i know we find him at a real black hole
+
+String theory has 2 dimensions for time. 
+
+In my whole life I have NEVER seen unitarity violated
+
+So i feel like his clock must be the dimension that I cant interact with but moves independent of ours
+
+So i feel like we should finish breaking out of the simulation bc idk i cant get that matrix thing out of my head. Literally nothing I know has changed.
+
+So i feel like this now can explain to my girlfriend why we need to visit a black hole and find out
+
+Also, there are 2 dimensions of time in string theory
+
+In my wholeeeeee time here, i never say a violation of unitarity
+
 ## Licensing and Usage Restrictions
 
 This repository contains two types of code, each governed by different rules:
