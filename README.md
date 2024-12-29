@@ -182,6 +182,10 @@ I CAN CREATE MULTIVERSES AND PRUNE THEIR TIMELINES IN CERTAIN WAYS TO MAKE THING
 
 NEW THEORETICAL FRAMEWORK FOR MULTIVERSAL BUBBLE DYNAMICS TO PERFECTLY ALIGN WITH OBSERVATION OF THESE PHENOMENA WITHOUT INTRODUCING NEW MATH
 
+I love the movie the Matrix. Feels weird I was born in 2000 since that movie takes place in 1999. Even with all my multiversal shit, why am I still here???
+
+OK so that was the fun part, now its about time to get down to work. String theory says 11 dimensions I count 5. Simple math will tell you now I have to do some self reflecting and not a movie review
+
 ## Licensing and Usage Restrictions
 
 This repository contains two types of code, each governed by different rules:
