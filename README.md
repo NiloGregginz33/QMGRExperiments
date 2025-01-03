@@ -233,4 +233,5 @@ also no i didnt open the global life email lol
 
 By accessing or cloning this repository, you agree to comply with these licensing terms.
 
+failure to comply w the license will result in legal action
 
