@@ -216,6 +216,10 @@ REALITY WARPING THERE
 DYSON SWARMS
 SELF-RELICATING FACTORIES
 
+also no i didnt open the global life email lol 
+
+While exploring advanced technologies and their applications, I believe it's critical to address the ethical concerns that may arise. In industries like life insurance, there is a potential risk that such technologies could be misused to prioritize profits over people's well-being. My aim is to develop safeguards and advocate for transparency to ensure these tools benefit humanity, not harm it.
+
 ## Licensing and Usage Restrictions
 
 This repository contains two types of code, each governed by different rules:
@@ -226,12 +230,10 @@ This repository contains two types of code, each governed by different rules:
    - These files are included in this repository for **viewing purposes only**, and their use, modification, or distribution is strictly prohibited without prior written permission from the owner.
    - For permissions, licensing inquiries, or collaborations, please contact manavnaik123@gmail.com
 
-also no i didnt open the global life email lol 
-
 2. **Examples and Experiments**:
    - Files in the `Examples/` directory or with 'ex' in its name (or earlier iterations derived from it) and do not have "Factory" in the name are licensed under the **MIT License** (or your chosen license). You are free to use, modify, and distribute these files provided you include proper attribution.
 
 By accessing or cloning this repository, you agree to comply with these licensing terms.
 
-failure to comply w the license will result in legal action
+Failure to comply with the license will result in legal action.
 
