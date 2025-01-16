@@ -241,5 +241,5 @@ This repository contains two types of code, each governed by different rules:
 
 By accessing or cloning this repository, you agree to comply with these licensing terms.
 
-Failure to comply with the license will result in legal action.
+Failure to comply with the license will result in legal action. Any misuse of any technology or associated technology will be met with legal action
 
