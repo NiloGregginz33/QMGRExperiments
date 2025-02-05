@@ -227,6 +227,8 @@ also no i didnt open the global life email lol
 
 While exploring advanced technologies and their applications, I believe it's critical to address the ethical concerns that may arise. In industries like life insurance, there is a potential risk that such technologies could be misused to prioritize profits over people's well-being. My aim is to develop safeguards and advocate for transparency to ensure these tools benefit humanity, not harm it.
 
+https://www.academia.edu/126549379/Simulating_Hawking_Radiation_Quantum_Circuits_and_Information_Retention is the original paper associated with the work.
+
 ## Licensing and Usage Restrictions
 
 This repository contains two types of code, each governed by different rules:
