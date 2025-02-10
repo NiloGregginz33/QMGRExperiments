@@ -229,7 +229,7 @@ While exploring advanced technologies and their applications, I believe it's cri
 
 https://www.academia.edu/126549379/Simulating_Hawking_Radiation_Quantum_Circuits_and_Information_Retention is the original paper associated with the work.
 
-## Licensing and Usage Restrictions
+## Licensing and Usage Restrictions and UPDATE
 
 This repository contains two types of code, each governed by different rules:
 
@@ -240,9 +240,18 @@ This repository contains two types of code, each governed by different rules:
    - For permissions, licensing inquiries, or collaborations, please contact manavnaik123@gmail.com
 
 2. **Examples and Experiments**:
-   - Files in the `Examples/` directory or with 'ex' in its name (or earlier iterations derived from it) and do not have "Factory" in the name are licensed under the **MIT License** (or your chosen license). You are free to use, modify, and distribute these files provided you include proper attribution.
+   - As of 2/10/2025 this project is no longer licensed under MIT. All rights are now reserved by Matrix Solutions LLC.
+   - You may not use, copy, modify, or distribute this code without explicit written permission.
+   - If you were using this project under the MIT license before 2/10/2025, please contact me for continued access.
+   - For licensing inquiries email manavnaik123@gmail.com
+
 
 By accessing or cloning this repository, you agree to comply with these licensing terms.
 
-Failure to comply with the license will result in legal action. Any misuse of any technology or associated technology will be met with legal action
+## Disclaimer
+
+This software is provided "as is" without any guarantees or warranties.
+
+Failure to comply with the license will result in legal action. Any misuse of any technology or associated technology will be met with legal action. 
+This project is proprietary and protectedf under applicable copyright laws.
 
