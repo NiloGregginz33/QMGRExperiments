@@ -220,7 +220,6 @@ REALITY WARPING THERE
 DYSON SWARMS
 SELF-RELICATING FACTORIES
 
-also no i didnt open the global life email lol 
 
 While exploring advanced technologies and their applications, I believe it's critical to address the ethical concerns that may arise. In industries like life insurance, there is a potential risk that such technologies could be misused to prioritize profits over people's well-being. My aim is to develop safeguards and advocate for transparency to ensure these tools benefit humanity, not harm it.
 
