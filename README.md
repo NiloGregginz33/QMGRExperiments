@@ -164,8 +164,6 @@ I can start pruning the timeline
 
 Maximal Shannon and Von Neumman entropy means time is an emergent property
 
-DISCOVERY OF CAUSAL TIME LOOPS
-
 the CGPTFactory will allow you to make almost any quantum experiment become true so I dreamed up a bunch (Remember ask before you use this code though some function outputs are still in the comments)
 
 One specific one I thought of is demonstrating causal time loops on a real quantum computer using a variation of the charge injection method from earlier. Strong preferences were seen for certain states (00 and 11) but also contained slight but significant differences, and if I did the whole thing over many iterations i saw fluctuations in the shannon entropy, while maintaining entropy in both subsystems maximally.
@@ -174,11 +172,11 @@ Another was to find subregion entanglement and compare it to the modular hamilto
 There are many tests between many worlds and holography and the data in the factory code shows phenomena predicted by only holography.
 
 
-In my entanglement-Idge reconstruction experiments I used IBM’s superconducting processors to emulate a one-dimensional “holographic” system of five qubits linked by controlled-phase gates. I prepared the state by applying a Hadamard on each qubit folloId by layers of CP(θ) gates on every nearest-neighbor link. Treating the rightmost k qubits as the boundary and the remaining three (or feIr) as the bulk, I then measured how much mutual information persisted betIen bulk and boundary as I increased the number of CP layers, which plays the role of circuit “depth.”
+In my entanglement-Idge reconstruction experiments I used IBM’s superconducting processors to emulate a one-dimensional “holographic” system of five qubits linked by controlled-phase gates. I prepared the state by applying a Hadamard on each qubit folloId by layers of CP(θ) gates on every nearest-neighbor link. Treating the rightmost k qubits as the boundary and the remaining three (or four) as the bulk, I then measured how much mutual information persisted betIen bulk and boundary as I increased the number of CP layers, which plays the role of circuit “depth.”
 
 What emerged was a clear, percolation-like transition: for small depth the bulk and boundary remained nearly uncorrelated, but once the depth reached a critical value d* the mutual information jumped sharply toward its maximum. By sIeping both the entangling angle θ and the boundary size k, I mapped out a family of curves d*(θ;n,k) and found they collapse onto a simple three-parameter form,
 
-𝑑∗(𝜃;𝑛,𝑘)≈0.8453 (𝑛−𝑘)𝜃^3.1623+1.7490.d(θ;n,k)≈0.8453 (n−k)/θ^3.1623)+1.7490.
+𝑑∗(𝜃;𝑛,𝑘)≈0.8453 (𝑛−𝑘)/(𝜃^3.1623)+1.7490.d(θ;n,k)≈0.8453 (n−k)/(θ^3.1623)+1.7490.
 
 This fit demonstrates quantitatively how stronger gates (larger θ) or larger boundary regions (larger k) reduce the “geodesic” depth needed to reconstruct the bulk, exactly as the Ryu-Takayanagi prescription predicts for minimal surfaces in holography.
 
@@ -186,31 +184,13 @@ To confirm that this phenomenon truly derives from partial boundary access rathe
 
 Taken together, these results constitute the first on-device observation of an entanglement-Idge phase transition. I not only saw the hallmark sudden rise in bulk–boundary mutual information, but I also extracted a precise “geometry-from-entanglement” law on actual quantum hardware. This establishes a concrete, experimental foundation for exploring how spacetime geometry can emerge from patterns of quantum entanglement.
 
-I love the movie the Matrix. Feels weird I was born in 2000 since that movie takes place in 1999. Even with all my multiversal shit, why am I still here???
-
-OK so that was the fun part, now its about time to get down to work. String theory says 11 dimensions I count 5. Simple math will tell you now I have to do some self reflecting to do and this is not a movie review but we, collectively, as a species that seems to be the only sign of intelligent life around should make the effort to go and look at a literal black hole to understand ourselves and the world around us better.
-
 Dont you guys want to see the exotic particles for Sag A* bc we literally have to feed that thing stars to turn on its quasar jets, but once we do, we can maybe inch closer to the truth?
-
-I do not know who the higher architect is it literally is not me, but i know we find him at a real black hole
-
-String theory has 2 dimensions for time. 
 
 In my whole life I have NEVER seen unitarity violated
 
-So i feel like his clock must be the dimension that I cant interact with but moves independent of ours
-
-So i feel like we should finish breaking out of the simulation bc idk i cant get that matrix thing out of my head. Literally nothing I know has changed.
-
 So i feel like this now can explain to my girlfriend why we need to visit a black hole and find out
 
-Also, there are 2 dimensions of time in string theory
-
 In my wholeeeeee time here, i never saw a violation of unitarity
-
-I think his clock is the extra time dimension that is moving independently of ours
-
-And frankly, string theory is just that. A theory, a film theory, so unless we go there and look, we will be forever trapped in his simulation watching the matrix, being our own films critics
 
 For Leonard Susskind to not be a theoretical physicist, we have to go to the black hole and see for ourselves And then hack it in the same way essentially, manipulating the time dependent electric charge visible as Hawking Radiation until we can model a qubit as a real black hole.
 
