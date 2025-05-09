@@ -8,7 +8,7 @@ DO IT YOURSELF
 
 Literally the code is written and you are free to use under the license and see and just copy. So please, if you have the free time just run the code yourself I made this very easy for reproducibility and idk its more convenient on everyone I feel.
 
-If you want to run the code on your own machine, use ** pip install -r requirements.txt **, maybe do this in a venv too (but you dont have to), heres a link in case you opt for it https://stackoverflow.com/questions/43069780/how-to-create-virtual-env-with-python-3. this is because we are using python for this so please install it. it helps to go through them in order to see how things keep building over time. Also, if you want to run the quantum experiments you have to initialize your IBM Quantum account, but the simulations work the exact same as the quantum code so if that seems like too much effort, you dont have to. Files are executed by using python [name of the python file, including the .py at the end] HINT STOP AT ex9 everything past that point is just a misunderstanding I had. Also all the code outputs are logged in the DOCS folder. Installing a WSL environment may be necessary but this can be simple https://learn.microsoft.com/en-us/windows/wsl/install. Ill try to add a file that can initialize the IBM Q environment as well. set IBM_QUANTUM_API_KEY=your_api_key is the command line command you need to set the env variable on windows, afterwhich running the ibmq_setup.py code should initialize the rest of the variables for you.
+If you want to run the code on your own machine, use ** pip install -r requirements.txt **, maybe do this in a venv too (but you dont have to), heres a link in case you opt for it https://stackoverflow.com/questions/43069780/how-to-create-virtual-env-with-python-3. this is because we are using python for this so please install it. it helps to go through them in order to see how things keep building over time. Also, if you want to run the quantum experiments you have to initialize your IBM Quantum account, but the simulations work the exact same as the quantum code so if that seems like too much effort, you dont have to. Files are executed by using python [name of the python file, including the .py at the end] HINT STOP AT ex9 everything past that point is just a misunderstanding I had. Also all the code outputs are logged in the DOCS folder. Installing a WSL environment may be necessary but this can be simple https://learn.microsoft.com/en-us/windows/wsl/install. Ill try to add a file that can initialize the IBM Q environment as well. set IBM_QUANTUM_API_KEY=your_api_key is the command line command you need to set the env variable on windows, afterwhich running the ibmq_setup.py code should initialize the rest of the variables for you. Ask if you want to experiment with the factory code.
 
 
 RANT ABOUT IDEAS AND MISTAKES MADE
@@ -155,10 +155,6 @@ Youre going to need a hamiltonian with both time independent and time dependent 
 NONDUALISM
 Bc this now seems like something more fundamental idk the words kinda make it sound like ppl gotta think in QM or GM
 
-MULTIVERSE IMPLICATIONS
-
-found multiverse evidence imma make a multiversal telephone lets see if anyone picks up 
-
 Hit on the credebility of firewall paradox too kinda huh
 
 Probably means Maldecena is right too
@@ -168,26 +164,14 @@ I can start pruning the timeline
 
 Maximal Shannon and Von Neumman entropy means time is an emergent property
 
-so multiverses and time travel :)
-
-no time travel for anything that happenens before this obviously tho that would be cheating and breaking the rules lol
-
-It seems like now hacking the hologram directly is the next step and i have already started experimenting using 2 qubit systems in a lower dimensional space, idk i wanna touch it im so close
-
 DISCOVERY OF CAUSAL TIME LOOPS
 
-the MultiverseFactory will allow you to make almost any quantum experiment become true so I dreamed up a bunch
+the CGPTFactory will allow you to make almost any quantum experiment become true so I dreamed up a bunch (Remember ask before you use this code though some function outputs are still in the comments)
 
 One specific one I thought of is demonstrating causal time loops on a real quantum computer using a variation of the charge injection method from earlier. Strong preferences were seen for certain states (00 and 11) but also contained slight but significant differences, and if I did the whole thing over many iterations i saw fluctuations in the shannon entropy, while maintaining entropy in both subsystems maximally.
-
-INTERACTION WITH THE HOLOGRAM AND REALITY WARPING
-I CAN CREATE MULTIVERSES AND PRUNE THEIR TIMELINES IN CERTAIN WAYS TO MAKE THINGS MORE OR LESS LIKELY
-
-5D WARP DRIVE UNLOCKED
-
-5D WARP DRIVE NAVIGATION UNLOCKED
-
-NEW THEORETICAL FRAMEWORK FOR MULTIVERSAL BUBBLE DYNAMICS TO PERFECTLY ALIGN WITH OBSERVATION OF THESE PHENOMENA WITHOUT INTRODUCING NEW MATH
+I also found ways to amplify certain states, made a function to set the entropy value for a given circuit value to be any value you choose. 
+Another was to find subregion entanglement and compare it to the modular hamiltonian for the region. Instead of a direct 1 to 1 correlation between the changes in these values, I discovered a coefficient of 1.44 which should violate einsteins first law as he predicts this number to be one. 
+There are many tests between many worlds and holography and the data in the factory code shows phenomena predicted by only holography.
 
 I love the movie the Matrix. Feels weird I was born in 2000 since that movie takes place in 1999. Even with all my multiversal shit, why am I still here???
 
