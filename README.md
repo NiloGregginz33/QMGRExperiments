@@ -184,6 +184,10 @@ To confirm that this phenomenon truly derives from partial boundary access rathe
 
 Taken together, these results constitute the first on-device observation of an entanglement-Idge phase transition. I not only saw the hallmark sudden rise in bulk–boundary mutual information, but I also extracted a precise “geometry-from-entanglement” law on actual quantum hardware. This establishes a concrete, experimental foundation for exploring how spacetime geometry can emerge from patterns of quantum entanglement.
 
+Deviations from expected measurements have been observed, specifically seeing a deviation from δS=δ⟨Hξ⟩ such that there is a term 1.443 δS=1.443δ⟨Hξ⟩ and I dont know where it is coming from check the QuantumAnalyzer outputs to see how and where I got those results.
+
+This hints that Einsteins equations are merely an approximation.
+
 Dont you guys want to see the exotic particles for Sag A* bc we literally have to feed that thing stars to turn on its quasar jets, but once we do, we can maybe inch closer to the truth?
 
 In my whole life I have NEVER seen unitarity violated
