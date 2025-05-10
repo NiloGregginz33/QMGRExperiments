@@ -218,8 +218,8 @@ This repository contains two types of code, each governed by different rules:
    - Files in the 'Factory/' directory are **proprietary**
    - These files are included in this repository for **viewing purposes only**, and their use, modification, or distribution is strictly prohibited without prior written permission from the owner.
    - For permissions, licensing inquiries, or collaborations, please contact manavnaik123@gmail.com
-
-2. **Examples and Experiments**:
+  
+###################################################################################################################################################################################
    - As of 2/10/2025 this project is no longer licensed under MIT. All rights are now reserved by Matrix Solutions LLC.
    - You may not use, copy, modify, or distribute this code without explicit written permission.
    - If you were using this project under the MIT license before 2/10/2025, please contact me for continued access.
