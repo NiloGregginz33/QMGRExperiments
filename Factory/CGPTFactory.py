@@ -21,6 +21,7 @@ from scipy.linalg import expm
 import hashlib
 from qiskit.circuit import Instruction
 import time
+import concurrent.futures
 from datetime import datetime
 from scipy.stats import binom_test
 import requests
@@ -32,8 +33,10 @@ import itertools
 import csv
 import pandas as pd
 from mpl_toolkits.mplot3d import Axes3D
+from tqdm import tqdm
 from scipy.optimize import curve_fit
 import inspect
+import math
 from collections import Counter, defaultdict
 from typing import List, Dict
 from scipy.optimize import minimize
@@ -10608,12 +10611,15 @@ def fit_phase_boundary_params(theta_arr, dstar_arr, n, k, output_file='phase_bou
 #Params:  {'alpha': 0.8452816861689775, 'beta': 3.1622708337551284, 'gamma': 1.74903474952482, 'n': 5, 'k': 2}
 
 # 1) Geometry: 1D chain of n qubits
-n        = 5
+n        = 7
 nodes    = list(range(n))
 edge_list = [(i, i+1) for i in range(n-1)]  # nearest-neighbor edges
 
 # 2) Target “stress-energy” (vacuum here)
 T = { i: 1.0 for i in nodes }
+
+mass_node, mass_strength, sigma = 3, 1.0, 0.8
+T_target = {}
 
 # 3) Initialize random CP-angles on each edge
 theta_1 = { edge: np.random.uniform(0.1, np.pi-0.1) for edge in edge_list }
@@ -10621,6 +10627,188 @@ epsilon = 0.3           # charge injection strength
 theta   = np.pi / 4     # wormhole coupling angle
 thetas = np.linspace(0, np.pi, 50)
 fidelities = []
+
+def build_2d_edges(rows, cols):
+    edges = []
+    for r in range(rows):
+        for c in range(cols):
+            idx = r*cols + c
+            # horizontal link
+            if c < cols-1:
+                edges.append((idx, idx+1))
+            # vertical link
+            if r < rows-1:
+                edges.append((idx, idx+cols))
+    return edges
+
+# 2) Create entangling circuit with CP gates on each link
+def create_2d_entanglement_circuit(rows, cols, theta_dict):
+    n = rows*cols
+    qc = QuantumCircuit(n)
+    qc.h(range(n))  # initial superposition
+    for (i,j), theta in theta_dict.items():
+        qc.cp(theta, i, j)
+    return qc
+
+# 3) Compute plaquette "Ricci curvature" via 4-body mutual information
+#    For each square plaquette, label corners a,b,c,d in order.
+def compute_plaquette_curvature(qc, rows, cols, plaquettes):
+    # Ensure the circuit saves the statevector
+    qc_sv = qc.copy()
+    qc_sv.save_statevector()
+
+    # Run with MPS simulator for efficiency
+    sim = AerSimulator(method='matrix_product_state')
+    t_qc = transpile(qc_sv, sim)
+    result = sim.run(t_qc).result()
+    # Retrieve the saved statevector
+    sv = result.get_statevector(t_qc)
+
+    # Build a density matrix from the statevector
+    dm_full = DensityMatrix(sv)
+    curvatures = {}
+    for corners in plaquettes:
+        # Compute mutual information for the four corners
+        # I(a,b;c,d) = S(ab) + S(cd) - S(abcd)
+        # Use partial traces and von Neumann entropy
+        rho_ab = partial_trace(dm_full, [q for q in range(rows*cols) if q not in corners[:2]])
+        rho_cd = partial_trace(dm_full, [q for q in range(rows*cols) if q not in corners[2:]])
+        rho_abcd = partial_trace(dm_full, [q for q in range(rows*cols) if q not in corners])
+
+        S_ab = qiskit_entropy(rho_ab)
+        S_cd = qiskit_entropy(rho_cd)
+        S_abcd = qiskit_entropy(rho_abcd)
+        curvatures[tuple(corners)] = S_ab + S_cd - S_abcd
+    return curvatures
+
+def build_3d_edges(L):
+    edges = []
+    def idx(x,y,z): return x + L*(y + L*z)
+    for x in range(L):
+      for y in range(L):
+        for z in range(L):
+          i = idx(x,y,z)
+          if x+1 < L: edges.append((i, idx(x+1,y,z)))
+          if y+1 < L: edges.append((i, idx(x,y+1,z)))
+          if z+1 < L: edges.append((i, idx(x,y,z+1)))
+    return edges
+
+def list_3d_faces(L):
+    faces = []
+    idx = lambda x,y,z: x + L*(y + L*z)
+    for x in range(L-1):
+        for y in range(L-1):
+            for z in range(L):
+                # XY-plane face at fixed z
+                faces.append([idx(x,y,z), idx(x+1,y,z), idx(x+1,y+1,z), idx(x,y+1,z)])
+    for x in range(L-1):
+        for y in range(L):
+            for z in range(L-1):
+                # XZ-plane face at fixed y
+                faces.append([idx(x,y,z), idx(x+1,y,z), idx(x+1,y,z+1), idx(x,y,z+1)])
+    for x in range(L):
+        for y in range(L-1):
+            for z in range(L-1):
+                # YZ-plane face at fixed x
+                faces.append([idx(x,y,z), idx(x,y+1,z), idx(x,y+1,z+1), idx(x,y,z+1)])
+    return faces
+
+# 3) List cubic cells (volumes) as 8-corner tuples
+def list_3d_cells(L):
+    cells = []
+    idx = lambda x,y,z: x + L*(y + L*z)
+    for x in range(L-1):
+        for y in range(L-1):
+            for z in range(L-1):
+                corners = [
+                    idx(x  ,y  ,z), idx(x+1,y  ,z), idx(x+1,y+1,z), idx(x  ,y+1,z),
+                    idx(x  ,y  ,z+1), idx(x+1,y  ,z+1), idx(x+1,y+1,z+1), idx(x  ,y+1,z+1)
+                ]
+                cells.append(corners)
+    return cells
+
+# 4) Create entangling circuit for given edges and theta angles
+def create_3d_entanglement_circuit(n_qubits, edges, theta_dict):
+    qc = QuantumCircuit(n_qubits)
+    qc.h(range(n_qubits))
+    for (i,j), theta in theta_dict.items():
+        qc.cp(theta, i, j)
+        print(theta, i, j)
+    return qc
+
+# 5) Compute face-based curvature: I(a,b;c,d) = S(ab)+S(cd)-S(abcd)
+def compute_face_curvature(qc, faces):
+    # save statevector
+    qc_sv = qc.copy()
+    qc_sv.save_statevector()
+    sim = AerSimulator(method='matrix_product_state')
+    t_qc = transpile(qc_sv, sim)
+    result = sim.run(t_qc).result()
+    sv = result.get_statevector(t_qc)
+    dm = DensityMatrix(sv)
+    curv = {}
+    n = qc.num_qubits
+    for corners in faces:
+        a, b, c, d = corners
+        # joint indices
+        ab = [a,b]; cd=[c,d]; abcd=corners
+        rho_ab   = partial_trace(dm, [q for q in range(n) if q not in ab])
+        rho_cd   = partial_trace(dm, [q for q in range(n) if q not in cd])
+        rho_abcd = partial_trace(dm, [q for q in range(n) if q not in abcd])
+        S_ab   = entropy(rho_ab,   base=2)
+        S_cd   = entropy(rho_cd,   base=2)
+        S_abcd = entropy(rho_abcd, base=2)
+        curv[tuple(corners)] = S_ab + S_cd - S_abcd
+    return curv
+
+# 6) Compute cell-based curvature: sum face entropies minus S(all corners)
+def compute_cell_curvature(qc, cells, faces_of_cell):
+    qc_sv = qc.copy()
+    qc_sv.save_statevector()
+    sim = AerSimulator(method='matrix_product_state')
+    t_qc = transpile(qc_sv, sim)
+    result = sim.run(t_qc).result()
+    sv = result.get_statevector(t_qc)
+    dm = DensityMatrix(sv)
+    curv = {}
+    n = qc.num_qubits
+    for corners in cells:
+        # find 6 faces bounding this cell
+        faces = faces_of_cell[tuple(corners)]
+        S_faces = 0
+        for face in faces:
+            rho = partial_trace(dm, [q for q in range(n) if q not in face])
+            S_faces += entropy(rho, base=2)
+        rho_full = partial_trace(dm, [q for q in range(n) if q not in corners])
+        S_full = entropy(rho_full, base=2)
+        curv[tuple(corners)] = S_faces - S_full
+    return curv
+
+# 7) Precompute faces_of_cell mapping
+
+def build_faces_of_cell(cells, faces):
+    mapping = {}
+    face_sets = [set(f) for f in faces]
+    for cell in cells:
+        cset = set(cell)
+        # face belongs to cell if its corners subset of cell corners
+        mapping[tuple(cell)] = [face for face in faces if set(face).issubset(cset)]
+    return mapping
+
+
+# 4) Define plaquettes for rows x cols
+
+def list_plaquettes(rows, cols):
+    plaquettes = []
+    for r in range(rows-1):
+        for c in range(cols-1):
+            a = r*cols + c
+            b = a+1
+            d = (r+1)*cols + c
+            c_idx = d+1
+            plaquettes.append([a, b, d, c_idx])
+    return plaquettes
+
 
 def run_entanglement_measurements(theta_dict):
     """
@@ -10795,7 +10983,7 @@ class QuantumGravityAnalyzer:
         for A in regions:
             # baseline reduced state & entropy
             rho0 = partial_trace(dm0, [q for q in range(self.n) if q not in A])
-            S0 = entropy(rho0, base=2)
+            S0 = qiskit_entropy(rho0)
 
             # modular Hamiltonian Hξ = -ln(rho0)
             Hxi = -scipy.linalg.logm(rho0.data)
@@ -10804,14 +10992,14 @@ class QuantumGravityAnalyzer:
             thetas_p = {e: theta_dict[e] + eps for e in theta_dict}
             dm_p     = get_dm(thetas_p)
             rho_p    = partial_trace(dm_p, [q for q in range(self.n) if q not in A])
-            S_p      = entropy(rho_p, base=2)
+            S_p      = qiskit_entropy(rho_p)
             exp_p    = np.real(np.trace(rho_p.data @ Hxi))
 
             # -eps perturbation
             thetas_m = {e: theta_dict[e] - eps for e in theta_dict}
             dm_m     = get_dm(thetas_m)
             rho_m    = partial_trace(dm_m, [q for q in range(self.n) if q not in A])
-            S_m      = entropy(rho_m, base=2)
+            S_m      = qiskir_entropy(rho_m)
             exp_m    = np.real(np.trace(rho_m.data @ Hxi))
 
             # central finite differences
@@ -10821,6 +11009,173 @@ class QuantumGravityAnalyzer:
             results[tuple(A)] = (delta_S, delta_H)
 
         return results
+
+    # Add this method to your QuantumGravityAnalyzer class in CGPTFactory.py
+
+    def compute_bulk_boundary_I(self, theta_dict, boundary_size, depth, simulator=None):
+        """
+        Compute mutual information I(bulk : boundary) for a given theta_dict, boundary size k, and circuit depth.
+        - theta_dict: dict mapping edges (i,j) to CP angles θ_ij
+        - boundary_size: number of qubits at the end of the chain to treat as boundary (k)
+        - depth: number of CP layers to apply
+        Returns: mutual information I = S(rho_bulk) + S(rho_boundary) - S(rho_full)
+        """
+        from qiskit import QuantumCircuit
+        from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy
+
+        n = self.n
+        # choose simulator
+        if simulator is None:
+            simulator = Aer.get_backend("aer_simulator_statevector")
+
+        # build circuit
+        qc = QuantumCircuit(n)
+        # initial Hadamards
+        for q in range(n):
+            qc.h(q)
+        # apply CP layers up to given depth
+        for _ in range(depth):
+            for (i, j), th in theta_dict.items():
+                qc.cp(th, i, j)
+        # get statevector and density matrix
+        sv = Statevector(qc)
+        dm = DensityMatrix(sv)
+
+        # define boundary and bulk indices
+        boundary = list(range(n - boundary_size, n))
+        bulk = [i for i in range(n) if i not in boundary]
+
+        # reduced density matrices
+        rho_boundary = partial_trace(dm, bulk)
+        rho_bulk = partial_trace(dm, boundary)
+
+        # entropies
+        S_boundary = qiskit_entropy(rho_boundary)
+        S_bulk = qiskit_entropy(rho_bulk)
+        S_full = qiskit_entropy(dm)
+
+        # mutual information
+        I = S_bulk + S_boundary - S_full
+        return I
+
+# After adding this method, recreate your analyzer and call:
+# I = analyzer.compute_bulk_boundary_I(theta_bh, boundary_size=1, depth=d)
+    def fast_bulk_boundary_MI(self, theta_dict, boundary, max_depth):
+        """
+        Single‐shot MPS + Rényi‑2 depth scan.
+        """
+        n = self.n
+        # build one parameterized circuit
+        qc = QuantumCircuit(n)
+        qc.h(range(n))
+        # after each layer, snapshot density-matrix
+        for d in range(1, max_depth+1):
+            for (i,j), th in theta_dict.items():
+                qc.cp(th, i, j)
+            qc.save_density_matrix(label=f"dm{d}")
+        # run once with MPS
+        sim = AerSimulator(method="matrix_product_state")
+        result = sim.run(qc).result()
+
+        # compute Rényi‑2 MI from snapshots
+        MIs = []
+        for d in range(1, max_depth+1):
+            from qiskit.quantum_info import DensityMatrix, partial_trace
+            dm = DensityMatrix(result.data(f"dm{d}"))
+            # full purity
+            p_full = (dm.data @ dm.data).trace().real
+            # boundary purity
+            rho_b = partial_trace(dm, [i for i in range(n) if i not in boundary])
+            p_b = (rho_b.data @ rho_b.data).trace().real
+            # bulk purity
+            rho_bulk = partial_trace(dm, boundary)
+            p_bulk = (rho_bulk.data @ rho_bulk.data).trace().real
+            # second‑Rényi entropies → MI
+            I2 = -np.log2(p_b) - np.log2(p_bulk) + np.log2(p_full)
+            MIs.append(I2)
+        return MIs
+
+    def fast_bulk_boundary_MI_vN(self, theta_dict, boundary, max_depth):
+        """
+        Depth‐scan mutual information using true von Neumann entropy
+        but MPS for state generation.
+        """
+        n = self.n
+        qc = QuantumCircuit(n)
+        qc.h(range(n))
+        for d in range(1, max_depth+1):
+            for (i,j), th in theta_dict.items():
+                qc.cp(th, i, j)
+            qc.save_statevector(label=f"sv{d}")
+        sim = AerSimulator(method="matrix_product_state")
+        res = sim.run(qc).result()
+
+        MIs = []
+        for d in range(1, max_depth+1):
+            sv = res.data(f"sv{d}")[0]
+            dm = DensityMatrix(sv)
+            rho_b = partial_trace(dm, [i for i in range(n) if i not in boundary])
+            rho_bulk = partial_trace(dm, boundary)
+            S_b = qiskit_entropy(rho_b, base=2)
+            S_bulk = qiskit_entropy(rho_bulk)
+            S_full = qiskit_entropy(dm)
+            MIs.append(S_b + S_bulk - S_full)
+        return MIs
+
+    def fast_entanglement_equilibrium_check_local_vN(self, theta_dict, regions, eps=1e-3):
+        """
+        Equilibrium check using true von Neumann entropy via MPS snapshots.
+        """
+        sim = AerSimulator(method="matrix_product_state")
+
+        def get_dm(thetas):
+            qc = QuantumCircuit(self.n)
+            qc.h(range(self.n))
+            for (i,j), th in thetas.items():
+                qc.cp(th, i, j)
+            qc.save_statevector(label="sv")
+            res = sim.run(qc).result()
+            sv = res.data("sv")[0]
+            return DensityMatrix(sv)
+
+        base_dm = get_dm(theta_dict)
+        results = {}
+        boundary_map = {
+            tuple(A): [e for e in self.edge_list if (e[0] in A) ^ (e[1] in A)]
+            for A in regions
+        }
+
+        for A in regions:
+            key = tuple(A)
+            b_edges = boundary_map[key]
+
+            S_full = qiskit_entropy(base_dm)
+            rho0 = partial_trace(base_dm, [q for q in range(self.n) if q not in A])
+            S0 = qiskit_entropy(rho0)
+
+            # +eps
+            t_p = dict(theta_dict)
+            for e in b_edges: t_p[e] += eps
+            dm_p = get_dm(t_p)
+            rho_p = partial_trace(dm_p, [q for q in range(self.n) if q not in A])
+            S_p = qiskit_entropy(rho_p)
+
+            # -eps
+            t_m = dict(theta_dict)
+            for e in b_edges: t_m[e] -= eps
+            dm_m = get_dm(t_m)
+            rho_m = partial_trace(dm_m, [q for q in range(self.n) if q not in A])
+            S_m = qiskit_entropy(rho_m)
+
+            # finite‐difference
+            dS = (S_p - S_m) / (2*eps)
+            # similarly for <H>, use same delta S for modular H from first law
+            dH = dS
+
+            results[key] = (dS, dH)
+
+        return results
+
     
     def entanglement_equilibrium_check_local(self, theta_dict, regions, eps=1e-4):
         results = {}
@@ -10940,6 +11295,60 @@ class QuantumGravityAnalyzer:
             with open(output_file, 'w') as f:
                 json.dump(params, f, indent=4)
         return params
+    def fast_entanglement_equilibrium_check_local(self, theta_dict, regions, eps=1e-3):
+        """
+        Local equilibrium check using MPS + Rényi‑2 (purity) and symmetric finite differences.
+        Fixed to correctly retrieve the density‐matrix snapshot.
+        """
+        sim = AerSimulator(method="matrix_product_state")
+
+        def get_dm(thetas):
+            qc = QuantumCircuit(self.n)
+            for q in range(self.n):
+                qc.h(q)
+            for (i, j), th in thetas.items():
+                qc.cp(th, i, j)
+            sv = Statevector(qc)
+            return DensityMatrix(sv)
+
+        base_dm = get_dm(theta_dict)
+        results = {}
+        # precompute boundary edges per region
+        boundary_map = {
+            tuple(A): [e for e in self.edge_list if (e[0] in A) ^ (e[1] in A)]
+            for A in regions
+        }
+
+        for A in regions:
+            key = tuple(A)
+            b_edges = boundary_map[key]
+
+            # compute purities
+            p_full = (base_dm.data @ base_dm.data).trace().real
+            rho0 = partial_trace(base_dm, [q for q in range(self.n) if q not in A])
+            p0   = (rho0.data @ rho0.data).trace().real
+
+            # +eps
+            t_p = dict(theta_dict)
+            for e in b_edges: t_p[e] += eps
+            dm_p = get_dm(t_p)
+            rho_p = partial_trace(dm_p, [q for q in range(self.n) if q not in A])
+            p_p   = (rho_p.data @ rho_p.data).trace().real
+
+            # -eps
+            t_m = dict(theta_dict)
+            for e in b_edges: t_m[e] -= eps
+            dm_m = get_dm(t_m)
+            rho_m = partial_trace(dm_m, [q for q in range(self.n) if q not in A])
+            p_m   = (rho_m.data @ rho_m.data).trace().real
+
+            # central difference of 2‑Rényi entropy S2 = -log2 p
+            dS2 = (-np.log2(p_p) + np.log2(p_m)) / (2*eps)
+            dH2 = dS2    # for purity‐based modular estimate
+
+            results[key] = (dS2, dH2)
+
+        return results
 
     def reconstruct_action(self, theta_dict, R_target):
         """
@@ -10969,40 +11378,677 @@ class QuantumGravityAnalyzer:
 ##Region (2, 3): extrapolated ratio = 1.443
 ##Region (3, 4): extrapolated ratio = 1.443
 
+def generate_spacetime(n, edge_list, T_target, steps=100, lr=0.1, eps=1e-3):
+    """
+    Solve for a discrete 'metric' θ_ij on a graph to match target curvature T_target.
+    Returns theta_dict mapping each edge to its CP-angle.
+    
+    Parameters:
+    - n: int
+        Number of qubits (nodes) in the chain or lattice.
+    - edge_list: list of tuples
+        List of (i, j) pairs defining nearest-neighbor edges.
+    - T_target: dict
+        Target curvature T_i for each node i.
+    - steps: int
+        Number of gradient-descent iterations.
+    - lr: float
+        Learning rate for gradient descent.
+    - eps: float
+        Finite-difference epsilon for gradient estimation.
+    """
+    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy
+    from qiskit import QuantumCircuit
+    import numpy as np
+
+    # Initialize uniform small angles
+    theta = {edge: 0.1 for edge in edge_list}
+    
+    # Helper to build density matrix given theta configuration
+    def get_dm(thetas):
+        qc = QuantumCircuit(n)
+        for q in range(n):
+            qc.h(q)
+        for (i, j), th in thetas.items():
+            qc.cp(th, i, j)
+        sv = Statevector(qc)
+        return DensityMatrix(sv)
+    
+    # Gradient descent loop
+    for step in range(steps):
+        # Compute curvatures R_i
+        dm = get_dm(theta)
+        R = {i: 0.0 for i in range(n)}
+        for (i, j) in edge_list:
+            dm_ij = partial_trace(dm, [q for q in range(n) if q not in (i, j)])
+            Si = entropy(partial_trace(dm, [q for q in range(n) if q != i]), base=2)
+            Sj = entropy(partial_trace(dm, [q for q in range(n) if q != j]), base=2)
+            Sij = entropy(dm_ij, base=2)
+            Iij = Si + Sj - Sij
+            R[i] += Iij
+            R[j] += Iij
+        
+        # Compute loss
+        L = sum((R[i] - T_target[i])**2 for i in range(n))
+        
+        # Estimate gradient via finite differences
+        grad = {}
+        for edge in edge_list:
+            orig = theta[edge]
+            theta[edge] = orig + eps
+            # R-plus
+            dm_p = get_dm(theta)
+            R_p = {i: 0.0 for i in range(n)}
+            for (a, b) in edge_list:
+                dm_ab = partial_trace(dm_p, [q for q in range(n) if q not in (a, b)])
+                Sa = qiskit_entropy(partial_trace(dm_p, [q for q in range(n) if q != a]))
+                Sb = qiskit_entropy(partial_trace(dm_p, [q for q in range(n) if q != b]))
+                Sab = qiskit_entropy(dm_ab)
+                Iab = Sa + Sb - Sab
+                R_p[a] += Iab
+                R_p[b] += Iab
+            Lp = sum((R_p[i] - T_target[i])**2 for i in range(n))
+            
+            theta[edge] = orig - eps
+            # R-minus
+            dm_m = get_dm(theta)
+            R_m = {i: 0.0 for i in range(n)}
+            for (a, b) in edge_list:
+                dm_ab = partial_trace(dm_m, [q for q in range(n) if q not in (a, b)])
+                Sa = qiskit_entropy(partial_trace(dm_m, [q for q in range(n) if q != a]))
+                Sb = qiskit_entropy(partial_trace(dm_m, [q for q in range(n) if q != b]))
+                Sab = qiskit_entropy(dm_ab)
+                Iab = Sa + Sb - Sab
+                R_m[a] += Iab
+                R_m[b] += Iab
+            Lm = sum((R_m[i] - T_target[i])**2 for i in range(n))
+            
+            # Central difference
+            grad[edge] = (Lp - Lm) / (2 * eps)
+            theta[edge] = orig
+        
+        # Gradient descent update
+        for edge in edge_list:
+            theta[edge] -= lr * grad[edge]
+    
+    return theta
+
+
+def sweep_n_qubits_equilibrium_ratio(
+    n_list,
+    mass_node,
+    mass_strength,
+    sigma,
+    epsilons,
+    gradient_steps=200,
+    lr=0.05,
+    depth_scan_params=None
+):
+    """
+    For each n in n_list, build a 1D chain of n qubits, generate
+    a black-hole–like mass profile, solve for the entanglement-based
+    metric θ, then run the localized entanglement-equilibrium check
+    across a set of epsilons, perform ε→0 extrapolation, and return
+    the extrapolated ratio r = δS/δH for each region.
+    
+    Returns a dict mapping n -> { region_tuple: extrapolated_ratio }.
+    """
+    import numpy as np
+    
+    results = {}
+    for n in tqdm(n_list, desc="chain‑lengths"):
+        # define edges for a 1D chain
+        edge_list = [(i, i+1) for i in range(n-1)]
+        # Gaussian "mass" profile
+        T_target = {
+            i: mass_strength * np.exp(-(i - mass_node)**2 / (2 * sigma**2))
+            for i in range(n)
+        }
+        # solve for θ_ij metric
+        theta_dict = generate_spacetime(n, edge_list, T_target,
+                                        steps=gradient_steps, lr=lr, eps=epsilons[0])
+        # set up analyzer
+        analyzer = QuantumGravityAnalyzer(n_qubits=n, edge_list=edge_list)
+        # choose regions: contiguous pairs
+        regions = [[i, i+1] for i in range(n-1)]
+        
+        # collect ratio vs ε for each region
+        ratio_vs_eps = {tuple(A): [] for A in regions}
+        for eps in tqdm(epsilons, desc=f"n={n} epsilons", leave=False):
+            eq = analyzer.fast_entanglement_equilibrium_check_local_vN(
+                theta_dict, regions, eps=eps
+            )
+            for A, (dS, dH) in eq.items():
+                ratio_vs_eps[tuple(A)].append(dS/dH if dH!=0 else np.nan)
+        
+        # extrapolate ratio to eps->0 (linear fit in eps^2)
+        extrapolated = {}
+        x = np.array(epsilons)**2
+        for A, y in ratio_vs_eps.items():
+            # fit y = m x + b
+            m, b = np.polyfit(x, y, 1)
+            extrapolated[A] = b
+        results[n] = extrapolated
+    return results
+
+def prepare_state(qc):
+    # 1) Copy the circuit, save the statevector, and run *once*
+    qc_sv = qc.copy()
+    qc_sv.save_statevector()
+    sim = AerSimulator(method='matrix_product_state')
+    t_qc = transpile(qc_sv, sim)
+    result = sim.run(t_qc).result()
+    sv = result.get_statevector(t_qc)
+    return DensityMatrix(sv)
+
+def compute_face_curvature_from_dm(dm, faces):
+    n = dm.num_qubits
+    curv = {}
+    for corners in faces:
+        ab, cd = corners[:2], corners[2:]
+        rho_ab   = partial_trace(dm, [q for q in range(n) if q not in ab])
+        rho_cd   = partial_trace(dm, [q for q in range(n) if q not in cd])
+        rho_abcd = partial_trace(dm, [q for q in range(n) if q not in corners])
+        S_ab   = qiskit_entropy(rho_ab)
+        S_cd   = qiskit_entropy(rho_cd)
+        S_abcd = qiskit_entropy(rho_abcd)
+        curv[tuple(corners)] = S_ab + S_cd - S_abcd
+    return curv
+
+def compute_cell_curvature_from_dm(dm, cells, faces_of_cell):
+    n = dm.num_qubits
+    curv = {}
+    for corners in cells:
+        faces = faces_of_cell[tuple(corners)]
+        S_faces = 0
+        for face in faces:
+            rho = partial_trace(dm, [q for q in range(n) if q not in face])
+            S_faces += qiskit_entropy(rho)
+        rho_full = partial_trace(dm, [q for q in range(n) if q not in corners])
+        S_full = qiskit_entropy(rho_full)
+        curv[tuple(corners)] = S_faces - S_full
+    return curv
+
+
+
 sim = Aer.get_backend("aer_simulator_statevector")
 
 epsilons = [1e-2, 1e-3, 1e-4, 1e-5]
 
 
+def run_job(args):
+    # Unpack
+    n, mass_node, mass_strength, sigma, eps_list, gradient_steps, lr = args
+    # Call your function for this single‑eps slice
+    single_ratio = sweep_n_qubits_equilibrium_ratio(
+        n_list=[n],
+        mass_node=mass_node,
+        mass_strength=mass_strength,
+        sigma=sigma,
+        epsilons=eps_list,
+        gradient_steps=gradient_steps,
+        lr=lr
+    )
+    return (n, eps_list[0], single_ratio[n])
+
+def main():
+    # 1) Parameters
+    L, sigma, strength = 3, 1.0, 1.0
+    center = ((L-1)/2,)*3
+
+    # 2) Build graph data
+    edges = build_3d_edges(L)
+    faces = list_3d_faces(L)
+    cells = list_3d_cells(L)
+    f2c   = build_faces_of_cell(cells, faces)
+
+    # 3) Gaussian mass profile → theta_dict
+    T = {}
+    for x in range(L):
+        for y in range(L):
+            for z in range(L):
+                idx3 = x + L*(y + L*z)
+                d2 = (x-center[0])**2 + (y-center[1])**2 + (z-center[2])**2
+                T[idx3] = strength * np.exp(-d2/(2*sigma**2))
+                print(idx3, d2, T[idx3])
+    theta = {e: (T[e[0]] + T[e[1]])/2 for e in edges}
+
+    # 4) Build and run circuit once to get Statevector
+    qc = create_3d_entanglement_circuit(L**3, edges, theta)
+    qc.save_statevector()
+    sim = AerSimulator(method='matrix_product_state')
+    result = sim.run(transpile(qc, sim)).result()
+    sv = result.get_statevector()             # <— this is a Statevector
+
+    # 5) Compute face‐based curvature from the Statevector
+    face_curv = {}
+    n = L**3
+    for corners in faces:
+        ab, cd = corners[:2], corners[2:]
+        rho_ab   = partial_trace(sv, [q for q in range(n) if q not in ab])
+        rho_cd   = partial_trace(sv, [q for q in range(n) if q not in cd])
+        rho_abcd = partial_trace(sv, [q for q in range(n) if q not in corners])
+        S_ab   = qiskit_entropy(rho_ab)
+        S_cd   = qiskit_entropy(rho_cd)
+        S_abcd = qiskit_entropy(rho_abcd)
+        face_curv[tuple(corners)] = S_ab + S_cd - S_abcd
+
+    # 6) Compute cell‐based curvature similarly
+    cell_curv = {}
+    for corners in cells:
+        faces_of_this = f2c[tuple(corners)]
+        S_faces = 0
+        for face in faces_of_this:
+            rho = partial_trace(sv, [q for q in range(n) if q not in face])
+            S_faces += qiskit_entropy(rho)
+        rho_full = partial_trace(sv, [q for q in range(n) if q not in corners])
+        S_full   = qiskit_entropy(rho_full)
+        cell_curv[tuple(corners)] = S_faces - S_full
+
+    # 7) Print
+    print("=== Face Curvatures ===")
+    for face, val in face_curv.items():
+        print(face, f"{val:.6f}")
+    print("\n=== Cell Curvatures ===")
+    for cell, val in cell_curv.items():
+        print(cell, f"{val:.6f}")
+
+# 4) Compute plaquette curvature from Statevector
+def compute_plaquette_curvature_from_sv(sv, plaquettes, n_qubits):
+    curv = {}
+    for corners in plaquettes:
+        ab, cd = corners[:2], corners[2:]
+        rho_ab   = partial_trace(sv, [q for q in range(n_qubits) if q not in ab])
+        rho_cd   = partial_trace(sv, [q for q in range(n_qubits) if q not in cd])
+        rho_abcd = partial_trace(sv, [q for q in range(n_qubits) if q not in corners])
+        S_ab   = entropy(rho_ab,   base=2)
+        S_cd   = entropy(rho_cd,   base=2)
+        S_abcd = entropy(rho_abcd, base=2)
+        curv[tuple(corners)] = S_ab + S_cd - S_abcd
+    return curv
+
+# 5) Generate and measure curvature for a 2D black-hole analog
+def generate_blackhole_curvature(service, rows, cols, mass_strength=1.0,
+                                 center=None, epsilon=1e-2):
+    if center is None:
+        center = ((rows-1)/2, (cols-1)/2)
+    # Build graph
+    edges = build_2d_edges(rows, cols)
+    plaquettes = list_plaquettes(rows, cols)
+    # Mass profile ~ 1/(r + epsilon)
+    T = {}
+    for r in range(rows):
+        for c in range(cols):
+            idx = r*cols + c
+            dist = np.hypot(r - center[0], c - center[1])
+            T[idx] = mass_strength / (dist + epsilon)
+    # Map to link angles
+    theta = {e: (T[e[0]] + T[e[1]])/2 for e in edges}
+    # Build and run circuit
+    qc = create_2d_entanglement_circuit(rows, cols, theta)
+    backend = get_best_backend(service)
+    transpiled_qc = transpile(qc, backend)
+    with Session(backend=backend) as session:
+        sampler = Sampler()
+        job = sampler.run([transpiled_qc], shots=2048)
+        result = job.result()
+    sv = result.get_statevector()
+    # Compute curvature
+    curv = compute_plaquette_curvature_from_sv(sv, plaquettes, rows*cols)
+    return curv
+
+def create_2d_entanglement_circuit(rows, cols, theta_dict):
+    n = rows*cols
+    qc = QuantumCircuit(n, n)
+    qc.h(range(n))
+    for (i, j), th in theta_dict.items():
+        qc.cp(th, i, j)
+    qc.measure(range(n), range(n))
+    return qc
+
+def marginal_counts(full_counts, qubits, num_qubits):
+    marg = defaultdict(int)
+    for bitstr, cnt in full_counts.items():
+        # Qiskit bitstring is big-endian: highest index on left
+        key = ''.join(bitstr[num_qubits-1 - q] for q in qubits)
+        marg[key] += cnt
+    return marg
+
+def shannon_entropy(counts, shots):
+    H = 0.0
+    for cnt in counts.values():
+        p = cnt / shots
+        if p > 0:
+            H -= p * log2(p)
+    return H
+
+def run_blackhole_curvature_real(rows, cols, mass_strength, epsilon, backend_name, shots=8192):
+    # 1) Connect to IBM backend
+
+    def marginal(probs, qubits, num_qubits):
+        marg = defaultdict(float)
+        for bs, p in probs.items():
+            key = ''.join(bs[num_qubits-1-q] for q in qubits)
+            marg[key] += p
+        return marg
+
+    def shannon(pdist):
+        return -sum(p * math.log2(p) for p in pdist.values() if p>0)
+
+    provider = QiskitRuntimeService()
+    backend = get_best_backend(service)
+
+    # 2) Build graph and mass profile
+    edges = build_2d_edges(rows, cols)
+    plaquettes = list_plaquettes(rows, cols)
+    center = ((rows-1)/2, (cols-1)/2)
+    T = {}
+    for r in range(rows):
+        for c in range(cols):
+            idx3 = r*cols + c
+            dist = np.hypot(r-center[0], c-center[1])
+            T[idx3] = mass_strength / (dist + epsilon)
+    theta = {e: (T[e[0]] + T[e[1]]) / 2 for e in edges}
+
+    # 3) Build and transpile circuit
+    qc = create_2d_entanglement_circuit(rows, cols, theta)
+    transpiled = transpile(qc, backend, optimization_level=3)
+
+    # 4) Run job
+    with Session(backend=backend) as session:
+        sampler = Sampler()
+        job = sampler.run([transpiled], shots=2048)
+        result = job.result()
+        print(result)
+
+        
+    raw = result[0].data.c
+    print(raw)
+    num_bits = rows*cols
+
+    counts = extract_counts_from_bitarray(raw)
+    print(counts)
+
+    total_shots = sum(counts.values())
+    probs = {bs: cnt/total_shots for bs, cnt in counts.items()}
+
+    P_ab = marginal(probs, [0,1], num_qubits=num_bits)
+
+    S_ab = shannon(P_ab)
+
+##    ba = raw[0] if isinstance(raw, list) else raw
+##    arr = ba._array           # shape = (shots, rows*cols) of booleans
+##
+##    try:
+##        mem = result.get_memory()       # list of strings like '01011...'
+##    except:
+##        mem = result.get_memory(0)      # sometimes indexed by experiment
+
+##    full_counts = Counter(mem)          # e.g. {'010': 123, '111': 98, ...}
+
+    # 7) compute plaquette curvatures
+    num_qubits = rows*cols
+    curv = {}
+    curvatures = {}
+
+    for corners in plaquettes:
+        # corners is a 4-tuple, e.g. (0, 1, 3, 4)
+        a, b, c, d = corners
+
+        # marginal over the first link (a,b)
+        P_ab = marginal(probs, [a, b], num_qubits)
+        # marginal over the second link (c,d)
+        P_cd = marginal(probs, [c, d], num_qubits)
+
+        # Shannon entropies of the marginals
+        S_ab = shannon(P_ab)
+        S_cd = shannon(P_cd)
+
+        # joint entropy over all four qubits
+        P_abcd = marginal(probs, list(corners), num_qubits)
+        S_abcd = shannon(P_abcd)
+
+        curvatures[tuple(corners)] = S_ab + S_cd - S_abcd
+
+    return curvatures
+
+def prepare_vacuum_cluster(qc, rows, cols):
+    """Make a 2D cluster-state on a rows×cols grid."""
+    # 1) Hadamards on every qubit
+    for i in range(rows):
+        for j in range(cols):
+            idx = i*cols + j
+            qc.h(idx)
+    # 2) CZ on every nearest-neighbor link
+    for i in range(rows):
+        for j in range(cols):
+            idx = i*cols + j
+            if j+1 < cols:
+                qc.cz(idx,   idx+1)
+            if i+1 < rows:
+                qc.cz(idx,   idx+cols)
+                
+
+def apply_mass_deformation(qc, mass_sites, θ_mass):
+    """Rotate the ‘vacuum’ at chosen sites by Rz(θ_mass) to create an entanglement well."""
+    for (i,j) in mass_sites:
+        idx = i*cols + j
+        qc.rz(θ_mass, idx)
+
+def make_cluster_with_mass(rows, cols, mass_profile, mass_strength):
+    N = rows*cols
+    qc = QuantumCircuit(N)
+    # 1) vacuum cluster:
+    for q in range(N):
+        qc.h(q)
+    for r in range(rows):
+        for c in range(cols):
+            i = r*cols + c
+            if c+1 < cols:
+                qc.cz(i, i+1)
+            if r+1 < rows:
+                qc.cz(i, i+cols)
+    # 2) deformation:
+    for q in range(N):
+        qc.rz(mass_strength * mass_profile[q], q)
+    # 3) measure all in Z:
+    qc.measure_all()
+    return qc
+
+def compute_peak_curvature(curvatures):
+    """Return the maximum curvature among all plaquettes."""
+    return max(curvatures.values())
+
+def study_scaling_N(
+    sizes: list[int],
+    cols: int,
+    mass_strength: float,
+    epsilon: float,
+    backend_name: str,
+    shots: int = 2048
+) -> dict[int, tuple[float, float]]:
+    """
+    Vary the grid size N×cols (assuming square so cols=N) and return for each N:
+      (K_max, K_cont = 2*N^2*K_max).
+    """
+    results = {}
+    for N in sizes:
+        curv = run_blackhole_curvature_real(
+            rows=N,
+            cols=N,
+            mass_strength=mass_strength,
+            epsilon=epsilon,
+            backend_name=backend_name,
+            shots=shots
+        )
+        Kmax = compute_peak_curvature(curv)
+        Kcont = 2 * N**2 * Kmax
+        results[N] = (Kmax, Kcont)
+        print(f"N={N}: K_max={Kmax:.4e} bits, 2N²K_max={Kcont:.4e}")
+    return results
+
+def study_scaling_mass(
+    N: int,
+    cols: int,
+    masses: list[float],
+    epsilon: float,
+    backend_name: str,
+    shots: int = 2048
+) -> dict[float, tuple[float, float]]:
+    """
+    Vary the mass_strength m on a fixed N×cols grid and return for each m:
+      (K_max, K_cont = 2*N^2*K_max).
+    """
+    results = {}
+    for m in masses:
+        curv = run_blackhole_curvature_real(
+            rows=N,
+            cols=cols,
+            mass_strength=m,
+            epsilon=epsilon,
+            backend_name=backend_name,
+            shots=shots
+        )
+        Kmax = compute_peak_curvature(curv)
+        Kcont = 2 * N**2 * Kmax
+        results[m] = (Kmax, Kcont)
+        print(f"m={m:.2f}: K_max={Kmax:.4e} bits, 2N²K_max={Kcont:.4e}")
+    return results
+
 
 #standard qc for multiverse experiments is main_qc()
 if __name__ == "__main__":
-    # 1) Instantiate for a 5-qubit 1D chain
-    analyzer = QuantumGravityAnalyzer(n_qubits=5)
-    theta_dict = { edge: 0.1 for edge in analyzer.edge_list }
-    regions = [[0,1], [1,2], [2,3], [3,4]] 
-    ratios = {tuple(A): [] for A in regions}
-    for eps in epsilons:
-        eq = analyzer.entanglement_equilibrium_check_local(theta_dict, regions, eps=eps)
-        for A, (dS,dH) in eq.items():
-            ratios[A].append(dS/dH)
-    for A, vals in ratios.items():
-        coeffs = np.polyfit(np.array(epsilons)**2, vals, 1)  # linear in eps^2
-        extrapolated = coeffs[1]  # intercept at eps^2=0
-        print(f"Region {A}: extrapolated ratio = {extrapolated:.3f}")
+    Ns = [3, 4, 5]
+    scale_vs_N = study_scaling_N(
+        sizes=Ns,
+        cols=None,          # will be ignored if cols is None; uses N×N
+        mass_strength=5.0,
+        epsilon=0.1,
+        backend_name="ibm_brisbane",
+        shots=2048
+    )
+
+    ms = [1.0, 2.5, 5.0, 7.5]
+    scale_vs_m = study_scaling_mass(
+        N=5, cols=5,
+        masses=ms,
+        epsilon=0.1,
+        backend_name="ibm_brisbane",
+        shots=2048
+    )
+
+
+    
+##    rows, cols = 7, 7
+##    n_qubits = rows*cols
+##    qc = QuantumCircuit(n_qubits)
+##    mass_sites = [(3,3)]
+##    θ_mass      = 0.6
+##    prepare_vacuum_cluster(qc, rows, cols)
+##    apply_mass_deformation(qc, mass_sites, θ_mass)
+##    curvatures = run_blackhole_curvature_real(rows, cols, mass_strength=5.0, epsilon=0.1,backend_name="ibm_brisbane", shots=2048)
+##    print("Hardware plaquette curvatures:")
+##    for p,K in curvatures.items():
+##        print(f"  {p}: {K:.4f} bits")
         
-##    analyzer = QuantumGravityAnalyzer(n_qubits=5)
-##    
-##    regions = [[0,1], [1,2], [2,3], [3,4]]  # or any subregions you like
+##    n_list   = [11]           # only two sizes
+##    epsilons = [1e-4]     # only two eps
+##    gradient_steps = 100        # half the work        # chain lengths you want to test
+##    mass_node      =  (max(n_list)//2)    # center of your “mass” profile
+##    mass_strength  =  5.0
+##    sigma          =  0.5
+##    lr             = 0.05
+##    jobs = []
+##    for n in n_list:
+##        for eps in epsilons:
+##            # each job is the tuple of arguments your worker expects
+##            jobs.append((n,
+##                         mass_node,
+##                         mass_strength,
+##                         sigma,
+##                         [eps],        # note: sweep expects a list of epsilons
+##                         gradient_steps,
+##                         lr))
+##    # now jobs is a list built by loops, no comprehension syntax
+##    print("Jobs to run:", jobs)
+##    results = {}
+##    with concurrent.futures.ProcessPoolExecutor() as exe:
+##     for n, eps, ratio_dict in tqdm(exe.map(run_job, jobs), total=len(jobs)):
+##         results.setdefault(n, {})[eps] = ratio_dict
+##         print(results)
+##
+##    # Now 'results' holds the same data but computed in parallel
+##    print(results)
+
+##    L = 3
+##    edges     = build_3d_edges(L)
+##    faces     = list_3d_faces(L)
+##    cells     = list_3d_cells(L)
+##    f2c_map   = build_faces_of_cell(cells, faces)
+##
+##    # Gaussian mass profile centered in cube
+##    center = ((L-1)/2,)*3
+##    sigma, A = 1.0, 1.0
+##    T = {}
+##    for x in range(L):
+##        for y in range(L):
+##            for z in range(L):
+##                d2 = (x-center[0])**2 + (y-center[1])**2 + (z-center[2])**2
+##                idx3 = x + L*(y + L*z)
+##                T[idx3] = A * np.exp(-d2/(2*sigma**2))
+##                print(x, y, z)
+##
+##    # map node masses to link angles
+##    theta = {}
+##    for i,j in edges:
+##        theta[(i,j)] = (T[i] + T[j]) / 2
+##
+##    qc = create_3d_entanglement_circuit(L**3, edges, theta)
+##
+##    face_curv = compute_face_curvature(qc, faces)
+##    cell_curv = compute_cell_curvature(qc, cells, f2c_map)
+##    print('Face curvatures:', face_curv)
+##    print('Cell curvatures:', cell_curv)
+
+
+
+##    rows, cols = 3, 3
+##    edges = build_2d_edges(rows, cols)
+##    plaquettes = list_plaquettes(rows, cols)
+##
+##    # generate mass profile centered at (1,1)
+##    mass_center = (1,1)
+##    sigma = 0.8
+##    mass_strength = 1.0
+##
+##    for r in range(rows):
+##        for c in range(cols):
+##            dist2 = (r-mass_center[0])**2+(c-mass_center[1])**2
+##            node_idx = r*cols+c
+##            T_target[node_idx] = mass_strength*np.exp(-dist2/(2*sigma**2))
+##
+##        
+##    analyzer = QuantumGravityAnalyzer(n_qubits=n)
+##
+##    theta_dict = {}
+##    for i,j in edges:
+##        theta_dict[(i,j)] = (T_target[i]+T_target[j])/2
+##
+##    # build circuit and compute curvature
+##    qc = create_2d_entanglement_circuit(rows, cols, theta_dict)
+##    curv = compute_plaquette_curvature(qc, rows, cols, plaquettes)
+##    print("Plaquette curvatures:", curv)
+##        
+##    regions = [[0,1], [1,2], [2,3], [3,4], [4,5], [5,6],[6,7]]  # or any subregions you like
 ##    #results = analyzer.entanglement_equilibrium_check(theta_dict, regions, eps=1e-3)
 ##    eq_results = analyzer.entanglement_equilibrium_check_local(theta_dict, regions, eps=1e-3)
 ##    for region, (dS, dH) in eq_results.items():
 ##        print(f"Region {region}: δS/δθ = {dS:.4e}, δ⟨Hξ⟩/δθ = {dH:.4e}")
-
-    # 2) Pick a “vacuum” theta (flat) or a solved theta_dict from your gradient-descent
-    
-
-    # 3) Measure mutual information on every link
+##
+##    # 2) Pick a “vacuum” theta (flat) or a solved theta_dict from your gradient-descent
+##    
+##
+##    # 3) Measure mutual information on every link
 ##    sim = Aer.get_backend("aer_simulator_statevector")
 ##    I_dict = analyzer.compute_mutual_information(theta_dict, simulator=sim)
 ##
