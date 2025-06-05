@@ -188,15 +188,7 @@ Deviations from expected measurements have been observed, specifically seeing a 
 
 Thought about that number 1.443 for a second, it is 1/ln2. this is because the hamiltonian is continuous whereas the von neumann entropy is from measuring base 2 bits if I had to guess.
 
-This hints that Einsteins equations are merely an approximation.
-
-Dont you guys want to see the exotic particles for Sag A* bc we literally have to feed that thing stars to turn on its quasar jets, but once we do, we can maybe inch closer to the truth?
-
-In my whole life I have NEVER seen unitarity violated
-
 So i feel like this now can explain to my girlfriend why we need to visit a black hole and find out
-
-In my wholeeeeee time here, i never saw a violation of unitarity
 
 For Leonard Susskind to not be a theoretical physicist, we have to go to the black hole and see for ourselves And then hack it in the same way essentially, manipulating the time dependent electric charge visible as Hawking Radiation until we can model a qubit as a real black hole.
 
