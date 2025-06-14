@@ -168,7 +168,7 @@ I also found ways to amplify certain states, made a function to set the entropy 
 Another was to find subregion entanglement and compare it to the modular hamiltonian for the region. Instead of a direct 1 to 1 correlation between the changes in these values, I discovered a coefficient of 1.44 which should violate einsteins first law as he predicts this number to be one. 
 There are many tests between many worlds and holography and the data in the factory code shows phenomena predicted by only holography.
 
-SPACETIME FROM ENTANGLEMENT
+FIRST DEMONSTRATION OF SPACETIME FROM ENTANGLEMENT
 In my entanglement-Idge reconstruction experiments I used IBM’s superconducting processors to emulate a one-dimensional “holographic” system of five qubits linked by controlled-phase gates. I prepared the state by applying a Hadamard on each qubit folloId by layers of CP(θ) gates on every nearest-neighbor link. Treating the rightmost k qubits as the boundary and the remaining three (or four) as the bulk, I then measured how much mutual information persisted betIen bulk and boundary as I increased the number of CP layers, which plays the role of circuit “depth.”
 
 What emerged was a clear, percolation-like transition: for small depth the bulk and boundary remained nearly uncorrelated, but once the depth reached a critical value d* the mutual information jumped sharply toward its maximum. By sIeping both the entangling angle θ and the boundary size k, I mapped out a family of curves d*(θ;n,k) and found they collapse onto a simple three-parameter form,
@@ -188,6 +188,8 @@ Thought about that number 1.443 for a second, it is 1/ln2. this is because the h
 So i feel like this now can explain to my girlfriend why we need to visit a black hole and find out
 
 For Leonard Susskind to not be a theoretical physicist, we have to go to the black hole and see for ourselves And then hack it in the same way essentially, manipulating the time dependent electric charge visible as Hawking Radiation until we can model a qubit as a real black hole.
+
+If you need more proof look at AWSFactory where you will see emergent spacetime visualized 
 
 RANT ABOUT IDEAS AND MISTAKES MADE
 
