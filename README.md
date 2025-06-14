@@ -85,7 +85,7 @@ Charge Preservation
 
 Across all experiments, the emitted radiation consistently encoded injected charge states, supporting the hypothesis that information is preserved. except when dealing with green color charge specifically (mistake, it is always preserved)
 
-RECONSTRUCTS PAGE CURVE (see AWSFactory)
+RECONSTRUCTS PAGE CURVE AND IF U JUST LOOK AT THE CHART ITS LOG NOT LIN SO GOOD EVIDENCE OF RYU-TAK(see AWSFactory)
 
 Questions for the Community
 
