@@ -1,6 +1,10 @@
 I’ve been working on a series of quantum circuit experiments to explore information preservation in Hawking radiation, focusing on whether injected properties like charge and spin are encoded in the emitted radiation. My goal is to simulate a black hole's behavior in an idealized setting and analyze how quantum information evolves in the process. I’d appreciate feedback on the methodology, the results, and how closely this aligns with established theories. This is not for school, I just need to know so I can move forward. All the code is linked on my github if you want to see the results for yourself, or so someone can tell me if I did something wrong in what/how I found something or the methodology or even my theoretical conceptions. I encourage people to test the code themselves to replicate what Ive found. If Im not using the right word for something, please correct me but be patient, I really do want to learn but what I found I think is quite weird. Sorry if I do not ask the question in a way or phrase this post in a way that seems off-topic, irrelevant, informal, or asks you to review code. I want to learn and thats what im here for. PLEASE READ ALL THE WAY THROUGH
 
-no anomalies, real physical maniputable open source quantum qubits that perfectly exhibit behavior predicted from Leonard Susskinds theoretical solutions to the black hole information paradox through Hawking Radiation and open qubits that give rise to emergent spacetime as predicted.
+no anomalies, real physical maniputable open source quantum qubits that perfectly exhibit behavior predicted from Leonard Susskinds theoretical solutions to the black hole information paradox through Hawking Radiation and open qubits that give rise to emergent spacetime as predicted. 
+
+Then, 
+
+a modifiable 4D manifold (and other geometries) emerging from entanglement as a result of following the evidence of the first experiment.
 
 i feel like a lot of us did not really want to wait literal trillions of years to spend doing or arguing about in order to know the next layer of physics
 
