@@ -13,12 +13,46 @@ from braket.aws import AwsDevice
 from braket.aws import AwsQuantumTask
 from sklearn.manifold import MDS
 from scipy.spatial.distance import pdist, squareform
+import matplotlib.animation as animation
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn.linear_model import LinearRegression
+from scipy.optimize import curve_fit
 
 # Step 1: Choose a device
 device = AwsDevice("arn:aws:braket:::device/quantum-simulator/amazon/sv1")   # swap with AwsDevice(arn) for cloud runs
 # Step 2: Page curve config
 timesteps = np.linspace(0, 3 * np.pi, 30)  # φ(t) from 0 to 3π
 entropy_values = []
+
+def log_func(x, a, b):
+    return a * np.log(x + 1e-6) + b
+
+def fit_rt_plot(rt_data):
+    phi_vals, entropies, dists = zip(*rt_data)
+    dists = np.array(dists)
+    entropies = np.array(entropies)
+
+    # Linear fit
+    lin_model = LinearRegression()
+    lin_model.fit(dists.reshape(-1, 1), entropies)
+    lin_pred = lin_model.predict(dists.reshape(-1, 1))
+
+    # Logarithmic fit
+    popt, _ = curve_fit(log_func, dists, entropies)
+    log_pred = log_func(dists, *popt)
+
+    # Plot both fits
+    plt.figure(figsize=(7, 5))
+    plt.scatter(dists, entropies, c='black', label="Data")
+    plt.plot(dists, lin_pred, label=f"Linear Fit: S = {lin_model.coef_[0]:.2f}·d + {lin_model.intercept_:.2f}", linestyle='--')
+    plt.plot(dists, log_pred, label=f"Log Fit: S = {popt[0]:.2f}·log(d) + {popt[1]:.2f}", linestyle='-.')
+    plt.xlabel("Distance(Q2, Q3) in Emergent Geometry")
+    plt.ylabel("Radiation Entropy S(Q2,Q3)")
+    plt.title("RT-style Correlation + Regression")
+    plt.grid(True)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
 
 class AdSGeometryAnalyzer:
     def __init__(self, device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1"):
@@ -264,6 +298,138 @@ def page_curve_mi_demo():
         plt.tight_layout()
         plt.show()
 
-ads = AdSGeometryAnalyzer()
-rt_data, entropy_vals = ads.run_experiment()
-ads.plot_rt_relation(rt_data)
+class AdSGeometryAnalyzer3D:
+    def __init__(self, use_local=False):
+        self.timesteps = np.linspace(0, 3 * np.pi, 15)
+        self.device = AwsDevice("arn:aws:braket:::device/quantum-simulator/amazon/sv1")
+        self.rt_data = []
+        self.coords_list_2d = []
+        self.coords_list_3d = []
+
+    def shannon_entropy(self, probs):
+        probs = np.array(probs)
+        return -np.sum(probs * np.log2(probs + 1e-12))
+
+    def marginal_probs(self, probs, total_qubits, target_idxs):
+        marginal = {}
+        for idx, p in enumerate(probs):
+            b = format(idx, f"0{total_qubits}b")
+            key = ''.join([b[i] for i in target_idxs])
+            marginal[key] = marginal.get(key, 0) + p
+        return np.array(list(marginal.values()))
+
+    def compute_mi(self, probs, qA, qB, total_qubits):
+        AB = self.marginal_probs(probs, total_qubits, [qA, qB])
+        A = self.marginal_probs(probs, total_qubits, [qA])
+        B = self.marginal_probs(probs, total_qubits, [qB])
+        return self.shannon_entropy(A) + self.shannon_entropy(B) - self.shannon_entropy(AB)
+
+    def run(self):
+        for phi_val in self.timesteps:
+            phi = FreeParameter("phi")
+            circ = Circuit()
+            circ.h(0)
+            circ.cnot(0, 2)
+            circ.cnot(0, 3)
+            circ.rx(0, phi)
+            circ.cz(0, 1)
+            circ.cnot(1, 2)
+            circ.rx(2, phi)
+            circ.cz(1, 3)
+            circ.probability()
+
+            task = self.device.run(circ, inputs={"phi": phi_val}, shots=1024)
+            result = task.result()
+            probs = np.array(result.values).reshape(-1)
+
+            mi_matrix = np.zeros((4, 4))
+            for i in range(4):
+                for j in range(i + 1, 4):
+                    mi = self.compute_mi(probs, i, j, 4)
+                    mi_matrix[i, j] = mi_matrix[j, i] = mi
+
+            rad_probs = self.marginal_probs(probs, 4, [2, 3])
+            S_rad = self.shannon_entropy(rad_probs)
+
+            # Emergent geometry
+            epsilon = 1e-6
+            dist = 1 / (mi_matrix + epsilon)
+            np.fill_diagonal(dist, 0)
+
+            coords2 = MDS(n_components=2, dissimilarity='precomputed').fit_transform(dist)
+            coords3 = MDS(n_components=3, dissimilarity='precomputed').fit_transform(dist)
+
+            d_Q2Q3 = np.linalg.norm(coords2[2] - coords2[3])
+            self.rt_data.append((phi_val, S_rad, d_Q2Q3))
+
+            self.coords_list_2d.append(coords2)
+            self.coords_list_3d.append(coords3)
+
+    def fit_rt_plot(self):
+        def log_func(x, a, b):
+            return a * np.log(x + 1e-6) + b
+
+        phi_vals, entropies, dists = zip(*self.rt_data)
+        dists = np.array(dists)
+        entropies = np.array(entropies)
+        
+        def log_func(x, a, b):
+            return a * np.log(x + 1e-6) + b
+
+        # Linear fit
+        lin_model = LinearRegression()
+        lin_model.fit(dists.reshape(-1, 1), entropies)
+        lin_pred = lin_model.predict(dists.reshape(-1, 1))
+
+        # Logarithmic fit
+        popt, _ = curve_fit(log_func, dists, entropies)
+        log_pred = log_func(dists, *popt)
+
+        # Plot
+        plt.figure(figsize=(7, 5))
+        plt.scatter(dists, entropies, c='black', label="Data")
+        plt.plot(dists, lin_pred, label=f"Linear Fit: S = {lin_model.coef_[0]:.2f}·d + {lin_model.intercept_:.2f}", linestyle='--')
+        plt.plot(dists, log_pred, label=f"Log Fit: S = {popt[0]:.2f}·log(d) + {popt[1]:.2f}", linestyle='-.')
+        plt.xlabel("Distance(Q2, Q3)")
+        plt.ylabel("Entropy S(Q2,Q3)")
+        plt.title("RT Correlation")
+        plt.grid(True)
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
+
+    def animate_geometry(self):
+        fig = plt.figure(figsize=(12, 5))
+        ax2d = fig.add_subplot(121)
+        ax3d = fig.add_subplot(122, projection='3d')
+
+        def update(frame):
+            ax2d.clear()
+            ax3d.clear()
+
+            coords2 = self.coords_list_2d[frame]
+            coords3 = self.coords_list_3d[frame]
+
+            ax2d.scatter(coords2[:, 0], coords2[:, 1], c='blue')
+            for i in range(4):
+                ax2d.text(coords2[i, 0], coords2[i, 1], f"Q{i}", fontsize=12)
+            ax2d.set_title(f"2D Geometry φ={self.timesteps[frame]:.2f}")
+            ax2d.axis('equal')
+
+            ax3d.scatter(coords3[:, 0], coords3[:, 1], coords3[:, 2], c='purple')
+            for i in range(4):
+                ax3d.text(coords3[i, 0], coords3[i, 1], coords3[i, 2], f"Q{i}", fontsize=12)
+            ax3d.set_title(f"3D Geometry φ={self.timesteps[frame]:.2f}")
+            ax3d.set_xlim(-2, 2)
+            ax3d.set_ylim(-2, 2)
+            ax3d.set_zlim(-2, 2)
+
+        ani = animation.FuncAnimation(fig, update, frames=len(self.coords_list_2d), interval=1200, repeat=True)
+        plt.tight_layout()
+        plt.show()
+
+        
+ads = AdSGeometryAnalyzer3D()
+ads.run()
+ads.fit_rt_plot()
+ads.animate_geometry()
