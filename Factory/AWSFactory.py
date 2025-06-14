@@ -17,9 +17,14 @@ import matplotlib.animation as animation
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.linear_model import LinearRegression
 from scipy.optimize import curve_fit
+from itertools import combinations
+import warnings
+import seaborn as sns
 
+warnings.filterwarnings("ignore", category=UserWarning)
+arn = "arn:aws:braket:us-east-1::device/qpu/ionq/Aria-1"
 # Step 1: Choose a device
-device = AwsDevice("arn:aws:braket:::device/quantum-simulator/amazon/sv1")   # swap with AwsDevice(arn) for cloud runs
+device = AwsDevice(arn)   # swap with AwsDevice(arn) for cloud runs
 # Step 2: Page curve config
 timesteps = np.linspace(0, 3 * np.pi, 30)  # φ(t) from 0 to 3π
 entropy_values = []
@@ -324,18 +329,33 @@ class AdSGeometryAnalyzer3D:
         B = self.marginal_probs(probs, total_qubits, [qB])
         return self.shannon_entropy(A) + self.shannon_entropy(B) - self.shannon_entropy(AB)
 
-    def run(self):
+    def run(self, mode="original"):
         for phi_val in self.timesteps:
             phi = FreeParameter("phi")
             circ = Circuit()
             circ.h(0)
+
+            # Common initial entanglement
             circ.cnot(0, 2)
             circ.cnot(0, 3)
-            circ.rx(0, phi)
-            circ.cz(0, 1)
-            circ.cnot(1, 2)
-            circ.rx(2, phi)
-            circ.cz(1, 3)
+
+            # Charge injection: controlled vs. original
+            if mode == "original":
+                circ.rx(0, phi)
+                circ.cz(0, 1)
+                circ.cnot(1, 2)
+                circ.rx(2, phi)
+                circ.cz(1, 3)
+            elif mode == "control":
+                # Scrambled sequence: same gates, different order
+                circ.rx(2, phi)
+                circ.cnot(1, 2)
+                circ.cz(0, 1)
+                circ.cz(1, 3)
+                circ.rx(0, phi)
+            else:
+                raise ValueError("Unknown mode. Use 'original' or 'control'.")
+
             circ.probability()
 
             task = self.device.run(circ, inputs={"phi": phi_val}, shots=1024)
@@ -351,7 +371,6 @@ class AdSGeometryAnalyzer3D:
             rad_probs = self.marginal_probs(probs, 4, [2, 3])
             S_rad = self.shannon_entropy(rad_probs)
 
-            # Emergent geometry
             epsilon = 1e-6
             dist = 1 / (mi_matrix + epsilon)
             np.fill_diagonal(dist, 0)
@@ -360,10 +379,20 @@ class AdSGeometryAnalyzer3D:
             coords3 = MDS(n_components=3, dissimilarity='precomputed').fit_transform(dist)
 
             d_Q2Q3 = np.linalg.norm(coords2[2] - coords2[3])
-            self.rt_data.append((phi_val, S_rad, d_Q2Q3))
 
+            self.rt_data.append((phi_val, S_rad, d_Q2Q3))
             self.coords_list_2d.append(coords2)
             self.coords_list_3d.append(coords3)
+
+        triplets_to_probe = [(0,1,2), (1,2,3), (2,3,4)]  # Adjust based on circuit size
+
+        curvatures = []
+        for triplet in triplets_to_probe:
+            curv = self.estimate_local_curvature(coords3, triplet)
+            curvatures.append((triplet, curv))
+            print(f"Triplet {triplet}: Curvature = {curv:.4f}")
+
+
 
     def fit_rt_plot(self):
         def log_func(x, a, b):
@@ -398,6 +427,27 @@ class AdSGeometryAnalyzer3D:
         plt.tight_layout()
         plt.show()
 
+    def estimate_local_curvature(self, coords, triplet):
+        """Estimates Gaussian curvature via angle defect for a triangle."""
+        from numpy.linalg import norm
+        import numpy as np
+
+        i, j, k = triplet
+        a = norm(coords[j] - coords[k])
+        b = norm(coords[i] - coords[k])
+        c = norm(coords[i] - coords[j])
+
+        # Clamp for numerical stability
+        def safe_acos(x):
+            return np.arccos(np.clip(x, -1.0, 1.0))
+
+        angle_i = safe_acos((b**2 + c**2 - a**2) / (2 * b * c))
+        angle_j = safe_acos((a**2 + c**2 - b**2) / (2 * a * c))
+        angle_k = safe_acos((a**2 + b**2 - c**2) / (2 * a * b))
+
+        curvature = (angle_i + angle_j + angle_k) - np.pi
+        return curvature
+
     def animate_geometry(self):
         fig = plt.figure(figsize=(12, 5))
         ax2d = fig.add_subplot(121)
@@ -428,8 +478,259 @@ class AdSGeometryAnalyzer3D:
         plt.tight_layout()
         plt.show()
 
+class AdSGeometryAnalyzer6Q:
+    def __init__(self, n_qubits=6, timesteps=15, mode="flat"):
+        self.device = AwsDevice("arn:aws:braket:::device/quantum-simulator/amazon/sv1")
+        self.n_qubits = n_qubits
+        self.timesteps = np.linspace(0, 3 * np.pi, timesteps)
+        self.rt_data = []
+        self.coords_list_2d = []
+        self.coords_list_3d = []
+        self.mode = mode
+
+    def shannon_entropy(self, probs):
+        probs = np.array(probs)
+        return -np.sum(probs * np.log2(probs + 1e-12))
+
+    def marginal_probs(self, probs, total_qubits, target_idxs):
+        marginal = {}
+        for idx, p in enumerate(probs):
+            b = format(idx, f"0{total_qubits}b")
+            key = ''.join([b[i] for i in target_idxs])
+            marginal[key] = marginal.get(key, 0) + p
+        return np.array(list(marginal.values()))
+
+    def compute_mi(self, probs, qA, qB, total_qubits):
+        AB = self.marginal_probs(probs, total_qubits, [qA, qB])
+        A = self.marginal_probs(probs, total_qubits, [qA])
+        B = self.marginal_probs(probs, total_qubits, [qB])
+        return self.shannon_entropy(A) + self.shannon_entropy(B) - self.shannon_entropy(AB)
+
+    def estimate_local_curvature(self, coords, triplet):
+        from numpy.linalg import norm
+
+        i, j, k = triplet
+        a = norm(coords[j] - coords[k])
+        b = norm(coords[i] - coords[k])
+        c = norm(coords[i] - coords[j])
+
+        def safe_acos(x):
+            return np.arccos(np.clip(x, -1.0, 1.0))
+
+        angle_i = safe_acos((b**2 + c**2 - a**2) / (2 * b * c))
+        angle_j = safe_acos((a**2 + c**2 - b**2) / (2 * a * c))
+        angle_k = safe_acos((a**2 + b**2 - c**2) / (2 * a * b))
+
+        return (angle_i + angle_j + angle_k) - np.pi
+
+    def run(self):
+        for phi_val in self.timesteps:
+            phi = FreeParameter("phi")
+            circ = Circuit()
+
+            circ.h(0)
+            circ.cnot(0, 2)
+            circ.cnot(0, 3)
+
+            if self.mode == "flat":
+                circ.rx(0, phi)
+                circ.cz(0, 1)
+                circ.cnot(1, 2)
+                circ.rx(2, phi)
+                circ.cz(1, 3)
+                circ.cnot(3, 4)
+                circ.rx(4, phi)
+                circ.cnot(4, 5)
+            elif self.mode == "curved":
+                # More interwoven, nonlocal couplings to mimic negative curvature
+                circ.rx(0, phi)
+                circ.rx(1, phi)
+                circ.rx(2, phi)
+                circ.cz(0, 3)
+                circ.cz(1, 4)
+                circ.cz(2, 5)
+                circ.cnot(0, 5)
+                circ.cnot(5, 3)
+                circ.cz(3, 4)
+                circ.cz(4, 1)
+                circ.cnot(4, 2)
+
+            circ.probability()
+            task = self.device.run(circ, inputs={"phi": phi_val}, shots=1024)
+            result = task.result()
+            probs = np.array(result.values).reshape(-1)
+
+            mi_matrix = np.zeros((self.n_qubits, self.n_qubits))
+            for i in range(self.n_qubits):
+                for j in range(i + 1, self.n_qubits):
+                    mi = self.compute_mi(probs, i, j, self.n_qubits)
+                    mi_matrix[i, j] = mi_matrix[j, i] = mi
+
+            rad_probs = self.marginal_probs(probs, self.n_qubits, [3, 4])
+            S_rad = self.shannon_entropy(rad_probs)
+
+            epsilon = 1e-6
+            dist = np.exp(-mi_matrix)
+            dist[dist > 1e4] = 1e4 
+            np.fill_diagonal(dist, 0)
+
+            coords2 = MDS(n_components=2, dissimilarity='precomputed').fit_transform(dist)
+            coords3 = MDS(n_components=3, dissimilarity='precomputed').fit_transform(dist)
+
+            d_Q34 = np.linalg.norm(coords2[3] - coords2[4])
+
+            self.rt_data.append((phi_val, S_rad, d_Q34))
+            self.coords_list_2d.append(coords2)
+            self.coords_list_3d.append(coords3)
+
+            print(f"φ = {phi_val:.2f}, S_rad = {S_rad:.4f}, d(Q3,Q4) = {d_Q34:.4f}")
+
+        print("\nCurvature Estimates:")
+        for triplet in combinations(range(self.n_qubits), 3):
+            curv = self.estimate_local_curvature(coords3, triplet)
+            print(f"Triplet {triplet}: Curvature = {curv:.4f}")
+
+        plt.figure(figsize=(5, 4))
+        sns.heatmap(mi_matrix, annot=True, cmap='viridis')
+        plt.title(f'MI Matrix at φ={phi_val:.2f}')
+        plt.show()
+
+    def fit_rt_plot(self):
+        def log_func(x, a, b):
+            return a * np.log(x + 1e-6) + b
+
+        phi_vals, entropies, dists = zip(*self.rt_data)
+        dists = np.array(dists)
+        entropies = np.array(entropies)
+
+        lin_model = LinearRegression()
+        lin_model.fit(dists.reshape(-1, 1), entropies)
+        lin_pred = lin_model.predict(dists.reshape(-1, 1))
+
+        popt, _ = curve_fit(log_func, dists, entropies)
+        log_pred = log_func(dists, *popt)
+
+        plt.figure(figsize=(7, 5))
+        plt.scatter(dists, entropies, c='black', label="Data")
+        plt.plot(dists, lin_pred, label=f"Linear: {lin_model.coef_[0]:.2f}·d + {lin_model.intercept_:.2f}", linestyle='--')
+        plt.plot(dists, log_pred, label=f"Log: {popt[0]:.2f}·log(d) + {popt[1]:.2f}", linestyle='-.')
+        plt.xlabel("Distance(Q3, Q4)")
+        plt.ylabel("Entropy S(Q3,Q4)")
+        plt.title("RT Correlation - 6 Qubits")
+        plt.grid(True)
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
+
+class EmergentSpacetime:
+    def __init__(self, device_arn):
+        self.device = AwsDevice(device_arn)
+        self.timesteps = np.linspace(0, 3 * np.pi, 15)
+        self.mi_matrices = []
+
+    def shannon_entropy(self, probs):
+        probs = np.array(probs)
+        return -np.sum(probs * np.log2(probs + 1e-12))
+
+    def marginal_probs(self, probs, total_qubits, target_idxs):
+        marginal = {}
+        for idx, p in enumerate(probs):
+            b = format(idx, f"0{total_qubits}b")
+            key = ''.join([b[i] for i in target_idxs])
+            marginal[key] = marginal.get(key, 0) + p
+        return np.array(list(marginal.values()))
+
+    def compute_mi(self, probs, qA, qB, total_qubits):
+        AB = self.marginal_probs(probs, total_qubits, [qA, qB])
+        A = self.marginal_probs(probs, total_qubits, [qA])
+        B = self.marginal_probs(probs, total_qubits, [qB])
+        return self.shannon_entropy(A) + self.shannon_entropy(B) - self.shannon_entropy(AB)
+
+    def run(self):
+        for phi_val in self.timesteps:
+            phi = FreeParameter("phi")
+            circ = Circuit()
+            circ.h(0)
+            circ.cnot(0, 2)
+            circ.cnot(0, 3)
+            circ.rx(0, phi)
+
+            # cz(0, 1) equivalent
+            circ.cnot(0, 1).rz(1, np.pi).cnot(0, 1)
+
+            circ.cnot(1, 2)
+            circ.rx(2, phi)
+
+            # cz(1, 3) equivalent
+            circ.cnot(1, 3).rz(3, np.pi).cnot(1, 3)
+            circ.probability()
+
+            task = self.device.run(circ, inputs={"phi": phi_val}, shots=1024)
+            result = task.result()
+            probs = np.array(result.values).reshape(-1)
+
+            mi_matrix = np.zeros((4, 4))
+            for i in range(4):
+                for j in range(i + 1, 4):
+                    mi = self.compute_mi(probs, i, j, 4)
+                    mi_matrix[i, j] = mi_matrix[j, i] = mi
+            self.mi_matrices.append(mi_matrix)
+
+    def construct_4d_embedding(self):
+        # Stack MI matrices into a 3D tensor over time
+        mi_tensor = np.stack(self.mi_matrices)
+
+        # Invert MI to get distance tensor
+        epsilon = 1e-6
+        dist_tensor = 1 / (mi_tensor + epsilon)
+
+        # Flatten time into a single dimension (coordinates: qubit pairs x time)
+        num_time_steps, num_qubits, _ = dist_tensor.shape
+        flat_distances = dist_tensor.reshape(num_time_steps * num_qubits, num_qubits)
+
+        # Perform 4D embedding
+        mds = MDS(n_components=4, dissimilarity='euclidean', random_state=42)
+        coords4 = mds.fit_transform(flat_distances)
+        return coords4.reshape(num_time_steps, num_qubits, 4)
+
+    def estimate_curvature(self, coords4):
+        # Approximate 4D curvature numerically by analyzing local volume distortion
+        curvatures = []
+        for t in range(1, len(coords4)-1):
+            prev_coords = coords4[t-1]
+            curr_coords = coords4[t]
+            next_coords = coords4[t+1]
+
+            prev_dists = np.linalg.norm(curr_coords - prev_coords, axis=1)
+            next_dists = np.linalg.norm(curr_coords - next_coords, axis=1)
+
+            local_curvature = np.mean(next_dists - prev_dists)
+            curvatures.append(local_curvature)
+
+        return np.array(curvatures)
+
+    def analyze_causal_structure(self, curvatures):
+        plt.figure(figsize=(8,5))
+        plt.plot(self.timesteps[1:-1], curvatures, marker='o')
+        plt.xlabel('Time (φ)')
+        plt.ylabel('Approx. Curvature')
+        plt.title('Emergent Spacetime Curvature Dynamics')
+        plt.grid(True)
+        plt.show()
         
-ads = AdSGeometryAnalyzer3D()
-ads.run()
-ads.fit_rt_plot()
-ads.animate_geometry()
+# Original Injection
+spacetime_sim = EmergentSpacetime(arn)
+
+# Run experiments
+spacetime_sim.run()
+
+# Construct 4D embedding
+coords4 = spacetime_sim.construct_4d_embedding()
+
+# Curvature analysis
+curvature = spacetime_sim.estimate_curvature(coords4)
+
+# Causal structure analysis
+spacetime_sim.analyze_causal_structure(curvature)
+
+
