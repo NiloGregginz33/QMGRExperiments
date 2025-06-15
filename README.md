@@ -92,7 +92,7 @@ Across all experiments, the emitted radiation consistently encoded injected char
 
 RECONSTRUCTS PAGE CURVE AND IF U JUST LOOK AT THE CHART ITS LOG NOT LIN SO GOOD EVIDENCE OF RYU-TAK(see AWSFactory)
 
-Happy codes dont work on hardware yet so i cant compare to the existing literature. 
+Happy codes dont work on hardware yet so i cant compare to the existing literature. **However, the emergent spacetime demonstration has since been executed on real AWS Braket hardware—see `AWSFactory` for the latest results.**
 
 Questions for the Community
 
