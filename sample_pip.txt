@@ -1,4 +1,5 @@
-amazon-braket-sdk
-numpy
-matplotlib
-scikit-learn
+amazon-braket-sdk>=1.93.0
+numpy>=1.24.4
+matplotlib>=3.10.0
+scikit-learn>=1.7.0
+
