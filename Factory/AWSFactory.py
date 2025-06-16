@@ -20,6 +20,7 @@ from scipy.optimize import curve_fit
 from itertools import combinations
 import warnings
 import seaborn as sns
+import pandas as pd
 
 warnings.filterwarnings("ignore", category=UserWarning)
 arn = "arn:aws:braket:us-east-1::device/qpu/ionq/Aria-1"
@@ -29,35 +30,131 @@ device = AwsDevice(arn)   # swap with AwsDevice(arn) for cloud runs
 timesteps = np.linspace(0, 3 * np.pi, 30)  # φ(t) from 0 to 3π
 entropy_values = []
 
-def log_func(x, a, b):
-    return a * np.log(x + 1e-6) + b
+##def log_func(x, a, b):
+##    return a * np.log(x + 1e-6) + b
+##
+##def fit_rt_plot(rt_data):
+##    phi_vals, entropies, dists = zip(*rt_data)
+##    dists = np.array(dists)
+##    entropies = np.array(entropies)
+##
+##    # Linear fit
+##    lin_model = LinearRegression()
+##    lin_model.fit(dists.reshape(-1, 1), entropies)
+##    lin_pred = lin_model.predict(dists.reshape(-1, 1))
+##
+##    # Logarithmic fit
+##    popt, _ = curve_fit(log_func, dists, entropies)
+##    log_pred = log_func(dists, *popt)
+##
+##    # Plot both fits
+##    plt.figure(figsize=(7, 5))
+##    plt.scatter(dists, entropies, c='black', label="Data")
+##    plt.plot(dists, lin_pred, label=f"Linear Fit: S = {lin_model.coef_[0]:.2f}·d + {lin_model.intercept_:.2f}", linestyle='--')
+##    plt.plot(dists, log_pred, label=f"Log Fit: S = {popt[0]:.2f}·log(d) + {popt[1]:.2f}", linestyle='-.')
+##    plt.xlabel("Distance(Q2, Q3) in Emergent Geometry")
+##    plt.ylabel("Radiation Entropy S(Q2,Q3)")
+##    plt.title("RT-style Correlation + Regression")
+##    plt.grid(True)
+##    plt.legend()
+##    plt.tight_layout()
+##    plt.show()
 
-def fit_rt_plot(rt_data):
-    phi_vals, entropies, dists = zip(*rt_data)
-    dists = np.array(dists)
-    entropies = np.array(entropies)
+class ScaledEmergentSpacetime:
+    def __init__(self, device, num_qubits=6, max_cut_size=3):
+        self.device = device
+        self.num_qubits = num_qubits
+        self.max_cut_size = max_cut_size
+        self.timesteps = np.linspace(0, 3 * np.pi, 15)
+        self.entropy_area_data = []
 
-    # Linear fit
-    lin_model = LinearRegression()
-    lin_model.fit(dists.reshape(-1, 1), entropies)
-    lin_pred = lin_model.predict(dists.reshape(-1, 1))
+    def shannon_entropy(self, probs):
+        probs = np.array(probs)
+        probs /= np.sum(probs)
+        return -np.sum(probs * np.log2(probs + 1e-12))
 
-    # Logarithmic fit
-    popt, _ = curve_fit(log_func, dists, entropies)
-    log_pred = log_func(dists, *popt)
+    def marginal_probs(self, probs, total_qubits, keep):
+        marginal = {}
+        for idx, p in enumerate(probs):
+            b = format(idx, f"0{total_qubits}b")
+            key = ''.join([b[i] for i in keep])
+            marginal[key] = marginal.get(key, 0) + p
+        return np.array(list(marginal.values()))
 
-    # Plot both fits
-    plt.figure(figsize=(7, 5))
-    plt.scatter(dists, entropies, c='black', label="Data")
-    plt.plot(dists, lin_pred, label=f"Linear Fit: S = {lin_model.coef_[0]:.2f}·d + {lin_model.intercept_:.2f}", linestyle='--')
-    plt.plot(dists, log_pred, label=f"Log Fit: S = {popt[0]:.2f}·log(d) + {popt[1]:.2f}", linestyle='-.')
-    plt.xlabel("Distance(Q2, Q3) in Emergent Geometry")
-    plt.ylabel("Radiation Entropy S(Q2,Q3)")
-    plt.title("RT-style Correlation + Regression")
-    plt.grid(True)
-    plt.legend()
-    plt.tight_layout()
-    plt.show()
+    def build_scaled_circuit(self, phi):
+        circ = Circuit()
+        circ.h(0)
+        # Spread entanglement and inject φ-dependent dynamics
+        for i in range(1, self.num_qubits):
+            circ.cnot(0, i)
+            circ.rx(i, phi if i % 2 == 0 else -phi)
+        circ.probability()
+        return circ
+
+    def run_entropy_area_experiment(self):
+        phi = FreeParameter("phi")
+        for phi_val in self.timesteps:
+            circ = self.build_scaled_circuit(phi)
+            task = self.device.run(circ, inputs={"phi": phi_val}, shots=2048)
+            result = task.result()
+            probs = np.array(result.values).reshape(-1)
+
+            cut_sizes = list(range(1, self.max_cut_size + 1))
+            for cut in cut_sizes:
+                keep = list(range(1, 1 + cut))  # Skip qubit 0 (core BH)
+                marg = self.marginal_probs(probs, self.num_qubits, keep)
+                S = self.shannon_entropy(marg)
+                self.entropy_area_data.append((cut, phi_val, S))
+
+    def plot_entropy_vs_area(self):
+        df = pd.DataFrame(self.entropy_area_data, columns=["cut_size", "phi", "entropy"])
+        avg_entropy = df.groupby("cut_size")["entropy"].mean().reset_index()
+
+        plt.figure(figsize=(7, 5))
+        plt.plot(avg_entropy["cut_size"], avg_entropy["entropy"], marker='o')
+        plt.xlabel("Radiation Cut Size (# Qubits)")
+        plt.ylabel("Average Entropy (bits)")
+        plt.title("Entropy vs Area Law (Scaled Circuit)")
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+        return df
+
+
+def marginal(probs, keep, total=7):
+    out = {}
+    for idx, p in enumerate(probs):
+        bit = format(idx, f"0{total}b")
+        key = ''.join(bit[i] for i in keep)
+        out[key] = out.get(key, 0) + p
+    return np.array(list(out.values()))
+
+def entropy(p):
+    p = p+1e-12
+    return -(p*np.log2(p)).sum()
+
+def perfect_tensor():
+    """Return a 6-qubit perfect-tensor sub-circuit (HaPPY building block)."""
+    qc = QuantumCircuit(6)
+    # One simple construction: 3 GHZ pairs → layer of CZs → random phase layer
+    for i in range(0, 6, 2):
+        qc.h(i)
+        qc.cx(i, i+1)
+    # Entangle across pairs
+    for (a, b) in [(0,2), (1,4), (3,5)]:
+        qc.cz(a, b)
+    # Optional random single-qubit rotations to break trivial structure
+    for q in range(6):
+        qc.rx(np.pi/4, q)
+    return qc
+
+def happpy_7qubit():
+    qc = perfect_tensor()      # outputs 6 legs
+    qc.qubit = qc.qubits + [qc.qregs[0].add(1)]  # add 7th qubit as “logical center”
+    # Route one leg into the logical center (index 6)
+    qc.cx(2,6)
+    qc.h(6)
+    return qc
 
 class AdSGeometryAnalyzer:
     def __init__(self, device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1"):
@@ -622,6 +719,51 @@ class AdSGeometryAnalyzer6Q:
         plt.tight_layout()
         plt.show()
 
+def perfect_tensor_braket():
+    """Return a 6-qubit perfect-tensor style circuit using Braket syntax."""
+    circ = Circuit()
+    
+    # Create 3 GHZ pairs: (0,1), (2,3), (4,5)
+    for i in [0, 2, 4]:
+        circ.h(i)
+        circ.cnot(i, i+1)
+
+    def cz_decomposed(q0, q1):
+        return Circuit().cnot(q0, q1).rz(q1, np.pi).cnot(q0, q1)
+
+    circ += cz_decomposed(0, 2)
+    circ += cz_decomposed(1, 4)
+    circ += cz_decomposed(3, 5)
+
+    # Optional RX rotation to break symmetry
+    for q in range(6):
+        circ.rx(q, np.pi / 4)
+
+    return circ
+
+def marginal_probs(probs, total_qubits, keep):
+    marginal = {}
+    for idx, p in enumerate(probs):
+        b = format(idx, f"0{total_qubits}b")
+        key = ''.join([b[i] for i in keep])
+        marginal[key] = marginal.get(key, 0) + p
+    return np.array(list(marginal.values()))
+
+def entropy(p):
+    p = np.array(p)
+    p = p / np.sum(p)
+    return -np.sum(p * np.log2(p + 1e-12))
+
+def happy_7qubit_braket():
+    """Build HaPPY-style 7-qubit circuit in Braket format."""
+    circ = perfect_tensor_braket()
+    
+    # Add 7th qubit (index 6): logical center entangled to one leg (qubit 2)
+    circ.cnot(2, 6)
+    circ.h(6)
+
+    return circ
+
 class EmergentSpacetime:
     def __init__(self, device_arn):
         self.device = AwsDevice(device_arn)
@@ -717,20 +859,72 @@ class EmergentSpacetime:
         plt.title('Emergent Spacetime Curvature Dynamics')
         plt.grid(True)
         plt.show()
-        
-# Original Injection
-spacetime_sim = EmergentSpacetime(arn)
 
-# Run experiments
-spacetime_sim.run()
+def build_control_circuit(phi):
+    circ = Circuit()
+    circ.h(0)
+    # Only half the entanglement you used before
+    circ.cnot(0, 2)
+    # Omit or shuffle the second entangling layer
+    circ.rx(0, phi)
+    circ.probability(target=[2,3])
+    return circ
 
-# Construct 4D embedding
-coords4 = spacetime_sim.construct_4d_embedding()
 
-# Curvature analysis
-curvature = spacetime_sim.estimate_curvature(coords4)
+for phi_val in timesteps:
+    phi = FreeParameter("phi")
+    circ = build_control_circuit(phi)
+    task = device.run(circ, inputs={"phi": phi_val}, shots=2048)
+    probs = np.array(task.result().values).reshape(-1)
+    # Compute entropy on qubits 2 & 3
+    p = marginal_probs(probs, 4, [2,3])
+    p = p / p.sum()
+    entropies_control.append(-(p * np.log2(p + 1e-12)).sum())
 
-# Causal structure analysis
-spacetime_sim.analyze_causal_structure(curvature)
+# Plot to confirm the area‐law collapse
+import matplotlib.pyplot as plt
+plt.plot(range(1, len(entropies_control)+1), entropies_control, marker='o')
+plt.title("Control: Entropy (flat) vs. φ")
+plt.xlabel("Time step")
+plt.ylabel("Entropy (bits)")
+plt.show()
+
+##scaled_sim = ScaledEmergentSpacetime(device=device, num_qubits=6, max_cut_size=3)
+##scaled_sim.run_entropy_area_experiment()
+##df_entropy_area = scaled_sim.plot_entropy_vs_area()
+
+##bound = happy_7qubit_braket()
+##task = device.run(bound, shots=4096)
+##probs = np.array(task.result().values).reshape(-1)
+##
+##cut_sizes = [1, 2]  # use [2,3] if more qubits available
+##entropies = []
+##for k in cut_sizes:
+##    keep = list(range(2, 2+k))  # qubits 2,3,... as “radiation”
+##    marg = marginal_probs(probs, total_qubits=4, keep=keep)
+##    entropies.append(entropy(marg))
+##
+##import matplotlib.pyplot as plt
+##plt.plot(cut_sizes, entropies, 'o-')
+##plt.xlabel('Radiation cut size (qubits)')
+##plt.ylabel('Entropy (bits)')
+##plt.title('Entropy vs. Area in Existing Circuit')
+##plt.grid(True)
+##plt.show()
+
+### Original Injection
+##spacetime_sim = EmergentSpacetime(arn)
+##
+### Run experiments
+##spacetime_sim.run()
+##
+### Construct 4D embedding
+##coords4 = spacetime_sim.construct_4d_embedding()
+##
+### Curvature analysis
+##curvature = spacetime_sim.estimate_curvature(coords4)
+##
+### Causal structure analysis
+##spacetime_sim.analyze_causal_structure(curvature)
 
 
