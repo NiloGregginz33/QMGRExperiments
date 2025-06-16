@@ -22,33 +22,42 @@ import warnings
 import seaborn as sns
 import pandas as pd
 
+from braket.circuits import Circuit, Instruction, QubitSet
+
 def remap_circuit_to_contiguous_qubits(circuit: Circuit):
     """
     Remaps a Braket circuit to use contiguous qubit indices starting from 0.
     Returns the new circuit and a mapping from old to new qubit indices.
     """
-    # Extract all qubit indices used in the original circuit
-    used_qubits = sorted({qubit for instr in circuit.instructions for qubit in instr.target or []} |
-                         {instr.control for instr in circuit.instructions if instr.control is not None})
 
-    # Map old qubit index -> new contiguous index
-    qubit_mapping = {old: new for new, old in enumerate(used_qubits)}
+    # Collect all used qubit indices (handle QubitSet and ints)
+    used_qubits = set()
+    for instr in circuit.instructions:
+        # Add target qubits
+        if instr.target:
+            for q in QubitSet(instr.target):
+                used_qubits.add(int(q))
+        # Add control qubit
+        if instr.control is not None:
+            used_qubits.add(int(instr.control))
+
+    sorted_qubits = sorted(used_qubits)
+    qubit_mapping = {old: new for new, old in enumerate(sorted_qubits)}
 
     new_circuit = Circuit()
-
     for instr in circuit.instructions:
-        targets = [qubit_mapping[q] for q in instr.target] if instr.target else []
-        control = qubit_mapping[instr.control] if instr.control is not None else None
+        new_targets = [qubit_mapping[int(q)] for q in QubitSet(instr.target)] if instr.target else []
+        new_control = qubit_mapping[int(instr.control)] if instr.control is not None else None
 
-        # Recreate instruction with remapped qubits
         new_instr = Instruction(
             operator=instr.operator,
-            target=targets,
-            control=control
+            target=new_targets,
+            control=new_control
         )
         new_circuit.add_instruction(new_instr)
 
     return new_circuit, qubit_mapping
+
 
 warnings.filterwarnings("ignore", category=UserWarning)
 arn = "arn:aws:braket:us-east-1::device/qpu/ionq/Aria-1"
