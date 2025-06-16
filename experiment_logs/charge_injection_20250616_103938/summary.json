@@ -1,0 +1,19 @@
+{
+  "experiment_name": "charge_injection",
+  "timestamp": "20250616_103938",
+  "num_results": 4,
+  "patterns": [
+    "time_gaps",
+    "oscillating",
+    "prolonged",
+    "alternating"
+  ],
+  "num_injections": [
+    10
+  ],
+  "gap_cycles": [
+    100
+  ],
+  "average_mi": 0.16003904633485214,
+  "average_curvature": -7.921996392212804e-13
+}

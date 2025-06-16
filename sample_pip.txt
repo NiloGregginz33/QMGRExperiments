@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 amazon-braket-sdk
 numpy
 matplotlib
 scikit-learn
+=======
+amazon-braket-sdk
+numpy
+matplotlib
+scikit-learn
+>>>>>>> 32d80f7 (Add core project files and documentation)
