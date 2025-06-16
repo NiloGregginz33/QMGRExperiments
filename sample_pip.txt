@@ -1,0 +1,4 @@
+amazon-braket-sdk
+numpy
+matplotlib
+scikit-learn
