@@ -1,0 +1,26 @@
+<<<<<<< HEAD
+(venv) C:\Users\manav\Desktop\Experiments\QM1>python ex8.py
+Testing spin state: up
+Testing spin state: down
+Measurement Results:
+Spin State: up, Counts: {'11': 4125, '00': 4067}
+Spin State: down, Counts: {'11': 4124, '00': 4068}
+
+Subsystem Entropies:
+Spin State: up, Entropies: {'Black Hole Entropy': np.float64(1.0), 'Radiation Entropy': np.float64(1.0)}
+Spin State: down, Entropies: {'Black Hole Entropy': np.float64(1.0), 'Radiation Entropy': np.float64(1.0)}
+
+=======
+(venv) C:\Users\manav\Desktop\Experiments\QM1>python ex8.py
+Testing spin state: up
+Testing spin state: down
+Measurement Results:
+Spin State: up, Counts: {'11': 4125, '00': 4067}
+Spin State: down, Counts: {'11': 4124, '00': 4068}
+
+Subsystem Entropies:
+Spin State: up, Entropies: {'Black Hole Entropy': np.float64(1.0), 'Radiation Entropy': np.float64(1.0)}
+Spin State: down, Entropies: {'Black Hole Entropy': np.float64(1.0), 'Radiation Entropy': np.float64(1.0)}
+
+>>>>>>> 32d80f7 (Add core project files and documentation)
+Ok so basically I kinda had to start getting specific here, states dont seem to matter much. I dont have experience in the field so I was also using this like stepping stones as I went

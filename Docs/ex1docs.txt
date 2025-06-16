@@ -1,0 +1,73 @@
+<<<<<<< HEAD
+So this was actually after I asked a question on stack exchange about quantum computing, answered a protected question by asking a question, realized what this meant and ran with it.
+
+# This is basically to test if charge is included in the information leaked by hawking radiation
+# We do this by "injecting" charge of an "uncollapsable" wavefunction into a simulated black holes then seeing if it affects the content
+# of the information in the hawking radiation over many runs and see what comes out. We are going to be seeing
+# if bells inequality or the entanglement entropy. 
+
+=======
+(venv) C:\Users\manav\Desktop\Experiments\QM1>python ex1.py
+>>>>>>> 32d80f7 (Add core project files and documentation)
+Analyzing charge state: positive
+Analyzing charge state: negative
+Analyzing charge state: neutral
+Analyzing charge state: positive
+Analyzing charge state: negative
+Analyzing charge state: neutral
+Analyzing charge state: positive
+Analyzing charge state: negative
+Analyzing charge state: neutral
+Analyzing charge state: positive
+Analyzing charge state: negative
+Analyzing charge state: neutral
+Analyzing charge state: positive
+Analyzing charge state: negative
+Analyzing charge state: neutral
+Analyzing charge state: positive
+Analyzing charge state: negative
+Analyzing charge state: neutral
+Analyzing charge state: positive
+Analyzing charge state: negative
+Analyzing charge state: neutral
+Analyzing charge state: positive
+Analyzing charge state: negative
+Analyzing charge state: neutral
+Analyzing charge state: positive
+Analyzing charge state: negative
+Analyzing charge state: neutral
+Analyzing charge state: positive
+Analyzing charge state: negative
+Analyzing charge state: neutral
+Counts Results Keys: dict_keys([])
+Counts Results Values: {}
+
+Phase Results:
+Charge: positive, Phases: [0.         0.         0.         3.14159265]
+Charge: negative, Phases: [0. 0. 0. 0.]
+Charge: neutral, Phases: [0. 0. 0. 0.]
+
+Retrieval Results:
+<<<<<<< HEAD
+Charge: positive, Counts: {'0': 4103, '1': 4089}
+Charge: negative, Counts: {'1': 4149, '0': 4043}
+Charge: neutral, Counts: {'0': 4106, '1': 4086}
+
+Evaporation Results:
+Charge: positive, Counts: {'010': 1002, '100': 1004, '110': 1037, '101': 1012, '011': 1055, '001': 1107, '000': 983, '111': 992}
+Charge: negative, Counts: {'111': 1040, '001': 1063, '100': 1020, '011': 1005, '110': 1025, '000': 992, '101': 1042, '010': 1005}
+Charge: neutral, Counts: {'110': 960, '011': 1002, '101': 1100, '010': 1044, '000': 1079, '001': 1006, '111': 1012, '100': 989}
+
+# The results b
+=======
+Charge: positive, Counts: {'0': 4112, '1': 4080}
+Charge: negative, Counts: {'1': 4068, '0': 4124}
+Charge: neutral, Counts: {'1': 4067, '0': 4125}
+
+Evaporation Results:
+Charge: positive, Counts: {'100': 992, '001': 1035, '011': 937, '110': 1010, '000': 1057, '101': 1099, '010': 1061, '111': 1001}
+Charge: negative, Counts: {'110': 998, '111': 1017, '001': 1036, '100': 1000, '011': 1017, '010': 1076, '101': 1025, '000': 1023}
+Charge: neutral, Counts: {'101': 1039, '100': 983, '001': 1069, '111': 999, '000': 1027, '010': 1038, '110': 1052, '011': 985}
+
+Just wanted to see if information was going to be preserved, simple test.
+>>>>>>> 32d80f7 (Add core project files and documentation)
