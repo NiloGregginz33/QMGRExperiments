@@ -1,0 +1,9 @@
+{
+  "experiment_name": "boundary_vs_bulk_entropy",
+  "timestamp": "20250616_101331",
+  "parameters": {},
+  "results": [
+    {
+      "cut_size": 1,
+      "entropy": 0.9999993120664018,
+      "valid": 
