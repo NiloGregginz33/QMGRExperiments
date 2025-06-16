@@ -1,0 +1,30 @@
+{
+  "experiment_name": "entanglement_geometry",
+  "timestamp": "20250616_102438",
+  "total_runs": 20,
+  "patterns": [
+    "linear",
+    "ring",
+    "random",
+    "star"
+  ],
+  "strengths": [
+    0.2,
+    0.4,
+    0.6000000000000001,
+    0.8,
+    1.0
+  ],
+  "average_curvatures": {
+    "linear": 3.0133229245166147e-13,
+    "ring": -4.426237154575574e-14,
+    "random": -2.0877521933471144e-13,
+    "star": -1.512123759539463e-14
+  },
+  "average_mi": {
+    "linear": 0.000775031462547488,
+    "ring": 0.000628133684294337,
+    "random": 0.000581093641061566,
+    "star": 0.0005829406584117964
+  }
+}
