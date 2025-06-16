@@ -23,6 +23,12 @@ import seaborn as sns
 import pandas as pd
 
 from braket.circuits import Circuit, Instruction, QubitSet
+import os
+
+print("ENV CHECK:")
+print("AWS_ACCESS_KEY_ID =", os.getenv("AWS_ACCESS_KEY_ID"))
+print("AWS_SECRET_ACCESS_KEY =", os.getenv("AWS_SECRET_ACCESS_KEY"))
+print("AWS_DEFAULT_REGION =", os.getenv("AWS_DEFAULT_REGION"))
 
 def remap_circuit_to_contiguous_qubits(circuit: Circuit):
     """
