@@ -1,0 +1,12 @@
+<<<<<<< HEAD
+(venv) C:\Users\manav\Desktop\Experiments\QM1>python ex3.py
+Measurement Results:
+{'0101': 1992, '1111': 2121, '1010': 2025, '0000': 2054}
+
+=======
+(venv) C:\Users\manav\Desktop\Experiments\QM1>python ex3.py
+Measurement Results:
+{'0101': 1992, '1111': 2121, '1010': 2025, '0000': 2054}
+
+>>>>>>> 32d80f7 (Add core project files and documentation)
+This is where I really start to wonder about things bc Im like oh can I use this method for other conserved quantities/properties as this is where a lot of that charge injection stuff is, seeing if it would work.
