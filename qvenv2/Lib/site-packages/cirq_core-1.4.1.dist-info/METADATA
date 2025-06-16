@@ -1,0 +1,45 @@
+Metadata-Version: 2.1
+Name: cirq-core
+Version: 1.4.1
+Summary: A framework for creating, editing, and invoking Noisy Intermediate Scale Quantum (NISQ) circuits.
+Home-page: http://github.com/quantumlib/cirq
+Author: The Cirq Developers
+Author-email: cirq-dev@googlegroups.com
+License: Apache 2
+Requires-Python: >=3.10.0
+License-File: LICENSE
+Requires-Dist: attrs >=21.3.0
+Requires-Dist: duet >=0.2.8
+Requires-Dist: matplotlib ~=3.0
+Requires-Dist: networkx >=2.4
+Requires-Dist: numpy ~=1.22
+Requires-Dist: pandas
+Requires-Dist: sortedcontainers ~=2.0
+Requires-Dist: scipy ~=1.0
+Requires-Dist: sympy
+Requires-Dist: typing-extensions >=4.2
+Requires-Dist: tqdm
+Provides-Extra: contrib
+Requires-Dist: ply >=3.6 ; extra == 'contrib'
+Requires-Dist: pylatex ~=1.4 ; extra == 'contrib'
+Requires-Dist: quimb ~=1.7 ; extra == 'contrib'
+Requires-Dist: opt-einsum ; extra == 'contrib'
+
+.. image:: https://raw.githubusercontent.com/quantumlib/Cirq/main/docs/images/Cirq_logo_color.png
+  :target: https://github.com/quantumlib/cirq
+  :alt: Cirq
+  :width: 500px
+
+Cirq is a Python library for writing, manipulating, and optimizing quantum
+circuits and running them against quantum computers and simulators.
+
+This module is **cirq-core**, which contains everything you'd need to write quantum algorithms for NISQ devices and run them on the built-in Cirq simulators.
+In order to run algorithms on a given quantum hardware platform, you'll have to install the right cirq module as well.
+
+Installation
+------------
+
+To install the stable version of only **cirq-core**, use `pip install cirq-core`.
+To install the pre-release version of only **cirq-core**, use `pip install cirq-core~=1.0.dev`.
+
+To get all the optional modules installed as well, you'll have to use `pip install cirq` or `pip install cirq~=1.0.dev` for the pre-release version.
