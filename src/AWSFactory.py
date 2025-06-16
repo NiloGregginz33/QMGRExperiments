@@ -642,8 +642,11 @@ class AdSGeometryAnalyzer3D:
         log('[AdSGeometryAnalyzer3D] Chart saved as plots/3d_geometry_animation.png')
 
 class AdSGeometryAnalyzer6Q:
-    def __init__(self, n_qubits=6, timesteps=15, mode="flat"):
-        self.device = AwsDevice("arn:aws:braket:::device/quantum-simulator/amazon/sv1")
+    def __init__(self, n_qubits=6, timesteps=15, mode="flat", device=None):
+        if device is None:
+            self.device = LocalSimulator()
+        else:
+            self.device = device
         self.n_qubits = n_qubits
         self.timesteps = np.linspace(0, 3 * np.pi, timesteps)
         self.rt_data = []

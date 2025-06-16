@@ -1,0 +1,37 @@
+{
+  "original": {
+    "entropy_curvature_corr": 0.44568876148196057,
+    "entropy_distance_corr": 0.994083277627591,
+    "max_curvature": 2.4424906541753446e-16,
+    "min_curvature": -2.2204460492503132e-17,
+    "mean_curvature": 1.1657341758564144e-16
+  },
+  "nonlocal": {
+    "entropy_curvature_corr": 0.6214353279757262,
+    "entropy_distance_corr": 0.39311766177680224,
+    "max_curvature": 1.9984014443252818e-16,
+    "min_curvature": 4.4408920985006264e-17,
+    "mean_curvature": 1.2397490441647584e-16
+  },
+  "ring": {
+    "entropy_curvature_corr": -0.29062225811206555,
+    "entropy_distance_corr": 0.908181607086378,
+    "max_curvature": 1.9984014443252818e-16,
+    "min_curvature": -2.2204460492503132e-17,
+    "mean_curvature": 5.921189464667501e-17
+  },
+  "star": {
+    "entropy_curvature_corr": 0.009270773255184864,
+    "entropy_distance_corr": 0.9381472021112686,
+    "max_curvature": 1.554312234475219e-16,
+    "min_curvature": 2.2204460492503132e-17,
+    "mean_curvature": 7.771561172376097e-17
+  },
+  "alternating": {
+    "entropy_curvature_corr": 0.3324203988785625,
+    "entropy_distance_corr": -0.6430636255360499,
+    "max_curvature": 1.554312234475219e-16,
+    "min_curvature": 2.2204460492503132e-17,
+    "mean_curvature": 8.696747026230392e-17
+  }
+}
