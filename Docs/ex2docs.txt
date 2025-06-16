@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 (venv) C:\Users\manav\Desktop\Experiments\QM1>python ex2.py
 
 Measurement Results (Radiation):
@@ -17,4 +18,25 @@ Statevector([ 1.00000000e+00+0.j, -4.77286760e-16+0.j, -1.81193244e-16+0.j,
              -6.28343376e-16+0.j, -1.28471668e-16+0.j],
             dims=(2, 2, 2, 2, 2))
 
+=======
+(venv) C:\Users\manav\Desktop\Experiments\QM1>python ex2.py
+
+Measurement Results (Radiation):
+{'0000': 8192}
+
+Final Statevector:
+Statevector([ 1.00000000e+00+0.j, -4.77286760e-16+0.j, -1.81193244e-16+0.j,
+             -9.24845417e-17+0.j,  5.41163633e-17+0.j,  1.86116568e-16+0.j,
+              5.43206253e-17+0.j, -1.42536195e-16+0.j, -2.30563478e-16+0.j,
+              9.12940157e-17+0.j,  2.43049573e-16+0.j, -6.71100181e-17+0.j,
+             -3.36731597e-18+0.j,  1.69509769e-16+0.j,  8.54435168e-17+0.j,
+             -2.89647755e-16+0.j,  6.78074120e-17+0.j, -2.49366139e-16+0.j,
+             -1.30782629e-17+0.j, -2.99323656e-17+0.j, -3.19868991e-16+0.j,
+             -2.64230190e-16+0.j, -3.00344966e-17+0.j, -2.35718131e-16+0.j,
+             -6.06642562e-17+0.j,  1.01498095e-16+0.j, -1.50665615e-16+0.j,
+             -2.76365230e-16+0.j,  4.72796004e-17+0.j,  2.63607877e-17+0.j,
+             -6.28343376e-16+0.j, -1.28471668e-16+0.j],
+            dims=(2, 2, 2, 2, 2))
+
+>>>>>>> 32d80f7 (Add core project files and documentation)
 Honestly kinda forgot this existed and even forgot to upload to GitHub. Just tells us were doing things properly (I think) and also we start questioning whether this charge release is time dependent. Basically just saying "hey guys hawkings radiation should have charge bc this is literally what im seeing on the screen".

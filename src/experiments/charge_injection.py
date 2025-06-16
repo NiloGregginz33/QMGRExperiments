@@ -7,7 +7,7 @@ from sklearn.manifold import MDS
 import seaborn as sns
 
 class ChargeInjectionExperiment:
-    def __init__(self, num_qubits=6, shots=1024):
+    def __init__(self, num_qubits=5, shots=8192):  # 1 BH + 4 radiation qubits
         self.device = LocalSimulator()
         self.num_qubits = num_qubits
         self.shots = shots
@@ -32,61 +32,83 @@ class ChargeInjectionExperiment:
         B = self.marginal_probs(probs, total_qubits, [qB])
         return self.shannon_entropy(A) + self.shannon_entropy(B) - self.shannon_entropy(AB)
     
-    def build_circuit(self, injection_pattern="linear", charge_strength=1.0, time_steps=5):
+    def build_circuit(self, injection_pattern="time_gaps", num_injections=10, gap_cycles=100):
         """Build circuit with different charge injection patterns.
         
         Args:
-            injection_pattern: "linear", "oscillating", "pulse", or "random"
-            charge_strength: Parameter controlling charge magnitude (0-1)
-            time_steps: Number of time steps for injection
+            injection_pattern: "alternating", "prolonged", "time_gaps", or "oscillating"
+            num_injections: Number of charge injections (default: 10)
+            gap_cycles: Number of idle cycles between injections (default: 100)
         """
         circ = Circuit()
         
-        # Initialize all qubits in superposition
-        for i in range(self.num_qubits):
-            circ.h(i)
-        
-        # Create initial entanglement structure
-        for i in range(self.num_qubits - 1):
-            circ.cnot(i, i+1)
+        # Initialize black hole qubit in superposition
+        circ.h(0)
         
         # Charge injection patterns
-        if injection_pattern == "linear":
-            # Linear increase in charge
-            for t in range(time_steps):
-                phase = charge_strength * (t + 1) / time_steps * np.pi
-                for i in range(self.num_qubits):
-                    circ.rz(i, phase)
-                    if i < self.num_qubits - 1:
-                        circ.cnot(i, i+1)
-                        
+        if injection_pattern == "alternating":
+            # Alternate between positive (X) and negative (Z) charge
+            for t in range(num_injections):
+                if t % 2 == 0:
+                    # Positive charge injection
+                    circ.x(0)
+                else:
+                    # Negative charge injection
+                    circ.z(0)
+                
+                # Entangle with radiation qubits sequentially
+                for i in range(1, self.num_qubits):
+                    circ.h(0)  # Reset superposition
+                    circ.cnot(0, i)
+                    
+        elif injection_pattern == "prolonged":
+            # Prolonged charge injection with cycles
+            cycle_length = num_injections // 2
+            for t in range(num_injections):
+                if (t // cycle_length) % 2 == 0:
+                    # Positive charge cycle
+                    circ.x(0)
+                else:
+                    # Negative charge cycle
+                    circ.z(0)
+                
+                # Entangle with radiation qubits sequentially
+                for i in range(1, self.num_qubits):
+                    circ.h(0)  # Reset superposition
+                    circ.cnot(0, i)
+                    
+        elif injection_pattern == "time_gaps":
+            # Charge injection with time gaps
+            for t in range(num_injections):
+                if t % 2 == 0:
+                    # Positive charge injection
+                    circ.x(0)
+                else:
+                    # Negative charge injection
+                    circ.z(0)
+                
+                # Entangle with radiation qubits sequentially
+                for i in range(1, self.num_qubits):
+                    circ.h(0)  # Reset superposition
+                    circ.cnot(0, i)
+                
+                # Add time gaps
+                for _ in range(gap_cycles):
+                    circ.i(0)  # Identity gate for time gap
+                    
         elif injection_pattern == "oscillating":
             # Oscillating charge injection
-            for t in range(time_steps):
-                phase = charge_strength * np.sin(2 * np.pi * t / time_steps) * np.pi
-                for i in range(self.num_qubits):
-                    circ.rz(i, phase)
-                    if i < self.num_qubits - 1:
-                        circ.cnot(i, i+1)
-                        
-        elif injection_pattern == "pulse":
-            # Pulsed charge injection
-            for t in range(time_steps):
-                phase = charge_strength * (1 if t % 2 == 0 else 0) * np.pi
-                for i in range(self.num_qubits):
-                    circ.rz(i, phase)
-                    if i < self.num_qubits - 1:
-                        circ.cnot(i, i+1)
-                        
-        elif injection_pattern == "random":
-            # Random charge injection
-            np.random.seed(42)  # For reproducibility
-            for t in range(time_steps):
-                phase = charge_strength * np.random.random() * np.pi
-                for i in range(self.num_qubits):
-                    circ.rz(i, phase)
-                    if i < self.num_qubits - 1:
-                        circ.cnot(i, i+1)
+            for t in range(num_injections):
+                phase = np.sin(2 * np.pi * t / num_injections) * np.pi
+                if phase > 0:
+                    circ.x(0)
+                else:
+                    circ.z(0)
+                
+                # Entangle with radiation qubits sequentially
+                for i in range(1, self.num_qubits):
+                    circ.h(0)  # Reset superposition
+                    circ.cnot(0, i)
         
         circ.probability()
         return circ
@@ -128,66 +150,64 @@ class ChargeInjectionExperiment:
         return np.mean(curvatures)
     
     def run(self):
-        patterns = ["linear", "oscillating", "pulse", "random"]
-        strengths = np.linspace(0.2, 1.0, 5)
-        time_steps = [3, 5, 7, 9]
+        patterns = ["alternating", "prolonged", "time_gaps", "oscillating"]
+        num_injections = 10  # Match ex3.py
+        gap_cycles = 100    # Match ex3.py
         
         results = []
         for pattern in patterns:
-            for strength in strengths:
-                for steps in time_steps:
-                    # Build and run circuit
-                    circ = self.build_circuit(pattern, strength, steps)
-                    task = self.device.run(circ, shots=self.shots)
-                    probs = np.array(task.result().values).reshape(-1)
-                    
-                    # Compute mutual information matrix
-                    mi_matrix = np.zeros((self.num_qubits, self.num_qubits))
-                    for i in range(self.num_qubits):
-                        for j in range(i+1, self.num_qubits):
-                            mi = self.compute_mi(probs, i, j, self.num_qubits)
-                            mi_matrix[i,j] = mi_matrix[j,i] = mi
-                    
-                    # Compute geometry
-                    coords_2d, coords_3d = self.compute_geometry(mi_matrix)
-                    curvature = self.estimate_curvature(coords_3d)
-                    
-                    # Log results
-                    result = {
-                        "pattern": pattern,
-                        "strength": strength,
-                        "time_steps": steps,
-                        "mi_matrix": mi_matrix,
-                        "coords_2d": coords_2d,
-                        "coords_3d": coords_3d,
-                        "curvature": curvature
-                    }
-                    results.append(result)
-                    self.logger.log_result(result)
-                    
-                    # Plot geometry
-                    plt.figure(figsize=(12, 5))
-                    
-                    # 2D plot
-                    plt.subplot(121)
-                    plt.scatter(coords_2d[:,0], coords_2d[:,1])
-                    for i in range(self.num_qubits):
-                        plt.text(coords_2d[i,0], coords_2d[i,1], f"Q{i}")
-                    plt.title(f"2D Geometry ({pattern}, s={strength:.1f}, t={steps})")
-                    
-                    # MI heatmap
-                    plt.subplot(122)
-                    sns.heatmap(mi_matrix, annot=True, cmap='viridis')
-                    plt.title(f"MI Matrix ({pattern}, s={strength:.1f}, t={steps})")
-                    
-                    plt.tight_layout()
-                    plt.savefig(f'plots/charge_injection_{pattern}_s{strength:.1f}_t{steps}.png')
-                    plt.close()
-                    
-                    print(f"Pattern: {pattern}, Strength: {strength:.1f}, Time Steps: {steps}")
-                    print(f"Average MI: {np.mean(mi_matrix):.4f}")
-                    print(f"Curvature: {curvature:.4f}")
-                    print("-" * 50)
+            # Build and run circuit
+            circ = self.build_circuit(pattern, num_injections, gap_cycles)
+            task = self.device.run(circ, shots=self.shots)
+            probs = np.array(task.result().values).reshape(-1)
+            
+            # Compute mutual information matrix
+            mi_matrix = np.zeros((self.num_qubits, self.num_qubits))
+            for i in range(self.num_qubits):
+                for j in range(i+1, self.num_qubits):
+                    mi = self.compute_mi(probs, i, j, self.num_qubits)
+                    mi_matrix[i,j] = mi_matrix[j,i] = mi
+            
+            # Compute geometry
+            coords_2d, coords_3d = self.compute_geometry(mi_matrix)
+            curvature = self.estimate_curvature(coords_3d)
+            
+            # Log results
+            result = {
+                "pattern": pattern,
+                "num_injections": num_injections,
+                "gap_cycles": gap_cycles,
+                "mi_matrix": mi_matrix,
+                "coords_2d": coords_2d,
+                "coords_3d": coords_3d,
+                "curvature": curvature
+            }
+            results.append(result)
+            self.logger.log_result(result)
+            
+            # Plot geometry
+            plt.figure(figsize=(12, 5))
+            
+            # 2D plot
+            plt.subplot(121)
+            plt.scatter(coords_2d[:,0], coords_2d[:,1])
+            for i in range(self.num_qubits):
+                plt.text(coords_2d[i,0], coords_2d[i,1], f"Q{i}")
+            plt.title(f"2D Geometry ({pattern}, n={num_injections}, g={gap_cycles})")
+            
+            # MI heatmap
+            plt.subplot(122)
+            sns.heatmap(mi_matrix, annot=True, cmap='viridis')
+            plt.title(f"MI Matrix ({pattern}, n={num_injections}, g={gap_cycles})")
+            
+            plt.tight_layout()
+            plt.savefig(f'plots/charge_injection_{pattern}_n{num_injections}_g{gap_cycles}.png')
+            plt.close()
+            
+            print(f"Pattern: {pattern}, Injections: {num_injections}, Gaps: {gap_cycles}")
+            print(f"Average MI: {np.mean(mi_matrix):.4f}")
+            print(f"Curvature: {curvature:.4f}")
+            print("-" * 50)
         
         return results
 

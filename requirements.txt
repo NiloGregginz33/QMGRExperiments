@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Base dependencies for QMGRExperiments
 amazon-braket-sdk>=1.93.0
 qiskit>=1.4.3
@@ -10,3 +11,9 @@ scikit-learn>=1.7.0
 pandas>=2.1.0
 seaborn>=0.13.2
 networkx>=3.4.2
+=======
+qiskit>=0.34.0
+numpy>=1.21.0
+matplotlib>=3.4.0
+mitiq>=0.20.0
+>>>>>>> 32d80f7 (Add core project files and documentation)

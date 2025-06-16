@@ -1,0 +1,247 @@
+n,theta_static,theta_dynamic,phi,Predicted,Measured,Difference,Source
+1,0.7853981633974483,0.7853981633974483,0.39269908169872414,0.548320495569647,0.5145931120999987,0.03372738346964832,"def sweep_entropy_prediction(theta_static, theta_dynamic, phi, n_radiation, n, offset=0.15, n_max=5):
+    predicted = []
+    measured = []
+
+    n1 = n
+
+    for n in range(1, n_max + 1):
+        pred = predict_entropy_with_n(theta_static, phi, n_radiation, n, offset, n_max=6)
+        predicted.append(pred)
+
+        # Simulate actual entropy
+        total_qubits = n + 1
+        qc = QuantumCircuit(total_qubits)
+        qc.rx(theta_static, 0)
+        for i in range(1, total_qubits):
+            qc.barrier()
+            qc.ry(theta_dynamic, 0)
+            qc.rz(phi, 0)
+            qc.cx(0, i)
+        qc.save_statevector()
+        backend = Aer.get_backend('aer_simulator')
+        sv = Statevector(backend.run(qc).result().data(0)['statevector'])
+        rho_bh = partial_trace(sv, list(range(1, total_qubits)))
+        meas = qiskit_entropy(rho_bh)
+        measured.append(meas)
+
+    # Plot
+    x = list(range(1, n_max + 1))
+    plt.plot(x, predicted, label='Predicted', marker='o')
+    plt.plot(x, measured, label='Measured', marker='x')
+    plt.xlabel(""Number of Radiation Qubits (n)"")
+    plt.ylabel(""Entropy of Q0"")
+    plt.title(""Predicted vs Measured Entropy"")
+    plt.legend()
+    plt.grid(True)
+    plt.ylim(0, 1.05)
+
+    plt.savefig(f""verify//logs//{n1}//Figure_1_prediction_vs_test.png"")
+
+    return list(zip(x, predicted, measured))
+"
+2,0.7853981633974483,0.7853981633974483,0.39269908169872414,0.5940754266890015,0.6392254344368816,0.04515000774788014,"def sweep_entropy_prediction(theta_static, theta_dynamic, phi, n_radiation, n, offset=0.15, n_max=5):
+    predicted = []
+    measured = []
+
+    n1 = n
+
+    for n in range(1, n_max + 1):
+        pred = predict_entropy_with_n(theta_static, phi, n_radiation, n, offset, n_max=6)
+        predicted.append(pred)
+
+        # Simulate actual entropy
+        total_qubits = n + 1
+        qc = QuantumCircuit(total_qubits)
+        qc.rx(theta_static, 0)
+        for i in range(1, total_qubits):
+            qc.barrier()
+            qc.ry(theta_dynamic, 0)
+            qc.rz(phi, 0)
+            qc.cx(0, i)
+        qc.save_statevector()
+        backend = Aer.get_backend('aer_simulator')
+        sv = Statevector(backend.run(qc).result().data(0)['statevector'])
+        rho_bh = partial_trace(sv, list(range(1, total_qubits)))
+        meas = qiskit_entropy(rho_bh)
+        measured.append(meas)
+
+    # Plot
+    x = list(range(1, n_max + 1))
+    plt.plot(x, predicted, label='Predicted', marker='o')
+    plt.plot(x, measured, label='Measured', marker='x')
+    plt.xlabel(""Number of Radiation Qubits (n)"")
+    plt.ylabel(""Entropy of Q0"")
+    plt.title(""Predicted vs Measured Entropy"")
+    plt.legend()
+    plt.grid(True)
+    plt.ylim(0, 1.05)
+
+    plt.savefig(f""verify//logs//{n1}//Figure_1_prediction_vs_test.png"")
+
+    return list(zip(x, predicted, measured))
+"
+3,0.7853981633974483,0.7853981633974483,0.39269908169872414,0.6352166296219177,0.7287423699945028,0.0935257403725851,"def sweep_entropy_prediction(theta_static, theta_dynamic, phi, n_radiation, n, offset=0.15, n_max=5):
+    predicted = []
+    measured = []
+
+    n1 = n
+
+    for n in range(1, n_max + 1):
+        pred = predict_entropy_with_n(theta_static, phi, n_radiation, n, offset, n_max=6)
+        predicted.append(pred)
+
+        # Simulate actual entropy
+        total_qubits = n + 1
+        qc = QuantumCircuit(total_qubits)
+        qc.rx(theta_static, 0)
+        for i in range(1, total_qubits):
+            qc.barrier()
+            qc.ry(theta_dynamic, 0)
+            qc.rz(phi, 0)
+            qc.cx(0, i)
+        qc.save_statevector()
+        backend = Aer.get_backend('aer_simulator')
+        sv = Statevector(backend.run(qc).result().data(0)['statevector'])
+        rho_bh = partial_trace(sv, list(range(1, total_qubits)))
+        meas = qiskit_entropy(rho_bh)
+        measured.append(meas)
+
+    # Plot
+    x = list(range(1, n_max + 1))
+    plt.plot(x, predicted, label='Predicted', marker='o')
+    plt.plot(x, measured, label='Measured', marker='x')
+    plt.xlabel(""Number of Radiation Qubits (n)"")
+    plt.ylabel(""Entropy of Q0"")
+    plt.title(""Predicted vs Measured Entropy"")
+    plt.legend()
+    plt.grid(True)
+    plt.ylim(0, 1.05)
+
+    plt.savefig(f""verify//logs//{n1}//Figure_1_prediction_vs_test.png"")
+
+    return list(zip(x, predicted, measured))
+"
+4,0.7853981633974483,0.7853981633974483,0.39269908169872414,0.6705237393441785,0.7946051429227929,0.12408140357861441,"def sweep_entropy_prediction(theta_static, theta_dynamic, phi, n_radiation, n, offset=0.15, n_max=5):
+    predicted = []
+    measured = []
+
+    n1 = n
+
+    for n in range(1, n_max + 1):
+        pred = predict_entropy_with_n(theta_static, phi, n_radiation, n, offset, n_max=6)
+        predicted.append(pred)
+
+        # Simulate actual entropy
+        total_qubits = n + 1
+        qc = QuantumCircuit(total_qubits)
+        qc.rx(theta_static, 0)
+        for i in range(1, total_qubits):
+            qc.barrier()
+            qc.ry(theta_dynamic, 0)
+            qc.rz(phi, 0)
+            qc.cx(0, i)
+        qc.save_statevector()
+        backend = Aer.get_backend('aer_simulator')
+        sv = Statevector(backend.run(qc).result().data(0)['statevector'])
+        rho_bh = partial_trace(sv, list(range(1, total_qubits)))
+        meas = qiskit_entropy(rho_bh)
+        measured.append(meas)
+
+    # Plot
+    x = list(range(1, n_max + 1))
+    plt.plot(x, predicted, label='Predicted', marker='o')
+    plt.plot(x, measured, label='Measured', marker='x')
+    plt.xlabel(""Number of Radiation Qubits (n)"")
+    plt.ylabel(""Entropy of Q0"")
+    plt.title(""Predicted vs Measured Entropy"")
+    plt.legend()
+    plt.grid(True)
+    plt.ylim(0, 1.05)
+
+    plt.savefig(f""verify//logs//{n1}//Figure_1_prediction_vs_test.png"")
+
+    return list(zip(x, predicted, measured))
+"
+5,0.7853981633974483,0.7853981633974483,0.39269908169872414,0.6996314967892762,0.8437498198783727,0.14411832308909656,"def sweep_entropy_prediction(theta_static, theta_dynamic, phi, n_radiation, n, offset=0.15, n_max=5):
+    predicted = []
+    measured = []
+
+    n1 = n
+
+    for n in range(1, n_max + 1):
+        pred = predict_entropy_with_n(theta_static, phi, n_radiation, n, offset, n_max=6)
+        predicted.append(pred)
+
+        # Simulate actual entropy
+        total_qubits = n + 1
+        qc = QuantumCircuit(total_qubits)
+        qc.rx(theta_static, 0)
+        for i in range(1, total_qubits):
+            qc.barrier()
+            qc.ry(theta_dynamic, 0)
+            qc.rz(phi, 0)
+            qc.cx(0, i)
+        qc.save_statevector()
+        backend = Aer.get_backend('aer_simulator')
+        sv = Statevector(backend.run(qc).result().data(0)['statevector'])
+        rho_bh = partial_trace(sv, list(range(1, total_qubits)))
+        meas = qiskit_entropy(rho_bh)
+        measured.append(meas)
+
+    # Plot
+    x = list(range(1, n_max + 1))
+    plt.plot(x, predicted, label='Predicted', marker='o')
+    plt.plot(x, measured, label='Measured', marker='x')
+    plt.xlabel(""Number of Radiation Qubits (n)"")
+    plt.ylabel(""Entropy of Q0"")
+    plt.title(""Predicted vs Measured Entropy"")
+    plt.legend()
+    plt.grid(True)
+    plt.ylim(0, 1.05)
+
+    plt.savefig(f""verify//logs//{n1}//Figure_1_prediction_vs_test.png"")
+
+    return list(zip(x, predicted, measured))
+"
+6,0.7853981633974483,0.7853981633974483,0.39269908169872414,0.7228443443188282,0.880751530225437,0.1579071859066088,"def sweep_entropy_prediction(theta_static, theta_dynamic, phi, n_radiation, n, offset=0.15, n_max=5):
+    predicted = []
+    measured = []
+
+    n1 = n
+
+    for n in range(1, n_max + 1):
+        pred = predict_entropy_with_n(theta_static, phi, n_radiation, n, offset, n_max=6)
+        predicted.append(pred)
+
+        # Simulate actual entropy
+        total_qubits = n + 1
+        qc = QuantumCircuit(total_qubits)
+        qc.rx(theta_static, 0)
+        for i in range(1, total_qubits):
+            qc.barrier()
+            qc.ry(theta_dynamic, 0)
+            qc.rz(phi, 0)
+            qc.cx(0, i)
+        qc.save_statevector()
+        backend = Aer.get_backend('aer_simulator')
+        sv = Statevector(backend.run(qc).result().data(0)['statevector'])
+        rho_bh = partial_trace(sv, list(range(1, total_qubits)))
+        meas = qiskit_entropy(rho_bh)
+        measured.append(meas)
+
+    # Plot
+    x = list(range(1, n_max + 1))
+    plt.plot(x, predicted, label='Predicted', marker='o')
+    plt.plot(x, measured, label='Measured', marker='x')
+    plt.xlabel(""Number of Radiation Qubits (n)"")
+    plt.ylabel(""Entropy of Q0"")
+    plt.title(""Predicted vs Measured Entropy"")
+    plt.legend()
+    plt.grid(True)
+    plt.ylim(0, 1.05)
+
+    plt.savefig(f""verify//logs//{n1}//Figure_1_prediction_vs_test.png"")
+
+    return list(zip(x, predicted, measured))
+"

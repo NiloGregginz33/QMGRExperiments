@@ -1,0 +1,10 @@
+Subsystem Entropies:
+Center (Qubit 0): 1.0000
+Boundary (Qubit 1): 1.0000
+Outside (Qubit 2): 1.0000
+Timeline 1 (Qubit 3): 0.5536
+Timeline 2 (Qubit 4): 0.3778
+
+Mutual Information:
+Center ↔ Timeline 1: 0.2531
+Boundary ↔ Timeline 2: 0.0774

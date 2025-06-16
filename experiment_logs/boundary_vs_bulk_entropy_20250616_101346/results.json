@@ -1,0 +1,33 @@
+{
+  "experiment_name": "boundary_vs_bulk_entropy",
+  "timestamp": "20250616_101346",
+  "parameters": {},
+  "results": [
+    {
+      "cut_size": 1,
+      "entropy": 0.9999889930794672,
+      "valid": true
+    },
+    {
+      "cut_size": 2,
+      "entropy": 1.9990736033521914,
+      "valid": true
+    },
+    {
+      "cut_size": 3,
+      "entropy": 2.99853575384524,
+      "valid": true
+    },
+    {
+      "cut_size": 4,
+      "entropy": 3.9965739497183415,
+      "valid": true
+    },
+    {
+      "cut_size": 5,
+      "entropy": 4.993928392818626,
+      "valid": true
+    }
+  ],
+  "physics_implications": []
+}

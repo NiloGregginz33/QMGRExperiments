@@ -1,0 +1,14 @@
+{
+  "experiment_name": "physics_sequence",
+  "timestamp": "20250616_095854",
+  "parameters": {
+    "device": "LocalSimulator",
+    "shots": 1024,
+    "max_qubits": 6,
+    "phase_steps": 15
+  },
+  "results": [
+    {
+      "phase": 0.0,
+      "entropy": 0.9988990309409242,
+      "mi_matrix": 
