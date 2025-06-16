@@ -1,0 +1,82 @@
+{
+  "name": "holographic_test",
+  "timestamp": "20250616_162047",
+  "data": {
+    "boundary_entropy": 1.0,
+    "mutual_information_matrix": [
+      [
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ]
+    ],
+    "individual_entropies": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "metadata": {
+    "circuit_depth": 6,
+    "num_qubits": 6,
+    "gates_used": {
+      "cx": 5,
+      "h": 1
+    },
+    "theoretical_expectation": {
+      "boundary_entropy": 1.0,
+      "mutual_info_pattern": "All pairs should show high mutual information"
+    }
+  },
+  "conclusions": {
+    "holographic_principle_satisfied": true,
+    "entanglement_structure": "Maximally entangled state achieved",
+    "bulk_boundary_correspondence": "Strong correlation between bulk and boundary degrees of freedom"
+  }
+}

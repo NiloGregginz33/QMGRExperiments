@@ -11,26 +11,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from qiskit.visualization import plot_histogram
 from typing import List, Tuple, Dict, Set
-from mitiq import Executor, Observable, QuantumResult
-from mitiq.interface.conversions import convert_to_mitiq, convert_from_mitiq
-from mitiq.interface import register_mitiq_converters
-from mitiq.interface.mitiq_qiskit import from_qiskit, to_qiskit
-register_mitiq_converters(
-    package_name="qiskit",
-    convert_to_function=convert_to_mitiq,
-    convert_from_function=convert_from_mitiq,
-)
-register_mitiq_converters(
-    package_name="qiskit",
-    convert_to_function=from_qiskit,
-    convert_from_function=to_qiskit,
-)
 import qiskit
 from braket.aws import AwsDevice
 import boto3
-from mitiq.zne import execute_with_zne
-from mitiq.zne.scaling     import fold_gates_at_random
-from mitiq.zne.inference   import RichardsonFactory
 from scipy.spatial.distance import jensenshannon
 from qiskit.result import Result, Counts  # Import for local simulation results
 from qiskit.circuit.library import QFT, RZGate, MCXGate, ZGate, XGate, HGate, CSwapGate
