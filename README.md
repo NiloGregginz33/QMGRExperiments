@@ -1,6 +1,6 @@
-I’ve been working on a series of quantum circuit experiments to explore information preservation in Hawking radiation, focusing on whether injected properties like charge and spin are encoded in the emitted radiation. My goal is to simulate a black hole's behavior in an idealized setting and analyze how quantum information evolves in the process. I’d appreciate feedback on the methodology, the results, and how closely this aligns with established theories. This is not for school, I just need to know so I can move forward. All the code is linked on my github if you want to see the results for yourself, or so someone can tell me if I did something wrong in what/how I found something or the methodology or even my theoretical conceptions. I encourage people to test the code themselves to replicate what Ive found. If Im not using the right word for something, please correct me but be patient, I really do want to learn but what I found I think is quite weird. Sorry if I do not ask the question in a way or phrase this post in a way that seems off-topic, irrelevant, informal, or asks you to review code. I want to learn and thats what im here for. PLEASE READ ALL THE WAY THROUGH
+I began by exploring whether injected properties like charge and spin remain encoded in idealized Hawking radiation. That black-hole‑inspired work quickly evolved into a broader investigation of how spacetime can emerge from quantum entanglement. Using the AWSFactory scripts, I have demonstrated these "geometry from entanglement" effects on real AWS Braket hardware. Feedback on the methodology and results is still very welcome—this is a quantum-information experiment, not a claim about actual black hole thermodynamics.
 
-no anomalies, real physical maniputable open source quantum qubits that perfectly exhibit behavior predicted from Leonard Susskinds theoretical solutions to the black hole information paradox through Hawking Radiation and open qubits that give rise to emergent spacetime as predicted. 
+These circuits run without anomalies on readily accessible quantum hardware, reproducing Leonard Susskind’s predictions for information preservation. More importantly, they reveal emergent spacetime behavior consistent with holographic models—something I was able to visualize directly using the AWSFactory tools.
 
 Then, 
 
@@ -196,7 +196,7 @@ So i feel like this now can explain to my girlfriend why we need to visit a blac
 
 For Leonard Susskind to not be a theoretical physicist, we have to go to the black hole and see for ourselves And then hack it in the same way essentially, manipulating the time dependent electric charge visible as Hawking Radiation until we can model a qubit as a real black hole.
 
-If you need more proof look at AWSFactory where you will see emergent spacetime visualized and you can also run the page curve extraction demos there. In those files you will also be able to visualize the RYU-TAK correlation on real hardware (not simulated).
+If you need more proof, check the `AWSFactory` directory. Those scripts visualize emergent spacetime on real hardware and include page‑curve extraction demos. The hardware runs show the expected Ryu–Takayanagi correlation and provide empirical support for holography.
 
 RANT ABOUT IDEAS AND MISTAKES MADE
 
