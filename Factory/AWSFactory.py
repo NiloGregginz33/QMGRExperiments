@@ -29,35 +29,36 @@ def remap_circuit_to_contiguous_qubits(circuit: Circuit):
     Remaps a Braket circuit to use contiguous qubit indices starting from 0.
     Returns the new circuit and a mapping from old to new qubit indices.
     """
-
-    # Collect all used qubit indices (handle QubitSet and ints)
     used_qubits = set()
+
     for instr in circuit.instructions:
-        # Add target qubits
+        # Normalize targets
         if instr.target:
             for q in QubitSet(instr.target):
                 used_qubits.add(int(q))
-        # Add control qubit
-        if instr.control is not None:
-            used_qubits.add(int(instr.control))
+        # Normalize controls
+        if instr.control:
+            for q in QubitSet(instr.control):
+                used_qubits.add(int(q))
 
     sorted_qubits = sorted(used_qubits)
     qubit_mapping = {old: new for new, old in enumerate(sorted_qubits)}
 
     new_circuit = Circuit()
-    for instr in circuit.instructions:
-        new_targets = [qubit_mapping[int(q)] for q in QubitSet(instr.target)] if instr.target else []
-        new_control = qubit_mapping[int(instr.control)] if instr.control is not None else None
 
-        new_instr = Instruction(
-            operator=instr.operator,
-            target=new_targets,
-            control=new_control
-        )
-        new_circuit.add_instruction(new_instr)
+    for instr in circuit.instructions:
+        targets = [qubit_mapping[int(q)] for q in QubitSet(instr.target)] if instr.target else []
+        controls = [qubit_mapping[int(q)] for q in QubitSet(instr.control)] if instr.control else []
+
+        for ctrl in controls or [None]:
+            new_instr = Instruction(
+                operator=instr.operator,
+                target=targets,
+                control=ctrl
+            )
+            new_circuit.add_instruction(new_instr)
 
     return new_circuit, qubit_mapping
-
 
 warnings.filterwarnings("ignore", category=UserWarning)
 arn = "arn:aws:braket:us-east-1::device/qpu/ionq/Aria-1"
