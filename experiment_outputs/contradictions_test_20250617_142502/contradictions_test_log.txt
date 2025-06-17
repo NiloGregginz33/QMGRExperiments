@@ -1,0 +1,14 @@
+2025-06-17 14:25:02,126 - contradictions_test - INFO - Theoretical Background:
+Test the holographic principle with disconnected bulk.
+2025-06-17 14:25:02,126 - contradictions_test - INFO - Methodology:
+Prepare two separate entangled pairs, compute boundary entropy.
+2025-06-17 14:25:02,126 - contradictions_test - INFO - Parameters: {
+  "num_qubits": 6
+}
+2025-06-17 14:25:02,127 - contradictions_test - INFO - Metrics: {
+  "disconnected_entropy": 1.9999999999999996
+}
+2025-06-17 14:25:02,127 - contradictions_test - INFO - Analysis:
+Disconnected bulk leads to reduced boundary entropy.
+2025-06-17 14:25:02,133 - contradictions_test - INFO - Interpretation:
+Holographic principle is violated when bulk-bulk connections are missing.

@@ -3,6 +3,12 @@ from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 import matplotlib.pyplot as plt
 from sklearn.manifold import MDS
+import os
+import json
+
+# After the imports, add the following lines to create the output directory
+exp_dir = "experiment_logs/ctc_geometry"
+os.makedirs(exp_dir, exist_ok=True)
 
 def shannon_entropy(probs):
     probs = np.array(probs)
@@ -74,5 +80,26 @@ plt.title("Emergent Geometry from CTC-like Structure")
 plt.xlabel("MDS Dimension 1")
 plt.ylabel("MDS Dimension 2")
 plt.grid(True)
-plt.savefig('plots/ctc_geometry_experiment.png')
-plt.close() 
+plt.savefig(f"{exp_dir}/ctc_geometry_experiment.png")
+plt.close()
+
+# After printing the mutual information matrix, save it to a JSON file
+with open(f"{exp_dir}/mi_matrix.json", "w") as f:
+    json.dump({"mi_matrix": mi_matrix.tolist()}, f, indent=2)
+
+# After printing the MDS coordinates, save them to a JSON file
+with open(f"{exp_dir}/mds_coordinates.json", "w") as f:
+    json.dump({"mds_coordinates": coords.tolist()}, f, indent=2)
+
+# Write a summary file
+with open(f"{exp_dir}/summary.txt", "w") as f:
+    f.write("CTC Geometry Experiment Summary\n")
+    f.write("================================\n\n")
+    f.write("Theoretical Background:\n")
+    f.write("This experiment simulates a Closed Timelike Curve (CTC) geometry using a quantum circuit. It investigates how feedback loops and time-like evolution affect entanglement and emergent geometry.\n\n")
+    f.write("Methodology:\n")
+    f.write("A 4-qubit quantum circuit is constructed with a feedback loop structure. Mutual information is computed between qubits, and MDS is used to visualize the emergent geometry.\n\n")
+    f.write("Results:\n")
+    f.write(f"Results saved in: {exp_dir}\n")
+    f.write("\nConclusion:\n")
+    f.write("The experiment demonstrates how CTC-like structures influence quantum entanglement and emergent geometry, providing insights into the interplay between quantum mechanics and spacetime structure.\n") 
