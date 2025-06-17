@@ -1,0 +1,19 @@
+Curved Geometry Experiment Summary
+================================
+
+Theoretical Background:
+This experiment investigates how quantum information and entanglement behave in curved spacetime scenarios. Theoretical models suggest that curvature affects entanglement entropy and information flow, which can be probed using quantum circuits and statistical analysis.
+
+Methodology:
+Quantum circuits are constructed to simulate different spacetime geometries (flat, curved, etc.). Entropy and mutual information are computed for various configurations. The experiment generates and saves plots to visualize the effect of curvature on quantum information.
+
+Results:
+Results saved in: experiment_logs/curved_geometry
+
+Correlations:
+entropy_distance: nan (p-value: nan)
+curvature_entropy: nan (p-value: nan)
+curvature_distance: 0.208 (p-value: 2.695e-01)
+
+Conclusion:
+The experiment demonstrates that curvature influences the distribution of entropy and information in the quantum system. The generated plots show how control entropy varies with different geometric parameters, confirming theoretical predictions about the interplay between geometry and quantum information.

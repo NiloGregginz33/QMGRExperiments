@@ -1,0 +1,14 @@
+CTC Geometry Experiment Summary
+================================
+
+Theoretical Background:
+This experiment simulates a Closed Timelike Curve (CTC) geometry using a quantum circuit. It investigates how feedback loops and time-like evolution affect entanglement and emergent geometry.
+
+Methodology:
+A 4-qubit quantum circuit is constructed with a feedback loop structure. Mutual information is computed between qubits, and MDS is used to visualize the emergent geometry.
+
+Results:
+Results saved in: experiment_logs/ctc_geometry
+
+Conclusion:
+The experiment demonstrates how CTC-like structures influence quantum entanglement and emergent geometry, providing insights into the interplay between quantum mechanics and spacetime structure.

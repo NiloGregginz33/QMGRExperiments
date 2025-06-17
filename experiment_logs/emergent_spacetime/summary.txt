@@ -1,0 +1,14 @@
+Emergent Spacetime Experiment Summary
+====================================
+
+Theoretical Background:
+This experiment explores how quantum entanglement gives rise to emergent spacetime geometry. By analyzing mutual information and geometric embeddings, it probes the relationship between quantum information and geometry.
+
+Methodology:
+A quantum circuit is simulated over multiple timesteps. Mutual information matrices are computed, and MDS is used to extract geometric features. Entropy, curvature, and distance are tracked over time.
+
+Results:
+Results saved in: experiment_logs/emergent_spacetime
+
+Conclusion:
+The experiment demonstrates how quantum entanglement patterns can be mapped to emergent geometric structures, supporting the idea that spacetime geometry is encoded in quantum information.

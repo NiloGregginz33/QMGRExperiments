@@ -1,0 +1,14 @@
+2025-06-17 14:25:01,848 - holographic_demo - INFO - Theoretical Background:
+Demonstrates the holographic principle using a maximally entangled state.
+2025-06-17 14:25:01,848 - holographic_demo - INFO - Methodology:
+Prepare a 6-qubit GHZ state, trace out the bulk, and compute boundary entropy.
+2025-06-17 14:25:01,848 - holographic_demo - INFO - Parameters: {
+  "num_qubits": 6
+}
+2025-06-17 14:25:01,848 - holographic_demo - INFO - Metrics: {
+  "boundary_entropy": 1.0
+}
+2025-06-17 14:25:01,848 - holographic_demo - INFO - Analysis:
+Boundary entropy is close to maximal, indicating complete bulk encoding.
+2025-06-17 14:25:01,869 - holographic_demo - INFO - Interpretation:
+The pattern matches the expected behavior for a holographic system.

@@ -20,7 +20,6 @@ from qiskit.circuit.library import QFT, RZGate, MCXGate, ZGate, XGate, HGate, CS
 from qiskit.qasm3 import dump
 import scipy.linalg as la
 from qiskit.primitives.containers import BitArray
-from qiskit_algorithms.optimizers import COBYLA
 from sklearn.metrics import r2_score
 import random
 import scipy
@@ -37,8 +36,6 @@ import requests
 import sys
 from qiskit_ionq import IonQProvider
 from scipy.stats import spearmanr, kendalltau, pearsonr
-from qiskit_algorithms.optimizers import COBYLA
-import psutil
 import json
 import itertools
 import csv
