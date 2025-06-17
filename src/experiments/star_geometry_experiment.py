@@ -3,6 +3,9 @@ from braket.circuits import Circuit
 from braket.devices import LocalSimulator
 import matplotlib.pyplot as plt
 from sklearn.manifold import MDS
+from braket.registers import Qubit
+import os
+from datetime import datetime
 
 def shannon_entropy(probs):
     probs = np.array(probs)
@@ -23,41 +26,68 @@ def compute_mi(probs, qA, qB, total_qubits):
     B = marginal_probs(probs, total_qubits, [qB])
     return shannon_entropy(A) + shannon_entropy(B) - shannon_entropy(AB)
 
-num_qubits = 4
-circ = Circuit()
-circ.h(0)  # Central qubit
-circ.cx(0, 1)
-circ.cx(0, 2)
-circ.cx(0, 3)
-circ.rx(np.pi/4, 0)
-circ.rx(np.pi/4, 1)
-circ.rx(np.pi/4, 2)
-circ.rx(np.pi/4, 3)
+def run_star_geometry_experiment():
+    # Create a quantum circuit
+    circ = Circuit()
+    
+    # Apply Hadamard gates to create superposition
+    circ.h(0)
+    circ.h(1)
+    circ.h(2)
+    circ.h(3)
+    
+    # Apply controlled rotations to create star geometry
+    circ.rx(0, np.pi/4)  # First qubit rotation
+    circ.rx(1, np.pi/4)  # Second qubit rotation
+    circ.rx(2, np.pi/4)  # Third qubit rotation
+    circ.rx(3, np.pi/4)  # Fourth qubit rotation
+    
+    # Apply CNOT gates to create entanglement
+    circ.cnot(0, 1)
+    circ.cnot(1, 2)
+    circ.cnot(2, 3)
+    circ.cnot(3, 0)
+    
+    # Create a local simulator
+    device = LocalSimulator()
+    
+    # Run the circuit
+    result = device.run(circ, shots=1000).result()
+    
+    # Get measurement counts
+    counts = result.measurement_counts
+    
+    # Create timestamp for unique folder name
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    experiment_folder = f"experiment_logs/star_geometry_experiment_{timestamp}"
+    os.makedirs(experiment_folder, exist_ok=True)
+    
+    # Save results to a log file
+    log_file = os.path.join(experiment_folder, "star_geometry_experiment_log.txt")
+    with open(log_file, "w", encoding='utf-8') as f:
+        f.write("Star Geometry Experiment Results\n")
+        f.write("==============================\n\n")
+        f.write("Circuit:\n")
+        f.write(str(circ))
+        f.write("\n\nMeasurement Results:\n")
+        for state, count in counts.items():
+            f.write(f"{state}: {count}\n")
+    
+    # Create and save visualization
+    plt.figure(figsize=(10, 6))
+    plt.bar(counts.keys(), counts.values())
+    plt.title("Star Geometry Experiment Results")
+    plt.xlabel("State")
+    plt.ylabel("Count")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    
+    # Save the plot
+    plot_file = os.path.join(experiment_folder, "star_geometry_results.png")
+    plt.savefig(plot_file)
+    plt.close()
+    
+    return counts
 
-device = LocalSimulator()
-task = device.run(circ, shots=2048)
-result = task.result()
-probs = np.array(result.values).reshape(-1)
-
-mi_matrix = np.zeros((num_qubits, num_qubits))
-for i in range(num_qubits):
-    for j in range(i + 1, num_qubits):
-        mi = compute_mi(probs, i, j, num_qubits)
-        mi_matrix[i, j] = mi_matrix[j, i] = mi
-
-epsilon = 1e-6
-dist = 1 / (mi_matrix + epsilon)
-np.fill_diagonal(dist, 0)
-
-mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
-coords = mds.fit_transform(dist)
-
-plt.figure(figsize=(5, 5))
-plt.scatter(coords[:, 0], coords[:, 1], c='blue')
-for i in range(num_qubits):
-    plt.text(coords[i, 0], coords[i, 1], f"Q{i}", fontsize=12)
-plt.title('Star Geometry from MI (Braket)')
-plt.axis('equal')
-plt.grid(True)
-plt.savefig('plots/star_geometry_experiment.png')
-plt.show() 
+if __name__ == "__main__":
+    run_star_geometry_experiment() 
