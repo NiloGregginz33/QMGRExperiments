@@ -6,7 +6,7 @@ Then,
 
 a modifiable 4D manifold (and other geometries) emerging from entanglement as a result of following the evidence of the first experiment.
 
-i feel like a lot of us did not really want to wait literal trillions of years to spend doing or arguing about in order to know the next layer of physics
+i feel like a lot of us did not really want to wait literal trillions of years to spend doing or arguing about in order to know the next layer of physics. For the record this is not a personal project or art project, rather it is meant to be a declaration of being "first" and as emperical evidence of the holographic principle in a rigorous scientific manner and with the resources in my hand. 
 
 DO IT YOURSELF
 
