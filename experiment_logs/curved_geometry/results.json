@@ -1,0 +1,24 @@
+{
+  "correlations": {
+    "entropy_distance": {
+      "correlation": NaN,
+      "p_value": NaN
+    },
+    "curvature_entropy": {
+      "correlation": NaN,
+      "p_value": NaN
+    },
+    "curvature_distance": {
+      "correlation": 0.20821003350315323,
+      "p_value": 0.26954519298877366
+    }
+  },
+  "summary": {
+    "modes": [
+      "flat",
+      "curved"
+    ],
+    "num_timesteps": 15,
+    "num_qubits": 6
+  }
+}

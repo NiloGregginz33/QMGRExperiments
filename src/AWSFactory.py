@@ -24,6 +24,34 @@ import pandas as pd
 
 from braket.circuits import Circuit, Instruction, QubitSet
 import os
+def remap_circuit_to_contiguous_qubits(circuit: Circuit):
+    """
+    Remaps a Braket circuit to use contiguous qubit indices starting from 0.
+    Returns the new circuit and a mapping from old to new qubit indices.
+    """
+    used_qubits = set()
+    for instr in circuit.instructions:
+        if instr.target:
+            for q in QubitSet(instr.target):
+                used_qubits.add(int(q))
+        if instr.control:
+            for q in QubitSet(instr.control):
+                used_qubits.add(int(q))
+    sorted_qubits = sorted(used_qubits)
+    qubit_mapping = {old: new for new, old in enumerate(sorted_qubits)}
+    new_circuit = Circuit()
+    for instr in circuit.instructions:
+        targets = [qubit_mapping[int(q)] for q in QubitSet(instr.target)] if instr.target else []
+        controls = [qubit_mapping[int(q)] for q in QubitSet(instr.control)] if instr.control else []
+        for ctrl in controls or [None]:
+            new_instr = Instruction(
+                operator=instr.operator,
+                target=targets,
+                control=ctrl
+            )
+            new_circuit.add_instruction(new_instr)
+    return new_circuit, qubit_mapping
+
 
 print("ENV CHECK:")
 print("AWS_ACCESS_KEY_ID =", os.getenv("AWS_ACCESS_KEY_ID"))
@@ -34,49 +62,6 @@ print("AWS_DEFAULT_REGION =", os.getenv("AWS_DEFAULT_REGION"))
 if not os.path.exists('plots'):
     os.makedirs('plots')
 
-# Open a log file for results
-logfile = open('awsfactory_results.log', 'a')
-def log(msg):
-    print(msg)
-    logfile.write(msg + '\n')
-
-def remap_circuit_to_contiguous_qubits(circuit: Circuit):
-    """
-    Remaps a Braket circuit to use contiguous qubit indices starting from 0.
-    Returns the new circuit and a mapping from old to new qubit indices.
-    """
-    used_qubits = set()
-
-    for instr in circuit.instructions:
-        # Normalize targets
-        if instr.target:
-            for q in QubitSet(instr.target):
-                used_qubits.add(int(q))
-        # Normalize controls
-        if instr.control:
-            for q in QubitSet(instr.control):
-                used_qubits.add(int(q))
-
-    sorted_qubits = sorted(used_qubits)
-    qubit_mapping = {old: new for new, old in enumerate(sorted_qubits)}
-
-    new_circuit = Circuit()
-
-    for instr in circuit.instructions:
-        targets = [qubit_mapping[int(q)] for q in QubitSet(instr.target)] if instr.target else []
-        controls = [qubit_mapping[int(q)] for q in QubitSet(instr.control)] if instr.control else []
-
-        for ctrl in controls or [None]:
-            new_instr = Instruction(
-                operator=instr.operator,
-                target=targets,
-                control=ctrl
-            )
-            new_circuit.add_instruction(new_instr)
-
-    return new_circuit, qubit_mapping
-
-warnings.filterwarnings("ignore", category=UserWarning)
 # Toggle between local simulation and AWS hardware
 USE_LOCAL_SIM = True  # Set to False to use AWS Braket hardware (will incur costs!)
 arn = "arn:aws:braket:us-east-1::device/qpu/ionq/Aria-1"
@@ -178,7 +163,7 @@ class ScaledEmergentSpacetime:
         plt.tight_layout()
         plt.savefig('plots/scaled_entropy_vs_area.png')
         plt.close()
-        log('[ScaledEmergentSpacetime] Chart saved as plots/scaled_entropy_vs_area.png')
+        print('[ScaledEmergentSpacetime] Chart saved as plots/scaled_entropy_vs_area.png')
         return df
 
 
@@ -295,7 +280,7 @@ class AdSGeometryAnalyzer:
             plt.tight_layout()
             plt.savefig(f'plots/ads_geometry_analyzer_{phi_val:.2f}.png')
             plt.close()
-            log(f'[AdSGeometryAnalyzer] Chart saved as plots/ads_geometry_analyzer_{phi_val:.2f}.png')
+            print('[AdSGeometryAnalyzer] Chart saved as plots/ads_geometry_analyzer_{phi_val:.2f}.png')
 
         return rt_area_comparison, entropy_vals
 
@@ -311,7 +296,7 @@ class AdSGeometryAnalyzer:
         plt.tight_layout()
         plt.savefig('plots/rt_relation.png')
         plt.close()
-        log('[AdSGeometryAnalyzer] Chart saved as plots/rt_relation.png')
+        print('[AdSGeometryAnalyzer] Chart saved as plots/rt_relation.png')
         
 # Step 3: Entropy function
 def shannon_entropy(probs):
@@ -340,7 +325,7 @@ def page_curve_demo():
         probs = np.array(raw_probs).reshape(-1)
         entropy = shannon_entropy(probs)
         entropy_values.append(entropy)
-        log(f'[page_curve_demo] phi={phi_val}, entropy={entropy}')
+        print(f'[page_curve_demo] phi={phi_val}, entropy={entropy}')
     plt.figure(figsize=(8, 5))
     plt.plot(timesteps, entropy_values, marker='o', label="Radiation Entropy")
     plt.xlabel("Evaporation Phase φ(t)")
@@ -351,7 +336,7 @@ def page_curve_demo():
     plt.tight_layout()
     plt.savefig('plots/page_curve_demo.png')
     plt.close()
-    log('[page_curve_demo] Chart saved as plots/page_curve_demo.png')
+    print('[page_curve_demo] Chart saved as plots/page_curve_demo.png')
 
 
 def page_curve_mi_demo():
@@ -422,7 +407,7 @@ def page_curve_mi_demo():
     plt.tight_layout()
     plt.savefig('plots/page_curve_mi_demo.png')
     plt.close()
-    log('[page_curve_mi_demo] Chart saved as plots/page_curve_mi_demo.png')
+    print('[page_curve_mi_demo] Chart saved as plots/page_curve_mi_demo.png')
 
     # --- Plot MI Matrices + Emergent Geometry ---
     for idx, (phi_val, mi_matrix) in enumerate(zip(timesteps, mi_snapshots)):
@@ -438,7 +423,7 @@ def page_curve_mi_demo():
         plt.tight_layout()
         plt.savefig(f'plots/mi_matrix_{phi_val:.2f}.png')
         plt.close()
-        log(f'[page_curve_mi_demo] Chart saved as plots/mi_matrix_{phi_val:.2f}.png')
+        print(f'[page_curve_mi_demo] Chart saved as plots/mi_matrix_{phi_val:.2f}.png')
 
         # Geometry from MI → Dissimilarity
         epsilon = 1e-6
@@ -459,7 +444,7 @@ def page_curve_mi_demo():
         plt.tight_layout()
         plt.savefig(f'plots/emergent_geometry_{phi_val:.2f}.png')
         plt.close()
-        log(f'[page_curve_mi_demo] Chart saved as plots/emergent_geometry_{phi_val:.2f}.png')
+        print(f'[page_curve_mi_demo] Chart saved as plots/emergent_geometry_{phi_val:.2f}.png')
 
 class AdSGeometryAnalyzer3D:
     def __init__(self, use_local=False):
@@ -586,7 +571,7 @@ class AdSGeometryAnalyzer3D:
         plt.tight_layout()
         plt.savefig('plots/rt_correlation.png')
         plt.close()
-        log('[AdSGeometryAnalyzer3D] Chart saved as plots/rt_correlation.png')
+        print('[AdSGeometryAnalyzer3D] Chart saved as plots/rt_correlation.png')
 
     def estimate_local_curvature(self, coords, triplet):
         """Estimates Gaussian curvature via angle defect for a triangle."""
@@ -639,7 +624,7 @@ class AdSGeometryAnalyzer3D:
         plt.tight_layout()
         plt.savefig('plots/3d_geometry_animation.png')
         plt.close()
-        log('[AdSGeometryAnalyzer3D] Chart saved as plots/3d_geometry_animation.png')
+        print('[AdSGeometryAnalyzer3D] Chart saved as plots/3d_geometry_animation.png')
 
 class AdSGeometryAnalyzer6Q:
     def __init__(self, n_qubits=6, timesteps=15, mode="flat", device=None):
@@ -653,6 +638,7 @@ class AdSGeometryAnalyzer6Q:
         self.coords_list_2d = []
         self.coords_list_3d = []
         self.mode = mode
+        self.mi_matrices = []
 
     def shannon_entropy(self, probs):
         probs = np.array(probs)
@@ -762,7 +748,7 @@ class AdSGeometryAnalyzer6Q:
         plt.title(f'MI Matrix at φ={phi_val:.2f}')
         plt.savefig(f'plots/mi_matrix_{phi_val:.2f}.png')
         plt.close()
-        log(f'[AdSGeometryAnalyzer6Q] Chart saved as plots/mi_matrix_{phi_val:.2f}.png')
+        print(f'[AdSGeometryAnalyzer6Q] Chart saved as plots/mi_matrix_{phi_val:.2f}.png')
 
     def fit_rt_plot(self):
         def log_func(x, a, b):
@@ -790,7 +776,7 @@ class AdSGeometryAnalyzer6Q:
         plt.tight_layout()
         plt.savefig('plots/rt_correlation_6q.png')
         plt.close()
-        log('[AdSGeometryAnalyzer6Q] Chart saved as plots/rt_correlation_6q.png')
+        print('[AdSGeometryAnalyzer6Q] Chart saved as plots/rt_correlation_6q.png')
 
 def perfect_tensor_braket():
     """Return a 6-qubit perfect-tensor style circuit using Braket syntax."""
@@ -934,7 +920,7 @@ class EmergentSpacetime:
         plt.grid(True)
         plt.savefig('plots/curvature_dynamics.png')
         plt.close()
-        log('[EmergentSpacetime] Chart saved as plots/curvature_dynamics.png')
+        print('[EmergentSpacetime] Chart saved as plots/curvature_dynamics.png')
 
 def build_control_circuit(phi):
     circ = Circuit()
@@ -966,7 +952,7 @@ plt.xlabel("Time step")
 plt.ylabel("Entropy (bits)")
 plt.savefig('plots/control_entropy.png')
 plt.close()
-log('[ControlEntropy] Chart saved as plots/control_entropy.png')
+print('[ControlEntropy] Chart saved as plots/control_entropy.png')
 
 ##scaled_sim = ScaledEmergentSpacetime(device=device, num_qubits=6, max_cut_size=3)
 ##scaled_sim.run_entropy_area_experiment()
@@ -1006,6 +992,5 @@ log('[ControlEntropy] Chart saved as plots/control_entropy.png')
 ### Causal structure analysis
 ##spacetime_sim.analyze_causal_structure(curvature)
 
-logfile.close()
 
 

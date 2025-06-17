@@ -1,0 +1,1 @@
+2025-06-17 14:24:08,980 - holographic_demo - INFO - [holographic_demo] Boundary entropy: 1.0
