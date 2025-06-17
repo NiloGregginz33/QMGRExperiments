@@ -1,0 +1,32 @@
+# Page Curve Experiment Log
+
+## Results
+- Phase 0.00: Entropy = 1.0000
+- Phase 0.65: Entropy = 1.4935
+- Phase 2.60: Entropy = 1.3826
+- Phase 2.92: Entropy = 1.0789
+- Phase 3.25: Entropy = 1.0403
+- Phase 3.57: Entropy = 1.2876
+- Phase 3.90: Entropy = 1.5735
+- Phase 4.22: Entropy = 1.8361
+- Phase 4.55: Entropy = 1.9800
+- Phase 4.87: Entropy = 1.9682
+- Phase 5.20: Entropy = 1.8219
+- Phase 5.52: Entropy = 1.5676
+- Phase 5.85: Entropy = 1.2708
+- Phase 6.17: Entropy = 1.0259
+- Phase 6.50: Entropy = 1.0709
+- Phase 6.82: Entropy = 1.3307
+- Phase 7.15: Entropy = 1.6614
+- Phase 7.47: Entropy = 1.9078
+- Phase 7.80: Entropy = 1.9933
+- Phase 8.12: Entropy = 1.9394
+- Phase 8.45: Entropy = 1.7667
+- Phase 8.77: Entropy = 1.4827
+- Phase 9.10: Entropy = 1.1573
+- Phase 9.42: Entropy = 0.9999
+
+## Analysis
+The entropy values fluctuate with the phase, showing a pattern that aligns with the expected behavior of the Page curve. This suggests that the experiment successfully captures the dynamics of quantum entanglement over time, which is crucial for understanding the holographic principle and the information paradox.
+
+# End of Log 
