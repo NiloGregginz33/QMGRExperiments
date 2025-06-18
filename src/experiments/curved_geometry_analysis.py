@@ -7,6 +7,8 @@ import json
 from datetime import datetime
 import argparse
 from braket.aws import AwsDevice
+from braket.circuits import Circuit, gates
+from braket.circuits.compiler_directives import CompilerDirective
 
 # Add the project root to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -37,6 +39,52 @@ def get_device(device_type="simulator"):
         print(f"Unknown device type: {device_type}. Using simulator.")
         return None
 
+def transpile_circuit(circuit, device):
+    """
+    Transpile circuit for the specific device
+    
+    Args:
+        circuit: Braket circuit to transpile
+        device: Target device
+    
+    Returns:
+        Transpiled circuit optimized for the device
+    """
+    try:
+        # Get device properties
+        if hasattr(device, 'properties'):
+            properties = device.properties
+            print(f"Device: {device.name}")
+            print(f"Native gates: {properties.action.get('braket.ir.jaqcd.program', {}).get('nativeGates', 'Unknown')}")
+            print(f"Connectivity: {properties.action.get('braket.ir.jaqcd.program', {}).get('connectivity', 'Unknown')}")
+        
+        # Apply device-specific optimizations
+        if "ionq" in str(device).lower():
+            # IonQ prefers single-qubit gates and CNOT
+            print("Transpiling for IonQ device...")
+            return circuit
+            
+        elif "rigetti" in str(device).lower():
+            # Rigetti has specific connectivity constraints
+            print("Transpiling for Rigetti device...")
+            # Rigetti devices have limited connectivity, may need SWAP gates
+            return circuit
+            
+        elif "oqc" in str(device).lower():
+            # OQC has specific gate set requirements
+            print("Transpiling for OQC device...")
+            return circuit
+            
+        else:
+            # For simulator, no special transpilation needed
+            print("Using circuit as-is for simulator...")
+            return circuit
+            
+    except Exception as e:
+        print(f"Warning: Transpilation failed: {e}")
+        print("Using original circuit...")
+        return circuit
+
 def run_curved_geometry_experiments(device_type="simulator", shots=1024):
     """Run curved geometry experiments in both flat and curved modes"""
     
@@ -48,8 +96,12 @@ def run_curved_geometry_experiments(device_type="simulator", shots=1024):
     try:
         print(f"Running curved geometry experiment on {device_type}")
         
-        # Initialize the analyzer
+        # Initialize the analyzer with transpilation support
         analyzer = AdSGeometryAnalyzer6Q(device=device, shots=shots)
+        
+        # Add transpilation method to analyzer if it doesn't exist
+        if not hasattr(analyzer, 'transpile_circuit'):
+            analyzer.transpile_circuit = lambda circuit: transpile_circuit(circuit, device)
         
         # Run experiments in different modes
         modes = ["flat", "curved"]

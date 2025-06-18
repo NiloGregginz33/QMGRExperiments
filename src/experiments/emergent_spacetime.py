@@ -11,6 +11,7 @@ sys.path.append('src')
 from AWSFactory import LocalSimulator
 from braket.circuits import Circuit, FreeParameter
 from braket.aws import AwsDevice
+from utils.transpiler import transpile_circuit, get_device_info
 
 def get_device(device_type="simulator"):
     """
@@ -40,6 +41,12 @@ class LocalEmergentSpacetime:
         self.shots = shots
         self.timesteps = np.linspace(0, 3 * np.pi, 15)
         self.mi_matrices = []
+        
+        # Get device information
+        device_info = get_device_info(device)
+        print(f"Device: {device_info.get('name', 'Unknown')}")
+        print(f"Native gates: {device_info.get('native_gates', 'Unknown')}")
+        print(f"Qubit count: {device_info.get('qubit_count', 'Unknown')}")
 
     def shannon_entropy(self, probs):
         probs = np.array(probs)
@@ -80,7 +87,13 @@ class LocalEmergentSpacetime:
             circ.cnot(1, 3).rz(3, np.pi).cnot(1, 3)
             circ.probability()
 
-            task = self.device.run(circ, inputs={"phi": phi_val}, shots=self.shots)
+            # Transpile circuit for the specific device
+            transpiled_circuit = transpile_circuit(circ, self.device)
+            
+            print(f"Original circuit depth: {len(circ.instructions)}")
+            print(f"Transpiled circuit depth: {len(transpiled_circuit.instructions)}")
+
+            task = self.device.run(transpiled_circuit, inputs={"phi": phi_val}, shots=self.shots)
             result = task.result()
             probs = np.array(result.values).reshape(-1)
 
