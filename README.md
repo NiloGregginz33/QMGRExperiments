@@ -154,7 +154,7 @@ Probably means Maldecena is right too
 I think I need to make a tool that can control decoherence bc then 
 I can start pruning the timeline
 
-Maximal Shannon and Von Neumman entropy means time is an emergent property
+Maximal Shannon and Von Neumman entropy means time is an emergent property (I was suffering from a manic episode when I wrote this, and some work got deleted after, so im keeping this in here but take it with a mountain of salt - Im leaving it in case I recover the evidence)
 
 the CGPTFactory will allow you to make almost any quantum experiment become true so I dreamed up a bunch (Remember ask before you use this code though some function outputs are still in the comments)
 
