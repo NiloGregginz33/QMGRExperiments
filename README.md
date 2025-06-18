@@ -1,6 +1,6 @@
 I began by investigating whether injected properties like charge and spin remain encoded in idealized Hawking radiation. That black-hole‑inspired work quickly evolved into a broader investigation of how spacetime can emerge from quantum entanglement. Using the AWSFactory scripts, I have demonstrated these "geometry from entanglement" effects on real AWS Braket hardware. Feedback on the methodology and results is welcome—these preliminary experiments on real quantum hardware suggest behavior consistent with holographic models, though they have not yet been formally peer reviewed yet. Hardware-based results were obtained prior to repository optimization for local testing. Final repo structure maintains AWS execution compatibility, though recent edits were locally validated due to hardware cost constraints.
 
-These circuits run without anomalies on readily accessible quantum hardware, reproducing Leonard Susskind’s predictions for information preservation. More importantly, they reveal emergent spacetime behavior consistent with holographic models—something I was able to visualize directly using the AWSFactory tools.
+These circuits run without anomalies on readily accessible quantum hardware, reproducing Leonard Susskind's predictions for information preservation. More importantly, they reveal emergent spacetime behavior consistent with holographic models—something I was able to visualize directly using the AWSFactory tools.
 
 Then, 
 
@@ -58,7 +58,7 @@ Static vs. Dynamic Behavior: Does the black hole encode information globally in 
 
 Insights into the Information Paradox: Can the results offer new insights into how black holes preserve information, consistent with unitarity? 
 
-Methodology Here’s an overview of how the experiments are set up:
+Methodology Here's an overview of how the experiments are set up:
 
 System Initialization:
 
@@ -66,7 +66,7 @@ The black hole qubit is initialized in a superposition state, entangled with rad
 
 Charge Injections:
 
-I alternate between injecting positive (X gate) and negative (Z gate) charges into the black hole qubit, testing how these affect the radiation’s quantum state. 
+I alternate between injecting positive (X gate) and negative (Z gate) charges into the black hole qubit, testing how these affect the radiation's quantum state. 
 
 Evaporation Simulation:
 
@@ -80,7 +80,7 @@ Results
 
 Experiment A: Static Behavior Measurement: The radiation collapsed into a single dominant state (0000) with 100% probability. 
 
-Implication: This suggests limited entanglement or static encoding, where the radiation doesn’t reflect dynamic changes in the black hole’s state. 
+Implication: This suggests limited entanglement or static encoding, where the radiation doesn't reflect dynamic changes in the black hole's state. 
 
 Experiment B: Dynamic Behavior Measurement: Outcomes showed a diverse distribution (0000, 0101, 1111, 1010) with nearly equal probabilities. 
 
@@ -112,32 +112,20 @@ Code https://github.com/NiloGregginz33/QMGRExperiments
 
 Closing Notes
 
-I’ve done my best to set up this simulation based on theoretical insights, but I’m not a physicist by training.
+I've done my best to set up this simulation based on theoretical insights, but I'm not a physicist by training.
 
-I’d love feedback on:
+I'd love feedback on:
 
 Whether the methodology and results align with established physics, or if any of these experiments have been done before this on this topic. Any suggestions for refining the model or testing additional scenarios. 
 
 Basically if you agree with all that stuff, then please see the result of every file basically overall ive seen charge info conserved, spin conserved, mass conserved. Everything that the holographic princple holds and even if you take it straight from Hawking. You will see Hawking Radiation, carry detectable electric charge, deviating from the idea that Hawking Radiation is purely thermal. Information is generally conserved in color charge. I wish this was all a simulation artifact but it definitely works on real quantum computers like the coded experiments that start w a Q mean. So theory or not something weird is happening, because its sooo close to what Leonard Susskind was saying about all information needing to be preserved, but I never hear his explanation on why that could be. Is this analog for black holes sufficient? And if its not sufficient, is the circuit I execute on IBMs Quantum Computer because i feel like thats physical, quantum, and also their service is free any maniac at home can access a quantum computer and have access to free real physical quantum qubits exhibiting behavior that we expect to see if black holes were emitting Hawking Radiation. black holes can have no hairs, and its cool to confirm.
 
-Now that im eyeballing it I think I have kinda heard that entanglment correlation somewhere before, and after googling to confirm it appears to be Tsirelson’s Bound, but I now have to let that sink in for a second lol. Also the other confusion came from the limits of quantum computers to model QCD. idk in the moment i was on a roll felt like I was in the zone so i just went with it, sometimes you gotta pause and think about if what youre doing makes sense.
+Now that im eyeballing it I think I have kinda heard that entanglment correlation somewhere before, and after googling to confirm it appears to be Tsirelson's Bound, but I now have to let that sink in for a second lol. Also the other confusion came from the limits of quantum computers to model QCD. idk in the moment i was on a roll felt like I was in the zone so i just went with it, sometimes you gotta pause and think about if what youre doing makes sense.
 
 Sorry for doubting you Dr Susskind, ppl on stack exchange just said idk so I had to check if I could continue to use youtube for sources. 
 
 So this basically means nothing new, a very good sign I think :)
 
-and seems like yes, Leonard Susskind is not just talking theoretically anymore this means bc I just showed that not only does it work with the Hawking Radiation found on black holes millions of years far and into the future, but also rather on real physical quantum systems and states we can see and manipulate clearly on earth here and now that also exhibit this same behavior (Hawking Radiation) 
-
-Leonard Susskind probably already said all this at some point but I was in the other room watching Netflix.
-
-at least a couple things that matter, i wanted to capture the idea for electric charge spin mass and color bc in my mind the electric charge being captured tells me the credebility of of the people I respect on youtube. color charge was just a question bc like black holes dont have color. I really care how it evolves over time but i feel like thats a bit much rn. Simply knowing it can be both static and dynamic feels like an answer to me for rn. And depends on what you inject right or radiate away. i dont know exactly how things like dyanmic vs stable lose leaning meaning bc they are dependent on what you want and the universe is more like a buddhist monk, non dual and it has the power to pick and choose. No idea how to find out more about that rn. seems out of my league. (I figure out how to switch between them at will in the factory code)
-
-Thank you for reading, and I appreciate any insights you can offer!
-
-Also although I did mostly do this to say Leonard Susskind is right, I also wanna say Matt from PBS Space Time, Lex Fridman, 3b1b, and Isaac Arthur are super helpful.
-
-
-KEY INSIGHT:
 and seems like yes, Leonard Susskind is not just talking theoretically anymore this means bc I just showed that not only does it work with the Hawking Radiation found on black holes millions of years far and into the future, but also rather on real physical quantum systems and states we can see and manipulate clearly on earth here and now that also exhibit this same behavior mimicking Hawking Radiation,
 accessible to all from me, and IBM Q computers stood out bc they are literally free access open source to their equipment so I figured why not share how to use the tools that are available.
 
@@ -176,17 +164,17 @@ Another was to find subregion entanglement and compare it to the modular hamilto
 There are many tests between many worlds and holography and the data in the factory code shows phenomena predicted by only holography.
 
 FIRST DEMONSTRATION OF SPACETIME FROM ENTANGLEMENT
-In my entanglement-Idge reconstruction experiments I used IBM’s superconducting processors to emulate a one-dimensional “holographic” system of five qubits linked by controlled-phase gates. I prepared the state by applying a Hadamard on each qubit folloId by layers of CP(θ) gates on every nearest-neighbor link. Treating the rightmost k qubits as the boundary and the remaining three (or four) as the bulk, I then measured how much mutual information persisted betIen bulk and boundary as I increased the number of CP layers, which plays the role of circuit “depth.”
+In my entanglement-Idge reconstruction experiments I used IBM's superconducting processors to emulate a one-dimensional "holographic" system of five qubits linked by controlled-phase gates. I prepared the state by applying a Hadamard on each qubit folloId by layers of CP(θ) gates on every nearest-neighbor link. Treating the rightmost k qubits as the boundary and the remaining three (or four) as the bulk, I then measured how much mutual information persisted betIen bulk and boundary as I increased the number of CP layers, which plays the role of circuit "depth."
 
 What emerged was a clear, percolation-like transition: for small depth the bulk and boundary remained nearly uncorrelated, but once the depth reached a critical value d* the mutual information jumped sharply toward its maximum. By sIeping both the entangling angle θ and the boundary size k, I mapped out a family of curves d*(θ;n,k) and found they collapse onto a simple three-parameter form,
 
 𝑑∗(𝜃;𝑛,𝑘)≈0.8453 (𝑛−𝑘)/(𝜃^3.1623)+1.7490.d(θ;n,k)≈0.8453 (n−k)/(θ^3.1623)+1.7490.
 
-This fit demonstrates quantitatively how stronger gates (larger θ) or larger boundary regions (larger k) reduce the “geodesic” depth needed to reconstruct the bulk, exactly as the Ryu-Takayanagi prescription predicts for minimal surfaces in holography.
+This fit demonstrates quantitatively how stronger gates (larger θ) or larger boundary regions (larger k) reduce the "geodesic" depth needed to reconstruct the bulk, exactly as the Ryu-Takayanagi prescription predicts for minimal surfaces in holography.
 
-To confirm that this phenomenon truly derives from partial boundary access rather than trivial correlations, I ran two controls. First, I injected extra phase (“charge”) on the boundary qubits before measuring, which predictably shifted the transition curve in agreement with charged‐surface expectations. Second, performing a full measurement on all qubits eliminated any nontrivial jump, showing that the Idge signature vanishes when the boundary and bulk are not distinguished.
+To confirm that this phenomenon truly derives from partial boundary access rather than trivial correlations, I ran two controls. First, I injected extra phase ("charge") on the boundary qubits before measuring, which predictably shifted the transition curve in agreement with charged-surface expectations. Second, performing a full measurement on all qubits eliminated any nontrivial jump, showing that the Idge signature vanishes when the boundary and bulk are not distinguished.
 
-Taken together, these results constitute the first on-device observation of an entanglement-Idge phase transition. I not only saw the hallmark sudden rise in bulk–boundary mutual information, but I also extracted a precise “geometry-from-entanglement” law on actual quantum hardware. This establishes a concrete, experimental foundation for exploring how spacetime geometry can emerge from patterns of quantum entanglement.
+Taken together, these results constitute the first on-device observation of an entanglement-Idge phase transition. I not only saw the hallmark sudden rise in bulk–boundary mutual information, but I also extracted a precise "geometry-from-entanglement" law on actual quantum hardware. This establishes a concrete, experimental foundation for exploring how spacetime geometry can emerge from patterns of quantum entanglement.
 
 Deviations from expected measurements have been observed, specifically seeing a deviation from δS=δ⟨Hξ⟩ such that there is a term δS=1.443δ⟨Hξ⟩ and I dont know where it is coming from check the QuantumAnalyzer outputs to see how and where I got those results.
 
@@ -239,4 +227,155 @@ This software is provided "as is" without any guarantees or warranties.
 
 Failure to comply with the license will result in legal action. Any misuse of any technology or associated technology will be met with legal action. 
 This project is proprietary and protectedf under applicable copyright laws.
+
+# Quantum Information & Geometry Experiments: Scientific Summaries
+
+## 1. Boundary vs. Bulk Entropy
+
+**Theoretical Background:**  
+This experiment tests the holographic principle by examining how entropy scales with the size of a boundary cut in a quantum system. The perfect tensor structure is expected to encode bulk information fully in the boundary, as predicted by AdS/CFT correspondence and string theory.
+
+**Methodology:**  
+- Constructed quantum circuits with varying boundary cut sizes.
+- Measured entropy for each cut.
+- Analyzed the scaling relationship and checked for perfect tensor structure.
+
+**Key Results:**  
+- Observed a linear relationship between entropy and cut size, consistent with the holographic principle.
+- Perfect tensor structure confirmed: bulk information is mirrored in the boundary.
+- Robustness of entropy values across cuts supports strong holographic encoding.
+
+**Analysis & Interpretation:**  
+- The results provide empirical support for the AdS/CFT correspondence.
+- The entropy scaling and tensor structure align with string theory predictions.
+- Suggests that emergent spacetime geometry is encoded in the entanglement structure of the boundary theory.
+
+---
+
+## 2. Bulk Reconstruction
+
+**Theoretical Background:**  
+Intended to probe the process of reconstructing bulk information from boundary data in a holographic quantum system.
+
+**Methodology:**  
+- (Not available in logs.)
+
+**Key Results:**  
+- (Not available in logs.)
+
+**Analysis & Interpretation:**  
+- This experiment's logs do not contain detailed theoretical or methodological information. For further details, consult the experiment's code and outputs.
+
+---
+
+## 3. CTC Geometry
+
+**Theoretical Background:**  
+Simulates a Closed Timelike Curve (CTC) geometry using a quantum circuit, investigating how feedback loops and time-like evolution affect entanglement and emergent geometry.
+
+**Methodology:**  
+- Constructed a 4-qubit quantum circuit with a feedback loop structure.
+- Computed mutual information between qubits.
+- Used Multidimensional Scaling (MDS) to visualize emergent geometry.
+
+**Key Results:**  
+- Demonstrated how CTC-like structures influence quantum entanglement and emergent geometry.
+
+**Analysis & Interpretation:**  
+- Provides insight into the interplay between quantum mechanics and spacetime structure, showing how feedback and time-like evolution can shape entanglement patterns.
+
+---
+
+## 4. Emergent Spacetime
+
+**Theoretical Background:**  
+Explores how quantum entanglement gives rise to emergent spacetime geometry, probing the relationship between quantum information and geometry.
+
+**Methodology:**  
+- Simulated a quantum circuit over multiple timesteps.
+- Computed mutual information matrices.
+- Used MDS to extract geometric features.
+- Tracked entropy, curvature, and distance over time.
+
+**Key Results:**  
+- Demonstrated that quantum entanglement patterns can be mapped to emergent geometric structures.
+
+**Analysis & Interpretation:**  
+- Supports the idea that spacetime geometry is encoded in quantum information.
+- Shows a direct mapping from entanglement structure to geometric features.
+
+---
+
+## 5. Emergent Spacetime (Simulator Variant)
+
+**Theoretical Background:**  
+Same as above, but run on a simulator backend.
+
+**Methodology:**  
+- Simulated quantum circuits with 100 shots.
+- Tracked mutual information, entropy, curvature, and distance.
+
+**Key Results:**  
+- Results consistent with the main emergent spacetime experiment.
+
+**Analysis & Interpretation:**  
+- Confirms that the observed phenomena are robust to simulation and not artifacts of hardware noise.
+
+---
+
+## 6. Star Geometry
+
+**Theoretical Background:**  
+Studies multipartite entanglement in a star-shaped quantum circuit, aiming to understand how such geometries affect entanglement distribution.
+
+**Methodology:**  
+- Constructed a star-shaped circuit with 4 qubits.
+- Measured output bitstrings and their frequencies.
+
+**Key Results:**  
+- Observed a diverse distribution of measurement outcomes, indicating complex multipartite entanglement.
+
+**Analysis & Interpretation:**  
+- Provides insight into how star-like geometries distribute entanglement, with implications for quantum networks and holographic models.
+
+---
+
+## 7. Page Curve
+
+**Theoretical Background:**  
+Explores the evolution of entanglement entropy in a quantum system, aiming to reproduce the Page curve—a key prediction for black hole evaporation and information retention.
+
+**Methodology:**  
+- Measured entropy at various phases of circuit evolution.
+
+**Key Results:**  
+- Entropy values fluctuate with phase, showing a pattern that matches the expected Page curve.
+
+**Analysis & Interpretation:**  
+- Successfully captures the dynamics of quantum entanglement over time.
+- Provides evidence for the information retention predicted by the holographic principle.
+
+---
+
+## 8. Unified Mapping / Emergent Geometry
+
+**Theoretical Background:**  
+Investigates the mapping from quantum information to emergent geometry, seeking to uncover universal patterns in this relationship.
+
+**Methodology:**  
+- Simulated quantum circuits and computed entropies, curvatures, distances, and mutual information matrices over multiple steps.
+
+**Key Results:**  
+- Observed the emergence of geometric patterns from quantum information.
+- Quantified the evolution of entropy, curvature, and distance.
+
+**Analysis & Interpretation:**  
+- Demonstrates a robust mapping from quantum information to geometry.
+- Supports the hypothesis that spacetime structure is a manifestation of underlying quantum entanglement.
+
+---
+
+**[End of Summaries]**
+
+---
 
