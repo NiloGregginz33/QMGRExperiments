@@ -156,8 +156,8 @@ ACTUALLY KINDA FUN OVERALL, SHOULD PROBABLY LISTEN TO HER MORE OFTEN
 NEXT STEPS FOR PEOPLE SMARTER THAN ME:
 Youre going to need a hamiltonian with both time independent and time dependent components, idk the ratio of flavors tho 
 
-NONDUALISM
-Bc this now seems like something more fundamental idk the words kinda make it sound like ppl gotta think in QM or GM
+CONCLUSIONS
+THE HOLOGRAPHIC PRINCPLE IS NOT JUST THEORETICAL 
 
 Hit on the credebility of firewall paradox too kinda huh
 
