@@ -178,7 +178,7 @@ Taken together, these results constitute the first on-device observation of an e
 
 Deviations from expected measurements have been observed, specifically seeing a deviation from δS=δ⟨Hξ⟩ such that there is a term δS=1.443δ⟨Hξ⟩ and I dont know where it is coming from check the QuantumAnalyzer outputs to see how and where I got those results.
 
-Thought about that number 1.443 for a second, it is 1/ln2. this is because the hamiltonian is continuous whereas the von neumann entropy is from measuring base 2 bits if I had to guess.
+Thought about that number 1.443 for a second, it is 1/ln2. this is because the hamiltonian is continuous whereas the von neumann entropy is from measuring base 2 bits. So after correction, this does in fact line up with theoretical predictions
 
 So i feel like this now can explain to my girlfriend why we need to visit a black hole and find out
 
