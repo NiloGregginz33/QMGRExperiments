@@ -6,13 +6,38 @@ import json
 import os
 from datetime import datetime
 import sys
+import argparse
 sys.path.append('src')
 from AWSFactory import LocalSimulator
 from braket.circuits import Circuit, FreeParameter
+from braket.aws import AwsDevice
+
+def get_device(device_type="simulator"):
+    """
+    Get quantum device based on specified type
+    
+    Args:
+        device_type (str): "simulator", "ionq", "rigetti", or "oqc"
+    
+    Returns:
+        Device object for quantum computation
+    """
+    if device_type == "simulator":
+        return LocalSimulator()
+    elif device_type == "ionq":
+        return AwsDevice("arn:aws:braket:us-east-1::device/qpu/ionq/ionQdevice")
+    elif device_type == "rigetti":
+        return AwsDevice("arn:aws:braket:us-west-1::device/qpu/rigetti/Aspen-M-3")
+    elif device_type == "oqc":
+        return AwsDevice("arn:aws:braket:eu-west-2::device/qpu/oqc/Lucy")
+    else:
+        print(f"Unknown device type: {device_type}. Using simulator.")
+        return LocalSimulator()
 
 class LocalEmergentSpacetime:
-    def __init__(self, device):
+    def __init__(self, device, shots=1024):
         self.device = device
+        self.shots = shots
         self.timesteps = np.linspace(0, 3 * np.pi, 15)
         self.mi_matrices = []
 
@@ -35,7 +60,9 @@ class LocalEmergentSpacetime:
         return self.shannon_entropy(A) + self.shannon_entropy(B) - self.shannon_entropy(AB)
 
     def run(self):
-        for phi_val in self.timesteps:
+        print(f"Running on device: {self.device}")
+        for i, phi_val in enumerate(self.timesteps):
+            print(f"Processing timestep {i+1}/{len(self.timesteps)} (φ = {phi_val:.3f})")
             phi = FreeParameter("phi")
             circ = Circuit()
             circ.h(0)
@@ -53,7 +80,7 @@ class LocalEmergentSpacetime:
             circ.cnot(1, 3).rz(3, np.pi).cnot(1, 3)
             circ.probability()
 
-            task = self.device.run(circ, inputs={"phi": phi_val}, shots=1024)
+            task = self.device.run(circ, inputs={"phi": phi_val}, shots=self.shots)
             result = task.result()
             probs = np.array(result.values).reshape(-1)
 
@@ -65,13 +92,24 @@ class LocalEmergentSpacetime:
             self.mi_matrices.append(mi_matrix)
 
 if __name__ == "__main__":
-    exp_dir = "experiment_logs/emergent_spacetime"
+    parser = argparse.ArgumentParser(description='Run emergent spacetime experiment')
+    parser.add_argument('--device', type=str, default='simulator', 
+                       choices=['simulator', 'ionq', 'rigetti', 'oqc'],
+                       help='Quantum device to use')
+    parser.add_argument('--shots', type=int, default=1024,
+                       help='Number of shots for quantum measurements')
+    args = parser.parse_args()
+    
+    exp_dir = f"experiment_logs/emergent_spacetime_{args.device}"
     os.makedirs(exp_dir, exist_ok=True)
-    device = LocalSimulator()
-    spacetime = LocalEmergentSpacetime(device)
+    
+    device = get_device(args.device)
+    spacetime = LocalEmergentSpacetime(device, shots=args.shots)
     spacetime.run()
     mi_matrices = spacetime.mi_matrices
     results = {
+        "device": args.device,
+        "shots": args.shots,
         "timesteps": np.linspace(0, 3 * np.pi, len(mi_matrices)).tolist(),
         "entropies": [],
         "curvatures": [],
@@ -126,6 +164,8 @@ if __name__ == "__main__":
     with open(f"{exp_dir}/summary.txt", "w") as f:
         f.write("Emergent Spacetime Experiment Summary\n")
         f.write("====================================\n\n")
+        f.write(f"Device: {args.device}\n")
+        f.write(f"Shots: {args.shots}\n\n")
         f.write("Theoretical Background:\n")
         f.write("This experiment explores how quantum entanglement gives rise to emergent spacetime geometry. By analyzing mutual information and geometric embeddings, it probes the relationship between quantum information and geometry.\n\n")
         f.write("Methodology:\n")

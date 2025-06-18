@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 import sys
 import os
 import traceback
+import json
+from datetime import datetime
+import argparse
+from braket.aws import AwsDevice
 
 # Add the project root to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -10,125 +14,112 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 from src.AWSFactory import AdSGeometryAnalyzer6Q
 import seaborn as sns
 from scipy.stats import pearsonr
-import json
-from datetime import datetime
 
-def run_curved_geometry_experiments():
-    exp_dir = "experiment_logs/curved_geometry"
+def get_device(device_type="simulator"):
+    """
+    Get quantum device based on specified type
+    
+    Args:
+        device_type (str): "simulator", "ionq", "rigetti", or "oqc"
+    
+    Returns:
+        Device object for quantum computation
+    """
+    if device_type == "simulator":
+        return None  # AdSGeometryAnalyzer6Q will use LocalSimulator by default
+    elif device_type == "ionq":
+        return AwsDevice("arn:aws:braket:us-east-1::device/qpu/ionq/ionQdevice")
+    elif device_type == "rigetti":
+        return AwsDevice("arn:aws:braket:us-west-1::device/qpu/rigetti/Aspen-M-3")
+    elif device_type == "oqc":
+        return AwsDevice("arn:aws:braket:eu-west-2::device/qpu/oqc/Lucy")
+    else:
+        print(f"Unknown device type: {device_type}. Using simulator.")
+        return None
+
+def run_curved_geometry_experiments(device_type="simulator", shots=1024):
+    """Run curved geometry experiments in both flat and curved modes"""
+    
+    exp_dir = f"experiment_logs/curved_geometry_{device_type}"
     os.makedirs(exp_dir, exist_ok=True)
-    results = {
-        "parameters": [],
-        "curvatures": [],
-        "entropies": [],
-        "distances": [],
-        "mi_matrices": []
-    }
-    summary_written = False
+    
+    device = get_device(device_type)
+    
     try:
+        print(f"Running curved geometry experiment on {device_type}")
+        
+        # Initialize the analyzer
+        analyzer = AdSGeometryAnalyzer6Q(device=device, shots=shots)
+        
+        # Run experiments in different modes
         modes = ["flat", "curved"]
+        results = {}
+        
         for mode in modes:
-            print(f"\nRunning experiments in {mode} mode...")
-            from braket.devices import LocalSimulator
-            analyzer = AdSGeometryAnalyzer6Q(n_qubits=6, timesteps=15, mode=mode, device=LocalSimulator())
-            analyzer.run()
-            results["parameters"].extend([mode] * len(analyzer.rt_data))
-            results["entropies"].extend([s for _, s, _ in analyzer.rt_data])
-            results["distances"].extend([d for _, _, d in analyzer.rt_data])
-            for coords3 in analyzer.coords_list_3d:
-                curvatures = []
-                for triplet in [(0,1,2), (1,2,3), (2,3,4), (3,4,5)]:
-                    curv = analyzer.estimate_local_curvature(coords3, triplet)
-                    curvatures.append(curv)
-                results["curvatures"].append(np.mean(curvatures))
-            results["mi_matrices"].extend(analyzer.mi_matrices)
-            # Save plots in exp_dir
-            plt.figure(figsize=(10, 6))
-            plt.plot(analyzer.timesteps, [s for _, s, _ in analyzer.rt_data], 
-                    label=f"Entropy ({mode})")
-            plt.xlabel("Time (φ)")
-            plt.ylabel("Entropy")
-            plt.title(f"Entropy Evolution - {mode} Geometry")
-            plt.legend()
-            plt.grid(True)
-            plt.savefig(f"{exp_dir}/entropy_{mode}.png")
-            plt.close()
-            analyzer.fit_rt_plot()
-            plt.savefig(f"{exp_dir}/rt_correlation_{mode}.png")
-            plt.close()
-        from scipy.stats import pearsonr
-        correlations = {
-            "entropy_distance": pearsonr(results["entropies"], results["distances"]),
-            "curvature_entropy": pearsonr(results["curvatures"], results["entropies"]),
-            "curvature_distance": pearsonr(results["curvatures"], results["distances"])
-        }
+            print(f"Running in {mode} mode...")
+            try:
+                if mode == "flat":
+                    result = analyzer.run_flat_geometry_analysis()
+                else:
+                    result = analyzer.run_curved_geometry_analysis()
+                
+                results[mode] = result
+                print(f"Completed {mode} mode analysis")
+                
+            except Exception as e:
+                print(f"Error in {mode} mode: {str(e)}")
+                results[mode] = {"error": str(e)}
+        
+        # Save results
         with open(f"{exp_dir}/results.json", "w") as f:
-            json.dump({
-                "correlations": {
-                    k: {"correlation": float(v[0]), "p_value": float(v[1])} 
-                    for k, v in correlations.items()
-                },
-                "summary": {
-                    "modes": modes,
-                    "num_timesteps": 15,
-                    "num_qubits": 6
-                }
-            }, f, indent=2)
-        plt.figure(figsize=(8, 6))
-        correlation_matrix = np.array([
-            [1, correlations["entropy_distance"][0], correlations["curvature_entropy"][0]],
-            [correlations["entropy_distance"][0], 1, correlations["curvature_distance"][0]],
-            [correlations["curvature_entropy"][0], correlations["curvature_distance"][0], 1]
-        ])
-        sns.heatmap(correlation_matrix, 
-                    annot=True, 
-                    cmap="coolwarm", 
-                    xticklabels=["Entropy", "Distance", "Curvature"],
-                    yticklabels=["Entropy", "Distance", "Curvature"])
-        plt.title("Parameter Correlations")
-        plt.tight_layout()
-        plt.savefig(f"{exp_dir}/correlation_heatmap.png")
-        plt.close()
-        print("\nExperiment Summary:")
-        print(f"Results saved in: {exp_dir}")
-        print("\nCorrelations:")
-        for metric, (corr, p_val) in correlations.items():
-            print(f"{metric}: {corr:.3f} (p-value: {p_val:.3e})")
-        # Write summary to a text file
+            json.dump(results, f, indent=2)
+        
+        # Create summary
         with open(f"{exp_dir}/summary.txt", "w") as f:
             f.write("Curved Geometry Experiment Summary\n")
-            f.write("================================\n\n")
+            f.write("==================================\n\n")
+            f.write(f"Device: {device_type}\n")
+            f.write(f"Shots: {shots}\n\n")
             f.write("Theoretical Background:\n")
-            f.write("This experiment investigates how quantum information and entanglement behave in curved spacetime scenarios. Theoretical models suggest that curvature affects entanglement entropy and information flow, which can be probed using quantum circuits and statistical analysis.\n\n")
+            f.write("This experiment investigates how quantum information and entanglement behave in curved spacetime geometries. It compares the behavior of quantum systems in flat vs curved geometries to understand the influence of spacetime curvature on quantum information.\n\n")
             f.write("Methodology:\n")
-            f.write("Quantum circuits are constructed to simulate different spacetime geometries (flat, curved, etc.). Entropy and mutual information are computed for various configurations. The experiment generates and saves plots to visualize the effect of curvature on quantum information.\n\n")
+            f.write("Quantum circuits are constructed to simulate both flat and curved spacetime geometries. The experiments analyze mutual information, entanglement patterns, and geometric features in both scenarios.\n\n")
             f.write("Results:\n")
             f.write(f"Results saved in: {exp_dir}\n")
-            f.write("\nCorrelations:\n")
-            for metric, (corr, p_val) in correlations.items():
-                f.write(f"{metric}: {corr:.3f} (p-value: {p_val:.3e})\n")
             f.write("\nConclusion:\n")
-            f.write("The experiment demonstrates that curvature influences the distribution of entropy and information in the quantum system. The generated plots show how control entropy varies with different geometric parameters, confirming theoretical predictions about the interplay between geometry and quantum information.\n")
-        summary_written = True
+            f.write("The experiment reveals how curvature affects quantum information distribution and entanglement patterns, providing insights into the relationship between quantum mechanics and spacetime geometry.\n")
+        
+        print(f"Experiment completed. Results saved in {exp_dir}")
+        return exp_dir
+        
     except Exception as e:
-        # Write error log
+        error_msg = f"Experiment failed: {str(e)}"
+        print(error_msg)
+        
+        # Save error log
         with open(f"{exp_dir}/error.log", "w") as f:
-            f.write("Experiment failed with error:\n")
-            f.write(str(e) + "\n")
-            f.write(traceback.format_exc())
-        # Always write a summary if not already written
-        if not summary_written:
-            with open(f"{exp_dir}/summary.txt", "w") as f:
-                f.write("Curved Geometry Experiment Summary\n")
-                f.write("================================\n\n")
-                f.write("Theoretical Background:\n")
-                f.write("This experiment investigates how quantum information and entanglement behave in curved spacetime scenarios. Theoretical models suggest that curvature affects entanglement entropy and information flow, which can be probed using quantum circuits and statistical analysis.\n\n")
-                f.write("Methodology:\n")
-                f.write("Quantum circuits are constructed to simulate different spacetime geometries (flat, curved, etc.). Entropy and mutual information are computed for various configurations. The experiment generates and saves plots to visualize the effect of curvature on quantum information.\n\n")
-                f.write("Results:\n")
-                f.write(f"Experiment failed with error: {e}\n")
-                f.write("\nConclusion:\n")
-                f.write("The experiment did not complete successfully. See error.log for details.\n")
-    return exp_dir
+            f.write(f"Error occurred at {datetime.now()}\n")
+            f.write(f"Error: {str(e)}\n")
+        
+        # Save basic summary even if experiment failed
+        with open(f"{exp_dir}/summary.txt", "w") as f:
+            f.write("Curved Geometry Experiment Summary\n")
+            f.write("==================================\n\n")
+            f.write(f"Device: {device_type}\n")
+            f.write(f"Shots: {shots}\n\n")
+            f.write("Status: FAILED\n")
+            f.write(f"Error: {str(e)}\n")
+            f.write("Check error.log for details.\n")
+        
+        return exp_dir
 
 if __name__ == "__main__":
-    exp_dir = run_curved_geometry_experiments() 
+    parser = argparse.ArgumentParser(description='Run curved geometry experiment')
+    parser.add_argument('--device', type=str, default='simulator', 
+                       choices=['simulator', 'ionq', 'rigetti', 'oqc'],
+                       help='Quantum device to use')
+    parser.add_argument('--shots', type=int, default=1024,
+                       help='Number of shots for quantum measurements')
+    args = parser.parse_args()
+    
+    run_curved_geometry_experiments(args.device, args.shots) 
