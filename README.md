@@ -415,6 +415,66 @@ For more details on each experiment, see the scientific summaries below and the 
 
 ---
 
+# How to Select and Run Any Experiment (`run_experiment.py`)
+
+The script `run_experiment.py` is the recommended way to *choose and run any experiment* from `src/experiments/` (including sub-experiments in `run_simple_experiments.py`). It dynamically lists all available experiments, lets you select one interactively or via command-line, and supports running on different quantum devices.
+
+## Interactive Mode (Recommended)
+
+Simply run:
+
+```bash
+python run_experiment.py
+```
+
+You will see a numbered menu of all available experiments and sub-experiments, for example:
+
+```
+Available experiments:
+  1. Emergent Spacetime
+  2. Curved Geometry Analysis
+  3. Test Experiment
+  4. Star Geometry Experiment
+  5. Boundary Vs Bulk Entropy Experiment
+  6. Simple: Holographic (sub-experiment)
+  7. Simple: Temporal (sub-experiment)
+  8. Simple: Contradictions (sub-experiment)
+Select an experiment by number: 1
+```
+
+You will be prompted to select the experiment by number. The script will run the selected experiment with the default device (`simulator`) and shots (`1024`).
+
+## Command-Line Mode
+
+You can also specify the experiment number and options directly:
+
+```bash
+python run_experiment.py --experiment 2 --device ionq --shots 500
+```
+
+- `--experiment N` : Run experiment number N (see the list printed by the script)
+- `--device DEVICE` : Choose the quantum device (`simulator`, `ionq`, `rigetti`, `oqc`)
+- `--shots N` : Number of shots (default: 1024)
+
+## Output
+
+- All results, logs, and plots are saved in the `experiment_logs/` directory, organized by experiment and device.
+- The script prints a summary and any errors to the console.
+
+## Adding New Experiments
+
+- Any new `.py` file added to `src/experiments/` (except those starting with `run_` or named `__init__.py`/`experiment_logger.py`) will automatically appear in the menu.
+- Sub-experiments in `run_simple_experiments.py` are always included.
+
+## Comparison: `run_experiment.py` vs `run_experiments.py`
+
+- **`run_experiment.py`**: Lets you *choose* and run any experiment (or sub-experiment) interactively or by number. This is the main entry point for running individual experiments.
+- **`run_experiments.py`**: Runs a fixed set of demonstration experiments in sequence. Use this if you want to run all default experiments at once, not for selecting a specific one.
+
+For advanced batch runs, see also `run_all_experiments.py` and `run_hardware_experiments.py`.
+
+---
+
 # Extracting Metrics & Geometry: Advanced Analysis Functions
 
 In addition to running the main experiments, you can extract additional metrics and geometric data from your circuits and results using a suite of analysis functions in `src/CGPTFactory.py`. These functions allow you to probe entropy, mutual information, and emergent geometry at a deeper level, or to analyze your own circuits and outputs.
