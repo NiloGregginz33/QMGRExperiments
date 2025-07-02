@@ -3,7 +3,6 @@ sys.path.insert(0, 'src')
 from CGPTFactory import run as cgpt_run
 from experiment_logger import ExperimentLogger
 from qiskit_ibm_runtime import Sampler, Session
-from qiskit_aer import AerSimulator
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import partial_trace, entropy
 import numpy as np
