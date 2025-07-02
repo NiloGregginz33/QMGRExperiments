@@ -1,7 +1,6 @@
 import sys
 sys.path.insert(0, 'src')
 from qiskit import QuantumCircuit
-from qiskit_aer import Aer
 from qiskit.quantum_info import Statevector, partial_trace, entropy, mutual_information
 import numpy as np
 import matplotlib.pyplot as plt
