@@ -1,3 +1,15 @@
+# Project Goals
+
+This project is dedicated to two primary scientific goals:
+
+1. **Empirical Evidence for the Holographic Principle**
+   - To design and run quantum experiments that provide direct, reproducible evidence for the holographic principle—showing that information about a quantum system can be fully encoded on its boundary, as predicted by modern theoretical physics.
+
+2. **Demonstrating Curved Emergent Spacetime from Entanglement**
+   - To experimentally demonstrate how curved spacetime geometry can emerge from patterns of quantum entanglement, using both simulation and real quantum hardware. The aim is to move beyond theory and visualize the emergence of geometry from quantum information.
+
+These goals drive the design of all experiments and analysis in this repository.
+
 I began by investigating whether injected properties like charge and spin remain encoded in idealized Hawking radiation. That black-hole‑inspired work quickly evolved into a broader investigation of how spacetime can emerge from quantum entanglement. Using the AWSFactory scripts, I have demonstrated these "geometry from entanglement" effects on real AWS Braket hardware. Feedback on the methodology and results is welcome—these preliminary experiments on real quantum hardware suggest behavior consistent with holographic models, though they have not yet been formally peer reviewed yet. Hardware-based results were obtained prior to repository optimization for local testing. Final repo structure maintains AWS execution compatibility, though recent edits were locally validated due to hardware cost constraints.
 
 These circuits run without anomalies on readily accessible quantum hardware, reproducing Leonard Susskind's predictions for information preservation. More importantly, they reveal emergent spacetime behavior consistent with holographic models—something I was able to visualize directly using the AWSFactory tools.
@@ -539,6 +551,29 @@ entropies = calculate_subsystem_qiskit_entropy(qc)
 You can also adapt the experiment scripts in `src/experiments/` to call these functions on the circuits/results they generate, or use them in your own analysis pipelines.
 
 **Tip:** For geometric analysis (curvature, mutual information), see the `curved_geometry` and `emergent_spacetime` experiment files for practical examples.
+
+---
+
+## Curved Geometry Experiment (`curved_geometry_qiskit.py`)
+
+**Scientific Basis:**  
+This experiment is designed to explore how quantum information and entanglement behave in systems that mimic *curved* versus *flat* spacetime geometries. The goal is to empirically probe the relationship between quantum entanglement and emergent geometry, providing insight into how spacetime curvature can arise from quantum information patterns—a key prediction of the holographic principle and modern quantum gravity theories.
+
+**Methodology:**  
+- Quantum circuits are constructed to simulate both flat and curved geometries using a 6-qubit system.
+- For each geometry, the experiment sweeps a parameter (φ) that controls the circuit's entangling gates, effectively tuning the "curvature."
+- The circuits are run on IBM Quantum hardware (or simulator), and measurement data is collected for each configuration.
+- The experiment computes mutual information between all pairs of qubits, then uses multidimensional scaling (MDS) to embed the resulting "distance" matrix into 2D and 3D space, visualizing the emergent geometry.
+- Additional metrics such as entanglement entropy, triangle angle sums, and Gaussian curvature (via the angle deficit method) are extracted to quantify geometric features.
+- Results are compared between the flat and curved cases to reveal how curvature affects quantum information distribution and entanglement structure.
+
+**Key Results:**  
+- The experiment demonstrates that the pattern of quantum entanglement changes in a way that reflects the underlying geometry (flat vs. curved).
+- Curvature can be directly visualized and quantified from the quantum data, providing empirical support for the idea that spacetime geometry can emerge from entanglement.
+
+**Outputs:**  
+- All results, plots (e.g., mutual information heatmaps), and geometric embeddings are saved in a timestamped folder under `experiment_logs/curved_geometry_qiskit_<device>_<timestamp>/`.
+- A summary file explains the theoretical background, methodology, and key findings for each run.
 
 ---
 
