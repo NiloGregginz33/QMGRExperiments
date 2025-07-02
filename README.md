@@ -577,3 +577,46 @@ This experiment is designed to explore how quantum information and entanglement 
 
 ---
 
+## Tutorial: Analyzing Entanglement Geodesics
+
+You can analyze the emergent geometric structure of your quantum experiments using the interactive script:
+
+```
+python src/analysis/analyze_entanglement_geodesic.py
+```
+
+This tool lets you compute and visualize the minimal "entanglement geodesic" (shortest path in entanglement distance) between any two subsystems, for any geometry and parameter setting in your experiment logs.
+
+### **Step-by-Step Usage**
+1. **Run the script:**
+   ```
+   python src/analysis/analyze_entanglement_geodesic.py
+   ```
+2. **Select the experiment log directory** (usually just enter `1` for the most recent run).
+3. **Select geometry:** Enter `1` for flat or `2` for curved. For a full analysis, run the script for both.
+4. **Select phi values:** Enter `all` to analyze all available φ (recommended), or specify a range/list (e.g., `1-3`, `1,3,5`).
+5. **Subsystem pairs:**
+   - Enter `all` to analyze all single-qubit pairs (recommended for a complete scan).
+   - Or specify custom pairs, e.g., `0->5;1,2->3,4` (A->B;C->D).
+6. **Plot each geodesic?** Enter `n` for summary only, or `y` to see a plot for each case.
+
+### **What You Get**
+- For each φ and subsystem pair, the script prints the minimal geodesic path and its length.
+- At the end, a summary table shows all geodesic lengths for your selections.
+- (Optional) Plots show the geodesic path in the emergent geometry.
+
+### **Interpreting Results**
+- **Shorter geodesics** indicate stronger entanglement and closer emergent geometry.
+- **Longer or bent geodesics** (especially in the curved case) reflect the effect of curvature on quantum information flow.
+- **Compare flat vs. curved** to see how curvature changes the entanglement structure.
+- **Look for patterns** as φ varies—transitions may signal changes in the underlying geometry.
+
+### **Best Practices for a Complete Picture**
+- Run the script for both flat and curved geometries.
+- Use `all` for φ and subsystem pairs to get a full matrix of geodesic distances.
+- Optionally, visualize selected geodesics for deeper insight.
+
+This analysis provides direct, empirical evidence for the geometric encoding of quantum information and supports the study of holography in your experiments.
+
+---
+
