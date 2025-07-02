@@ -19,7 +19,7 @@ Simulating a Black Hole In my experiments, I model the black hole and radiation 
 
 Black Hole as a Qubit:
 
-A single qubit represents the black hole’s quantum state, capturing the fundamental idea that black holes have a finite set of quantum properties (mass, charge, spin) encoded in their event horizon, in addition you can view this system as the Hawking radiation particle pairs split, they are entangled because of conservation laws. Another way to look at this is from the POV of the information theorist, and the radiation is just interaction through entanglement with the 2D surface of the holographic principle. In either case, for the sake of our computational model we will treat the black hole as a quantum object. I have always heard that black holes have "no hairs" in that charge, angular momentum, and mass are the only properties needed to describe a black hole. Which is about as many as you need to describe quantum objects esp in the context of this experiment, which is why we are fine using it.
+A single qubit represents the black hole's quantum state, capturing the fundamental idea that black holes have a finite set of quantum properties (mass, charge, spin) encoded in their event horizon, in addition you can view this system as the Hawking radiation particle pairs split, they are entangled because of conservation laws. Another way to look at this is from the POV of the information theorist, and the radiation is just interaction through entanglement with the 2D surface of the holographic principle. In either case, for the sake of our computational model we will treat the black hole as a quantum object. I have always heard that black holes have "no hairs" in that charge, angular momentum, and mass are the only properties needed to describe a black hole. Which is about as many as you need to describe quantum objects esp in the context of this experiment, which is why we are fine using it.
 
 Radiation as Qubits:
 
@@ -52,7 +52,7 @@ The system assumes perfect unitary evolution and ignores potential complications
 
 Experimental Goals The primary questions driving this work are:
 
-Information Encoding: Does the radiation qubits’ state reflect the black hole’s quantum properties, such as injected charge or spin? 
+Information Encoding: Does the radiation qubits' state reflect the black hole's quantum properties, such as injected charge or spin? 
 
 Static vs. Dynamic Behavior: Does the black hole encode information globally in a time-independent manner (static encoding), or does the radiation evolve dynamically based on the timing of interactions? 
 
@@ -378,4 +378,38 @@ Investigates the mapping from quantum information to emergent geometry, seeking 
 **[End of Summaries]**
 
 ---
+
+# Running Quantum Information & Geometry Experiments
+
+## How to Use `run_experiments.py`
+
+This repository provides a script to run the main quantum information and geometry experiments, including hardware and simulator variants. All results and logs are saved in the `experiment_logs` directory for reproducibility and analysis.
+
+### **Step-by-Step Instructions**
+
+1. **Install dependencies:**
+   ```sh
+   pip install -r requirements.txt
+   ```
+2. **(Optional) Set up your IBM Quantum account:**
+   - Register at https://quantum-computing.ibm.com/ and get your API token.
+   - Initialize your account (see ibmq_setup.py or Qiskit docs).
+
+3. **Run the experiments:**
+   ```sh
+   python run_experiments.py
+   ```
+   This will run the default set of experiments and save results in `experiment_logs/`.
+
+4. **To run the curved geometry experiment on IBM hardware:**
+   ```sh
+   python src/experiments/curved_geometry_qiskit.py --device ibm_brisbane --mode curved
+   ```
+   - Replace `ibm_brisbane` with your desired IBM backend if needed.
+   - Results and plots will be saved in a timestamped folder under `experiment_logs/`.
+
+5. **Check your results:**
+   - Look in the `experiment_logs/` directory for output folders, results.json, summary.txt, and plots.
+
+For more details on each experiment, see the scientific summaries below and the documentation in the `Docs/` folder.
 

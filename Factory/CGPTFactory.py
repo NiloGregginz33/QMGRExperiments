@@ -23,7 +23,7 @@ from qiskit.circuit import Instruction
 import time
 import concurrent.futures
 from datetime import datetime
-from scipy.stats import binom_test
+# from scipy.stats import binom_test
 import requests
 from qutip import *
 import sys

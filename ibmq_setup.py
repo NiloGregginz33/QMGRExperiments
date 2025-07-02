@@ -1,6 +1,5 @@
 import os
-from qiskit import Aer
-from qiskit_ibm_provider import IBMProvider
+from qiskit_ibm_runtime import QiskitRuntimeService
 
 def initialize_ibm_backend():
     """Automatically initializes IBM Quantum backend using an API key from environment variables."""
@@ -21,4 +20,15 @@ def initialize_ibm_backend():
         return None
 
 if __name__ == "__main__":
+    api_key = input("Enter your IBM Quantum API key: ")
+    os.environ["IBM_QUANTUM_API_KEY"] = api_key
+    instance = input("Enter your instance CRN: ")
+    os.environ["IBM_CRN"] = instance
+    QiskitRuntimeService.save_account(
+    channel="ibm_cloud",
+    token=api_key,
+    instance=instance,
+    overwrite=True
+    )
     backend = initialize_ibm_backend()
+

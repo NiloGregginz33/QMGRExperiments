@@ -5,8 +5,9 @@ from qiskit.quantum_info import entropy as qiskit_entropy
 from qiskit.quantum_info import Pauli
 from qiskit_aer.noise import NoiseModel, depolarizing_error, thermal_relaxation_error, amplitude_damping_error
 from collections import Counter
-from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Estimator
+from qiskit_ibm_runtime import QiskitRuntimeService, Session, Estimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
+from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
 import numpy as np
 import matplotlib.pyplot as plt
 from qiskit.visualization import plot_histogram
@@ -31,10 +32,10 @@ import time
 import concurrent.futures
 from datetime import datetime
 from sklearn.manifold import MDS
-from scipy.stats import binom_test
+# from scipy.stats import binom_test
 import requests
 import sys
-from qiskit_ionq import IonQProvider
+# from qiskit_ionq import IonQProvider
 from scipy.stats import spearmanr, kendalltau, pearsonr
 import json
 import itertools
@@ -51,32 +52,68 @@ from scipy.optimize import minimize
 import os
 import re
 import seaborn as sns
-from qiskit_ibm_provider import IBMProvider
+from qiskit_ibm_runtime import QiskitRuntimeService
 from pprint import pprint
 
 from qiskit_braket_provider import AWSBraketProvider
 
-provider = AWSBraketProvider()
-backends = provider.backends()
-print(backends)
-# Prep
+# Select a backend
+def get_best_backend(service, min_qubits=3, max_queue=10):
+    backends = service.backends()
+    suitable_backends = [
+        b for b in backends if b.configuration().n_qubits >= min_qubits and b.status().pending_jobs <= max_queue
+    ]
+    if not suitable_backends:
+        print("No suitable backends found. Using default: ibm_brisbane")
+        return service.backend("ibm_brisbane")
+    
+    best_backend = sorted(suitable_backends, key=lambda b: b.status().pending_jobs)[0]
+    print(f"Best backend chosen: {best_backend.name}")
+    print(f"Best backend chosen: {best_backend.name}")
+    return best_backend
 
 open("entropy_oracle_log.csv", "w").close()
 
-# === FILL THESE IN ===
-MY_TOKEN    = "PASTE_YOUR_IBM_QUANTUM_API_TOKEN_HERE"
-MY_URL      = "https://us-east.quantum-computing.cloud.ibm.com"
-MY_INSTANCE = "experiment"   # or the full CRN if required
-device = AwsDevice("arn:aws:braket:us-east-1::device/qpu/ionq/Aria-1") 
-s3 = boto3.resource('s3')
-for bucket in s3.buckets.all():
-    print(bucket.name)
+# === CONFIG ===
+USE_IBM = os.getenv("USE_IBM", "False").lower() == "false"  # Set this to "True" or "False"
+
+if USE_IBM:
+    print("[INFO] Using IBM Quantum...")
+    # MY_TOKEN    = os.environ["IBM_QUANTUM_API_KEY"]
+
+    service = QiskitRuntimeService(
+        channel="ibm_cloud", 
+    )
+    backend = get_best_backend(service) 
+
+    # print("IBM Quantum backends:")
+    # for backend in service.backends():
+        # print("-", backend)
+
+if not USE_IBM:
+    print("[INFO] Using AWS Braket...")
+    provider = AWSBraketProvider()
+    backends = provider.backends()
+    print("AWS Braket backends:")
+    # for backend in backends:
+        # print("-", backend)
+
+    # Device selection
+    device = AwsDevice("arn:aws:braket:us-east-1::device/qpu/ionq/Aria-1") 
+    print(f"Using device: {device.name}")
+
+    # S3 bucket test
+    s3 = boto3.resource('s3')
+    print("S3 buckets:")
+    for bucket in s3.buckets.all():
+        print("-", bucket.name)
+
 ##
 ##QiskitRuntimeService.save_account(
 ##    channel="ibm_cloud",
-##    token=MY_TOKEN,
-##    url=MY_URL,
-##    instance=MY_INSTANCE
+##    
+##    
+##    
 ##)
 
 # Globals
@@ -102,24 +139,13 @@ _sampler = None
 # Matches strings consisting only of '0' and '1'
 BITSTR_RE = re.compile(r'^[01]+$')
 
-# Select a backend
-def get_best_backend(service, min_qubits=3, max_queue=10):
-    backends = service.backends()
-    suitable_backends = [
-        b for b in backends if b.configuration().n_qubits >= min_qubits and b.status().pending_jobs <= max_queue
-    ]
-    if not suitable_backends:
-        print("No suitable backends found. Using default: ibm_brisbane")
-        return service.backend("ibm_brisbane")
-    
-    best_backend = sorted(suitable_backends, key=lambda b: b.status().pending_jobs)[0]
-    print(f"Best backend chosen: {best_backend.name}")
-    return best_backend
+
+
 
 #provider = IonQProvider("dxE2z8zimvBincMENCUZ8RD94qWUQ51l")
 # backends: "ionq_qpu" or "ionq_simulator"
 # backend = get_best_backend(service)
-backend = backends[0]
+# bacckend = backends[0]
 ##est = Estimator(
 ##    backend
 ##)
@@ -12861,6 +12887,9 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
         f1 = teleported['1'] / total
         print(f"Distribution on R (sim): |0> = {f0:.3f}, |1> = {f1:.3f}")
         return {'counts': counts, 'distribution': (f0, f1)}
+    
+    if backend is None:
+        backend = get_best_backend(service)
 
     if old_backend:
         qc_t = transpile(qc, backend)
@@ -12870,14 +12899,23 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
         return counts
 
     # Option 3: real backend via IBM Runtime Sampler
+
+
     qc_t = transpile(qc, backend, optimization_level=3)
-    with Session(backend=backend) as session:
-        sampler = Sampler()
-        job = sampler.run([qc_t])
-        result = job.result()
+    sampler = Sampler(backend)
+    job = sampler.run([qc_t])
+    result = job.result()
     print("Raw result:", result)
 
-    key, bitarray = extract_bitarray_from_primitive(result)
+    bitarray = result[0]['__value__']['data'].meas
+    print("Bitarray: ", bitarray)
+    if hasattr(bitarray, "get_bitstrings"):
+        bitstrings = bitarray.get_bitstrings()
+        print("First 10 bitstrings:", bitstrings[:10])
+    else:
+        print("No bitstrings found in the result")
+        return None
+    
     counts = extract_counts_from_bitarray(bitarray)
     print("Sampling counts:", counts)
 
@@ -13648,8 +13686,9 @@ def get_sampler(backend_name):
     global session, _sampler
     if _sampler is None:
         # open one session & sampler for the entire script
-        session = Session(backend_name)
-        _sampler = Sampler(mode=session)
+        with Session(backend_name) as session:
+            _sampler = Sampler(backend=backend_name)
+
     return _sampler
 
 def entropy_from_counts(counts, subsystem):
@@ -14070,6 +14109,8 @@ def plot_face_scatter(face_centers, face_vals,
     plt.show()
 
 def show_work(base=2,dim=3,backend=backend):
+    if backend is None:
+        backend = get_best_backend(service)
     L        = base
     D        = dim      # or your IBM device name
     shots    = 4096

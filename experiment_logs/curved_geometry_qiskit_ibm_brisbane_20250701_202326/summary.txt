@@ -1,0 +1,17 @@
+Curved Geometry Experiment (Qiskit/IBM)
+==================================
+
+Device: ibm_brisbane
+Shots: 1024
+
+Theoretical Background:
+This experiment investigates how quantum information and entanglement behave in curved spacetime geometries. It compares the behavior of quantum systems in flat vs curved geometries to understand the influence of spacetime curvature on quantum information.
+
+Methodology:
+Quantum circuits are constructed to simulate both flat and curved spacetime geometries. The experiments analyze mutual information, entanglement patterns, and geometric features in both scenarios.
+
+Results:
+Results saved in: experiment_logs/curved_geometry_qiskit_ibm_brisbane_20250701_202326
+
+Conclusion:
+The experiment reveals how curvature affects quantum information distribution and entanglement patterns, providing insights into the relationship between quantum mechanics and spacetime geometry.
