@@ -1,5 +1,4 @@
 from qiskit_ibm_runtime import QiskitRuntimeService
-from qiskit_ibm_provider import IBMProvider
 import os
 import platform
 import subprocess
@@ -7,7 +6,7 @@ import getpass
 from pathlib import Path
 
 
-IBMProvider.save_account(token="Qfu3e8LAv3aqbOFynW4DgibgUEwHlaue3WnqlJyVKGq0", overwrite=True)
+QiskitRuntimeService.save_account(token=os.environ["IBM_QUANTUM_API_KEY"], overwrite=True)
 def set_windows_env(var: str, val: str):
     # setx sets permanently for the current user
     subprocess.check_call(['setx', var, val], shell=True)
