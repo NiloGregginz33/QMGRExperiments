@@ -379,6 +379,19 @@ Investigates the mapping from quantum information to emergent geometry, seeking 
 
 ---
 
+# ⚠️ Note on Deprecated Scripts
+
+**The individual experiment scripts (`ex1.py`, `ex2.py`, `ex3.py`, etc.) are deprecated.**
+
+- These files represent early or legacy experiments and are no longer maintained.
+- For all current and high-level experiments, use the provided runners:
+  - `run_experiment.py` — to select and run any experiment interactively or by number
+  - `run_experiments.py` — to run a fixed set of demonstration experiments in sequence
+
+**Do not run the `ex1.py`, `ex2.py`, ... scripts directly. Use the experiment runners above for up-to-date results and logging.**
+
+---
+
 # Running Quantum Information & Geometry Experiments
 
 ## How to Use `run_experiments.py`
