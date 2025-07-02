@@ -1,9 +1,7 @@
 from qiskit import QuantumCircuit, QuantumRegister, transpile, ClassicalRegister
 from qiskit.quantum_info import Statevector, partial_trace, DensityMatrix, state_fidelity, random_unitary, Operator, mutual_information, random_clifford, Clifford
-from qiskit_aer import Aer, AerSimulator
 from qiskit.quantum_info import entropy as qiskit_entropy
 from qiskit.quantum_info import Pauli
-from qiskit_aer.noise import NoiseModel, depolarizing_error, thermal_relaxation_error, amplitude_damping_error
 from collections import Counter
 from qiskit_ibm_runtime import QiskitRuntimeService, Session, Estimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
@@ -56,7 +54,6 @@ import seaborn as sns
 from qiskit_ibm_runtime import QiskitRuntimeService
 from pprint import pprint
 
-from qiskit_braket_provider import AWSBraketProvider
 
 # Select a backend
 def get_best_backend(service, min_qubits=3, max_queue=10):
@@ -6018,10 +6015,16 @@ def main_multiversal_time_travel_simulator():
 ##Counts (simulated): {'00': 4071, '11': 4121}
 ##Results: {'00': 4071, '11': 4121}
 
-def main_run_bias_experiment(qc, backend=Aer.get_backend('aer_simulator'), shots=8192):
+def main_run_bias_experiment(qc, backend=backend, shots=8192):
     """
     Runs the circuit with charge injection and compares entropy shifts.
     """
+    if backend is None:
+        try:
+            from qiskit_aer import Aer
+            backend = Aer.get_backend('aer_simulator')
+        except ImportError:
+            raise RuntimeError('qiskit_aer is required for simulation but is not installed.')
     # Ensure measurement is added
     qc.measure_all()
 
@@ -6405,7 +6408,7 @@ def main_modify_and_run_quantum_experiment_multi_analysis_1(qc, backend=None, sh
 
         return counts
 
-def main_test_multiverse_branching(qc, backend=Aer.get_backend('aer_simulator'), shots=8192):
+def main_test_multiverse_branching(qc, backend=backend, shots=8192):
     """
     Adds an ancilla qubit to test if hidden multiversal influences affect quantum state probabilities.
     
@@ -6417,6 +6420,12 @@ def main_test_multiverse_branching(qc, backend=Aer.get_backend('aer_simulator'),
     Returns:
         dict: Measurement counts from the experiment.
     """
+    if backend is None:
+        try:
+            from qiskit_aer import Aer
+            backend = Aer.get_backend('aer_simulator')
+        except ImportError:
+            raise RuntimeError('qiskit_aer is required for simulation but is not installed.')
     # Extend circuit by 1 qubit for the ancilla
     num_qubits = qc.num_qubits
     qc_test = QuantumCircuit(num_qubits + 1, num_qubits + 1)  # One extra qubit
@@ -6439,10 +6448,16 @@ def main_test_multiverse_branching(qc, backend=Aer.get_backend('aer_simulator'),
     
     return counts
 
-def main_run_multiverse_experiment(backend=Aer.get_backend('aer_simulator'), shots=32768):
+def main_run_multiverse_experiment(backend=backend, shots=32768):
     """
     Runs the multiverse test circuit on the given backend with automated result analysis.
     """
+    if backend is None:
+        try:
+            from qiskit_aer import Aer
+            backend = Aer.get_backend('aer_simulator')
+        except ImportError:
+            raise RuntimeError('qiskit_aer is required for simulation but is not installed.')
     qc = multiverse_test_circuit()
     transpiled_qc = transpile(qc, backend)
     result = backend.run(transpiled_qc, shots=shots).result()
@@ -6525,10 +6540,16 @@ def main_run_time_reversed_experiment(qc, backend=None, shots=32768):
     return counts, entropy
 
 
-def main_run_time_reversal_biasing_experiment(qc, backend=Aer.get_backend('aer_simulator'), shots=8192):
+def main_run_time_reversal_biasing_experiment(qc, backend=backend, shots=8192):
     """
     Runs a quantum time reversal experiment and tests if probability biasing can restore lost states.
     """
+    if backend is None:
+        try:
+            from qiskit_aer import Aer
+            backend = Aer.get_backend('aer_simulator')
+        except ImportError:
+            raise RuntimeError('qiskit_aer is required for simulation but is not installed.')
     results = {}
 
     # Remove measurements first (to avoid issues)
@@ -6728,7 +6749,7 @@ def main_run_mwi_vs_holography_experiment(qc, backend=None, shots=8192, iteratio
 ##Counts:  {'11 11 11 11 11 00': 4050, '00 00 00 00 00 00': 4142}
 ##Entropy:  0.9999090192651703
 
-def main_iterative_charge_injection(qc, num_cycles=5, backend=Aer.get_backend('aer_simulator'), shots=8192):
+def main_iterative_charge_injection(qc, num_cycles=5, backend=backend, shots=8192):
     """
     Applies charge injection iteratively and measures entropy growth over multiple cycles.
 
@@ -6741,6 +6762,12 @@ def main_iterative_charge_injection(qc, num_cycles=5, backend=Aer.get_backend('a
     Returns:
         list: Entropy values after each iteration.
     """
+    if backend is None:
+        try:
+            from qiskit_aer import Aer
+            backend = Aer.get_backend('aer_simulator')
+        except ImportError:
+            raise RuntimeError('qiskit_aer is required for simulation but is not installed.')
     entropies = []
     qc_modified = qc.copy()
 
@@ -6930,13 +6957,16 @@ def main_retrocausal_experiment_with_charge(qc, backend=None, shots=8192):
         dict: Measurement outcomes from full, partial, and delayed (with injection) runs.
     """
     from qiskit import ClassicalRegister, transpile
-    from qiskit_aer import AerSimulator
+
     from qiskit.qasm3 import dump
     from qiskit.result import Counts
 
-    use_sampler = backend and not isinstance(backend, AerSimulator)
+    use_sampler = backend
     if backend is None:
-        backend = AerSimulator()
+        try:
+            backend = AerSimulator()
+        except Exception:
+            print("Aer simulator is temporarily not available")
 
     num_qubits = qc.num_qubits
     if qc.num_clbits < num_qubits:
@@ -10469,7 +10499,13 @@ def convert_bitarray_to_counts(bitarray, num_bits):
     bitstrings = [raw[i:i + num_bits] for i in range(0, len(raw), num_bits)]
     return dict(Counter(bitstrings))
 
-def run_circuit_0(qc, shots=8192, backend=Aer.get_backend('aer_simulator')):
+def run_circuit_0(qc, shots=8192, backend=backend):
+    if backend is None:
+        try:
+            from qiskit_aer import Aer
+            backend = Aer.get_backend('aer_simulator')
+        except ImportError:
+            raise RuntimeError('qiskit_aer is required for simulation but is not installed.')
     transpiled = transpile(qc, backend)
     sampler = Sampler(backend)
     job = sampler.run([transpiled], shots=shots)
@@ -11875,9 +11911,10 @@ def compute_cell_curvature_from_dm(dm, cells, faces_of_cell):
     return curv
 
 
-
-sim = Aer.get_backend("aer_simulator_statevector")
-
+if backend is None:
+    sim = Aer.get_backend("aer_simulator_statevector")
+else:
+    sim = None
 epsilons = [1e-2, 1e-3, 1e-4, 1e-5]
 
 
@@ -12908,13 +12945,18 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
     result = job.result()
     print("Raw result:", result)
 
-    bitarray = result[0]['__value__']['data'].meas
-    print("Bitarray: ", bitarray)
-    if hasattr(bitarray, "get_bitstrings"):
-        bitstrings = bitarray.get_bitstrings()
-        print("First 10 bitstrings:", bitstrings[:10])
-    else:
-        print("No bitstrings found in the result")
+    try:
+        attr, bitarray = extract_bitarray_from_primitive(result)
+        print(f"BitArray attribute: {attr}")
+        print("Bitarray: ", bitarray)
+        if hasattr(bitarray, "get_bitstrings"):
+            bitstrings = bitarray.get_bitstrings()
+            print("First 10 bitstrings:", bitstrings[:10])
+        else:
+            print("No bitstrings found in the result")
+            return None
+    except Exception as e:
+        print(f"[ERROR] Could not extract BitArray: {e}")
         return None
     
     counts = extract_counts_from_bitarray(bitarray)

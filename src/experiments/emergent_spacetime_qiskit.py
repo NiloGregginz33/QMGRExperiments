@@ -8,11 +8,13 @@ from qiskit import QuantumCircuit
 from qiskit_ibm_runtime import QiskitRuntimeService
 import sys
 sys.path.append('.')
-from src.CGPTFactory import run
+from src.CGPTFactory import extract_counts_from_bitarray
+from src.CGPTFactory import run as c_run
+import traceback
 
 def get_least_busy_backend():
     try:
-        provider = IBMProvider()
+        provider = QiskitRuntimeService()
         backends = provider.backends(
             operational=True,
             simulator=False,
@@ -91,7 +93,7 @@ def main():
     exp_dir = os.path.join('experiment_logs', f'emergent_spacetime_qiskit_{timestamp}')
     os.makedirs(exp_dir, exist_ok=True)
     try:
-        timesteps = np.linspace(0, 3 * np.pi, 15)
+        timesteps = np.linspace(0, 3 * np.pi, 9)
         mi_matrices = []
         backend = get_least_busy_backend()
         if backend is None:
@@ -99,16 +101,38 @@ def main():
             return
         for i, phi_val in enumerate(timesteps):
             print(f"Processing timestep {i+1}/{len(timesteps)} (phi = {phi_val:.3f})")
-            qc = build_circuit(phi_val)
-            counts = run(qc, backend=backend, shots=shots)
-            if isinstance(counts, dict) and 'counts' in counts:
-                counts = counts['counts']
-            mi_matrix = np.zeros((4, 4))
-            for a in range(4):
-                for b in range(a+1, 4):
-                    mi = compute_mi(counts, a, b, 4, shots)
-                    mi_matrix[a, b] = mi_matrix[b, a] = mi
-            mi_matrices.append(mi_matrix)
+            try:
+                qc = build_circuit(phi_val)
+                result = c_run(qc, backend=backend, shots=shots)
+                # Robust extraction of counts
+                counts = None
+                if isinstance(result, dict):
+                    if 'counts' in result:
+                        counts = result['counts']
+                    elif 'result' in result and isinstance(result['result'], dict) and 'counts' in result['result']:
+                        counts = result['result']['counts']
+                    elif '__value__' in result and isinstance(result['__value__'], dict):
+                        data = result['__value__'].get('data', None)
+                        if data and hasattr(data, 'meas'):
+                            bitarray = data.meas
+                            counts = extract_counts_from_bitarray(bitarray)
+                        elif 'counts' in result['__value__']:
+                            counts = result['__value__']['counts']
+                if counts is None:
+                    print(f"[WARNING] Could not extract counts for phi={phi_val:.3f}, skipping.")
+                    mi_matrices.append(np.full((4, 4), np.nan))
+                    continue
+                mi_matrix = np.zeros((4, 4))
+                for a in range(4):
+                    for b in range(a+1, 4):
+                        mi = compute_mi(counts, a, b, 4, shots)
+                        mi_matrix[a, b] = mi_matrix[b, a] = mi
+                mi_matrices.append(mi_matrix)
+            except Exception as e:
+                print(f"[WARNING] Skipping phi={phi_val:.3f} due to error: {e}")
+                traceback.print_exc()
+                mi_matrices.append(np.full((4, 4), np.nan))
+                continue
         # Save results
         results = {
             "timesteps": timesteps.tolist(),
@@ -116,9 +140,18 @@ def main():
             "entropies": [],
             "curvatures": [],
             "distances": [],
-            "geometries": []
+            "geometries": [],
+            "plaquette_curvatures": None,
+            "mutual_information": None,
+            "triangle_angles": None
         }
         for mi_matrix in mi_matrices:
+            if np.isnan(mi_matrix).all():
+                results["entropies"].append(None)
+                results["curvatures"].append(None)
+                results["distances"].append(None)
+                results["geometries"].append(None)
+                continue
             epsilon = 1e-6
             dist = 1 / (mi_matrix + epsilon)
             np.fill_diagonal(dist, 0)
@@ -152,11 +185,14 @@ def main():
         axes[1,0].set_title('Distance Evolution')
         axes[1,0].grid(True)
         axes[1,0].legend()
-        final_geometry = np.array(results["geometries"][-1])
+        # Only plot geometry if available
+        final_geometry = results["geometries"][-1]
         ax = axes[1,1]
-        scatter = ax.scatter(final_geometry[:,0], final_geometry[:,1], c='blue', s=100)
-        for i in range(len(final_geometry)):
-            ax.text(final_geometry[i,0], final_geometry[i,1], f"Q{i}", fontsize=12)
+        if final_geometry is not None:
+            final_geometry = np.array(final_geometry)
+            scatter = ax.scatter(final_geometry[:,0], final_geometry[:,1], c='blue', s=100)
+            for i in range(len(final_geometry)):
+                ax.text(final_geometry[i,0], final_geometry[i,1], f"Q{i}", fontsize=12)
         ax.set_title('Final Geometry (2D Projection)')
         ax.set_xlabel('MDS Dimension 1')
         ax.set_ylabel('MDS Dimension 2')
@@ -165,6 +201,15 @@ def main():
         plt.savefig(f"{exp_dir}/results.png")
         plt.close()
         write_summary(exp_dir, backend.name, shots)
+        # Copy outputs to output_logs folders
+        import shutil
+        for outdir in ["experiment_outputs/output_logs", "output_logs"]:
+            os.makedirs(outdir, exist_ok=True)
+            for fname in ["results.json", "results.png", "summary.txt"]:
+                src = os.path.join(exp_dir, fname)
+                dst = os.path.join(outdir, f"emergent_spacetime_qiskit_{timestamp}_{fname}")
+                if os.path.exists(src):
+                    shutil.copy2(src, dst)
     except Exception as e:
         print(f"[ERROR] Experiment failed: {e}")
         with open(f"{exp_dir}/error.log", "w") as f:

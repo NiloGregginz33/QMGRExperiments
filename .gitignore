@@ -23,3 +23,5 @@ __pycache__/
 
 # Local development files
 .DS_Store 
+# Ignore problematic experiment log directory
+experiment_logs/curved_geometry_qiskit_ibm_sherbrooke_20250702_114623/
