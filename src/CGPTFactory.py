@@ -9,6 +9,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService, Session, Estimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
 from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
 import numpy as np
+from math import acos
 import matplotlib.pyplot as plt
 from qiskit.visualization import plot_histogram
 from typing import List, Tuple, Dict, Set
@@ -12930,6 +12931,30 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
     print(f"Distribution on R (hw): |0> = {f0:.3f}, |1> = {f1:.3f}")
 
     return counts
+
+def compute_triangle_angles(D, i, j, k):
+    """Given a symmetric distance matrix D, return the three interior angles of triangle (i,j,k)."""
+    a = D[j,k]
+    b = D[i,k]
+    c = D[i,j]
+    # law of cosines: cos α = (b² + c² − a²)/(2bc)
+    α = acos((b*b + c*c - a*a)/(2*b*c))
+    β = acos((a*a + c*c - b*b)/(2*a*c))
+    γ = acos((a*a + b*b - c*c)/(2*a*b))
+    return α, β, γ
+
+def compute_mds_stress(mis):
+    """Build distance matrix from mutual infos, run MDS, and return stress."""
+    n = int(np.sqrt(len(mis)*2))  # if mis is dict of pairs
+    D = np.zeros((n,n))
+    eps = 1e-8
+    for (i,j), mij in mis.items():
+        d = 1.0/(mij + eps)
+        D[i,j] = D[j,i] = d
+    np.fill_diagonal(D, 0)
+    mds = MDS(n_components=2, dissimilarity='precomputed', random_state=0)
+    _ = mds.fit(D)
+    return mds.stress_
 
 def partial_trace_manual(rho_full, trace_out):
     """

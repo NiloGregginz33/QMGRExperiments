@@ -413,3 +413,59 @@ This repository provides a script to run the main quantum information and geomet
 
 For more details on each experiment, see the scientific summaries below and the documentation in the `Docs/` folder.
 
+---
+
+# Extracting Metrics & Geometry: Advanced Analysis Functions
+
+In addition to running the main experiments, you can extract additional metrics and geometric data from your circuits and results using a suite of analysis functions in `src/CGPTFactory.py`. These functions allow you to probe entropy, mutual information, and emergent geometry at a deeper level, or to analyze your own circuits and outputs.
+
+## Key Metric & Geometry Functions
+
+- **Entropy & Information:**
+  - `block_entropy(qc, block_qubits)`: Compute the von Neumann entropy of a specified block of qubits in a circuit.
+  - `calculate_shannon_entropy(counts, num_shots)`: Compute the classical (Shannon) entropy from measurement counts.
+  - `calculate_von_neumann_entropy(qc, num_radiation_qubits)`: Compute total, black hole, and radiation entropies for a black hole/radiation circuit.
+  - `calculate_subsystem_qiskit_entropy(qc)`: Compute the entropy of each individual qubit in a circuit (requires Qiskit Aer simulator).
+  - `analyze_von_neumann_qiskit_entropy(statevector)`: Analyze the von Neumann entropy of a statevector (for advanced users).
+
+- **Curvature & Geometry:**
+  - `compute_plaquette_curvature(qc, rows, cols, plaquettes)`: Compute Ricci-like curvature for each plaquette (square) in a 2D lattice circuit.
+  - `compute_face_curvature(qc, faces)`: Compute face-based curvature (mutual information between pairs of qubit pairs) for a list of faces.
+  - `compute_cell_curvature(qc, cells, faces_of_cell)`: Compute cell-based curvature (sum of face entropies minus cell entropy) for a list of cells.
+  - `build_faces_of_cell(cells, faces)`: Utility to map each cell to its bounding faces (needed for cell curvature).
+  - `list_plaquettes(rows, cols)`, `list_3d_faces(L)`, `list_3d_cells(L)`: Utilities to generate geometry for 2D/3D lattices.
+
+- **Mutual Information:**
+  - `run_entanglement_measurements(theta_dict)`: Build a circuit with variable entangling angles and extract pairwise mutual information for each edge.
+
+## Example Usage
+
+You can import and use these functions in your own scripts, or modify the experiment files to call them for additional analysis. For example:
+
+```python
+from src.CGPTFactory import (
+    block_entropy, calculate_shannon_entropy, calculate_von_neumann_entropy,
+    calculate_subsystem_qiskit_entropy, analyze_von_neumann_qiskit_entropy,
+    compute_plaquette_curvature, compute_face_curvature, compute_cell_curvature,
+    build_faces_of_cell, list_plaquettes
+)
+
+# Example: Compute block entropy for a custom circuit
+qc = ...  # your QuantumCircuit
+block_S = block_entropy(qc, block_qubits=[0,1])
+
+# Example: Compute curvature for a 2D lattice
+rows, cols = 3, 3
+plaquettes = list_plaquettes(rows, cols)
+curvatures = compute_plaquette_curvature(qc, rows, cols, plaquettes)
+
+# Example: Compute subsystem entropy
+entropies = calculate_subsystem_qiskit_entropy(qc)
+```
+
+You can also adapt the experiment scripts in `src/experiments/` to call these functions on the circuits/results they generate, or use them in your own analysis pipelines.
+
+**Tip:** For geometric analysis (curvature, mutual information), see the `curved_geometry` and `emergent_spacetime` experiment files for practical examples.
+
+---
+
