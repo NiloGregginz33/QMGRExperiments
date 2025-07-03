@@ -9,7 +9,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def extract_counts(result):
-    """Extract measurement counts from the Sampler result."""
+    """
+    Extract measurement counts from the Sampler result.
+    Args:
+        result: Sampler result object
+    Returns:
+        dict: Measurement counts
+    """
     if hasattr(result, 'quasi_distribution'):
         return result.quasi_distribution[0]
     elif hasattr(result, 'quasi_distributions'):
@@ -20,7 +26,13 @@ def extract_counts(result):
         raise AttributeError("Sampler result does not have a recognized quasi-distribution attribute.")
 
 def extract_bitarray(result):
-    """Extract bitarray from the Sampler result."""
+    """
+    Extract bitarray from the Sampler result.
+    Args:
+        result: Sampler result object
+    Returns:
+        bitarray: Bitarray of measurement outcomes
+    """
     if hasattr(result, 'data') and hasattr(result.data, 'meas'):
         return result.data.meas
     else:
@@ -31,6 +43,8 @@ def run_holographic_demo():
     Demonstrates the holographic principle using a maximally entangled state.
     Uses CGPTFactory's run function for simulation.
     Logs results and implications for theoretical physics.
+    Returns:
+        tuple: (results dict, theory_comparison dict)
     """
     logger = ExperimentLogger()
     qc = QuantumCircuit(6)
@@ -61,6 +75,8 @@ def run_temporal_injection():
     Runs a temporal charge injection experiment by sweeping RX on the bulk qubit.
     Uses CGPTFactory's run function for simulation.
     Logs entropy as a function of injected charge and analyzes implications.
+    Returns:
+        tuple: (results dict, theory_comparison dict)
     """
     logger = ExperimentLogger()
     phis = np.linspace(0, 2*np.pi, 20)
@@ -91,34 +107,33 @@ def run_temporal_injection():
     return results, theory_comparison
 
 def run_contradictions_test():
-    """Run the holographic contradictions test"""
+    """
+    Run the holographic contradictions test.
+    - Tests a disconnected bulk scenario
+    - Checks if boundary entropy is reduced (holographic violation)
+    Returns:
+        tuple: (results dict, theory_comparison dict)
+    """
     logger = ExperimentLogger()
-    
     # Test 1: Disconnected Bulk
     qc1 = QuantumCircuit(6)
     qc1.h(0)
     qc1.h(1)
     qc1.cx(0, 2)
     qc1.cx(1, 3)
-    
     state1 = Statevector.from_instruction(qc1)
-    
     # Calculate metrics for disconnected case
     rho_boundary1 = partial_trace(state1, [0, 1])
     S1 = entropy(rho_boundary1)
-    
     results = {
         'disconnected_entropy': S1,
         'holographic_violation': S1 < 1.0  # Should be less than maximal for disconnected case
     }
-    
     theory_comparison = {
         'expected_entropy': 0.5,  # For disconnected case
         'holographic_principle_violated': True
     }
-    
     logger.log_experiment('contradictions_test', results, theory_comparison)
-    
     implication = """
     The contradictions test demonstrates:
     1. Disconnected bulk leads to reduced boundary entropy
@@ -126,7 +141,6 @@ def run_contradictions_test():
     3. This confirms the necessity of proper entanglement structure
     """
     logger.log_implication('contradictions_test', implication)
-    
     return results, theory_comparison
 
 if __name__ == "__main__":

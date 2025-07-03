@@ -21,25 +21,63 @@ from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 
 # --- Utility Functions ---
 def shannon_entropy(probs):
+    """
+    Compute the Shannon entropy of a probability distribution.
+    Args:
+        probs (array-like): Probability distribution (should sum to 1).
+    Returns:
+        float: Shannon entropy in bits.
+    """
     probs = np.array(probs)
-    return -np.sum(probs * np.log2(probs + 1e-12))
+    return -np.sum(probs * np.log2(probs + 1e-12))  # Add epsilon to avoid log(0)
+
 
 def marginal_probs(counts, total_qubits, target_idxs, shots):
+    """
+    Compute marginal probabilities for a subset of qubits from measurement counts.
+    Args:
+        counts (dict): Measurement outcome counts from Qiskit.
+        total_qubits (int): Total number of qubits in the system.
+        target_idxs (list): Indices of qubits to marginalize over.
+        shots (int): Total number of measurement shots.
+    Returns:
+        np.ndarray: Marginal probability distribution for the target qubits.
+    """
     marginal = {}
     for bitstring, count in counts.items():
-        b = bitstring.zfill(total_qubits)
-        key = ''.join([b[-(i+1)] for i in target_idxs])
+        b = bitstring.zfill(total_qubits)  # Ensure bitstring has correct length
+        key = ''.join([b[-(i+1)] for i in target_idxs])  # Extract bits for target qubits
         marginal[key] = marginal.get(key, 0) + count
     probs = np.array(list(marginal.values())) / shots
     return probs
 
+
 def compute_mi(counts, qA, qB, total_qubits, shots):
+    """
+    Compute the mutual information between two qubits from measurement counts.
+    Args:
+        counts (dict): Measurement outcome counts.
+        qA, qB (int): Indices of the two qubits.
+        total_qubits (int): Total number of qubits.
+        shots (int): Number of measurement shots.
+    Returns:
+        float: Mutual information I(A:B).
+    """
     AB = marginal_probs(counts, total_qubits, [qA, qB], shots)
     A = marginal_probs(counts, total_qubits, [qA], shots)
     B = marginal_probs(counts, total_qubits, [qB], shots)
     return shannon_entropy(A) + shannon_entropy(B) - shannon_entropy(AB)
 
+
 def estimate_local_curvature(coords, triplet):
+    """
+    Estimate the local Gaussian curvature at a triangle defined by three points in the embedding.
+    Args:
+        coords (np.ndarray): Coordinates of all points (from MDS embedding).
+        triplet (tuple): Indices of the three points forming the triangle.
+    Returns:
+        float: Angle deficit (sum of triangle angles minus pi).
+    """
     from numpy.linalg import norm
     i, j, k = triplet
     a = norm(coords[j] - coords[k])
@@ -52,13 +90,23 @@ def estimate_local_curvature(coords, triplet):
     angle_k = safe_acos((a**2 + b**2 - c**2) / (2 * a * b))
     return (angle_i + angle_j + angle_k) - np.pi
 
+
 # --- Circuit Construction ---
 def build_circuit(mode, phi):
+    """
+    Build a quantum circuit for the flat or curved geometry experiment.
+    Args:
+        mode (str): 'flat' or 'curved' geometry.
+        phi (float): Phase parameter for the circuit.
+    Returns:
+        QuantumCircuit: The constructed circuit.
+    """
     qc = QuantumCircuit(6)
-    qc.h(0)
+    qc.h(0)  # Create initial superposition
     qc.cx(0, 2)
     qc.cx(0, 3)
     if mode == "flat":
+        # Flat geometry: local interactions
         qc.rx(phi, 0)
         qc.cz(0, 1)
         qc.cx(1, 2)
@@ -68,6 +116,7 @@ def build_circuit(mode, phi):
         qc.rx(phi, 4)
         qc.cx(4, 5)
     elif mode == "curved":
+        # Curved geometry: more nonlocal interactions
         qc.rx(phi, 0)
         qc.rx(phi, 1)
         qc.rx(phi, 2)
@@ -79,12 +128,20 @@ def build_circuit(mode, phi):
         qc.cz(3, 4)
         qc.cz(4, 1)
         qc.cx(4, 2)
-    qc.measure_all()
-
+    qc.measure_all()  # Measure all qubits
     return qc
+
 
 # --- Main Experiment Function ---
 def run_curved_geometry_qiskit(device_name=None, shots=1024):
+    """
+    Run the curved geometry experiment on IBM Qiskit hardware or simulator.
+    Args:
+        device_name (str): Name of the IBM backend to use (None for auto-select).
+        shots (int): Number of measurement shots.
+    Returns:
+        None. Results are saved to experiment_logs/.
+    """
     service = QiskitRuntimeService()
     if device_name is None:
         # Default to a real hardware backend (choose a 6+ qubit device)
@@ -97,10 +154,11 @@ def run_curved_geometry_qiskit(device_name=None, shots=1024):
         backend = service.backend(device_name)
     print(f"Using backend: {device_name}")
 
+    # Create a timestamped directory for results
     exp_dir = f"experiment_logs/curved_geometry_qiskit_{device_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     os.makedirs(exp_dir, exist_ok=True)
 
-    timesteps = np.linspace(0, 3 * np.pi, 6)
+    timesteps = np.linspace(0, 3 * np.pi, 6)  # Range of phi values
     results = {}
     rt_data = []
     coords_list_2d = []
@@ -127,19 +185,24 @@ def run_curved_geometry_qiskit(device_name=None, shots=1024):
             except Exception as e:
                 print(f"[ERROR] cgpt_run failed: {e}")
                 continue
+            # Compute mutual information matrix for all pairs
             mi_matrix = np.zeros((n_qubits, n_qubits))
             for i in range(n_qubits):
                 for j in range(i+1, n_qubits):
                     mi = compute_mi(counts, i, j, n_qubits, shots)
                     mi_matrix[i, j] = mi_matrix[j, i] = mi
+            # Compute entropy of radiation subsystem (qubits 3,4)
             rad_probs = marginal_probs(counts, n_qubits, [3, 4], shots)
             S_rad = shannon_entropy(rad_probs)
             epsilon = 1e-6
+            # Convert MI matrix to a distance matrix for geometry embedding
             dist = np.exp(-mi_matrix)
-            dist[dist > 1e4] = 1e4
+            dist[dist > 1e4] = 1e4  # Cap large distances
             np.fill_diagonal(dist, 0)
+            # Embed geometry in 2D and 3D using MDS
             coords2 = MDS(n_components=2, dissimilarity='precomputed').fit_transform(dist)
             coords3 = MDS(n_components=3, dissimilarity='precomputed').fit_transform(dist)
+            # Distance between Q3 and Q4 in the embedding
             d_Q34 = np.linalg.norm(coords2[3] - coords2[4])
             # --- New: Compute additional metrics ---
             # Try to get statevector (skip if not available)
@@ -156,11 +219,10 @@ def run_curved_geometry_qiskit(device_name=None, shots=1024):
             face_curvatures = None
             if statevector is not None:
                 try:
+                    # List all 4-qubit plaquettes for curvature
                     plaquettes = list_plaquettes(2, 3)  # Example: for 2x3 grid, adjust as needed
                     plaquette_curvatures = compute_plaquette_curvature_from_sv(statevector, plaquettes, n_qubits)
                     # Compute face curvature using statevector and plaquettes
-                    # Adapt compute_face_curvature to accept statevector and plaquettes
-                    # We'll reconstruct a DensityMatrix from the statevector
                     dm = DensityMatrix(statevector)
                     face_curvatures = {}
                     for corners in plaquettes:
@@ -176,7 +238,7 @@ def run_curved_geometry_qiskit(device_name=None, shots=1024):
                 except Exception as e:
                     print(f"[INFO] Could not compute plaquette curvatures: {e}")
                 try:
-                    # Compute MI for all pairs
+                    # Compute MI for all pairs from statevector
                     mutual_info_dict = {}
                     for i in range(n_qubits):
                         for j in range(i+1, n_qubits):
@@ -372,9 +434,9 @@ if __name__ == "__main__":
             print(f"Running {mode} mode, phi={phi_val:.4f}")
             qc = build_circuit(mode, phi_val)
             if args.simulator:
-                tqc = pm.run(qc)
+                tqc = pm.run(qc)  # Use preset pass manager for simulator
             else:
-                tqc = transpile(qc, backend, optimization_level=3)
+                tqc = transpile(qc, backend, optimization_level=3)  # Transpile for hardware
             try:
                 counts = cgpt_run(tqc, backend=backend, shots=args.shots)
                 if counts is None or not isinstance(counts, dict):
@@ -383,19 +445,25 @@ if __name__ == "__main__":
             except Exception as e:
                 print(f"[ERROR] cgpt_run failed: {e}")
                 continue
+            # --- Repeat the same analysis as above for each phi and mode ---
+            # Compute mutual information matrix for all pairs of qubits
             mi_matrix = np.zeros((n_qubits, n_qubits))
             for i in range(n_qubits):
                 for j in range(i+1, n_qubits):
                     mi = compute_mi(counts, i, j, n_qubits, args.shots)
                     mi_matrix[i, j] = mi_matrix[j, i] = mi
+            # Compute entropy of radiation subsystem (qubits 3,4)
             rad_probs = marginal_probs(counts, n_qubits, [3, 4], args.shots)
             S_rad = shannon_entropy(rad_probs)
             epsilon = 1e-6
+            # Convert MI matrix to a distance matrix for geometry embedding
             dist = np.exp(-mi_matrix)
-            dist[dist > 1e4] = 1e4
+            dist[dist > 1e4] = 1e4  # Cap large distances
             np.fill_diagonal(dist, 0)
+            # Embed geometry in 2D and 3D using MDS
             coords2 = MDS(n_components=2, dissimilarity='precomputed').fit_transform(dist)
             coords3 = MDS(n_components=3, dissimilarity='precomputed').fit_transform(dist)
+            # Distance between Q3 and Q4 in the embedding
             d_Q34 = np.linalg.norm(coords2[3] - coords2[4])
             # --- New: Compute additional metrics ---
             statevector = None
@@ -417,6 +485,7 @@ if __name__ == "__main__":
             face_curvatures = None
             if statevector is not None:
                 try:
+                    # List all 4-qubit plaquettes for curvature
                     plaquettes = list_plaquettes(2, 3)
                     plaquette_curvatures = compute_plaquette_curvature_from_sv(statevector, plaquettes, n_qubits)
                     dm = DensityMatrix(statevector)
@@ -434,6 +503,7 @@ if __name__ == "__main__":
                 except Exception as e:
                     print(f"[INFO] Could not compute plaquette curvatures: {e}")
                 try:
+                    # Compute MI for all pairs from statevector
                     mutual_info_dict = {}
                     for i in range(n_qubits):
                         for j in range(i+1, n_qubits):
@@ -442,13 +512,14 @@ if __name__ == "__main__":
                 except Exception as e:
                     print(f"[INFO] Could not compute mutual information: {e}")
                 try:
+                    # Compute triangle angles for a few triplets
                     D = np.zeros((n_qubits, n_qubits))
                     for i in range(n_qubits):
                         for j in range(i+1, n_qubits):
                             mi = mutual_info_dict.get((i, j), 0) if mutual_info_dict else 0
                             D[i, j] = D[j, i] = 1.0 / (mi + epsilon) if mi > 0 else 1e6
                     triangle_angles = {}
-                    triplets = [(0, 1, 2), (3, 4, 5)]
+                    triplets = [(0, 1, 2), (3, 4, 5)]  # Example triplets
                     for (i, j, k) in triplets:
                         try:
                             angles = compute_triangle_angles(D, i, j, k)
@@ -457,20 +528,6 @@ if __name__ == "__main__":
                             triangle_angles[(i, j, k)] = None
                 except Exception as e:
                     print(f"[INFO] Could not compute triangle angles: {e}")
-            # Compute MI matrix from counts (already present)
-            mi_matrix = np.zeros((n_qubits, n_qubits))
-            for i in range(n_qubits):
-                for j in range(i+1, n_qubits):
-                    mi = compute_mi(counts, i, j, n_qubits, args.shots)
-                    mi_matrix[i, j] = mi_matrix[j, i] = mi
-            # --- New: Embed geometry and compute curvature from MI matrix ---
-            epsilon = 1e-6
-            dist = np.exp(-mi_matrix)
-            dist[dist > 1e4] = 1e4
-            np.fill_diagonal(dist, 0)
-            coords2 = MDS(n_components=2, dissimilarity='precomputed').fit_transform(dist)
-            coords3 = MDS(n_components=3, dissimilarity='precomputed').fit_transform(dist)
-            d_Q34 = np.linalg.norm(coords2[3] - coords2[4])
             # --- Curvature from embedding ---
             # Triangle angle sums (for all triangles)
             triangle_angle_sums = []
@@ -511,6 +568,7 @@ if __name__ == "__main__":
                 triangle_count[i] += 1
                 triangle_count[j] += 1
                 triangle_count[k] += 1
+            # Compute Gaussian curvature (angle deficit) for each vertex
             gaussian_curvature = []
             for v in range(n_qubits):
                 if triangle_count[v] > 0:
@@ -528,6 +586,7 @@ if __name__ == "__main__":
                         "triangle_count": 0,
                         "gaussian_curvature": 0.0
                     })
+            # Collect all results for this phi and mode
             mode_results.append({
                 "phi": float(phi_val),
                 "S_rad": float(S_rad),
@@ -543,7 +602,7 @@ if __name__ == "__main__":
             rt_data.append((phi_val, S_rad, d_Q34))
             coords_list_2d.append(coords2)
             coords_list_3d.append(coords3)
-            # Save MI matrix heatmap
+            # Save MI matrix heatmap for visualization
             try:
                 plt.figure(figsize=(5, 4))
                 plt.imshow(mi_matrix, cmap='viridis', aspect='auto')
@@ -558,18 +617,18 @@ if __name__ == "__main__":
                 print(f"[ERROR] Failed to save MI matrix heatmap: {e}")
         results[mode] = mode_results
 
-    # Save results
+    # Save all results as JSON for reproducibility and further analysis
     print(f"Writing results to {exp_dir}/results.json")
     with open(f"{exp_dir}/results.json", "w") as f:
         json.dump(results, f, indent=2)
 
-    # Save summary
+    # Save a human-readable summary of the experiment
     print(f"Writing summary to {exp_dir}/summary.txt")
     with open(f"{exp_dir}/summary.txt", "w") as f:
         f.write("Curved Geometry Experiment (Qiskit/IBM)\n")
         f.write("==================================\n\n")
-        f.write(f"Device: {'FakeManilaV2' if args.simulator else device_name}\n")
-        f.write(f"Shots: {args.shots}\n\n")
+        f.write(f"Device: {device_name}\n")
+        f.write(f"Shots: {shots}\n\n")
         f.write("Theoretical Background:\n")
         f.write("This experiment investigates how quantum information and entanglement behave in curved spacetime geometries. It compares the behavior of quantum systems in flat vs curved geometries to understand the influence of spacetime curvature on quantum information.\n\n")
         f.write("Methodology:\n")

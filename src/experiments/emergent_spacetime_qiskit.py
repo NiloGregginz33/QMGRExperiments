@@ -13,6 +13,11 @@ from src.CGPTFactory import run as c_run
 import traceback
 
 def get_least_busy_backend():
+    """
+    Select the least busy IBM Qiskit backend with at least 4 qubits.
+    Returns:
+        backend: The selected backend object, or None if unavailable.
+    """
     try:
         provider = QiskitRuntimeService()
         backends = provider.backends(
@@ -29,12 +34,19 @@ def get_least_busy_backend():
         return None
 
 def build_circuit(phi_val):
+    """
+    Build a 4-qubit quantum circuit for the emergent spacetime experiment.
+    Args:
+        phi_val (float): Phase parameter for the circuit.
+    Returns:
+        QuantumCircuit: The constructed circuit.
+    """
     qc = QuantumCircuit(4)
-    qc.h(0)
+    qc.h(0)  # Create initial superposition
     qc.cx(0, 2)
     qc.cx(0, 3)
     qc.rx(phi_val, 0)
-    # cz(0, 1) equivalent
+    # cz(0, 1) equivalent using CX and RZ
     qc.cx(0, 1)
     qc.rz(np.pi, 1)
     qc.cx(0, 1)
@@ -48,25 +60,60 @@ def build_circuit(phi_val):
     return qc
 
 def shannon_entropy(probs):
+    """
+    Compute the Shannon entropy of a probability distribution.
+    Args:
+        probs (array-like): Probability distribution (should sum to 1).
+    Returns:
+        float: Shannon entropy in bits.
+    """
     probs = np.array(probs)
     return -np.sum(probs * np.log2(probs + 1e-12))
 
 def marginal_probs(counts, total_qubits, target_idxs, shots):
+    """
+    Compute marginal probabilities for a subset of qubits from measurement counts.
+    Args:
+        counts (dict): Measurement outcome counts from Qiskit.
+        total_qubits (int): Total number of qubits in the system.
+        target_idxs (list): Indices of qubits to marginalize over.
+        shots (int): Total number of measurement shots.
+    Returns:
+        np.ndarray: Marginal probability distribution for the target qubits.
+    """
     marginal = {}
     for bitstring, count in counts.items():
-        b = bitstring[::-1]  # Qiskit order
+        b = bitstring[::-1]  # Qiskit order (little-endian)
         key = ''.join([b[i] for i in target_idxs])
         marginal[key] = marginal.get(key, 0) + count
     probs = np.array(list(marginal.values())) / shots
     return probs
 
 def compute_mi(counts, qA, qB, total_qubits, shots):
+    """
+    Compute the mutual information between two qubits from measurement counts.
+    Args:
+        counts (dict): Measurement outcome counts.
+        qA, qB (int): Indices of the two qubits.
+        total_qubits (int): Total number of qubits.
+        shots (int): Number of measurement shots.
+    Returns:
+        float: Mutual information I(A:B).
+    """
     AB = marginal_probs(counts, total_qubits, [qA, qB], shots)
     A = marginal_probs(counts, total_qubits, [qA], shots)
     B = marginal_probs(counts, total_qubits, [qB], shots)
     return shannon_entropy(A) + shannon_entropy(B) - shannon_entropy(AB)
 
 def write_summary(exp_dir, backend_name, shots, error=None):
+    """
+    Write a human-readable summary of the experiment, including theoretical background, methodology, and results.
+    Args:
+        exp_dir (str): Directory to save the summary.
+        backend_name (str): Name of the backend used.
+        shots (int): Number of shots.
+        error (str, optional): Error message if the experiment failed.
+    """
     with open(f"{exp_dir}/summary.txt", "w") as f:
         f.write("Emergent Spacetime Experiment (Qiskit Hardware)\n")
         f.write("============================================\n\n")
@@ -88,6 +135,13 @@ def write_summary(exp_dir, backend_name, shots, error=None):
             f.write("The experiment demonstrates how quantum entanglement patterns can be mapped to emergent geometric structures, supporting the idea that spacetime geometry is encoded in quantum information.\n")
 
 def main():
+    """
+    Main function to run the emergent spacetime experiment.
+    - Runs the quantum circuit for a range of phi values (timesteps)
+    - Computes mutual information matrices for each timestep
+    - Embeds geometry using MDS and computes entropy, curvature, and distance
+    - Saves results and generates summary and plots
+    """
     shots = 1024
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     exp_dir = os.path.join('experiment_logs', f'emergent_spacetime_qiskit_{timestamp}')
@@ -104,7 +158,7 @@ def main():
             try:
                 qc = build_circuit(phi_val)
                 result = c_run(qc, backend=backend, shots=shots)
-                # Robust extraction of counts
+                # Robust extraction of counts from various possible result formats
                 counts = None
                 if isinstance(result, dict):
                     if 'counts' in result:
@@ -122,6 +176,7 @@ def main():
                     print(f"[WARNING] Could not extract counts for phi={phi_val:.3f}, skipping.")
                     mi_matrices.append(np.full((4, 4), np.nan))
                     continue
+                # Compute mutual information matrix for all pairs
                 mi_matrix = np.zeros((4, 4))
                 for a in range(4):
                     for b in range(a+1, 4):
@@ -201,7 +256,7 @@ def main():
         plt.savefig(f"{exp_dir}/results.png")
         plt.close()
         write_summary(exp_dir, backend.name, shots)
-        # Copy outputs to output_logs folders
+        # Copy outputs to output_logs folders for redundancy and easy access
         import shutil
         for outdir in ["experiment_outputs/output_logs", "output_logs"]:
             os.makedirs(outdir, exist_ok=True)
