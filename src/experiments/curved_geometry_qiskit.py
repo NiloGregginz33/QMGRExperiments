@@ -100,14 +100,20 @@ def run_curved_geometry_qiskit(device_name=None, shots=1024):
     exp_dir = f"experiment_logs/curved_geometry_qiskit_{device_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     os.makedirs(exp_dir, exist_ok=True)
 
-    timesteps = np.linspace(0, 3 * np.pi, 9)
+    timesteps = np.linspace(0, 3 * np.pi, 6)
     results = {}
     rt_data = []
     coords_list_2d = []
     coords_list_3d = []
     n_qubits = 6
 
-    for mode in ["flat", "curved"]:
+    # Determine which modes to run based on args.mode
+    if args.mode == 'both':
+        modes_to_run = ['flat', 'curved']
+    else:
+        modes_to_run = [args.mode]
+
+    for mode in modes_to_run:
         mode_results = []
         for phi_val in timesteps:
             print(f"Running {mode} mode, phi={phi_val:.4f}")
@@ -354,7 +360,13 @@ if __name__ == "__main__":
     coords_list_3d = []
     n_qubits = 6
 
-    for mode in ["flat", "curved"]:
+    # Determine which modes to run based on args.mode
+    if args.mode == 'both':
+        modes_to_run = ['flat', 'curved']
+    else:
+        modes_to_run = [args.mode]
+
+    for mode in modes_to_run:
         mode_results = []
         for phi_val in timesteps:
             print(f"Running {mode} mode, phi={phi_val:.4f}")
