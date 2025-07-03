@@ -11,30 +11,56 @@ from utils.experiment_logger import PhysicsExperimentLogger
 
 class BoundaryVsBulkEntropyExperiment:
     def __init__(self, device):
+        """
+        Initialize the experiment with a given quantum device (simulator or hardware).
+        Args:
+            device: Braket device object (e.g., LocalSimulator).
+        """
         self.device = device
         self.num_qubits = 6
         self.logger = PhysicsExperimentLogger("boundary_vs_bulk_entropy")
 
     def shannon_entropy(self, probs):
+        """
+        Compute the Shannon entropy of a probability distribution.
+        Args:
+            probs (array-like): Probability distribution (should sum to 1).
+        Returns:
+            float: Shannon entropy in bits.
+        """
         probs = np.array(probs)
         probs = probs / np.sum(probs)
         return -np.sum(probs * np.log2(probs + 1e-12))
 
     def marginal_probs(self, probs, total_qubits, keep):
+        """
+        Compute marginal probabilities for a subset of qubits from the full probability vector.
+        Args:
+            probs (np.ndarray): Full probability vector for all qubits.
+            total_qubits (int): Total number of qubits.
+            keep (list): Indices of qubits to keep (rest are traced out).
+        Returns:
+            np.ndarray: Marginal probability distribution for the kept qubits.
+        """
         marginal = {}
         for idx, p in enumerate(probs):
-            b = format(idx, f"0{total_qubits}b")
+            b = format(idx, f"0{total_qubits}b")  # Binary string for basis state
             key = ''.join([b[i] for i in keep])
             marginal[key] = marginal.get(key, 0) + p
         return np.array(list(marginal.values()))
 
     def build_perfect_tensor(self):
+        """
+        Build a 6-qubit perfect tensor circuit using GHZ pairs and CZ gates.
+        Returns:
+            Circuit: Braket circuit object.
+        """
         circ = Circuit()
         # Create 3 GHZ pairs: (0,1), (2,3), (4,5)
         for i in [0, 2, 4]:
             circ.h(i)
             circ.cnot(i, i+1)
-        # Entangle across pairs (CZ gates)
+        # Entangle across pairs (CZ gates via CNOT-RZ-CNOT)
         circ.cnot(0, 2).rz(2, np.pi).cnot(0, 2)
         circ.cnot(1, 4).rz(4, np.pi).cnot(1, 4)
         circ.cnot(3, 5).rz(5, np.pi).cnot(3, 5)
@@ -45,6 +71,15 @@ class BoundaryVsBulkEntropyExperiment:
         return circ
 
     def run(self):
+        """
+        Run the boundary vs. bulk entropy experiment:
+        - Builds the perfect tensor circuit
+        - Runs it on the device
+        - Computes entropy for all boundary cuts
+        - Logs and plots results
+        Returns:
+            list: Entropy values for each cut size.
+        """
         circ = self.build_perfect_tensor()
         task = self.device.run(circ, shots=2048)
         result = task.result()
@@ -83,6 +118,11 @@ class BoundaryVsBulkEntropyExperiment:
             f.write(analysis)
 
     def plot_results(self, entropies):
+        """
+        Plot and save the entropy vs. boundary cut size results.
+        Args:
+            entropies (list): Entropy values for each cut size.
+        """
         plt.figure(figsize=(7, 5))
         plt.plot(range(1, self.num_qubits), entropies, marker='o')
         plt.xlabel('Boundary Cut Size (qubits)')

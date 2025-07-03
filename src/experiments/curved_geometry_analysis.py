@@ -20,10 +20,8 @@ from scipy.stats import pearsonr
 def get_device(device_type="simulator"):
     """
     Get quantum device based on specified type
-    
     Args:
         device_type (str): "simulator", "ionq", "rigetti", or "oqc"
-    
     Returns:
         Device object for quantum computation
     """
@@ -42,11 +40,9 @@ def get_device(device_type="simulator"):
 def transpile_circuit(circuit, device):
     """
     Transpile circuit for the specific device
-    
     Args:
         circuit: Braket circuit to transpile
         device: Target device
-    
     Returns:
         Transpiled circuit optimized for the device
     """
@@ -57,56 +53,54 @@ def transpile_circuit(circuit, device):
             print(f"Device: {device.name}")
             print(f"Native gates: {properties.action.get('braket.ir.jaqcd.program', {}).get('nativeGates', 'Unknown')}")
             print(f"Connectivity: {properties.action.get('braket.ir.jaqcd.program', {}).get('connectivity', 'Unknown')}")
-        
         # Apply device-specific optimizations
         if "ionq" in str(device).lower():
             # IonQ prefers single-qubit gates and CNOT
             print("Transpiling for IonQ device...")
             return circuit
-            
         elif "rigetti" in str(device).lower():
             # Rigetti has specific connectivity constraints
             print("Transpiling for Rigetti device...")
             # Rigetti devices have limited connectivity, may need SWAP gates
             return circuit
-            
         elif "oqc" in str(device).lower():
             # OQC has specific gate set requirements
             print("Transpiling for OQC device...")
             return circuit
-            
         else:
             # For simulator, no special transpilation needed
             print("Using circuit as-is for simulator...")
             return circuit
-            
     except Exception as e:
         print(f"Warning: Transpilation failed: {e}")
         print("Using original circuit...")
         return circuit
 
 def run_curved_geometry_experiments(device_type="simulator", shots=1024):
-    """Run curved geometry experiments in both flat and curved modes"""
-    
+    """
+    Run curved geometry experiments in both flat and curved modes.
+    - Initializes the analyzer
+    - Runs both flat and curved geometry analyses
+    - Saves results and summary to experiment_logs
+    Args:
+        device_type (str): Quantum device type (simulator, ionq, rigetti, oqc)
+        shots (int): Number of measurement shots
+    Returns:
+        str: Path to experiment log directory
+    """
     exp_dir = f"experiment_logs/curved_geometry_{device_type}"
     os.makedirs(exp_dir, exist_ok=True)
-    
     device = get_device(device_type)
-    
     try:
         print(f"Running curved geometry experiment on {device_type}")
-        
         # Initialize the analyzer with transpilation support
         analyzer = AdSGeometryAnalyzer6Q(device=device, shots=shots)
-        
         # Add transpilation method to analyzer if it doesn't exist
         if not hasattr(analyzer, 'transpile_circuit'):
             analyzer.transpile_circuit = lambda circuit: transpile_circuit(circuit, device)
-        
         # Run experiments in different modes
         modes = ["flat", "curved"]
         results = {}
-        
         for mode in modes:
             print(f"Running in {mode} mode...")
             try:
@@ -114,18 +108,14 @@ def run_curved_geometry_experiments(device_type="simulator", shots=1024):
                     result = analyzer.run_flat_geometry_analysis()
                 else:
                     result = analyzer.run_curved_geometry_analysis()
-                
                 results[mode] = result
                 print(f"Completed {mode} mode analysis")
-                
             except Exception as e:
                 print(f"Error in {mode} mode: {str(e)}")
                 results[mode] = {"error": str(e)}
-        
         # Save results
         with open(f"{exp_dir}/results.json", "w") as f:
             json.dump(results, f, indent=2)
-        
         # Create summary
         with open(f"{exp_dir}/summary.txt", "w") as f:
             f.write("Curved Geometry Experiment Summary\n")
@@ -140,19 +130,15 @@ def run_curved_geometry_experiments(device_type="simulator", shots=1024):
             f.write(f"Results saved in: {exp_dir}\n")
             f.write("\nConclusion:\n")
             f.write("The experiment reveals how curvature affects quantum information distribution and entanglement patterns, providing insights into the relationship between quantum mechanics and spacetime geometry.\n")
-        
         print(f"Experiment completed. Results saved in {exp_dir}")
         return exp_dir
-        
     except Exception as e:
         error_msg = f"Experiment failed: {str(e)}"
         print(error_msg)
-        
         # Save error log
         with open(f"{exp_dir}/error.log", "w") as f:
             f.write(f"Error occurred at {datetime.now()}\n")
             f.write(f"Error: {str(e)}\n")
-        
         # Save basic summary even if experiment failed
         with open(f"{exp_dir}/summary.txt", "w") as f:
             f.write("Curved Geometry Experiment Summary\n")
@@ -162,7 +148,6 @@ def run_curved_geometry_experiments(device_type="simulator", shots=1024):
             f.write("Status: FAILED\n")
             f.write(f"Error: {str(e)}\n")
             f.write("Check error.log for details.\n")
-        
         return exp_dir
 
 if __name__ == "__main__":
