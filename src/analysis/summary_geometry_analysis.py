@@ -3,6 +3,8 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.manifold import MDS
+from scipy.stats import pearsonr
+from scipy.optimize import curve_fit
 
 # --- Utility Functions ---
 def find_latest_log(log_dir_root):
@@ -76,6 +78,79 @@ if __name__ == "__main__":
     plt.xlabel('φ (phi)')
     plt.ylabel('Mean Gaussian Curvature')
     plt.title('Mean Gaussian Curvature vs φ')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+    # 3b. Quantitative Geometry-MI Correlation
+    print("\n=== Quantitative Geometry-MI Correlation ===")
+    pearson_corrs = []
+    alphas = []
+    r2s = []
+    for i, mi in enumerate(mi_matrices):
+        coords = get_mds_coords(mi)
+        dists = []
+        mi_vals = []
+        n = mi.shape[0]
+        for a in range(n):
+            for b in range(a+1, n):
+                d = np.linalg.norm(coords[a] - coords[b])
+                dists.append(d)
+                mi_vals.append(mi[a, b])
+        dists = np.array(dists)
+        mi_vals = np.array(mi_vals)
+        # Pearson correlation between MI and distance (should be negative)
+        corr, _ = pearsonr(dists, mi_vals)
+        pearson_corrs.append(corr)
+        # Fit MI(r) = A * exp(-alpha * r)
+        def exp_decay(r, A, alpha):
+            return A * np.exp(-alpha * r)
+        try:
+            popt, pcov = curve_fit(exp_decay, dists, mi_vals, p0=(1.0, 1.0), maxfev=10000)
+            A_fit, alpha_fit = popt
+            mi_pred = exp_decay(dists, *popt)
+            ss_res = np.sum((mi_vals - mi_pred) ** 2)
+            ss_tot = np.sum((mi_vals - np.mean(mi_vals)) ** 2)
+            r2 = 1 - ss_res / ss_tot
+            alphas.append(alpha_fit)
+            r2s.append(r2)
+        except Exception as e:
+            alphas.append(np.nan)
+            r2s.append(np.nan)
+    print(f"Mean Pearson correlation (MI vs. distance): {np.mean(pearson_corrs):.3f} ± {np.std(pearson_corrs):.3f}")
+    print(f"Mean exponential decay α: {np.nanmean(alphas):.3f} ± {np.nanstd(alphas):.3f}")
+    print(f"Mean R^2 for exponential fit: {np.nanmean(r2s):.3f} ± {np.nanstd(r2s):.3f}")
+    print("Interpretation:")
+    print("- Strong (negative) Pearson correlation and good exponential fit support a quantitative link between MI and emergent geometry.")
+    print("- The decay rate α can be compared to theoretical models or classical geodesics.")
+
+    # Plot MI vs. distance for a representative φ (middle index)
+    idx = len(mi_matrices) // 2
+    mi = mi_matrices[idx]
+    coords = get_mds_coords(mi)
+    dists = []
+    mi_vals = []
+    n = mi.shape[0]
+    for a in range(n):
+        for b in range(a+1, n):
+            d = np.linalg.norm(coords[a] - coords[b])
+            dists.append(d)
+            mi_vals.append(mi[a, b])
+    dists = np.array(dists)
+    mi_vals = np.array(mi_vals)
+    plt.figure(figsize=(6,4))
+    plt.scatter(dists, mi_vals, label='Data', color='blue')
+    # Fit and plot exponential
+    try:
+        popt, _ = curve_fit(exp_decay, dists, mi_vals, p0=(1.0, 1.0), maxfev=10000)
+        d_fit = np.linspace(np.min(dists), np.max(dists), 100)
+        plt.plot(d_fit, exp_decay(d_fit, *popt), 'r--', label=f'Exp fit: α={popt[1]:.2f}')
+    except Exception as e:
+        pass
+    plt.xlabel('Geometric distance (MDS)')
+    plt.ylabel('Mutual Information (MI)')
+    plt.title(f'MI vs. Distance (φ={phi_list[idx]:.2f})')
+    plt.legend()
     plt.grid(True)
     plt.tight_layout()
     plt.show()
