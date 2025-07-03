@@ -620,3 +620,23 @@ This analysis provides direct, empirical evidence for the geometric encoding of 
 
 ---
 
+# How to Run the Summary Geometry Analysis
+
+After running the curved geometry experiment, you can perform a comprehensive analysis of the emergent geometry using the summary analysis tool. This script will:
+- Plot geodesic deviation (Q3-Q4 length vs φ)
+- Overlay MDS embeddings for all φ to visualize geometry evolution
+- Plot mean Gaussian curvature vs φ
+- Print a formal summary suitable for scientific write-ups
+
+**To run the summary analysis:**
+```sh
+python src/analysis/summary_geometry_analysis.py
+```
+
+**What to expect:**
+- Several plots will appear, showing geodesic deviation, geometry overlays, and curvature.
+- A summary will be printed in the terminal, interpreting the results in the context of holographic duality and emergent spacetime.
+- The script automatically uses the latest experiment log in `experiment_logs/`.
+
+You can use this tool to quickly generate figures and text for presentations or papers based on your latest experiment results.
+
