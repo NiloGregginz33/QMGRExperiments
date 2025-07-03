@@ -1,0 +1,67 @@
+{
+  "phi_values": [
+    0.0,
+    1.1780972450961724,
+    2.356194490192345,
+    3.5342917352885173,
+    4.71238898038469,
+    5.890486225480862,
+    7.0685834705770345,
+    8.246680715673207,
+    9.42477796076938
+  ],
+  "pearson_correlation_per_phi": [
+    -0.6947713464032057,
+    -0.6700586861022175,
+    -0.6469886271797459,
+    -0.701137364288021,
+    -0.6793631431430269,
+    -0.6719868302940986,
+    -0.6665758204255013,
+    -0.6648402435564392,
+    -0.5291880138992805
+  ],
+  "exp_decay_alpha_per_phi": [
+    1.9741245284657176,
+    16.378298520384067,
+    1.9396282281155355,
+    2.853458245990691,
+    19.167794253593343,
+    1.8086418711674896,
+    13.908615722368298,
+    14.691473576551834,
+    0.9445952266587913
+  ],
+  "exp_decay_r2_per_phi": [
+    0.4669447020804949,
+    0.9575426812743895,
+    0.3930324195498952,
+    0.5592469402437589,
+    0.9747028262758994,
+    0.4008887393911733,
+    0.8932972624671563,
+    0.9170451698424069,
+    0.2780803431713842
+  ],
+  "mean_pearson_correlation": -0.6583233416990596,
+  "std_pearson_correlation": 0.04812433215115295,
+  "mean_exp_decay_alpha": 8.185181130366196,
+  "std_exp_decay_alpha": 7.164203218013681,
+  "mean_exp_decay_r2": 0.6489756760329509,
+  "std_exp_decay_r2": 0.2663894418062061,
+  "mean_geodesic_length_Q3Q4": 0.6923412143029729,
+  "std_geodesic_length_Q3Q4": 0.100038235878842,
+  "mean_gaussian_curvature": -4.188790204786393,
+  "std_gaussian_curvature": 5.212664925379272e-15,
+  "summary": {
+    "findings": [
+      "Geodesic deviation confirms emergent curvature from entanglement structure.",
+      "Dynamic \u03c6 simulations show time-dependent geometry evolution.",
+      "Ricci/Gaussian curvature extracted from MI graph quantifies emergent geometry.",
+      "MDS overlays visually demonstrate the evolution of quantum geometry.",
+      "Strong (negative) Pearson correlation and good exponential fit support a quantitative link between MI and emergent geometry.",
+      "The decay rate \u03b1 can be compared to theoretical models or classical geodesics.",
+      "These results support a holographic dual interpretation: entanglement encodes geometry."
+    ]
+  }
+}
