@@ -1,0 +1,17 @@
+CTC Conditional Perturbation Experiment Summary
+==============================================
+
+Device: statevector
+Shots: 1024
+
+Theoretical Background:
+This experiment simulates a Closed Timelike Curve (CTC) geometry with and without a conditional or unconditional perturbation. It investigates how anomalies or interventions affect the entanglement and emergent geometry of the CTC loop.
+
+Methodology:
+A 4-qubit quantum circuit is constructed with a feedback loop structure. A perturbation (X, RX(pi), or CX(0,target)) is optionally applied. Mutual information, MDS geometry, and entropy are computed for both standard and perturbed cases.
+
+Results:
+Results saved in: experiment_logs/ctc_conditional_perturbation_qiskit_statevector_20250705_104256
+
+Conclusion:
+The experiment demonstrates how local interventions in a CTC-like structure can alter the entanglement and emergent geometry, and tests the loop's sensitivity to collapse and self-consistency.
