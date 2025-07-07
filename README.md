@@ -74,20 +74,24 @@ python src/experiments/boundary_vs_bulk_entropy_qiskit.py
 ### 1. Boundary vs. Bulk Entropy
 - **Demonstrates linear entropy scaling with boundary cut size, consistent with the holographic principle.**
 - **Confirms perfect tensor structure and robust holographic encoding.**
-- found in boundary_vs_bulk_entropy_qiskit.py 
+- found in boundary_vs_bulk_entropy_qiskit.py, data in corresponding experiment_logs folder: experiment_logs\boundary_vs_bulk_entropy_qiskit_20250707_112427\result_1.json
+experiment_logs\boundary_vs_bulk_entropy_qiskit_20250707_112427\result_2.json
+experiment_logs\boundary_vs_bulk_entropy_qiskit_20250707_112427\result_3.json
+experiment_logs\boundary_vs_bulk_entropy_qiskit_20250707_112427\result_4.json
+experiment_logs\boundary_vs_bulk_entropy_qiskit_20250707_112427\result_5.json
 
 ### 2. Curved Geometry and Emergent Spacetime
 - **Empirically demonstrates the emergence of geometric features from quantum entanglement.**
 - **Visualizes curvature and geodesic structure using mutual information and multidimensional scaling.**
-- found in curved_geometry_qiskit.py
+- found in curved_geometry_qiskit.py, data in corresponding experiment_logs folder: experiment_logs\curved_geometry_qiskit_ibm_sherbrooke_20250702_160632\results.json
 
 ### 3. CTC Geometry and Feedback
 - **Explores the impact of closed timelike curves and feedback on entanglement and emergent geometry.**
-- found in ctc_geometry_experiement_qiskit.py
+- found in ctc_geometry_experiement_qiskit.py, data in corresponding experiment_logs folder
 
 ### 4. Page Curve and Information Retention
 - **Reproduces the Page curve, providing evidence for information retention in quantum evaporation processes.**
-- found in page_curve_experiment_qiskit.py
+- found in page_curve_experiment_qiskit.py, data in corresponding experiment_logs folder: experiment_logs\page_curve_experiment_20250616_132312\page_curve_experiment_log.txt
 
 ## Methodology
 
