@@ -7,7 +7,7 @@ This repository presents a suite of quantum information experiments designed to 
 - **Can the holographic principle be demonstrated in a controlled quantum system?**
 - **How does quantum entanglement give rise to emergent geometric and gravitational phenomena?**
 
-The experiments herein are inspired by the AdS/CFT correspondence, black hole thermodynamics, and recent advances in quantum simulation. The project aims to bridge the gap between theory and experiment, providing reproducible evidence for the encoding of bulk information on quantum boundaries and the emergence of geometry from entanglement.
+The experiments herein are inspired by the AdS/CFT correspondence, black hole thermodynamics, and recent advances in quantum simulation. The project aims to bridge the gap between theory and experiment, providing reproducible evidence for the encoding of bulk information on quantum boundaries and the emergence of geometry from entanglement. Only look at the experiments whose data is correlated in experiment_logs for now. 
 
 ## Project Goals
 
