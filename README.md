@@ -74,16 +74,20 @@ python src/experiments/boundary_vs_bulk_entropy_qiskit.py
 ### 1. Boundary vs. Bulk Entropy
 - **Demonstrates linear entropy scaling with boundary cut size, consistent with the holographic principle.**
 - **Confirms perfect tensor structure and robust holographic encoding.**
+- found in boundary_vs_bulk_entropy_qiskit.py 
 
 ### 2. Curved Geometry and Emergent Spacetime
 - **Empirically demonstrates the emergence of geometric features from quantum entanglement.**
 - **Visualizes curvature and geodesic structure using mutual information and multidimensional scaling.**
+- found in curved_geometry_qiskit.py
 
 ### 3. CTC Geometry and Feedback
 - **Explores the impact of closed timelike curves and feedback on entanglement and emergent geometry.**
+- found in ctc_geometry_experiement_qiskit.py
 
 ### 4. Page Curve and Information Retention
 - **Reproduces the Page curve, providing evidence for information retention in quantum evaporation processes.**
+- found in page_curve_experiment_qiskit.py
 
 ## Methodology
 
