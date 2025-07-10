@@ -28,6 +28,7 @@ All experiments are designed for reproducibility. The codebase is structured to 
 - Install dependencies and run experiments locally or on IBM Quantum hardware.
 - Reproduce all published results, including entropy scaling, mutual information matrices, and geometric embeddings.
 - Analyze and visualize data using provided scripts and analysis tools.
+- Make sure to use python 3.11
 
 ## Getting Started
 
@@ -92,6 +93,30 @@ experiment_logs\boundary_vs_bulk_entropy_qiskit_20250707_112427\result_5.json
 ### 4. Page Curve and Information Retention
 - **Reproduces the Page curve, providing evidence for information retention in quantum evaporation processes.**
 - found in page_curve_experiment_qiskit.py, data in corresponding experiment_logs folder: experiment_logs\page_curve_experiment_20250616_132312\page_curve_experiment_log.txt
+
+### 5. Quantum Switch and Emergent Time
+- **Implements the quantum switch protocol to probe the emergence of time and indefinite causal order in a quantum circuit.**
+- **Measures both Shannon entropy and a causal non-separability witness (Branciard et al., PRL 2016) as a function of the circuit parameter φ.**
+- **Finds negative values of the causal witness for certain φ, indicating regimes of indefinite causal order—a hallmark of emergent time phenomena.**
+- **All results, including entropy and witness plots, are logged and visualized for rigorous analysis.**
+- found in `quantum_switch_emergent_time_qiskit.py`, data in corresponding experiment_logs folder: `experiment_logs/quantum_switch_emergent_time_qiskit/`
+
+#### Key Results (Simulator)
+
+```
+phi=0.00, Shannon Entropy=0.9997, Causal Witness=0.0205
+phi=0.70, Shannon Entropy=1.6220, Causal Witness=0.0850
+phi=1.40, Shannon Entropy=1.9908, Causal Witness=0.0771
+phi=2.09, Shannon Entropy=1.8817, Causal Witness=-0.3662
+phi=2.79, Shannon Entropy=1.2753, Causal Witness=-0.9033
+phi=3.49, Shannon Entropy=1.2624, Causal Witness=-0.9102
+phi=4.19, Shannon Entropy=1.8762, Causal Witness=-0.3828
+phi=4.89, Shannon Entropy=1.9882, Causal Witness=0.0303
+phi=5.59, Shannon Entropy=1.6387, Causal Witness=0.0674
+phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
+```
+
+- **Negative values of the causal witness indicate the presence of indefinite causal order, providing experimental evidence for the emergence of time as a quantum phenomenon.**
 
 ## Methodology
 
