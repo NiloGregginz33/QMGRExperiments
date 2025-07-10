@@ -12896,7 +12896,10 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
     """
     # base_run 
     # Display circuit
-    print(qc.draw(fold=100))
+    try:
+        print(qc.draw(fold=100))
+    except Exception as e:
+        print(f"Error drawing circuit: {e}")
 
     # Option 1: statevector simulation
     if rs:
