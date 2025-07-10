@@ -47,8 +47,7 @@ def main():
     parser.add_argument('--experiment', type=int, default=None,
                         help='Experiment number to run (see list)')
     parser.add_argument('--device', type=str, default='simulator',
-                        choices=['simulator', 'ionq', 'rigetti', 'oqc'],
-                        help='Quantum device to use')
+                        help='Quantum device to use (simulator, ionq, rigetti, oqc, or any IBMQ backend name)')
     parser.add_argument('--shots', type=int, default=1024,
                         help='Number of shots for quantum measurements')
     args = parser.parse_args()
