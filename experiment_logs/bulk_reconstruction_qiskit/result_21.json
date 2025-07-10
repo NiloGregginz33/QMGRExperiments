@@ -1,0 +1,16 @@
+{
+  "logical_state": 0,
+  "phi": 0.0,
+  "shannon_entropy": 4.510579677065489,
+  "renyi_entropies": {
+    "S_1": 4.510579677065489,
+    "S_2": 4.223550902830119,
+    "S_3": 4.165696702777619
+  },
+  "von_neumann_entropy": 0.9998347183577362,
+  "entanglement_spectrum": [
+    1.01513671875,
+    0.98486328125
+  ],
+  "fisher_info": 0
+}
