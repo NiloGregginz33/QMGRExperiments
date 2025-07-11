@@ -1,0 +1,13 @@
+Unified Causal Geometry Experiment
+Backend: <qiskit_ibm_runtime.fake_provider.backends.jakarta.fake_jakarta.FakeJakartaV2 object at 0x00000213A90B7510>
+Shots: 1024
+Phi values: [0.0, 0.8975979010256552, 1.7951958020513104, 2.6927937030769655, 3.5903916041026207, 4.487989505128276, 5.385587406153931, 6.283185307179586]
+
+phi=0.00, QS Entropy=0.9998, QS Witness=0.0156, ST Entropy=0.9995
+phi=0.90, QS Entropy=1.7363, QS Witness=0.0801, ST Entropy=2.4099
+phi=1.80, QS Entropy=1.9813, QS Witness=-0.1289, ST Entropy=2.9309
+phi=2.69, QS Entropy=1.3840, QS Witness=-0.8477, ST Entropy=1.6091
+phi=3.59, QS Entropy=1.3885, QS Witness=-0.8477, ST Entropy=1.5382
+phi=4.49, QS Entropy=1.9879, QS Witness=-0.0977, ST Entropy=2.9321
+phi=5.39, QS Entropy=1.7801, QS Witness=0.1309, ST Entropy=2.4074
+phi=6.28, QS Entropy=1.0000, QS Witness=0.0000, ST Entropy=0.9991
