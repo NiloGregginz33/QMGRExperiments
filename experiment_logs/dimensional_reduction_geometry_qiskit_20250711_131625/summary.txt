@@ -1,0 +1,5 @@
+Dimensional Reduction Geometry Experiment
+Backend: <qiskit_ibm_runtime.fake_provider.backends.jakarta.fake_jakarta.FakeJakartaV2 object at 0x00000218CA026790>
+Phi: 0.7853981633974483
+Boundary sizes: [3, 4, 5, 6, 7]
+Results: See results.json and geometry plots.

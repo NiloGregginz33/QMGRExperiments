@@ -118,6 +118,27 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 
 - **Negative values of the causal witness indicate the presence of indefinite causal order, providing experimental evidence for the emergence of time as a quantum phenomenon.**
 
+### 6. Unified Causal Geometry (Quantum Switch + Emergent Spacetime)
+- **Combines the quantum switch (causal structure) and emergent spacetime (geometry reconstruction) protocols in a single experiment.**
+- **At each φ, runs both subcircuits, logging entropy, causal witness, mutual information matrix, and MDS geometry.**
+- **Plots correlations between causal witness and geometry/entropy.**
+- **Only tested on simulator so far.**
+- found in `unified_causal_geometry_experiment_qiskit.py`, data in `experiment_logs/unified_causal_geometry_qiskit_<timestamp>/`
+
+### 7. Modular Flow Geometry
+- **Simulates modular flow (Tomita–Takesaki theory) in a quantum geometry circuit.**
+- **For each φ and modular flow parameter α, applies modular evolution to a subsystem and measures the effect on emergent geometry.**
+- **Directly probes the geometric action of the modular Hamiltonian, a deep AdS/CFT conjecture.**
+- **Only tested on simulator so far.**
+- found in `modular_flow_geometry_qiskit.py`, data in `experiment_logs/modular_flow_geometry_qiskit_<timestamp>/`
+
+### 8. Dimensional Reduction via Entanglement
+- **Tests the emergence of higher-dimensional bulk geometry from lower-dimensional boundary degrees of freedom.**
+- **Vary the number of boundary qubits, reconstruct geometry, and analyze the MDS eigenvalue spectrum and bulk volume scaling.**
+- **Plots show how effective dimensionality and volume change with boundary size.**
+- **Only tested on simulator so far.**
+- found in `dimensional_reduction_geometry_qiskit.py`, data in `experiment_logs/dimensional_reduction_geometry_qiskit_<timestamp>/`
+
 ## Methodology
 
 - Quantum circuits are constructed to model black hole evaporation, perfect tensor networks, and curved/flat geometries.
