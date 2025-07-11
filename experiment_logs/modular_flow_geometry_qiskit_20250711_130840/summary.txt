@@ -1,0 +1,7 @@
+Modular Flow Geometry Experiment
+Backend: <qiskit_ibm_runtime.fake_provider.backends.jakarta.fake_jakarta.FakeJakartaV2 object at 0x0000016800796650>
+Subsystem: [0, 1]
+Phi values: [0.0, 1.2566370614359172, 2.5132741228718345, 3.7699111843077517, 5.026548245743669, 6.283185307179586]
+Alpha values: [0.0, 1.2566370614359172, 2.5132741228718345, 3.7699111843077517, 5.026548245743669, 6.283185307179586]
+
+Results: See results.json and geometry plots.
