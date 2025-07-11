@@ -56,9 +56,20 @@ class TemporalInjectionExperiment:
         for phi_val in self.timesteps:
             # Build and run circuit
             circ = self.build_circuit(phi_val)
-            task = self.device.run(circ, shots=1024)
-            result = task.result()
-            probs = np.array(result.values).reshape(-1)
+            
+            # Replace device.run with run_experiment from CGPTFactory
+            # task = self.device.run(circ, shots=1024)
+            # result = task.result()
+            # probs = np.array(result.values).reshape(-1)
+            
+            # Use run_experiment from CGPTFactory
+            from Factory.CGPTFactory import run_experiment
+            backend_type = 'simulator'  # or 'quantum' based on your setup
+            target_state = '111'  # Example target state, adjust as needed
+            t_steps = 5  # Example time steps, adjust as needed
+            shots = 1024
+            counts, _ = run_experiment(backend_type, target_state, t_steps, shots)
+            probs = np.array(list(counts.values())) / shots
             
             # Calculate metrics
             entropy = self.shannon_entropy(probs)

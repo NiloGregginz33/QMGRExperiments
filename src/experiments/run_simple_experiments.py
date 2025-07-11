@@ -105,15 +105,20 @@ def run_temporal_injection(device_type="simulator", shots=1024):
     with {shots} shots to analyze temporal information flow.
     """)
     
+    # Replace current execution method with run_experiment from CGPTFactory
     # Simulate temporal evolution
-    np.random.seed(42)
-    time_steps = np.linspace(0, 2*np.pi, 20)
-    temporal_data = np.sin(time_steps) + 0.1 * np.random.normal(0, 1, 20)
+    from Factory.CGPTFactory import run_experiment
+    backend_type = 'simulator'  # or 'quantum' based on your setup
+    target_state = '111'  # Example target state, adjust as needed
+    t_steps = 5  # Example time steps, adjust as needed
+    shots = 1024
+    counts, _ = run_experiment(backend_type, target_state, t_steps, shots)
+    temporal_data = np.array(list(counts.values())) / shots
     
     logger.log_parameters({
         "device": device_type,
         "shots": shots,
-        "time_steps": len(time_steps),
+        "time_steps": len(temporal_data), # temporal_data is now a numpy array
         "injection_strength": 0.1
     })
     
@@ -125,7 +130,7 @@ def run_temporal_injection(device_type="simulator", shots=1024):
     
     # Create plot
     plt.figure(figsize=(10, 6))
-    plt.plot(time_steps, temporal_data, 'b-', label='Temporal Evolution')
+    plt.plot(range(len(temporal_data)), temporal_data, 'b-', label='Temporal Evolution')
     plt.xlabel('Time')
     plt.ylabel('Quantum State')
     plt.title(f'Temporal Injection - {device_type}')
