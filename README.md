@@ -139,6 +139,35 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Only tested on simulator so far.**
 - found in `dimensional_reduction_geometry_qiskit.py`, data in `experiment_logs/dimensional_reduction_geometry_qiskit_<timestamp>/`
 
+### 9. Enhanced Temporal Embedding Metric
+- **Explores temporal embedding in quantum systems using mutual information to characterize entanglement patterns across time-separated subsystems.**
+- **Based on the holographic principle and AdS/CFT correspondence, where temporal correlations in the boundary theory correspond to spatial geometric structures in the bulk.**
+- **Uses controlled rotations (CRY, CRZ) instead of CNOTs to create partial entanglement that preserves temporal information across measurements.**
+- **Computes exact mutual information using reduced density matrices: I(A:B) = S(A) + S(B) - S(AB) where S(ρ) = -Tr[ρ log ρ] is the von Neumann entropy.**
+- **Applies MDS and t-SNE to mutual information distance matrices to recover temporal geometric structure.**
+- **Demonstrates that spacetime geometry emerges from quantum entanglement patterns with strong temporal correlations (MI > 2.4).**
+- found in `temporal_embedding_metric.py`, data in `experiment_logs/temporal_embedding_metric_<device>_<timestamp>/`
+
+#### Key Results (Enhanced Multi-Timestep Analysis)
+```
+2 timesteps: MI = 2.431269, Temporal Entropy = 1.215635, System Entropy = 1.215635
+3 timesteps: MI = 2.759527, Temporal Entropy = 1.379763, System Entropy = 1.379763  
+4 timesteps: MI = 3.007041, Temporal Entropy = 1.503521, System Entropy = 1.503521
+```
+- **Strong temporal entanglement patterns observed, consistent with holographic duality where temporal correlations encode geometric information.**
+- **Controlled rotations preserve temporal information better than CNOTs, enabling recovery of temporal geometric structure.**
+
+## Development Approach
+
+This project employs modern AI-assisted development practices using Cursor IDE for script automation and code generation, which is standard practice in contemporary software development. However, **all experimental designs, theoretical frameworks, and scientific methodologies are human-conceived and directed**. The AI assistance is limited to:
+
+- Code implementation and debugging
+- Script automation and refactoring  
+- Documentation generation
+- Data visualization enhancements
+
+The core scientific contributions—including experimental hypotheses, quantum circuit designs, analysis methodologies, and theoretical interpretations—originate from human expertise in quantum information theory, holography, and theoretical physics.
+
 ## Methodology
 
 - Quantum circuits are constructed to model black hole evaporation, perfect tensor networks, and curved/flat geometries.

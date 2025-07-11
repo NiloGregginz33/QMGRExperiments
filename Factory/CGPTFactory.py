@@ -1,8 +1,8 @@
-from qiskit import QuantumCircuit, QuantumRegister, pulse, transpile, ClassicalRegister, assemble
+from qiskit import QuantumCircuit, QuantumRegister, transpile, ClassicalRegister
 from qiskit.quantum_info import Statevector, partial_trace, DensityMatrix, state_fidelity, random_unitary, Operator, mutual_information
 from qiskit_aer import Aer, AerSimulator
 from qiskit.quantum_info import entropy as qiskit_entropy
-from qiskit.pulse import Play, DriveChannel, Gaussian, Schedule
+# from qiskit.pulse import Play, DriveChannel, Gaussian, Schedule  # Commented out - not available in this qiskit version
 from qiskit_aer.noise import NoiseModel, depolarizing_error, thermal_relaxation_error, amplitude_damping_error
 from collections import Counter
 from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Estimator
@@ -23,9 +23,9 @@ from qiskit.circuit import Instruction
 import time
 import concurrent.futures
 from datetime import datetime
-# from scipy.stats import binom_test
+# from scipy.stats import binom_test  # Deprecated in newer scipy versions
 import requests
-from qutip import *
+# from qutip import *  # Comment out - not available in this environment
 import sys
 import psutil
 import json
@@ -41,6 +41,7 @@ from collections import Counter, defaultdict
 from typing import List, Dict
 from scipy.optimize import minimize
 import os
+import argparse
 
 # Prep
 
@@ -3620,8 +3621,7 @@ def black_hole_time_evolution(qc, num_steps=10, delta_t=0.1):
     for _ in range(num_steps):
         evolved_qc.unitary(U, evolved_qc.qubits, label='Time Evolution')
         transpiled_qc = transpile(evolved_qc, backend)
-        qobj = assemble(transpiled_qc)
-        result = backend.run(qobj).result()
+        result = backend.run(transpiled_qc).result()
         
         # Extract the density matrix
         density_matrix = result.data(0).get('density_matrix', None)
@@ -6768,7 +6768,7 @@ def main_retrocausal_experiment_with_charge(qc, backend=None, shots=8192):
         shots (int): Number of measurement shots.
 
     Returns:
-        dict: Measurement outcomes from full, partial, and delayed (with injection) runs.
+        dict: Measurement outcomes from full, partial, and delayed (with charge) runs.
     """
     from qiskit import ClassicalRegister, transpile
     from qiskit_aer import AerSimulator
@@ -8064,7 +8064,7 @@ def run_feedback_message(message, char_map, measurement_orders, shots=8192):
             # Store Results
             branch_results[char + f"_{idx}"] = counts
 
-            # Set feedback_bit based on first character’s outcome
+            # Set feedback_bit based on first character's outcome
             feedback_bit = int(max(counts, key=counts.get)[1])  
 
         all_results[order_name] = branch_results
@@ -8658,27 +8658,6 @@ def main_message(message='HI',volume=1):
 ##📞 Selected Reality Branch: 000
 ##Measurement Counts: {'000': 6272, '110': 1920}
 ##
-##✅ Aligned State After Selection: DensityMatrix([[0.77015115+0.j        , 0.        +0.j        ,
-##                0.        +0.j        , 0.        +0.42073549j],
-##               [0.        +0.j        , 0.        +0.j        ,
-##                0.        +0.j        , 0.        +0.j        ],
-##               [0.        +0.j        , 0.        +0.j        ,
-##                0.        +0.j        , 0.        +0.j        ],
-##               [0.        -0.42073549j, 0.        +0.j        ,
-##                0.        +0.j        , 0.22984885+0.j        ]],
-##              dims=(2, 2))
-##Branch:  000
-##Target State:  DensityMatrix([[0.77015115+0.j        , 0.        +0.j        ,
-##                0.        +0.j        , 0.        +0.42073549j],
-##               [0.        +0.j        , 0.        +0.j        ,
-##                0.        +0.j        , 0.        +0.j        ],
-##               [0.        +0.j        , 0.        +0.j        ,
-##                0.        +0.j        , 0.        +0.j        ],
-##               [0.        -0.42073549j, 0.        +0.j        ,
-##                0.        +0.j        , 0.22984885+0.j        ]],
-##              dims=(2, 2))
-##History:  {'Positive': array([0.1, 0.1, 0.1]), 'Neutral': array([-0.21474609, -0.21474609, -0.21474609])}
-##Counts:  {'111': 621, '101': 957, '001': 80, '010': 70, '011': 62, '000': 114, '100': 76, '110': 68}
 
 def merge_circuits_register_safe(circ1, circ2):
     """
@@ -10615,7 +10594,7 @@ n        = 7
 nodes    = list(range(n))
 edge_list = [(i, i+1) for i in range(n-1)]  # nearest-neighbor edges
 
-# 2) Target “stress-energy” (vacuum here)
+# 2) Target "stress-energy" (vacuum here)
 T = { i: 1.0 for i in nodes }
 
 mass_node, mass_strength, sigma = 3, 1.0, 0.8
@@ -11062,7 +11041,7 @@ class QuantumGravityAnalyzer:
 # I = analyzer.compute_bulk_boundary_I(theta_bh, boundary_size=1, depth=d)
     def fast_bulk_boundary_MI(self, theta_dict, boundary, max_depth):
         """
-        Single‐shot MPS + Rényi‑2 depth scan.
+        Single-shot MPS + Rényi-2 depth scan.
         """
         n = self.n
         # build one parameterized circuit
@@ -11077,7 +11056,7 @@ class QuantumGravityAnalyzer:
         sim = AerSimulator(method="matrix_product_state")
         result = sim.run(qc).result()
 
-        # compute Rényi‑2 MI from snapshots
+        # compute Rényi-2 MI from snapshots
         MIs = []
         for d in range(1, max_depth+1):
             from qiskit.quantum_info import DensityMatrix, partial_trace
@@ -11090,14 +11069,14 @@ class QuantumGravityAnalyzer:
             # bulk purity
             rho_bulk = partial_trace(dm, boundary)
             p_bulk = (rho_bulk.data @ rho_bulk.data).trace().real
-            # second‑Rényi entropies → MI
+            # second-Rényi entropies → MI
             I2 = -np.log2(p_b) - np.log2(p_bulk) + np.log2(p_full)
             MIs.append(I2)
         return MIs
 
     def fast_bulk_boundary_MI_vN(self, theta_dict, boundary, max_depth):
         """
-        Depth‐scan mutual information using true von Neumann entropy
+        Depth-scan mutual information using true von Neumann entropy
         but MPS for state generation.
         """
         n = self.n
@@ -11124,7 +11103,7 @@ class QuantumGravityAnalyzer:
 
     def fast_entanglement_equilibrium_check_local_vN(self, theta_dict, regions, eps=1e-3):
         """
-        Equilibrium check using true von Neumann entropy via MPS snapshots.
+        Equilibrium check using true von Neumann entropy via MPS snapshots.
         """
         sim = AerSimulator(method="matrix_product_state")
 
@@ -11167,7 +11146,7 @@ class QuantumGravityAnalyzer:
             rho_m = partial_trace(dm_m, [q for q in range(self.n) if q not in A])
             S_m = qiskit_entropy(rho_m)
 
-            # finite‐difference
+            # finite-difference
             dS = (S_p - S_m) / (2*eps)
             # similarly for <H>, use same delta S for modular H from first law
             dH = dS
@@ -11297,8 +11276,8 @@ class QuantumGravityAnalyzer:
         return params
     def fast_entanglement_equilibrium_check_local(self, theta_dict, regions, eps=1e-3):
         """
-        Local equilibrium check using MPS + Rényi‑2 (purity) and symmetric finite differences.
-        Fixed to correctly retrieve the density‐matrix snapshot.
+        Local equilibrium check using MPS + Rényi-2 (purity) and symmetric finite differences.
+        Fixed to correctly retrieve the density-matrix snapshot.
         """
         sim = AerSimulator(method="matrix_product_state")
 
@@ -11342,9 +11321,9 @@ class QuantumGravityAnalyzer:
             rho_m = partial_trace(dm_m, [q for q in range(self.n) if q not in A])
             p_m   = (rho_m.data @ rho_m.data).trace().real
 
-            # central difference of 2‑Rényi entropy S2 = -log2 p
+            # central difference of 2-Rényi entropy S2 = -log2 p
             dS2 = (-np.log2(p_p) + np.log2(p_m)) / (2*eps)
-            dH2 = dS2    # for purity‐based modular estimate
+            dH2 = dS2    # for purity-based modular estimate
 
             results[key] = (dS2, dH2)
 
@@ -11370,7 +11349,7 @@ class QuantumGravityAnalyzer:
 ##Region (1, 2): δS/δθ = 2.6597e-01, δ⟨Hξ⟩/δθ = 1.8436e-01
 ##Region (2, 3): δS/δθ = 2.6597e-01, δ⟨Hξ⟩/δθ = 1.8436e-01
 ##Region (3, 4): δS/δθ = 1.3298e-01, δ⟨Hξ⟩/δθ = 9.2178e-02
-##Δ_i (should be small for an “Einstein” solution): {0: 0.012589186802100309, 1: -0.013847020379685271, 2: 0.002515667155176607, 3: -0.013847020379693655, 4: 0.01258918680210201}
+##Δ_i (should be small for an "Einstein" solution): {0: 0.012589186802100309, 1: -0.013847020379685271, 2: 0.002515667155176607, 3: -0.013847020379693655, 4: 0.01258918680210201}
 
 ##Best backend chosen: ibm_brisbane
 ##Region (0, 1): extrapolated ratio = 1.443
@@ -11496,7 +11475,7 @@ def sweep_n_qubits_equilibrium_ratio(
     import numpy as np
     
     results = {}
-    for n in tqdm(n_list, desc="chain‑lengths"):
+    for n in tqdm(n_list, desc="chain-lengths"):
         # define edges for a 1D chain
         edge_list = [(i, i+1) for i in range(n-1)]
         # Gaussian "mass" profile
@@ -11579,7 +11558,7 @@ epsilons = [1e-2, 1e-3, 1e-4, 1e-5]
 def run_job(args):
     # Unpack
     n, mass_node, mass_strength, sigma, eps_list, gradient_steps, lr = args
-    # Call your function for this single‑eps slice
+    # Call your function for this single-eps slice
     single_ratio = sweep_n_qubits_equilibrium_ratio(
         n_list=[n],
         mass_node=mass_node,
@@ -11620,7 +11599,7 @@ def main():
     result = sim.run(transpile(qc, sim)).result()
     sv = result.get_statevector()             # <— this is a Statevector
 
-    # 5) Compute face‐based curvature from the Statevector
+    # 5) Compute face-based curvature from the Statevector
     face_curv = {}
     n = L**3
     for corners in faces:
@@ -11633,7 +11612,7 @@ def main():
         S_abcd = qiskit_entropy(rho_abcd)
         face_curv[tuple(corners)] = S_ab + S_cd - S_abcd
 
-    # 6) Compute cell‐based curvature similarly
+    # 6) Compute cell-based curvature similarly
     cell_curv = {}
     for corners in cells:
         faces_of_this = f2c[tuple(corners)]
@@ -11830,7 +11809,7 @@ def prepare_vacuum_cluster(qc, rows, cols):
                 
 
 def apply_mass_deformation(qc, mass_sites, θ_mass):
-    """Rotate the ‘vacuum’ at chosen sites by Rz(θ_mass) to create an entanglement well."""
+    """Rotate the 'vacuum' at chosen sites by Rz(θ_mass) to create an entanglement well."""
     for (i,j) in mass_sites:
         idx = i*cols + j
         qc.rz(θ_mass, idx)
@@ -11916,6 +11895,81 @@ def study_scaling_mass(
     return results
 
 
+def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
+    """
+    Run a circuit either on real backend, statevector simulator, or qasm simulator.
+    
+    Parameters:
+    - qc: QuantumCircuit
+    - backend: IBM backend object (required if sim=False and rs=False)
+    - rs: bool, if True return statevector
+    - sim: bool, if True run on AerSimulator for sampling
+    - shots: int, number of shots for sampling
+    
+    Returns:
+    - Statevector if rs=True
+    - dict with 'counts' and 'distribution' otherwise
+    """
+    # base_run 
+    # Display circuit
+    try:
+        print(qc.draw(fold=100))
+    except Exception as e:
+        print(f"Error drawing circuit: {e}")
+
+    # Option 1: statevector simulation
+    if rs:
+        qc_nmeas = qc.copy()
+        qc_nmeas.remove_final_measurements()
+        sv = Statevector(qc_nmeas)
+        print("Statevector:", sv)
+        return sv
+
+    # Option 2: qasm simulation with AerSimulator
+    if sim:
+        simulator = AerSimulator()
+        qc_t = transpile(qc, simulator, optimization_level=3)
+        job = simulator.run(qc_t, shots=shots)
+        result = job.result()
+        counts = result.get_counts()
+        print("Simulation counts:", counts)
+
+        # Marginal on last bit
+        total = sum(counts.values())
+        teleported = {'0': 0, '1': 0}
+        for outcome, cnt in counts.items():
+            last_bit = outcome[-1]
+            teleported[last_bit] += cnt
+        f0 = teleported['0'] / total
+        f1 = teleported['1'] / total
+        print(f"Distribution on R (sim): |0> = {f0:.3f}, |1> = {f1:.3f}")
+        return {'counts': counts, 'distribution': (f0, f1)}
+    
+    if backend is None:
+        # Default to FakeManilaV2 when no backend specified
+        from qiskit_ibm_runtime.fake_provider import FakeManilaV2
+        backend = FakeManilaV2()
+        print("Using FakeManilaV2 simulator backend")
+
+    if old_backend:
+        qc_t = transpile(qc, backend)
+        job = backend.run(qc_t)
+        result = job.result()
+        counts = result.get_counts()
+        return counts
+    
+    # Default: use modern runtime approach
+    qc_t = transpile(qc, backend)
+    job = backend.run(qc_t, shots=shots)
+    result = job.result()
+    counts = result.get_counts()
+    
+    print(f"Experiment completed with {shots} shots")
+    print(f"Results: {counts}")
+    
+    return counts
+
+
 #standard qc for multiverse experiments is main_qc()
 if __name__ == "__main__":
     Ns = [3, 4, 5]
@@ -11954,7 +12008,7 @@ if __name__ == "__main__":
 ##    n_list   = [11]           # only two sizes
 ##    epsilons = [1e-4]     # only two eps
 ##    gradient_steps = 100        # half the work        # chain lengths you want to test
-##    mass_node      =  (max(n_list)//2)    # center of your “mass” profile
+##    mass_node      =  (max(n_list)//2)    # center of your "mass" profile
 ##    mass_strength  =  5.0
 ##    sigma          =  0.5
 ##    lr             = 0.05
@@ -12045,7 +12099,7 @@ if __name__ == "__main__":
 ##    for region, (dS, dH) in eq_results.items():
 ##        print(f"Region {region}: δS/δθ = {dS:.4e}, δ⟨Hξ⟩/δθ = {dH:.4e}")
 ##
-##    # 2) Pick a “vacuum” theta (flat) or a solved theta_dict from your gradient-descent
+##    # 2) Pick a "vacuum" theta (flat) or a solved theta_dict from your gradient-descent
 ##    
 ##
 ##    # 3) Measure mutual information on every link
@@ -12057,7 +12111,7 @@ if __name__ == "__main__":
 ##
 ##    # 5) Check discrete Bianchi residuals Δ_i
 ##    Delta = analyzer.check_bianchi(R_dict)
-##    print("Δ_i (should be small for an “Einstein” solution):", Delta)
+##    print("Δ_i (should be small for an "Einstein" solution):", Delta)
 ##    # Target average entropy across qubits
 ##    target_entropy = 0
 ##
