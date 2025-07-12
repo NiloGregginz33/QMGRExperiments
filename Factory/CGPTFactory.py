@@ -9950,8 +9950,8 @@ def match_entropy_signal_oracle(
     # Simulate and measure
     measured_qc = best_qc.copy()
     measured_qc.measure_all()
-    job = backend.run(transpile(measured_qc, backend), shots=shots)
-    result = job.result()
+    transpiled = transpile(measured_qc, backend)
+    result = backend.run(transpiled, shots=shots).result()
     counts = result.get_counts()
 
     print(f"\nBest match entropies: {[round(e, 6) for e in best_match]}")
@@ -10403,7 +10403,7 @@ def scan_wedge_phase_transition(max_boundary_size=4):
             counts_boundary[key] = counts_boundary.get(key, 0) + c
         S_boundary = calculate_entropy(counts_boundary)
 
-        # now do the partial‐measurement on the same circuit
+        # now do the partial-measurement on the same circuit
         qc_pm = create_entanglement_wedge_circuit()
         partial_boundary_measurement(qc_pm, boundary)
         qc_pm.measure_all()
@@ -11946,10 +11946,10 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
         return {'counts': counts, 'distribution': (f0, f1)}
     
     if backend is None:
-        # Default to FakeManilaV2 when no backend specified
-        from qiskit_ibm_runtime.fake_provider import FakeManilaV2
-        backend = FakeManilaV2()
-        print("Using FakeManilaV2 simulator backend")
+        # Default to FakeBrisbane when no backend specified
+        from qiskit_ibm_runtime.fake_provider import FakeBrisbane
+        backend = FakeBrisbane()
+        print("Using FakeBrisbane simulator backend")
 
     if old_backend:
         qc_t = transpile(qc, backend)
