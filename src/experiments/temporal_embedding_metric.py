@@ -11,7 +11,7 @@ from sklearn.manifold import MDS, TSNE
 import seaborn as sns
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../Factory'))
 from CGPTFactory import run
-# Removed import of get_backend from FakeManilaV2
+# Removed import of get_backend from FakeBrisbane
 import argparse
 
 def create_temporal_embedding_circuit(num_qubits, num_timesteps, use_controlled_rotations=True):
