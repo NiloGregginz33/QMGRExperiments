@@ -29,10 +29,25 @@ def run_experiment(name, script, device, shots, subexp=None):
     print(f"\n{'='*60}")
     print(f"Running {name}")
     print(f"{'='*60}")
+    # Prompt for additional arguments based on the selected experiment
+    additional_args = {}
+    if 'teleportation' in name.lower():
+        try:
+            additional_args['num_qubits'] = int(input("Enter the number of qubits: "))
+        except ValueError:
+            print("Invalid input for number of qubits. Using default value of 5.")
+            additional_args['num_qubits'] = 5
+
+    # Construct the command with additional arguments
     if subexp:
         cmd = f"python {script} --device {device} --shots {shots} --experiment {subexp}"
     else:
         cmd = f"python {script} --device {device} --shots {shots}"
+
+    # Add additional arguments to the command
+    for arg, value in additional_args.items():
+        cmd += f" --{arg} {value}"
+
     print(f"Command: {cmd}")
     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     print(result.stdout)
