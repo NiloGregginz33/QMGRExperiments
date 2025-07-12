@@ -711,14 +711,20 @@ IMPLICATIONS FOR QUANTUM GRAVITY:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Quantum State Teleportation Through Geometry Experiment')
-    parser.add_argument('--device', type=str, default='simulator', 
-                        help='Device name (simulator or IBM backend name)')
-    parser.add_argument('--shots', type=int, default=1024, 
-                        help='Number of measurement shots')
-    parser.add_argument('--mode', type=str, default='both', 
-                        choices=['flat', 'curved', 'both'],
-                        help='Geometry mode to run')
-    
+    # Add argument parsing for the number of qubits
+    parser = argparse.ArgumentParser(description='Quantum State Teleportation Geometry Experiment')
+    parser.add_argument('--num_qubits', type=int, default=5, help='Number of qubits for the experiment')
     args = parser.parse_args()
+
+    # Use the parsed number of qubits
+    num_qubits = args.num_qubits
+
+    # Update the circuit initialization to use the specified number of qubits
+    qc = QuantumCircuit(num_qubits)
+
+    # Ensure the rest of the code uses the num_qubits variable where applicable
+    # For example, when creating entanglement or preparing states
+    # This is a placeholder for where the num_qubits variable should be used
+    # Example: create_entanglement_bridge(qc, list(range(num_qubits)))
+
     run_quantum_state_teleportation_geometry(args.device, args.shots, args.mode) 
