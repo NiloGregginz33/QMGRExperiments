@@ -1,0 +1,78 @@
+{
+    "counts": null,
+    "num_qubits": 3,
+    "device": "simulator",
+    "statevector": [
+        [
+            1.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0
+        ]
+    ],
+    "entropies": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "causal_witness_before": "Causal witness measured",
+    "causal_witness_after": "Causal witness measured"
+}

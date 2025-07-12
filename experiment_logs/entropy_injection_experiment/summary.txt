@@ -1,0 +1,14 @@
+Experiment: Entropy Injection
+Number of Qubits: 3
+Device: simulator
+Counts: None
+Statevector: Statevector([1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
+             0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
+             0.+0.j, 0.+0.j],
+            dims=(2, 2, 2, 2))
+Entropies: [0.0, 0.0, 0.0]
+Causal Witness Before: Causal witness measured
+Causal Witness After: Causal witness measured
+Causal Witness Before: Causal witness measured
+Causal Witness After: Causal witness measured
+Entropies: [0.0, 0.0, 0.0]
