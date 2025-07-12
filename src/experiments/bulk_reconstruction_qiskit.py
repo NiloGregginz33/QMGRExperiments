@@ -27,7 +27,7 @@ class BulkReconstructionQiskit:
     def __init__(self, backend=None, shots=2048):
         self.num_qubits = 7  # 6 boundary + 1 bulk
         self.alpha_values = [1, 2, 3]
-        self.backend = backend if backend is not None else FakeManilaV2()
+        self.backend = backend if backend is not None else FakeBrisbane()
         self.shots = shots
 
     def shannon_entropy(self, probs):
