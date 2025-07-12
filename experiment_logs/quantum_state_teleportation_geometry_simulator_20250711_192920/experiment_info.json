@@ -1,0 +1,26 @@
+{
+  "experiment_name": "Quantum State Teleportation Through Geometry",
+  "description": "Testing ER=EPR hypothesis - wormholes are entanglement",
+  "backend": "simulator",
+  "shots": 1024,
+  "geometry_modes": [
+    "flat",
+    "curved"
+  ],
+  "state_types": [
+    "0",
+    "1",
+    "+",
+    "-"
+  ],
+  "bridge_strengths": [
+    0.1,
+    0.325,
+    0.55,
+    0.775,
+    1.0
+  ],
+  "n_qubits": 5,
+  "theoretical_background": "ER=EPR hypothesis states that Einstein-Rosen bridges (wormholes) are equivalent to Einstein-Podolsky-Rosen entanglement. This experiment tests whether quantum information can be teleported through entanglement bridges that create traversable geometric connections.",
+  "methodology": "Create entangled bridge qubits, establish regional entanglement, prepare signal states, perform teleportation protocol, measure fidelity and mutual information across multiple runs and geometric configurations."
+}
