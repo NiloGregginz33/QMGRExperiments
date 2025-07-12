@@ -1,0 +1,8 @@
+Experiment on emergent geometry and teleportation
+Nodes tested: [(0, 4), (1, 2)]
+Fidelities: {(0, 4): 0.0, (1, 2): 0.0}
+Embedded Space: [[ 0.60058881 -0.17973163]
+ [ 0.41255915  0.18287323]
+ [-0.15027834 -0.49558348]
+ [-0.5198368  -0.0203279 ]
+ [-0.34303282  0.51276978]]
