@@ -157,15 +157,22 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Strong temporal entanglement patterns observed, consistent with holographic duality where temporal correlations encode geometric information.**
 - **Controlled rotations preserve temporal information better than CNOTs, enabling recovery of temporal geometric structure.**
 
-## New Experiments
+## Recent Experiments
+
+### Curved Time Simulation
+- Implemented a curved time simulation where each qubit is assigned a different time evolution step to simulate relativistic dilation.
+- Applied rotation gates with time-scaled parameters and inserted entangling gates (cx, cz) to generate causal links across warped timelines.
+- Calculated entropy per qubit and mutual information matrix to detect causal links.
+- Visualized the mutual information matrix and entropy evolution over warped time.
+- This experiment was conducted using the FakeBrisbane simulator to avoid costs associated with real quantum hardware.
 
 ### Emergent Geometry Teleportation
-- This experiment explores the concept of emergent geometry through quantum teleportation.
-- The experiment was conducted using a simulator backend due to cost limitations associated with running on real quantum hardware.
+- Explored the concept of emergent geometry through quantum teleportation.
+- Conducted using a simulator backend due to cost limitations associated with running on real quantum hardware.
 - Key data points such as mutual information, embedded space coordinates, and teleportation fidelities are saved in the `results.json` file for further analysis.
 
 ### Additional Notes
-- All experiments have been executed on simulators to avoid incurring costs from using real quantum hardware. This approach allows for extensive testing and validation before potentially moving to hardware execution.
+- All recent experiments have been executed on simulators to avoid incurring costs from using real quantum hardware. This approach allows for extensive testing and validation before potentially moving to hardware execution.
 
 ## Development Approach
 
