@@ -15,7 +15,7 @@ from src.CGPTFactory import run as cgpt_run, compute_plaquette_curvature_from_sv
 from src.CGPTFactory import compute_face_curvature
 from qiskit.quantum_info import DensityMatrix, partial_trace
 from src.CGPTFactory import qiskit_entropy
-from qiskit_ibm_runtime.fake_provider import FakeManilaV2
+from qiskit_ibm_runtime.fake_provider import FakeBrisbane
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 
 
@@ -396,9 +396,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.simulator:
-        backend = FakeManilaV2()
+        backend = FakeBrisbane()
         pm = generate_preset_pass_manager(backend=backend, optimization_level=1)
-        print("Using FakeManilaV2 simulator backend.")
+        print("Using FakeBrisbane simulator backend.")
     else:
         service = QiskitRuntimeService()
         if args.device is None:
@@ -412,7 +412,7 @@ if __name__ == "__main__":
             device_name = args.device
         print(f"Using backend: {device_name}")
 
-    exp_dir = f"experiment_logs/curved_geometry_qiskit_{'FakeManilaV2' if args.simulator else device_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    exp_dir = f"experiment_logs/curved_geometry_qiskit_{'FakeBrisbane' if args.simulator else device_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     os.makedirs(exp_dir, exist_ok=True)
 
     timesteps = np.linspace(0, 3 * np.pi, 9)

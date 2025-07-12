@@ -15,7 +15,7 @@ from src.CGPTFactory import run as cgpt_run, compute_plaquette_curvature_from_sv
 from src.CGPTFactory import compute_face_curvature
 from qiskit.quantum_info import DensityMatrix, partial_trace
 from src.CGPTFactory import qiskit_entropy
-from qiskit_ibm_runtime.fake_provider import FakeManilaV2
+from qiskit_ibm_runtime.fake_provider import FakeBrisbane
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.quantum_info import random_unitary
 from scipy.linalg import expm
@@ -408,8 +408,8 @@ def run_causal_patch_teleportation(device_name=None, shots=1024, geometry_type='
     
     # Backend setup
     if device_name == 'simulator' or device_name is None:
-        backend = FakeManilaV2()
-        print("Using FakeManilaV2 simulator")
+        backend = FakeBrisbane()
+        print("Using FakeBrisbane simulator")
     else:
         service = QiskitRuntimeService()
         backend = service.backend(device_name)

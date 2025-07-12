@@ -15,7 +15,7 @@ from src.CGPTFactory import run as cgpt_run, compute_plaquette_curvature_from_sv
 from src.CGPTFactory import compute_face_curvature
 from qiskit.quantum_info import DensityMatrix, partial_trace
 from src.CGPTFactory import qiskit_entropy
-from qiskit_ibm_runtime.fake_provider import FakeManilaV2
+from qiskit_ibm_runtime.fake_provider import FakeBrisbane
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 
 
@@ -269,9 +269,9 @@ def run_quantum_state_teleportation_geometry(device_name=None, shots=1024, mode=
     """
     # Setup backend
     if device_name == 'simulator':
-        backend = FakeManilaV2()
+        backend = FakeBrisbane()
         device_name = 'simulator'
-        print(f"Using simulator: FakeManilaV2")
+        print(f"Using simulator: FakeBrisbane")
     else:
         service = QiskitRuntimeService()
         if device_name is None:
