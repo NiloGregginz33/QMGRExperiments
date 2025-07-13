@@ -213,3 +213,7 @@ By accessing or cloning this repository, you agree to comply with these licensin
 
 Please note that this project involves speculative research, and there have been instances of wrong turns and revisions. Therefore, it is crucial to consider only the data and results from the most recent updates as the authoritative source of information. Earlier versions may contain inaccuracies or outdated methodologies.
 
+## Novelty of Experiments
+
+The novelty of these experiments does not lie in being theoretical firsts. Instead, they are intended to be the first measurement-based hardware demonstrations. This approach emphasizes practical implementation and real-world validation of concepts, distinguishing them from purely theoretical or simulation-based studies.
+
