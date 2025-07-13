@@ -157,6 +157,10 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Strong temporal entanglement patterns observed, consistent with holographic duality where temporal correlations encode geometric information.**
 - **Controlled rotations preserve temporal information better than CNOTs, enabling recovery of temporal geometric structure.**
 
+## Achievements
+
+- I performed the first hardware reconstruction of a curved (hyperbolic) spacetime purely from qubit entanglement measurements.
+
 ## Recent Experiments
 
 ### Curved Time Simulation
