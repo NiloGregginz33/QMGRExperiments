@@ -211,5 +211,5 @@ By accessing or cloning this repository, you agree to comply with these licensin
 
 ## Disclaimer
 
-This software is provided "as is" without any guarantees or warranties. Failure to comply with the license will result in legal action.
+Please note that this project involves speculative research, and there have been instances of wrong turns and revisions. Therefore, it is crucial to consider only the data and results from the most recent updates as the authoritative source of information. Earlier versions may contain inaccuracies or outdated methodologies.
 
