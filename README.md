@@ -2,7 +2,12 @@
 
 ## Project Summary
 
-This project seeks to reconstruct spacetime geometry directly from quantum measurement data obtained on quantum processors. By designing and executing a suite of quantum information experiments, we provide novel experimental evidence for the holographic principle and the emergence of spacetime from entanglement. Our approach reconstructs geometric features—such as curvature, distances, angle sums, and hyperbolicity—directly from measurement outcomes, both on simulators and real quantum hardware, moving beyond model-dependent inference. These results are obtained via quantum analog simulation, and are subject to device noise and statistical uncertainty.
+This project seeks to reconstruct spacetime geometry directly from quantum measurement data obtained on quantum processors. By designing and executing a suite of quantum information experiments, we provide experimental verification of holographic entropy scaling in quantum circuits and demonstrate boundary-bulk information recovery in controlled quantum systems. Our approach reconstructs geometric features—such as curvature, distances, angle sums, and hyperbolicity—directly from measurement outcomes, both on simulators and real quantum hardware, moving beyond model-dependent inference. These results are obtained via quantum analog simulation, and are subject to device noise and statistical uncertainty.
+
+## Scope and Limitations
+- Limited to small-scale quantum circuits due to current hardware constraints
+- Tests specific aspects of holographic duality, not the full theory
+- Results require replication and peer review for validation
 
 Motivated by foundational questions in quantum gravity and quantum information theory, this work is inspired by the holographic principle and the AdS/CFT correspondence, which posit that the information content and geometry of a region can be encoded on its boundary via entanglement. By constructing and analyzing quantum circuits that embody these theoretical ideas, we empirically test whether geometric structure can be measured and reconstructed from quantum data, thus bridging the gap between abstract theory and experimental science.
 
@@ -318,4 +323,14 @@ Please note that this project involves speculative research, and there have been
 ## Novelty of Experiments
 
 The novelty of these experiments does not lie in being theoretical firsts. Instead, they are intended to be the novel experimental evidence for measurement-based hardware demonstrations. This approach emphasizes practical implementation and real-world validation of concepts, distinguishing them from purely theoretical or simulation-based studies.
+
+## Core Results
+- Our results suggest that entropy scaling in quantum circuits is consistent with predictions of the holographic principle.
+- Initial findings indicate that mutual information matrices can be used to recover bulk geometric features from boundary measurements.
+- Quantum analog simulation shows that modular flow and CTC protocols can be implemented and analyzed in current quantum hardware and simulators.
+
+## Theoretical Implications
+- These results are consistent with the idea that spacetime geometry may emerge from quantum entanglement, as conjectured in AdS/CFT and the Ryu-Takayanagi formula.
+- The observed boundary-bulk information recovery supports aspects of the holographic duality, though further work is needed to generalize these findings.
+- The connection between quantum information protocols and geometric structure remains an open area for theoretical exploration.
 
