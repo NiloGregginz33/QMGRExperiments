@@ -182,7 +182,7 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 
 ## Achievements
 
-- I performed the first hardware reconstruction of a curved (hyperbolic) spacetime purely from qubit entanglement measurements.
+- I performed the novel experimental evidence for hardware reconstruction of a curved (hyperbolic) spacetime purely from qubit entanglement measurements.
 
 ## Recent Experiments
 
@@ -253,5 +253,5 @@ Please note that this project involves speculative research, and there have been
 
 ## Novelty of Experiments
 
-The novelty of these experiments does not lie in being theoretical firsts. Instead, they are intended to be the first measurement-based hardware demonstrations. This approach emphasizes practical implementation and real-world validation of concepts, distinguishing them from purely theoretical or simulation-based studies.
+The novelty of these experiments does not lie in being theoretical firsts. Instead, they are intended to be the novel experimental evidence for measurement-based hardware demonstrations. This approach emphasizes practical implementation and real-world validation of concepts, distinguishing them from purely theoretical or simulation-based studies.
 
