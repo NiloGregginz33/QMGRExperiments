@@ -3,6 +3,10 @@
 import sys
 import os
 
+# Define the directory for logging
+log_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'experiment_logs', 'entropy_injection_experiment')
+os.makedirs(log_dir, exist_ok=True)
+
 # Adjust Python path to include the Factory directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Factory'))
 
@@ -21,23 +25,30 @@ from qiskit.quantum_info import Statevector
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# Helper function to convert complex numbers to a serializable format
+def complex_to_serializable(c):
+    return {'real': c.real, 'imag': c.imag}
+
 class EntropyInjectionExperiment:
-    def __init__(self, num_qubits, entangle_pairs, trace_out_qubits):
+    def __init__(self, num_qubits, entangle_pairs, trace_out_qubits, curvature):
         self.num_qubits = num_qubits
         self.entangle_pairs = entangle_pairs
         self.trace_out_qubits = trace_out_qubits
+        self.curvature = curvature
         self.circuit = QuantumCircuit(num_qubits)
 
-    def create_bell_pairs(self):
-        for q1, q2 in self.entangle_pairs:
-            self.circuit.h(q1)
-            self.circuit.cx(q1, q2)
+    def apply_entanglement(self):
+        # Chain entanglers:
+        weights = [0.5, 0.8][:self.num_qubits-1]
+        for i, w in enumerate(weights):
+            self.circuit.rzz(self.curvature * w, i, i+1)
 
-    def add_gates(self, gates):
-        for gate in gates:
-            self.circuit.append(gate)
+        # **New**: direct entangler between qubit 0 and 2
+        if self.num_qubits >= 3:
+            self.circuit.rzz(self.curvature * 0.6, 0, 2)
 
     def run_experiment(self):
+        self.apply_entanglement()
         # Simulate the statevector
         state = Statevector.from_instruction(self.circuit)
 
@@ -47,7 +58,18 @@ class EntropyInjectionExperiment:
         # Calculate entropy of each subsystem
         entropies = [entropy(partial_trace(state, [i])) for i in range(self.num_qubits)]
 
-        return reduced_state, entropies, state
+        # Compute mutual information matrix
+        I_matrix = np.zeros((self.num_qubits, self.num_qubits))
+        for i in range(self.num_qubits):
+            for j in range(i + 1, self.num_qubits):
+                I_matrix[i, j] = entropy(partial_trace(state, [i])) + entropy(partial_trace(state, [j])) - entropy(partial_trace(state, [i, j]))
+                I_matrix[j, i] = I_matrix[i, j]
+
+        # Normalize and convert to distance matrix
+        I_matrix /= I_matrix.max()
+        distances = -np.log(I_matrix + 1e-6)
+
+        return reduced_state, entropies, state, distances
 
     def visualize_entropy_vs_time(self, entropies_over_time):
         plt.figure(figsize=(10, 6))
@@ -73,16 +95,51 @@ class EntropyInjectionExperiment:
         return "Causal witness measured"
 
 # Example usage
-experiment = EntropyInjectionExperiment(num_qubits=3, entangle_pairs=[(0, 1)], trace_out_qubits=[1])
-experiment.create_bell_pairs()
-reduced_state, entropies, state = experiment.run_experiment()
+experiment = EntropyInjectionExperiment(num_qubits=5, entangle_pairs=[(0, 1), (1, 2), (0, 2)], trace_out_qubits=[1], curvature=1.0)
+experiment.apply_entanglement()
+reduced_state, entropies, state, distances = experiment.run_experiment()
 print("Reduced State:", reduced_state)
 print("Entropies:", entropies)
 print("Full Statevector:", state)
+print("Distances:", distances)
+
+# Log results to JSON with complex number handling
+results = {
+    "reduced_state": [[complex_to_serializable(c) for c in row] for row in reduced_state.data],
+    "entropies": entropies,
+    "full_statevector": [complex_to_serializable(c) for c in state.data],
+    "distances": distances.tolist()
+}
+
+with open(os.path.join(log_dir, 'results.json'), 'w') as f:
+    json.dump(results, f, indent=4)
+
+# Save summary to text file
+summary = """
+Entropy Injection Experiment Summary
+
+Reduced State:
+{}
+
+Entropies:
+{}
+
+Full Statevector:
+{}
+
+Distances:
+{}
+""".format(reduced_state, entropies, state, distances)
+
+with open(os.path.join(log_dir, 'summary.txt'), 'w') as f:
+    f.write(summary)
+
+# Remove the clamping mechanism for cos(theta)
+# Revert to the previous state without the placeholder calculation
 
 # Example visualization
 entropies_over_time = [[0.5, 0.6, 0.7], [0.4, 0.5, 0.6], [0.3, 0.4, 0.5]]
 experiment.visualize_entropy_vs_time(entropies_over_time)
 
 mutual_information_matrix = [[0, 0.1, 0.2], [0.1, 0, 0.3], [0.2, 0.3, 0]]
-experiment.plot_mutual_information_heatmap(mutual_information_matrix) 
+experiment.plot_mutual_information_heatmap(mutual_information_matrix)
