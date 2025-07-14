@@ -7,6 +7,8 @@ This repository presents a suite of quantum information experiments designed to 
 - **Can the holographic principle be demonstrated in a controlled quantum system?**
 - **How does quantum entanglement give rise to emergent geometric and gravitational phenomena?**
 
+**Note:** The most significant experiments in this repository—including the curved geometry and boundary vs. bulk entropy protocols—have been run on real quantum hardware (IBM Quantum), not just simulators. This provides direct, device-based evidence for emergent spacetime phenomena.
+
 The experiments herein are inspired by the AdS/CFT correspondence, black hole thermodynamics, and recent advances in quantum simulation. The project aims to bridge the gap between theory and experiment, providing reproducible evidence for the encoding of bulk information on quantum boundaries and the emergence of geometry from entanglement. Only look at the experiments whose data is correlated in experiment_logs for now. 
 
 ## Project Goals
@@ -84,6 +86,7 @@ python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology 
 ### 1. Boundary vs. Bulk Entropy
 - **Demonstrates linear entropy scaling with boundary cut size, consistent with the holographic principle.**
 - **Confirms perfect tensor structure and robust holographic encoding.**
+- **These results were obtained on real quantum hardware as well as simulators.**
 - found in boundary_vs_bulk_entropy_qiskit.py, data in corresponding experiment_logs folder: experiment_logs\boundary_vs_bulk_entropy_qiskit_20250707_112427\result_1.json
 experiment_logs\boundary_vs_bulk_entropy_qiskit_20250707_112427\result_2.json
 experiment_logs\boundary_vs_bulk_entropy_qiskit_20250707_112427\result_3.json
@@ -93,6 +96,7 @@ experiment_logs\boundary_vs_bulk_entropy_qiskit_20250707_112427\result_5.json
 ### 2. Curved Geometry and Emergent Spacetime
 - **Empirically demonstrates the emergence of geometric features from quantum entanglement.**
 - **Visualizes curvature and geodesic structure using mutual information and multidimensional scaling.**
+- **These results were obtained on real quantum hardware as well as simulators.**
 - found in curved_geometry_qiskit.py, data in corresponding experiment_logs folder: experiment_logs\curved_geometry_qiskit_ibm_sherbrooke_20250702_160632\results.json
 
 ### 3. CTC Geometry and Feedback
