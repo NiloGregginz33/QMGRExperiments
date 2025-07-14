@@ -16,6 +16,7 @@ __pycache__/
 .cursor/
 .vscode/
 .idea/
+memory-bank/
 
 # Logs and temporary files
 *.log
