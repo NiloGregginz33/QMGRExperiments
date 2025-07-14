@@ -66,6 +66,15 @@ python src/experiments/curved_geometry_qiskit.py --device ibm_brisbane --mode cu
 python src/experiments/boundary_vs_bulk_entropy_qiskit.py
 ```
 
+#### Example: Arbitrary Geometry Generator (Euclidean, Spherical, Hyperbolic)
+```sh
+python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology complete --weight 0.2 --gamma 0.5 --sigma 2.0 --geometry spherical --curvature 11.0 --device simulator
+python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology complete --weight 0.2 --gamma 0.5 --sigma 2.0 --geometry hyperbolic --curvature 10 --device simulator
+python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology complete --weight 0.2 --gamma 0.5 --sigma 2.0 --geometry euclidean --curvature 1.0 --device simulator
+```
+- Results are saved in `experiment_logs/custom_curvature_experiment/` with all diagnostics and geometry metrics.
+- **Note: All custom_curvature_experiment.py runs so far have been performed on simulator only, but the experiment is expected to work on hardware as well.**
+
 ### 4. Analyzing Results
 - Use the analysis scripts in `src/analysis/` to extract metrics, visualize geometry, and generate publication-quality figures.
 - All outputs are saved in timestamped directories under `experiment_logs/`.
@@ -156,6 +165,16 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 ```
 - **Strong temporal entanglement patterns observed, consistent with holographic duality where temporal correlations encode geometric information.**
 - **Controlled rotations preserve temporal information better than CNOTs, enabling recovery of temporal geometric structure.**
+
+### 10. Arbitrary Geometry Generator: Emergent Geometry from Entanglement Graphs
+- **Dynamically generates quantum circuits for arbitrary geometries (Euclidean, spherical, hyperbolic) by constructing entanglement graphs with custom edge weights.**
+- **For non-flat geometries, edge weights are drawn from a Gaussian distribution (variance set by curvature), and entanglement gates (RYY) are parameterized accordingly.**
+- **Automatically computes mutual information, shortest-path metrics, Gromov δ (hyperbolicity), triangle angle sums, and checks for triangle inequality violations.**
+- **Embeds the resulting geometry in 2D/3D and logs all diagnostics for reproducibility.**
+- **Allows direct comparison of geometric signatures (angle sums, Gromov δ) across curvature regimes.**
+- **All results, including edge weights and their variance, are saved for each run.**
+- **See `src/experiments/custom_curvature_experiment.py` and corresponding logs in `experiment_logs/custom_curvature_experiment/`.**
+- **Note: All custom_curvature_experiment.py runs so far have been performed on simulator only, but the experiment is expected to work on hardware as well.**
 
 ## Achievements
 
