@@ -219,6 +219,17 @@ The core scientific contributions—including experimental hypotheses, quantum c
 
 This work provides the first on-device demonstration of entanglement-driven phase transitions and emergent geometry, offering concrete experimental support for the holographic principle. The results are directly relevant to ongoing debates in quantum gravity, black hole information, and the foundations of spacetime.
 
+## Comparison with Google 2022 Wormhole Experiment
+
+Recent media and academic attention has focused on Google's 2022 claim of simulating wormhole traversal on a quantum processor. It is important to clarify the distinction between that work and the results presented in this repository:
+
+- **Scope of Results:** Google's experiment models only the traversal of a quantum state through a wormhole-like channel, using a highly engineered, model-dependent protocol. It does not reconstruct or measure emergent geometry.
+- **Nature of Evidence:** The Google result is an indirect demonstration, relying on post-selection and theoretical modeling to infer wormhole-like behavior. The geometry is not measured or reconstructed from data.
+- **This Work:** In contrast, the experiments here reconstruct the full emergent geometry (curvature, distances, angle sums, hyperbolicity, etc.) directly from quantum measurement data (mutual information, entropy, etc.), without relying on model-dependent inference. The geometry is an empirical result, not a theoretical assumption.
+- **Significance:** This approach provides the first measurement-based, data-driven demonstration of emergent spacetime geometry from entanglement, going beyond the simulation of specific protocols (like wormhole traversal) to reconstruct the entire geometric structure from experimental outcomes.
+
+**In summary:** Google's 2022 experiment demonstrates a specific quantum information protocol inspired by wormhole physics, while this project provides a general, measurement-based reconstruction of emergent geometry from entanglement, offering a fundamentally different and broader result.
+
 ## Citation and Further Reading
 
 - Original paper: [Simulating Hawking Radiation: Quantum Circuits and Information Retention](https://www.academia.edu/126549379/Simulating_Hawking_Radiation_Quantum_Circuits_and_Information_Retention)
