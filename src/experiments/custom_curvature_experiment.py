@@ -7,6 +7,8 @@ import hashlib
 import time
 import string
 import random as pyrandom
+import itertools
+import scipy.optimize
 
 # Adjust Python path to include the Factory directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Factory'))
@@ -48,6 +50,7 @@ p.add_argument("--shots",       type=int,   default=1024,
 p.add_argument("--device", type=str, default="simulator", help="Execution device: simulator or IBM provider name")
 p.add_argument("--geometry", type=str, default="euclidean", choices=["euclidean", "hyperbolic", "spherical"], help="Geometry for embedding: euclidean, hyperbolic, or spherical")
 p.add_argument("--curvature", type=float, nargs='+', default=[1.0], help="Curvature parameter(s) κ for non-Euclidean geometries. Can pass multiple values for sweep.")
+p.add_argument("--timesteps", type=int, default=1, help="Number of entangling layers (time steps)")
 
 # Use the second parser for command-line arguments
 args = p.parse_args()
@@ -124,59 +127,60 @@ def make_graph(topology: str, n: int, custom_edges: str = None, default_weight: 
         raise ValueError(f"Unknown topology '{topology}'")
 
 # ─── Circuit factory ─────────────────────────────────────────────────────────
-def build_custom_circuit(num_qubits, topology, custom_edges,
+def build_custom_circuit_layers(num_qubits, topology, custom_edges,
                          alpha, weight, gamma, sigma, init_angle,
-                         geometry=None, curvature=None, log_edge_weights=False):
+                         geometry=None, curvature=None, log_edge_weights=False, timesteps=1):
+    """
+    Build a list of QuantumCircuits, one for each timestep, where each circuit
+    includes all layers up to and including that timestep.
+    """
+    circuits = []
     qc = QuantumCircuit(num_qubits)
-
     # 1) initial superposition / rotation
     if init_angle == 0.0:
         qc.h(range(num_qubits))
     else:
         for q in range(num_qubits):
             qc.rx(init_angle, q)
-
-    # 2) dynamic entanglement
-    # Override topology for non-flat geometry (spherical/hyperbolic)
-    if geometry in ("spherical", "hyperbolic") and curvature is not None:
-        base_weight = weight
-        std_dev = base_weight * (curvature / 10)
-        edge_weights = {}
-        edge_list = []
-        for i in range(num_qubits):
-            for j in range(i+1, num_qubits):
-                w = float(np.random.normal(loc=base_weight, scale=std_dev))
-                w = float(np.clip(w, 0.05, 1.0))
-                edge_weights[(i, j)] = w
-                edge_list.append(f"{i}-{j}:{w:.4f}")
-        custom_edges_str = ",".join(edge_list)
-        # Build complete graph with these weights
-        G = make_graph("custom", num_qubits, custom_edges_str, default_weight=base_weight)
-        # Use RYY gates with theta=π*weight
-        for u, v, data in G.edges(data=True):
-            w = data.get('weight', base_weight)
-            qc.ryy(np.pi * w, u, v)
-        # Optionally log edge weights and variance
-        if log_edge_weights:
-            weights = list(edge_weights.values())
-            print(f"[LOG] Edge weights: {weights}")
-            print(f"[LOG] Edge weight variance: {np.var(weights)}")
-        qc._custom_edges_str = custom_edges_str  # Attach for logging/output
-        qc._edge_weight_variance = float(np.var(list(edge_weights.values())))
-    else:
-        G = make_graph(topology, num_qubits, custom_edges, default_weight=weight)
-        for u, v, data in G.edges(data=True):
-            w = data.get('weight', weight)
-            qc.rzz(w, u, v)
-        qc._custom_edges_str = custom_edges if custom_edges is not None else None
-        qc._edge_weight_variance = None
-
-    # 3) charge injection
+    for t in range(timesteps):
+        # Entangling layer for this timestep
+        if geometry in ("spherical", "hyperbolic") and curvature is not None:
+            base_weight = weight
+            std_dev = base_weight * (curvature / 10)
+            edge_weights = {}
+            edge_list = []
+            for i in range(num_qubits):
+                for j in range(i+1, num_qubits):
+                    w = float(np.random.normal(loc=base_weight, scale=std_dev))
+                    w = float(np.clip(w, 0.05, 1.0))
+                    edge_weights[(i, j)] = w
+                    edge_list.append(f"{i}-{j}:{w:.4f}")
+            custom_edges_str = ",".join(edge_list)
+            G = make_graph("custom", num_qubits, custom_edges_str, default_weight=base_weight)
+            for u, v, data in G.edges(data=True):
+                w = data.get('weight', base_weight)
+                qc.ryy(np.pi * w, u, v)
+            if log_edge_weights and t == 0:
+                weights = list(edge_weights.values())
+                print(f"[LOG] Edge weights: {weights}")
+                print(f"[LOG] Edge weight variance: {np.var(weights)}")
+            if t == 0:
+                qc._custom_edges_str = custom_edges_str
+                qc._edge_weight_variance = float(np.var(list(edge_weights.values())))
+        else:
+            G = make_graph(topology, num_qubits, custom_edges, default_weight=weight)
+            for u, v, data in G.edges(data=True):
+                w = data.get('weight', weight)
+                qc.rzz(w, u, v)
+            if t == 0:
+                qc._custom_edges_str = custom_edges if custom_edges is not None else None
+                qc._edge_weight_variance = None
+        # Save a copy of the circuit up to this timestep (before charge injection)
+        circuits.append(qc.copy())
+    # After all entangling layers, apply charge injection and measurement to the final circuit
     _apply_charge(qc, gamma, sigma)
-
-    # 4) finalize
     qc.measure_all()
-    return qc
+    return circuits, qc
 
 # ─── Runner ───────────────────────────────────────────────────────────────────
 def run_circuit(qc, shots, simulator, device_name):
@@ -443,6 +447,37 @@ def make_short_filename(num_qubits, geometry, curvature, device, uid):
     curv_short = str(curvature).replace('.', '')
     return f"results_n{num_qubits}_geom{geom_short}_curv{curv_short}_{dev_short}_{uid}.json"
 
+def lorentzian_mds(D, ndim=3, max_iter=1000, lr=1e-2, random_state=42):
+    """
+    Perform Lorentzian (Minkowski) MDS embedding.
+    D: (N,N) Lorentzian dissimilarity matrix (squared intervals)
+    ndim: number of output dimensions (e.g., 3 for (t, x, y))
+    Returns: coords (N, ndim)
+    """
+    np.random.seed(random_state)
+    N = D.shape[0]
+    # Initial guess: time = event index // num_qubits, space = random
+    t_guess = np.repeat(np.arange(N // args.num_qubits), args.num_qubits)
+    x_guess = np.random.randn(N)
+    y_guess = np.random.randn(N)
+    X0 = np.stack([t_guess, x_guess, y_guess], axis=1).flatten()
+    def stress(X):
+        X = X.reshape(N, ndim)
+        T = X[:, 0]
+        Xs = X[:, 1:]
+        S = np.zeros((N, N))
+        for i in range(N):
+            for j in range(N):
+                dt = T[i] - T[j]
+                dx = Xs[i] - Xs[j]
+                s2 = -dt**2 + np.sum(dx**2)
+                S[i, j] = s2
+        mask = ~np.eye(N, dtype=bool)
+        return np.mean((S[mask] - D[mask])**2)
+    res = scipy.optimize.minimize(stress, X0, method='L-BFGS-B', options={'maxiter': max_iter})
+    coords = res.x.reshape(N, ndim)
+    return coords
+
 # ─── Main CLI ─────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     for kappa in args.curvature:
@@ -462,7 +497,8 @@ if __name__ == "__main__":
             else:
                 custom_edges = args.custom_edges
                 edge_weight_variance = None
-            qc = build_custom_circuit(
+            # Build layered circuits for per-timestep MI/distance
+            circuits, qc = build_custom_circuit_layers(
                 num_qubits = n,
                 topology   = "custom",
                 custom_edges = custom_edges,
@@ -473,12 +509,14 @@ if __name__ == "__main__":
                 init_angle = args.init_angle,
                 geometry   = args.geometry,
                 curvature  = kappa,
-                log_edge_weights=True
+                log_edge_weights=False,
+                timesteps  = args.timesteps
             )
         else:
             custom_edges = args.custom_edges
             edge_weight_variance = None
-            qc = build_custom_circuit(
+            # Build layered circuits for per-timestep MI/distance
+            circuits, qc = build_custom_circuit_layers(
                 num_qubits = args.num_qubits,
                 topology   = args.topology,
                 custom_edges = custom_edges,
@@ -489,7 +527,8 @@ if __name__ == "__main__":
                 init_angle = args.init_angle,
                 geometry   = args.geometry,
                 curvature  = kappa,
-                log_edge_weights=False
+                log_edge_weights=False,
+                timesteps  = args.timesteps
             )
 
         # Build the circuit without measure_all for simulator
@@ -498,21 +537,28 @@ if __name__ == "__main__":
         else:
             qc.measure_all()
 
-        if args.device == "simulator":
-            backend = FakeBrisbane()
-            statevector = Statevector.from_int(0, 2**args.num_qubits)
-            statevector = statevector.evolve(qc)
-            mi = compute_von_neumann_MI(statevector)
-            counts = None  # No counts for statevector simulation
-        else:
-            shadows = generate_classical_shadows(qc, n_shadows=100, shots=args.shots, backend=args.device)
-            purities, pair_purities = estimate_purities_from_shadows(shadows)
-            mi = {f"I2_{i},{j}": -np.log(purities[i] + purities[j] - pair_purities[i, j]) for i in range(args.num_qubits) for j in range(i + 1, args.num_qubits)}
-            counts = None  # No counts for classical shadows
+        mi_per_timestep = []
+        distmat_per_timestep = []
+        for t, circ in enumerate(circuits):
+            # For simulator, use statevector
+            if args.device == "simulator":
+                backend = FakeBrisbane()
+                statevector = Statevector.from_int(0, 2**args.num_qubits)
+                statevector = statevector.evolve(circ)
+                mi = compute_von_neumann_MI(statevector)
+                G = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
+                edge_mi = calculate_mi_for_edges_only(mi, G)
+                distance_matrix, _ = compute_graph_shortest_path_distances(edge_mi, G)
+                mi_per_timestep.append(mi)
+                distmat_per_timestep.append(distance_matrix.tolist())
+            else:
+                # For hardware, skip for now (could use classical shadows)
+                mi_per_timestep.append(None)
+                distmat_per_timestep.append(None)
 
         # 3) calculate metrics using graph-shortest-path approach
         G = make_graph("custom" if (args.geometry in ("spherical", "hyperbolic") and kappa is not None) else args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
-        edge_mi = calculate_mi_for_edges_only(mi, G)
+        edge_mi = calculate_mi_for_edges_only(mi_per_timestep[-1], G) # Use the last MI for final metrics
         distance_matrix, shortest_paths = compute_graph_shortest_path_distances(edge_mi, G)
         # Check for triangle inequality violations
         triangle_violations = check_triangle_inequality(distance_matrix)
@@ -528,6 +574,62 @@ if __name__ == "__main__":
         # 4) geometric embedding
         coords2, coords3d = embed_geometry(distance_matrix, model=args.geometry, curvature=kappa)
 
+        # Build event DAG and Lorentzian dissimilarity matrix
+        num_events = args.num_qubits * args.timesteps
+        event_nodes = [(i, t) for t in range(args.timesteps) for i in range(args.num_qubits)]
+        event_idx = {evt: idx for idx, evt in enumerate(event_nodes)}
+        # Build event DAG: edges = spatial (within t) + temporal (i, t)->(i, t+1)
+        event_edges = []
+        for t in range(args.timesteps):
+            # Spatial edges
+            mi_dict = mi_per_timestep[t]
+            # Use MI to get spatial distances for this timestep
+            G_spatial = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
+            edge_mi = calculate_mi_for_edges_only(mi_dict, G_spatial)
+            distmat, _ = compute_graph_shortest_path_distances(edge_mi, G_spatial)
+            for i in range(args.num_qubits):
+                for j in range(i+1, args.num_qubits):
+                    event_edges.append({
+                        "type": "spatial",
+                        "from": (i, t),
+                        "to": (j, t),
+                        "weight": distmat[i, j]
+                    })
+            # Temporal edges
+            if t < args.timesteps - 1:
+                for i in range(args.num_qubits):
+                    event_edges.append({
+                        "type": "temporal",
+                        "from": (i, t),
+                        "to": (i, t+1),
+                        "weight": 1.0
+                    })
+        # Build Lorentzian dissimilarity matrix
+        L = np.zeros((num_events, num_events))
+        for idx_a, (i, t1) in enumerate(event_nodes):
+            for idx_b, (j, t2) in enumerate(event_nodes):
+                if t1 == t2:
+                    # Spatial separation at this time
+                    G_spatial = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
+                    edge_mi = calculate_mi_for_edges_only(mi_per_timestep[t1], G_spatial)
+                    distmat, _ = compute_graph_shortest_path_distances(edge_mi, G_spatial)
+                    d = distmat[i, j]
+                    L[idx_a, idx_b] = d ** 2
+                elif i == j:
+                    # Pure time-lag (timelike)
+                    dt = abs(t2 - t1)
+                    L[idx_a, idx_b] = - (dt ** 2)
+                else:
+                    # Mixed: time and space
+                    dt = abs(t2 - t1)
+                    G_spatial = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
+                    edge_mi = calculate_mi_for_edges_only(mi_per_timestep[min(t1, t2)], G_spatial)
+                    distmat, _ = compute_graph_shortest_path_distances(edge_mi, G_spatial)
+                    d = distmat[i, j]
+                    L[idx_a, idx_b] = - (dt ** 2) + d ** 2
+        # Build Lorentzian MDS embedding
+        lorentzian_embedding = lorentzian_mds(L, ndim=3)
+
         # 4) output
         log_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'experiment_logs', 'custom_curvature_experiment')
         os.makedirs(log_dir, exist_ok=True)
@@ -536,10 +638,11 @@ if __name__ == "__main__":
         output_path = os.path.join(log_dir, short_filename)
         with open(output_path, 'w') as f:
             json.dump({
-                "spec": {**vars(args), "curvature": kappa, "custom_edges": custom_edges},
+                "spec": {**vars(args), "curvature": kappa, "custom_edges": custom_edges, "timesteps": args.timesteps},
                 "uid": uid,
-                "counts": counts,
-                "mutual_information": mi,
+                "counts": None, # No counts for per-timestep simulation
+                "mutual_information": mi_per_timestep,
+                "distance_matrix_per_timestep": distmat_per_timestep,
                 "edge_mi": {f"{u},{v}": val for (u, v), val in edge_mi.items()},
                 "distance_matrix": distance_matrix.tolist(),
                 "shortest_paths": shortest_paths,
@@ -553,15 +656,20 @@ if __name__ == "__main__":
                 "triangle_inequality_violations": triangle_violations,
                 "embedding_coords": coords2.tolist(),
                 **({"embedding_coords_3d": coords3d.tolist()} if coords3d is not None else {}),
-                "edge_weight_variance": edge_weight_variance
+                "edge_weight_variance": edge_weight_variance,
+                "event_nodes": event_nodes,
+                "event_edges": event_edges,
+                "lorentzian_dissimilarity": L.tolist(),
+                "lorentzian_embedding": lorentzian_embedding.tolist()
             }, f, indent=2)
 
         print(f"Results saved to {output_path}")
         print(json.dumps({
-            "spec": {**vars(args), "curvature": kappa, "custom_edges": custom_edges},
+            "spec": {**vars(args), "curvature": kappa, "custom_edges": custom_edges, "timesteps": args.timesteps},
             "uid": uid,
-            "counts": counts,
-            "mutual_information": mi,
+            "counts": None, # No counts for per-timestep simulation
+            "mutual_information": mi_per_timestep,
+            "distance_matrix_per_timestep": distmat_per_timestep,
             "edge_mi": {f"{u},{v}": val for (u, v), val in edge_mi.items()},
             "distance_matrix": distance_matrix.tolist(),
             "shortest_paths": shortest_paths,
@@ -575,7 +683,11 @@ if __name__ == "__main__":
             "triangle_inequality_violations": triangle_violations,
             "embedding_coords": coords2.tolist(),
             **({"embedding_coords_3d": coords3d.tolist()} if coords3d is not None else {}),
-            "edge_weight_variance": edge_weight_variance
+            "edge_weight_variance": edge_weight_variance,
+            "event_nodes": event_nodes,
+            "event_edges": event_edges,
+            "lorentzian_dissimilarity": L.tolist(),
+            "lorentzian_embedding": lorentzian_embedding.tolist()
         }, indent=2))
 
         # Warn if any triangle angle sum is not > π or Gromov delta is not < 0.3 for spherical geometry
