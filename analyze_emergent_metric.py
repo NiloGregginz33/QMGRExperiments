@@ -115,7 +115,7 @@ def spectral_dimension_analysis(D, S_max=10, num_walks=1000, seed=42):
     plt.ylabel('log P(s)')
     plt.title(f'Spectral Dimension Estimate: d_spectral={d_spectral:.2f}')
     plt.legend()
-    plt.savefig('spectral_dimension_fit.png')
+    plt.savefig(os.path.join("plots", "spectral_dimension_fit.png"))
     plt.show()
     print(f"Spectral dimension d_spectral ≈ {d_spectral:.2f} (fit r={r:.3f})")
 
@@ -149,7 +149,7 @@ def laplacian_spectral_dimension(D, S_max=10, s_min=0.1, s_max=10, num_s=10):
     plt.ylabel('log K(s)')
     plt.title(f'Laplacian Spectral Dimension: d_spectral={d_spectral:.2f}')
     plt.legend()
-    plt.savefig('laplacian_spectral_dimension_fit.png')
+    plt.savefig(os.path.join("plots", "laplacian_spectral_dimension_fit.png"))
     plt.show()
     print(f"[Laplacian] Spectral dimension d_spectral ≈ {d_spectral:.2f} (fit r={r:.3f})")
 
@@ -161,6 +161,9 @@ def main():
     parser.add_argument("--kappa_fit", type=float, default=None, help="Target kappa for area fit; if not set, use experiment value")
     parser.add_argument("--logdir", type=str, default="experiment_logs/custom_curvature_experiment", help="Directory to search for result files")
     args = parser.parse_args()
+    # Ensure plots directory exists
+    plots_dir = "plots"
+    os.makedirs(plots_dir, exist_ok=True)
     # If no result_json specified, pick from list
     if args.result_json is None:
         result_json = pick_result_file(args.logdir)
@@ -193,14 +196,14 @@ def main():
             plt.imshow(D_t, cmap='viridis')
             plt.colorbar()
             plt.title(f"Distance Matrix (timestep {t})")
-            plt.savefig(f"distance_matrix_t{t}.png")
+            plt.savefig(os.path.join(plots_dir, f"distance_matrix_t{t}.png"))
             plt.show()
             plt.figure()
             MI_t = np.exp(-D_t)
             plt.imshow(MI_t, cmap='hot')
             plt.colorbar()
             plt.title(f"Mutual Information (timestep {t})")
-            plt.savefig(f"mi_matrix_t{t}.png")
+            plt.savefig(os.path.join(plots_dir, f"mi_matrix_t{t}.png"))
             plt.show()
     # Plot Regge action, edge length, angle deficit, and Gromov delta evolution if present
     if "regge_action_evolution" in data:
@@ -209,7 +212,7 @@ def main():
         plt.xlabel("Regge step")
         plt.ylabel("Regge action")
         plt.title("Regge Action Evolution")
-        plt.savefig("regge_action_evolution.png")
+        plt.savefig(os.path.join(plots_dir, "regge_action_evolution.png"))
         plt.show()
     if "edge_length_evolution" in data:
         plt.figure()
@@ -218,7 +221,7 @@ def main():
         plt.xlabel("Regge step")
         plt.ylabel("Edge lengths")
         plt.title("Edge Length Evolution")
-        plt.savefig("edge_length_evolution.png")
+        plt.savefig(os.path.join(plots_dir, "edge_length_evolution.png"))
         plt.show()
     if "angle_deficit_evolution" in data:
         plt.figure()
@@ -227,7 +230,7 @@ def main():
         plt.xlabel("Regge step")
         plt.ylabel("Angle deficits")
         plt.title("Angle Deficit Evolution")
-        plt.savefig("angle_deficit_evolution.png")
+        plt.savefig(os.path.join(plots_dir, "angle_deficit_evolution.png"))
         plt.show()
     if "gromov_delta_evolution" in data:
         plt.figure()
@@ -235,7 +238,7 @@ def main():
         plt.xlabel("Regge step")
         plt.ylabel("Gromov delta")
         plt.title("Gromov Delta Evolution")
-        plt.savefig("gromov_delta_evolution.png")
+        plt.savefig(os.path.join(plots_dir, "gromov_delta_evolution.png"))
         plt.show()
     # Print triangle inequality violations if present
     if "triangle_inequality_violations" in data and data["triangle_inequality_violations"]:
@@ -253,7 +256,7 @@ def main():
         plt.title("2D Embedding of Geometry")
         plt.xlabel("x")
         plt.ylabel("y")
-        plt.savefig("embedding_2d.png")
+        plt.savefig(os.path.join(plots_dir, "embedding_2d.png"))
         plt.show()
     if "embedding_coords_3d" in data:
         coords3 = np.array(data["embedding_coords_3d"])
@@ -262,7 +265,7 @@ def main():
         ax = fig.add_subplot(111, projection='3d')
         ax.scatter(coords3[:,0], coords3[:,1], coords3[:,2])
         plt.title("3D Embedding of Geometry")
-        plt.savefig("embedding_3d.png")
+        plt.savefig(os.path.join(plots_dir, "embedding_3d.png"))
         plt.show()
     # Optionally plot Lorentzian embedding if present
     if "lorentzian_embedding" in data:
@@ -272,13 +275,13 @@ def main():
             ax = fig.add_subplot(111, projection='3d')
             ax.scatter(coordsL[:,0], coordsL[:,1], coordsL[:,2])
             plt.title("Lorentzian MDS Embedding")
-            plt.savefig("lorentzian_embedding.png")
+            plt.savefig(os.path.join(plots_dir, "lorentzian_embedding.png"))
             plt.show()
         else:
             plt.figure()
             plt.scatter(coordsL[:,0], coordsL[:,1])
             plt.title("Lorentzian MDS Embedding (2D)")
-            plt.savefig("lorentzian_embedding_2d.png")
+            plt.savefig(os.path.join(plots_dir, "lorentzian_embedding_2d.png"))
             plt.show()
     # Use experiment curvature/geometry as default
     exp_curvature = data["spec"].get("curvature", 1.0)
@@ -334,7 +337,7 @@ def main():
     plt.xlabel("Triangle deficit (Δ or δ_sph)")
     plt.ylabel("Count")
     plt.title(f"Distribution of Triangle Deficits ({geometry.capitalize()} Curvature)")
-    plt.savefig("triangle_deficit_histogram.png")
+    plt.savefig(os.path.join(plots_dir, "triangle_deficit_histogram.png"))
     plt.show()
     # Print summary
     print(f"Triangle deficit: mean={np.mean(deficits):.4f}, std={np.std(deficits):.4f}, min={np.min(deficits):.4f}, max={np.max(deficits):.4f}")
@@ -345,7 +348,7 @@ def main():
         plt.xlabel(f"{'Hyperbolic' if geometry=='hyperbolic' else 'Spherical'} triangle area (kappa={kappa_fit})")
         plt.ylabel(f"Triangle deficit {'Δ' if geometry=='hyperbolic' else 'δ_sph'}")
         plt.title(f"Deficit vs. Area ({geometry.capitalize()}, should be linear, slope~{kappa_fit})")
-        plt.savefig("delta_vs_area.png")
+        plt.savefig(os.path.join(plots_dir, "delta_vs_area.png"))
         plt.show()
         # Linear fit
         slope, intercept = np.polyfit(areas, deficits, 1)
