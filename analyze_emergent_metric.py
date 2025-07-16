@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import argparse
 import itertools
+import networkx as nx
+from scipy.stats import linregress
 
 def load_distance_matrix(mi_dict, num_qubits):
     MI = np.zeros((num_qubits, num_qubits))
@@ -41,21 +43,115 @@ def calculate_angle_sum_and_angles(D, i, j, k, curvature=1.0):
 
 def pick_result_file(default_dir):
     files = [f for f in os.listdir(default_dir) if f.endswith('.json')]
-    if not files:
-        print(f"No .json files found in {default_dir}")
+    # Filter files to only those containing 'mutual_information'
+    valid_files = []
+    for f in files:
+        try:
+            with open(os.path.join(default_dir, f)) as jf:
+                data = json.load(jf)
+            if 'mutual_information' in data:
+                valid_files.append(f)
+        except Exception:
+            continue
+    if not valid_files:
+        print(f"No valid .json files with 'mutual_information' found in {default_dir}")
         exit(1)
     print("Select a result file to analyze:")
-    for idx, fname in enumerate(files):
+    for idx, fname in enumerate(valid_files):
         print(f"[{idx}] {fname}")
     while True:
         try:
             choice = int(input("Enter file number: "))
-            if 0 <= choice < len(files):
-                return os.path.join(default_dir, files[choice])
+            if 0 <= choice < len(valid_files):
+                return os.path.join(default_dir, valid_files[choice])
             else:
                 print("Invalid selection. Try again.")
         except ValueError:
             print("Please enter a valid number.")
+
+def spectral_dimension_analysis(D, S_max=10, num_walks=1000, seed=42):
+    np.random.seed(seed)
+    n = D.shape[0]
+    # Build adjacency graph: connect nodes with finite, nonzero distance
+    G = nx.Graph()
+    for i in range(n):
+        for j in range(i+1, n):
+            if 0 < D[i, j] < np.inf:
+                G.add_edge(i, j)
+    if not nx.is_connected(G):
+        print("[WARNING] Adjacency graph is not connected. Spectral dimension may be ill-defined.")
+    P_s = []
+    for s in range(1, S_max+1):
+        returns = 0
+        for start in range(n):
+            for _ in range(num_walks // n):
+                node = start
+                for _ in range(s):
+                    nbrs = list(G.neighbors(node))
+                    if not nbrs:
+                        break
+                    node = np.random.choice(nbrs)
+                if node == start:
+                    returns += 1
+        P_s.append(returns / num_walks)
+    print(f"Return probabilities P(s): {P_s}")
+    s_vals = np.arange(1, S_max+1)
+    # Filter out s where P(s) == 0
+    mask = np.array(P_s) > 0
+    if not np.any(mask):
+        print("[WARNING] All return probabilities are zero. Cannot fit spectral dimension.")
+        return
+    log_s = np.log(s_vals[mask])
+    log_P = np.log(np.array(P_s)[mask])
+    if len(log_s) < 2:
+        print("[WARNING] Not enough nonzero P(s) values to fit spectral dimension.")
+        return
+    slope, intercept, r, p, stderr = linregress(log_s, log_P)
+    d_spectral = -2 * slope
+    plt.figure()
+    plt.plot(log_s, log_P, 'o-', label='Data')
+    plt.plot(log_s, slope*log_s + intercept, '--', label=f'Fit: slope={slope:.3f}')
+    plt.xlabel('log s')
+    plt.ylabel('log P(s)')
+    plt.title(f'Spectral Dimension Estimate: d_spectral={d_spectral:.2f}')
+    plt.legend()
+    plt.savefig('spectral_dimension_fit.png')
+    plt.show()
+    print(f"Spectral dimension d_spectral ≈ {d_spectral:.2f} (fit r={r:.3f})")
+
+def laplacian_spectral_dimension(D, S_max=10, s_min=0.1, s_max=10, num_s=10):
+    n = D.shape[0]
+    # Build adjacency graph: connect nodes with finite, nonzero distance
+    G = nx.Graph()
+    for i in range(n):
+        for j in range(i+1, n):
+            if 0 < D[i, j] < np.inf:
+                G.add_edge(i, j)
+    if not nx.is_connected(G):
+        print("[WARNING] Adjacency graph is not connected. Laplacian spectrum may be ill-defined.")
+        return
+    L = nx.laplacian_matrix(G).toarray()
+    evals = np.linalg.eigvalsh(L)
+    s_vals = np.logspace(np.log10(s_min), np.log10(s_max), num_s)
+    K_s = []
+    for s in s_vals:
+        K = np.sum(np.exp(-s * evals))
+        K_s.append(K)
+    log_s = np.log(s_vals)
+    log_K = np.log(K_s)
+    from scipy.stats import linregress
+    slope, intercept, r, p, stderr = linregress(log_s, log_K)
+    d_spectral = -2 * slope
+    plt.figure()
+    plt.plot(log_s, log_K, 'o-', label='Data')
+    plt.plot(log_s, slope*log_s + intercept, '--', label=f'Fit: slope={slope:.3f}')
+    plt.xlabel('log s')
+    plt.ylabel('log K(s)')
+    plt.title(f'Laplacian Spectral Dimension: d_spectral={d_spectral:.2f}')
+    plt.legend()
+    plt.savefig('laplacian_spectral_dimension_fit.png')
+    plt.show()
+    print(f"[Laplacian] Spectral dimension d_spectral ≈ {d_spectral:.2f} (fit r={r:.3f})")
 
 def main():
     parser = argparse.ArgumentParser(description="Analyze emergent metric and curvature from MI data.")
@@ -63,7 +159,7 @@ def main():
     parser.add_argument("--geometry", type=str, default=None, choices=["euclidean", "hyperbolic", "spherical"], help="Override geometry type for angle calculation")
     parser.add_argument("--curvature", type=float, default=None, help="Curvature parameter (for hyperbolic/spherical geometry); if not set, use experiment value")
     parser.add_argument("--kappa_fit", type=float, default=None, help="Target kappa for area fit; if not set, use experiment value")
-    parser.add_argument("--logdir", type=str, default="experiment_logs/custom_curvature_experiment/", help="Directory to search for result files")
+    parser.add_argument("--logdir", type=str, default="experiment_logs/custom_curvature_experiment", help="Directory to search for result files")
     args = parser.parse_args()
     # If no result_json specified, pick from list
     if args.result_json is None:
@@ -72,6 +168,9 @@ def main():
         result_json = args.result_json
     with open(result_json) as jf:
         data = json.load(jf)
+    if 'mutual_information' not in data:
+        print(f"Error: 'mutual_information' key not found in {result_json}. Skipping analysis.")
+        return
     num_qubits = data["spec"]["num_qubits"]
     mi_dict = data["mutual_information"][-1] if isinstance(data["mutual_information"], list) else data["mutual_information"]
     D = load_distance_matrix(mi_dict, num_qubits)
@@ -257,6 +356,12 @@ def main():
         print(f"Fitted κ ≃ {slope:.4f} (should be ~{kappa_fit} for constant curvature)")
     else:
         print("Euclidean geometry detected: deficits and areas are zero.")
+
+    # After main analysis, run spectral dimension analyses
+    print("\n=== Spectral Dimension Analysis (Random Walk) ===")
+    spectral_dimension_analysis(D, S_max=min(10, num_qubits*2), num_walks=1000)
+    print("\n=== Spectral Dimension Analysis (Laplacian Spectrum) ===")
+    laplacian_spectral_dimension(D, S_max=10, s_min=0.1, s_max=10, num_s=10)
 
 if __name__ == "__main__":
     main() 
