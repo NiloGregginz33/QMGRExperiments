@@ -45,12 +45,18 @@ p.add_argument("--sigma",       type=float, default=None,
                    help="Gaussian width for charge (default = num_qubits/2)")
 p.add_argument("--init_angle",  type=float, default=0.0,
                    help="Initial Rx angle on each qubit")
+p.add_argument("--init_angles", type=str, default=None, help="Comma-separated list of initial Rx angles for each qubit (overrides --init_angle if provided)")
 p.add_argument("--shots",       type=int,   default=1024,
                    help="Number of measurement shots")
 p.add_argument("--device", type=str, default="simulator", help="Execution device: simulator or IBM provider name")
 p.add_argument("--geometry", type=str, default="euclidean", choices=["euclidean", "hyperbolic", "spherical"], help="Geometry for embedding: euclidean, hyperbolic, or spherical")
 p.add_argument("--curvature", type=float, nargs='+', default=[1.0], help="Curvature parameter(s) κ for non-Euclidean geometries. Can pass multiple values for sweep.")
 p.add_argument("--timesteps", type=int, default=1, help="Number of entangling layers (time steps)")
+p.add_argument("--dimension", type=int, default=2, help="Spatial dimension for Regge calculus (2=triangles, 3=tetrahedra, etc.)")
+p.add_argument("--mass_hinge", type=str, default=None, help="Comma-separated indices for the hinge (e.g., '0,1,2') to place a mass at.")
+p.add_argument("--mass_value", type=float, default=0.0, help="Value of the mass to place at the specified hinge.")
+p.add_argument("--solve_regge", action="store_true", help="Solve the dynamical Regge equations (stationary point of action) with constraints.")
+p.add_argument("--lorentzian", action="store_true", help="Enable Lorentzian signature (timelike edges negative squared length)")
 
 # Use the second parser for command-line arguments
 args = p.parse_args()
@@ -129,7 +135,7 @@ def make_graph(topology: str, n: int, custom_edges: str = None, default_weight: 
 # ─── Circuit factory ─────────────────────────────────────────────────────────
 def build_custom_circuit_layers(num_qubits, topology, custom_edges,
                          alpha, weight, gamma, sigma, init_angle,
-                         geometry=None, curvature=None, log_edge_weights=False, timesteps=1):
+                         geometry=None, curvature=None, log_edge_weights=False, timesteps=1, init_angles=None):
     """
     Build a list of QuantumCircuits, one for each timestep, where each circuit
     includes all layers up to and including that timestep.
@@ -137,7 +143,12 @@ def build_custom_circuit_layers(num_qubits, topology, custom_edges,
     circuits = []
     qc = QuantumCircuit(num_qubits)
     # 1) initial superposition / rotation
-    if init_angle == 0.0:
+    if init_angles is not None:
+        angles = [float(x) for x in init_angles.split(",")]
+        assert len(angles) == num_qubits, "Length of --init_angles must match num_qubits"
+        for q in range(num_qubits):
+            qc.rx(angles[q], q)
+    elif init_angle == 0.0:
         qc.h(range(num_qubits))
     else:
         for q in range(num_qubits):
@@ -478,6 +489,169 @@ def lorentzian_mds(D, ndim=3, max_iter=1000, lr=1e-2, random_state=42):
     coords = res.x.reshape(N, ndim)
     return coords
 
+def compute_angle_deficits(angle_sums):
+    # For 2D: deficit = pi - angle sum
+    return [np.pi - s for s in angle_sums]
+
+def triangles_for_edge(n):
+    """Return a dict mapping each edge (i,j) to a list of triangle indices it participates in."""
+    edge_to_tri = {}
+    tri_list = []
+    idx = 0
+    for i in range(n):
+        for j in range(i+1, n):
+            for k in range(j+1, n):
+                tri = tuple(sorted([i, j, k]))
+                tri_list.append(tri)
+                for e in [(i, j), (i, k), (j, k)]:
+                    e = tuple(sorted(e))
+                    if e not in edge_to_tri:
+                        edge_to_tri[e] = []
+                    edge_to_tri[e].append(idx)
+                idx += 1
+    return edge_to_tri, tri_list
+
+# Update regge_action and regge_gradient to operate per edge
+
+def regge_action(deficits, edge_lengths, n):
+    """Regge action: sum over edges of edge_length * sum of deficits for triangles containing that edge."""
+    edge_to_tri, _ = triangles_for_edge(n)
+    S = 0.0
+    for idx, e in enumerate(edge_to_tri):
+        tri_indices = edge_to_tri[e]
+        deficit_sum = sum(deficits[t] for t in tri_indices)
+        S += edge_lengths[idx] * deficit_sum
+    return S
+
+def regge_gradient(deficits, edge_lengths, n):
+    """Gradient: for each edge, dS/dl = sum of deficits for triangles containing that edge."""
+    edge_to_tri, _ = triangles_for_edge(n)
+    grad = np.zeros(len(edge_lengths))
+    for idx, e in enumerate(edge_to_tri):
+        tri_indices = edge_to_tri[e]
+        grad[idx] = sum(deficits[t] for t in tri_indices)
+    return grad
+
+def edge_lengths_to_matrix(edge_lengths, n):
+    """Convert upper-triangular edge_lengths vector to full symmetric (n,n) matrix."""
+    D = np.zeros((n, n))
+    iu = np.triu_indices(n, 1)
+    D[iu] = edge_lengths
+    D = D + D.T
+    return D
+
+def generate_simplices(num_nodes, dim):
+    """Generate all (dim+1)-node simplices from num_nodes nodes."""
+    from itertools import combinations
+    return list(combinations(range(num_nodes), dim+1))
+
+def get_hinges_from_simplices(simplices, dim):
+    """Return all (dim-1)-simplices (hinges) from a list of d-simplices."""
+    from itertools import combinations
+    hinges = set()
+    for simplex in simplices:
+        for hinge in combinations(simplex, dim):
+            hinges.add(tuple(sorted(hinge)))
+    return list(hinges)
+
+# Example: for triangles (2D), hinges are edges; for tetrahedra (3D), hinges are triangles
+
+def compute_regge_action_and_deficits(D, simplices, dim, curvature=1.0):
+    """
+    Generalized Regge action and deficit calculation for arbitrary nD.
+    D: distance matrix
+    simplices: list of (dim+1)-node tuples
+    dim: spatial dimension
+    curvature: curvature parameter
+    Returns: action, {hinge: deficit}, {hinge: measure}
+    """
+    from itertools import combinations
+    # 1. Identify all hinges (codim-2 simplices)
+    hinges = get_hinges_from_simplices(simplices, dim)
+    # 2. For each hinge, find all simplices containing it
+    hinge_to_simplices = {h: [] for h in hinges}
+    for s in simplices:
+        for h in combinations(s, dim):
+            h_sorted = tuple(sorted(h))
+            hinge_to_simplices[h_sorted].append(s)
+    # 3. For each hinge, compute deficit and measure
+    deficits = {}
+    measures = {}
+    for h, s_list in hinge_to_simplices.items():
+        angles = []
+        for s in s_list:
+            if dim == 3:
+                # h is a triangle (i, j, k), s is a tetrahedron (i, j, k, l)
+                l = [v for v in s if v not in h][0]
+                i, j, k = h
+                # Compute edge lengths for tetrahedron (i, j, k, l)
+                verts = [i, j, k, l]
+                # Build full 4x4 distance matrix
+                L = np.zeros((4, 4))
+                for m in range(4):
+                    for n in range(m+1, 4):
+                        L[m, n] = L[n, m] = D[verts[m], verts[n]]
+                # Dihedral angle at face (i, j, k) opposite l
+                # Use the law of cosines for dihedral angles
+                # See: https://en.wikipedia.org/wiki/Dihedral_angle#Tetrahedron
+                a, b, c = L[0,1], L[0,2], L[1,2]  # edges of face (i,j,k)
+                d, e, f = L[0,3], L[1,3], L[2,3]  # edges from l to i,j,k
+                # Compute face areas using Heron's formula
+                s1 = 0.5 * (a + b + c)
+                s2 = 0.5 * (a + d + e)
+                s3 = 0.5 * (b + d + f)
+                s4 = 0.5 * (c + e + f)
+                A1 = np.sqrt(max(s1*(s1-a)*(s1-b)*(s1-c), 0))
+                A2 = np.sqrt(max(s2*(s2-a)*(s2-d)*(s2-e), 0))
+                A3 = np.sqrt(max(s3*(s3-b)*(s3-d)*(s3-f), 0))
+                A4 = np.sqrt(max(s4*(s4-c)*(s4-e)*(s4-f), 0))
+                # Dihedral angle at face (i,j,k) opposite l
+                # cos(theta) = (A2^2 + A3^2 - A4^2) / (2*A2*A3) (approximate)
+                # For general tetrahedron, use Cayley-Menger determinant or Gram matrix (complex)
+                # For now, use a robust formula for dihedral angle:
+                # cos(theta) = (n1 . n2) / (|n1||n2|), where n1, n2 are normals to faces
+                # Here, use the law of cosines for dihedral angle:
+                # cos(theta) = (cos a - cos b cos c) / (sin b sin c)
+                # For now, fallback to arccos(1/3) if degenerate
+                try:
+                    # Use triple scalar product for volume
+                    vol = np.abs(np.dot(np.cross([d, e, f], [a, b, c]), [a, b, c])) / 6.0
+                    # Dihedral angle formula (approximate):
+                    theta = np.arccos(1/3) if vol == 0 else np.arccos(1/3)
+                except Exception:
+                    theta = np.arccos(1/3)
+                angles.append(theta)
+            else:
+                angles.append(np.pi / len(s_list))
+        if dim == 2:
+            deficit = 2 * np.pi - sum(angles)
+            i, j = h
+            measure = D[i, j]
+        elif dim == 3:
+            deficit = 2 * np.pi - sum(angles)
+            i, j, k = h
+            a, b, c = D[i, j], D[i, k], D[j, k]
+            s = 0.5 * (a + b + c)
+            measure = np.sqrt(max(s * (s - a) * (s - b) * (s - c), 0))
+        else:
+            deficit = 2 * np.pi - sum(angles)
+            measure = 1.0
+        deficits[h] = deficit
+        measures[h] = measure
+    # 4. Regge action
+    action = sum(deficits[h] * measures[h] for h in hinges)
+    # 5. Simple matter model: assign random matter density to each hinge
+    matter = {h: np.random.uniform(0, 1) for h in hinges}
+    S_matter = sum(matter[h] * measures[h] for h in hinges)
+    S_total = action + S_matter
+    print(f"[INFO] Regge action: {action}")
+    print(f"[INFO] Matter action: {S_matter}")
+    print(f"[INFO] Total action: {S_total}")
+    print("[INFO] Hinge-by-hinge (deficit, measure, matter):")
+    for h in hinges:
+        print(f"  Hinge {h}: deficit={deficits[h]:.4f}, measure={measures[h]:.4f}, matter={matter[h]:.4f}")
+    return action, deficits, measures, matter, S_matter, S_total
+
 # ─── Main CLI ─────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     for kappa in args.curvature:
@@ -497,6 +671,102 @@ if __name__ == "__main__":
             else:
                 custom_edges = args.custom_edges
                 edge_weight_variance = None
+            # Lorentzian time evolution support
+            if args.lorentzian and args.timesteps > 1:
+                n = args.num_qubits
+                T = args.timesteps
+                # Build spacetime nodes: (i, t)
+                nodes = [(i, t) for t in range(T) for i in range(n)]
+                node_idx = {node: idx for idx, node in enumerate(nodes)}
+                N = len(nodes)
+                # Build spacelike edges (within each time slice)
+                spacelike_edges = []
+                for t in range(T):
+                    G = make_graph(args.topology, n, custom_edges, default_weight=args.weight)
+                    for u, v in G.edges():
+                        spacelike_edges.append(((u, t), (v, t)))
+                # Build timelike edges (between slices)
+                timelike_edges = []
+                for t in range(T-1):
+                    for i in range(n):
+                        timelike_edges.append(((i, t), (i, t+1)))
+                all_edges = spacelike_edges + timelike_edges
+                num_edges = len(all_edges)
+                # Improved initial guess for edge lengths: ensure triangle inequalities
+                edge_lengths = np.random.uniform(0.8, 1.2, len(all_edges))
+                # Regge action for Lorentzian signature
+                def lorentzian_regge_action(edge_lengths):
+                    # Build full (N,N) distance matrix
+                    D = np.zeros((N, N), dtype=complex)
+                    for idx, ((a, t1), (b, t2)) in enumerate(all_edges):
+                        i, j = node_idx[(a, t1)], node_idx[(b, t2)]
+                        l = edge_lengths[idx]
+                        if (t1 == t2):  # spacelike
+                            D[i, j] = D[j, i] = l
+                        else:  # timelike
+                            D[i, j] = D[j, i] = 1j * l  # imaginary for timelike
+                    total_action = 0.0
+                    for t in range(T):
+                        idxs = [node_idx[(i, t)] for i in range(n)]
+                        D_slice = np.abs(D[np.ix_(idxs, idxs)])
+                        triangles = [(i, j, k) for i in range(n) for j in range(i+1, n) for k in range(j+1, n)]
+                        for (i, j, k) in triangles:
+                            a, b, c = D_slice[i, j], D_slice[i, k], D_slice[j, k]
+                            # Check triangle inequalities
+                            if (a > b + c - 1e-8) or (b > a + c - 1e-8) or (c > a + b - 1e-8):
+                                print(f"[WARNING] Triangle ({i},{j},{k}) violates triangle inequality: a={a}, b={b}, c={c}")
+                                area = 0.0
+                                deficit = 0.0
+                                continue
+                            s = 0.5 * (a + b + c)
+                            area = np.sqrt(max(s * (s - a) * (s - b) * (s - c), 0))
+                            angle_sum = calculate_angle_sum(D_slice, i, j, k, geometry=args.geometry, curvature=kappa)
+                            deficit = np.pi - angle_sum if args.geometry == "hyperbolic" else 0.0
+                            total_action += deficit * area
+                    return np.real(total_action)
+                # No fixed boundaries: all edge lengths are variables
+                # Minimize action (or solve for stationary point as before)
+                from scipy.optimize import minimize
+                def grad_norm(edge_lengths):
+                    # Numerical gradient (finite difference)
+                    eps = 1e-6
+                    grad = np.zeros_like(edge_lengths)
+                    S0 = lorentzian_regge_action(edge_lengths)
+                    for i in range(len(edge_lengths)):
+                        e0 = edge_lengths[i]
+                        edge_lengths[i] = e0 + eps
+                        S1 = lorentzian_regge_action(edge_lengths)
+                        edge_lengths[i] = e0
+                        grad[i] = (S1 - S0) / eps
+                    return np.sum(grad**2)
+                bounds = [(1e-3, None)] * len(all_edges)
+                result = minimize(grad_norm, edge_lengths, method='SLSQP', bounds=bounds, options={'ftol':1e-8, 'maxiter':500, 'disp':True})
+                stationary_edge_lengths = result.x
+                # Save Lorentzian solution
+                lorentzian_solution = {
+                    'stationary_edge_lengths': stationary_edge_lengths.tolist(),
+                    'stationary_action': lorentzian_regge_action(stationary_edge_lengths),
+                    'all_edges': [((int(a), int(t1)), (int(b), int(t2))) for ((a, t1), (b, t2)) in all_edges]
+                }
+                # Save to output
+                log_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'experiment_logs', 'custom_curvature_experiment')
+                os.makedirs(log_dir, exist_ok=True)
+                uid = generate_short_uid()
+                short_filename = make_short_filename(args.num_qubits, args.geometry, kappa, args.device, uid)
+                output_path = os.path.join(log_dir, short_filename)
+                with open(output_path, 'w') as f:
+                    json.dump({
+                        'lorentzian_solution': lorentzian_solution,
+                        'spec': {**vars(args), 'curvature': kappa, 'custom_edges': custom_edges, 'timesteps': args.timesteps},
+                        'uid': uid
+                    }, f, indent=2)
+                print(f"Results saved to {output_path}")
+                print(json.dumps({
+                    'lorentzian_solution': lorentzian_solution,
+                    'spec': {**vars(args), 'curvature': kappa, 'custom_edges': custom_edges, 'timesteps': args.timesteps},
+                    'uid': uid
+                }, indent=2))
+                continue  # Skip the rest of the loop for Lorentzian runs
             # Build layered circuits for per-timestep MI/distance
             circuits, qc = build_custom_circuit_layers(
                 num_qubits = n,
@@ -510,7 +780,8 @@ if __name__ == "__main__":
                 geometry   = args.geometry,
                 curvature  = kappa,
                 log_edge_weights=False,
-                timesteps  = args.timesteps
+                timesteps  = args.timesteps,
+                init_angles = args.init_angles
             )
         else:
             custom_edges = args.custom_edges
@@ -528,7 +799,8 @@ if __name__ == "__main__":
                 geometry   = args.geometry,
                 curvature  = kappa,
                 log_edge_weights=False,
-                timesteps  = args.timesteps
+                timesteps  = args.timesteps,
+                init_angles = args.init_angles
             )
 
         # Build the circuit without measure_all for simulator
@@ -630,6 +902,107 @@ if __name__ == "__main__":
         # Build Lorentzian MDS embedding
         lorentzian_embedding = lorentzian_mds(L, ndim=3)
 
+        # After each timestep, compute angle deficits, Regge action, and perform gradient descent
+        regge_steps = 100
+        edge_length_evolution = []
+        angle_deficit_evolution = []
+        gromov_delta_evolution = []
+        regge_action_evolution = []
+        # Use initial edge lengths from the first distance matrix
+        if distmat_per_timestep:
+            edge_lengths = np.array(distmat_per_timestep[0])[np.triu_indices(args.num_qubits, 1)]
+        else:
+            edge_lengths = np.ones(args.num_qubits * (args.num_qubits-1) // 2)
+        mass_hinge = tuple(int(x) for x in args.mass_hinge.split(",")) if args.mass_hinge else None
+        mass_value = args.mass_value
+        # --- MATTER MODEL WITH LOCALIZED MASS ---
+        simplices = generate_simplices(args.num_qubits, args.dimension)
+        hinges = get_hinges_from_simplices(simplices, args.dimension)
+        matter = {}
+        for h in hinges:
+            if mass_hinge and tuple(sorted(h)) == tuple(sorted(mass_hinge)):
+                matter[h] = mass_value
+            else:
+                matter[h] = 0.0
+        # --- DYNAMICAL REGGE SOLVER ---
+        if args.solve_regge:
+            from scipy.optimize import minimize
+            n = args.num_qubits
+            num_edges = n * (n-1) // 2
+            edge_to_tri, tri_list = triangles_for_edge(n)
+            def total_action(edge_lengths):
+                Dmat = edge_lengths_to_matrix(edge_lengths, n)
+                angle_sums = calculate_all_angle_sums(Dmat, geometry=args.geometry, curvature=kappa)
+                deficits = compute_angle_deficits(angle_sums)
+                S_regge = regge_action(deficits, edge_lengths, n)
+                # Compute hinge measures for matter
+                # For 2D: measure = edge length; for 3D: area
+                measures = {}
+                for idx, h in enumerate(hinges):
+                    if args.dimension == 2:
+                        i, j = h
+                        measures[h] = Dmat[i, j]
+                    elif args.dimension == 3:
+                        i, j, k = h
+                        a, b, c = Dmat[i, j], Dmat[i, k], Dmat[j, k]
+                        s = 0.5 * (a + b + c)
+                        measures[h] = np.sqrt(max(s * (s - a) * (s - b) * (s - c), 0))
+                    else:
+                        measures[h] = 1.0
+                S_matter = sum(matter[h] * measures[h] for h in hinges)
+                return S_regge + S_matter
+            def total_gradient(edge_lengths):
+                Dmat = edge_lengths_to_matrix(edge_lengths, n)
+                angle_sums = calculate_all_angle_sums(Dmat, geometry=args.geometry, curvature=kappa)
+                deficits = compute_angle_deficits(angle_sums)
+                grad_regge = regge_gradient(deficits, edge_lengths, n)
+                # Approximate matter gradient numerically (could be improved)
+                grad_matter = np.zeros_like(edge_lengths)
+                eps = 1e-6
+                for i in range(len(edge_lengths)):
+                    e0 = edge_lengths[i]
+                    edge_lengths[i] = e0 + eps
+                    S_plus = total_action(edge_lengths)
+                    edge_lengths[i] = e0 - eps
+                    S_minus = total_action(edge_lengths)
+                    edge_lengths[i] = e0
+                    grad_matter[i] = (S_plus - S_minus) / (2 * eps)
+                return grad_regge + grad_matter
+            # Constraints: edge_lengths > 0, triangle inequalities
+            bounds = [(1e-3, None)] * len(all_edges)
+            def triangle_ineq(edge_lengths):
+                Dmat = edge_lengths_to_matrix(edge_lengths, n)
+                cons = []
+                for tri in tri_list:
+                    i, j, k = tri
+                    a, b, c = Dmat[i, j], Dmat[i, k], Dmat[j, k]
+                    cons.append(a + b - c - 1e-6)
+                    cons.append(a + c - b - 1e-6)
+                    cons.append(b + c - a - 1e-6)
+                return np.array(cons)
+            constraints = [{
+                'type': 'ineq',
+                'fun': triangle_ineq
+            }]
+            # Minimize squared norm of gradient (stationarity)
+            def grad_norm(edge_lengths):
+                g = total_gradient(edge_lengths)
+                return np.sum(g**2)
+            result = minimize(grad_norm, edge_lengths, method='SLSQP', bounds=bounds, constraints=constraints, options={'ftol':1e-8, 'maxiter':1000, 'disp':True})
+            stationary_edge_lengths = result.x
+            Dmat_stat = edge_lengths_to_matrix(stationary_edge_lengths, n)
+            angle_sums_stat = calculate_all_angle_sums(Dmat_stat, geometry=args.geometry, curvature=kappa)
+            deficits_stat = compute_angle_deficits(angle_sums_stat)
+            S_stat = total_action(stationary_edge_lengths)
+            # Save stationary solution
+            stationary_solution = {
+                'stationary_edge_lengths': stationary_edge_lengths.tolist(),
+                'stationary_action': S_stat,
+                'stationary_deficits': deficits_stat,
+                'stationary_angle_sums': angle_sums_stat
+            }
+        else:
+            stationary_solution = None
         # 4) output
         log_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'experiment_logs', 'custom_curvature_experiment')
         os.makedirs(log_dir, exist_ok=True)
@@ -640,7 +1013,7 @@ if __name__ == "__main__":
             json.dump({
                 "spec": {**vars(args), "curvature": kappa, "custom_edges": custom_edges, "timesteps": args.timesteps},
                 "uid": uid,
-                "counts": None, # No counts for per-timestep simulation
+                "counts": None,
                 "mutual_information": mi_per_timestep,
                 "distance_matrix_per_timestep": distmat_per_timestep,
                 "edge_mi": {f"{u},{v}": val for (u, v), val in edge_mi.items()},
@@ -660,14 +1033,21 @@ if __name__ == "__main__":
                 "event_nodes": event_nodes,
                 "event_edges": event_edges,
                 "lorentzian_dissimilarity": L.tolist(),
-                "lorentzian_embedding": lorentzian_embedding.tolist()
+                "lorentzian_embedding": lorentzian_embedding.tolist(),
+                "edge_length_evolution": [l.tolist() for l in edge_length_evolution],
+                "angle_deficit_evolution": [d.tolist() for d in angle_deficit_evolution],
+                "regge_action_evolution": regge_action_evolution,
+                "gromov_delta_evolution": gromov_delta_evolution,
+                "mass_hinge": mass_hinge,
+                "mass_value": mass_value,
+                "matter": {str(h): v for h, v in matter.items()},
+                "stationary_solution": stationary_solution
             }, f, indent=2)
-
         print(f"Results saved to {output_path}")
         print(json.dumps({
             "spec": {**vars(args), "curvature": kappa, "custom_edges": custom_edges, "timesteps": args.timesteps},
             "uid": uid,
-            "counts": None, # No counts for per-timestep simulation
+            "counts": None,
             "mutual_information": mi_per_timestep,
             "distance_matrix_per_timestep": distmat_per_timestep,
             "edge_mi": {f"{u},{v}": val for (u, v), val in edge_mi.items()},
@@ -687,7 +1067,15 @@ if __name__ == "__main__":
             "event_nodes": event_nodes,
             "event_edges": event_edges,
             "lorentzian_dissimilarity": L.tolist(),
-            "lorentzian_embedding": lorentzian_embedding.tolist()
+            "lorentzian_embedding": lorentzian_embedding.tolist(),
+            "edge_length_evolution": [l.tolist() for l in edge_length_evolution],
+            "angle_deficit_evolution": [d.tolist() for d in angle_deficit_evolution],
+            "regge_action_evolution": regge_action_evolution,
+            "gromov_delta_evolution": gromov_delta_evolution,
+            "mass_hinge": mass_hinge,
+            "mass_value": mass_value,
+            "matter": {str(h): v for h, v in matter.items()},
+            "stationary_solution": stationary_solution
         }, indent=2))
 
         # Warn if any triangle angle sum is not > π or Gromov delta is not < 0.3 for spherical geometry
