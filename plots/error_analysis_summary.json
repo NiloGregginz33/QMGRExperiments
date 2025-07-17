@@ -1,0 +1,20 @@
+{
+  "measurement_uncertainty": 0.0368848363909049,
+  "distance_uncertainty": 125000000.16635494,
+  "finite_size_effects": 0.16666666666666666,
+  "triangle_deficit_mean": 0.0,
+  "triangle_deficit_std": 0.0,
+  "triangle_deficit_ci": [
+    0.0,
+    0.0
+  ],
+  "geodesic_length_mean": 1.8545519427375365,
+  "geodesic_length_ci": [
+    1.3745137657077344,
+    2.401646426775633
+  ],
+  "spectral_dimension": 0.5531864257660595,
+  "spectral_dimension_error": 0.08820901123320725,
+  "laplacian_dimension": 0.5531864257660595,
+  "laplacian_dimension_error": 0.07504736196526261
+}
