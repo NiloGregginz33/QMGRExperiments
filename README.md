@@ -157,12 +157,12 @@ python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology 
 - **Significance**: First measurement-based bulk geometry reconstruction
 - **Status**: ✅ **COMPLETED ON HARDWARE**
 
-#### 4. **Quantum Switch Emergent Time Experiment** (IBM Quantum)
-- **Hardware**: IBM Quantum processor
+#### 4. **Quantum Switch Emergent Time Experiment** (FakeJakarta Simulator)
+- **Simulator**: FakeJakartaV2
 - **Data**: `experiment_logs/quantum_switch_emergent_time_qiskit/`
 - **Key Result**: Negative causal witness values indicating indefinite causal order
 - **Significance**: Experimental evidence for emergent time phenomena
-- **Status**: ✅ **COMPLETED ON HARDWARE**
+- **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
 #### 5. **Page Curve Experiment** (IBM Quantum)
 - **Hardware**: IBM Quantum processor
@@ -225,18 +225,18 @@ python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology 
 
 ### **Summary of Experimental Status**
 
-**✅ HARDWARE EXPERIMENTS (5 major experiments):**
-- All core findings (R² = 0.3226 curved geometry, R² = 0.9987 holographic scaling, negative causal witness) come from real quantum hardware
+**✅ HARDWARE EXPERIMENTS (4 major experiments):**
+- Core findings (R² = 0.3226 curved geometry, R² = 0.9987 holographic scaling) come from real quantum hardware
 - These provide **empirical evidence** rather than simulations
 - Results are subject to device noise and statistical uncertainty
 
-**🔄 SIMULATOR EXPERIMENTS (10 experiments):**
-- All newer, more complex experiments
+**🔄 SIMULATOR EXPERIMENTS (11 experiments):**
+- All newer, more complex experiments including quantum switch emergent time
 - Ready for hardware deployment
-- Use FakeBrisbane simulator for validation
+- Use FakeBrisbane/FakeJakarta simulators for validation
 - Provide proof-of-concept and theoretical validation
 
-**Key Point**: The most significant scientific contributions—including the first experimental evidence of emergent curved geometry from quantum entanglement—come from **real quantum hardware experiments**, making them empirical rather than simulated results.
+**Key Point**: The most significant scientific contributions—including the first experimental evidence of emergent curved geometry from quantum entanglement and holographic entropy scaling—come from **real quantum hardware experiments**, making them empirical rather than simulated results. The quantum switch emergent time experiment, while run on simulator, provides important theoretical validation of indefinite causal order phenomena.
 
 ## Scientific Contributions
 
@@ -271,12 +271,12 @@ python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology 
 - **Code**: `page_curve_experiment_qiskit.py`
 - **Data**: `experiment_logs/page_curve_experiment_20250616_132312/`
 
-### 5. Quantum Switch and Emergent Time ✅ **HARDWARE**
+### 5. Quantum Switch and Emergent Time 🔄 **SIMULATOR**
 - **Implements the quantum switch protocol to probe the emergence of time and indefinite causal order in a quantum circuit.**
 - **Measures both Shannon entropy and a causal non-separability witness (Branciard et al., PRL 2016) as a function of the circuit parameter φ.**
 - **Finds negative values of the causal witness for certain φ, indicating regimes of indefinite causal order—a hallmark of emergent time phenomena.**
 - **All results, including entropy and witness plots, are logged and visualized for rigorous analysis.**
-- **✅ EXECUTED ON REAL QUANTUM HARDWARE (IBM Quantum)**
+- **🔄 EXECUTED ON SIMULATOR ONLY (FakeJakartaV2)**
 - **Code**: `quantum_switch_emergent_time_qiskit.py`
 - **Data**: `experiment_logs/quantum_switch_emergent_time_qiskit/`
 
