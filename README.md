@@ -230,7 +230,31 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **See `src/experiments/custom_curvature_experiment.py` and corresponding logs in `experiment_logs/custom_curvature_experiment/`.**
 - **Note: All custom_curvature_experiment.py runs so far have been performed on simulator only, but the experiment is expected to work on hardware as well.**
 
-### 11. Bulk Reconstruction from Boundary Data
+### 11. Custom Curvature Experiment: Dynamical Regge Geometry, Tidal Forces, and Geodesic Deviation
+- **Implements a fully flexible quantum circuit generator for arbitrary geometries (Euclidean, spherical, hyperbolic) and topologies (chain, ring, star, complete, custom).**
+- **Supports time-dependent evolution, mass perturbations, and both Euclidean and Lorentzian Regge calculus.**
+- **Directly simulates the dynamical Regge equations, allowing for the study of curvature propagation, gravitational wave–like effects, and geodesic deviation (tidal forces) in emergent quantum geometry.**
+- **Key new result: Successfully observed geodesic deviation (tidal forces) by tracking the evolution of shortest-path distances between node triplets, confirming the presence of curvature-induced tidal effects in the emergent geometry.**
+- **Features:**
+  - Arbitrary number of qubits, geometry, and topology
+  - Per-timestep mutual information and distance matrices
+  - Regge action minimization and angle deficit tracking
+  - Mass perturbation at arbitrary hinges (for gravitational wave/defect injection)
+  - Lorentzian time evolution and event DAG construction
+  - Full logging of all geometric, entropic, and dynamical observables
+- **Analysis tools:**
+  - Automated extraction of curvature, angle sums, Gromov δ, triangle inequality violations
+  - Geodesic deviation (tidal force) analysis: plots of geodesic distance spread and difference between neighboring geodesics over time
+  - Spectral dimension estimation (random walk and Laplacian)
+  - 2D/3D and Lorentzian MDS embeddings
+- **Findings:**
+  - Demonstrated the emergence and propagation of curvature and tidal forces in a quantum circuit, with direct visualization of geodesic deviation in the reconstructed geometry.
+  - Validated the use of quantum circuits and Regge calculus for simulating dynamical spacetime phenomena, including gravitational wave–like propagation and curvature focusing/defocusing.
+- **Tested on:** Simulators (hardware runs possible).
+- **Code:** `src/experiments/custom_curvature_experiment.py`
+- **Data:** `experiment_logs/custom_curvature_experiment/`
+
+### 12. Bulk Reconstruction from Boundary Data
 - **Reconstructs bulk geometric features (distances, curvature, volume) from measurements on the quantum boundary, providing direct evidence for the holographic encoding of bulk information.**
 - **Uses mutual information matrices and multidimensional scaling (MDS) to recover the emergent bulk geometry from boundary entanglement data.**
 - **Findings:** Successfully reconstructs bulk distances and curvature consistent with theoretical predictions; provides evidence that bulk geometry can be inferred from boundary measurements alone, within experimental uncertainty.
@@ -238,7 +262,7 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Code:** `src/experiments/bulk_reconstruction_qiskit.py`
 - **Data:** `experiment_logs/bulk_reconstruction_qiskit/`
 
-### 12. Quantum State Teleportation Geometry
+### 13. Quantum State Teleportation Geometry
 - **Explores the relationship between quantum teleportation protocols and emergent geometric structure.**
 - **Measures mutual information, teleportation fidelity, and reconstructs the geometry of the teleportation network.**
 - **Findings:** Shows that high-fidelity teleportation correlates with strong geometric connectivity in the emergent space; provides a geometric interpretation of teleportation efficiency, consistent with theoretical expectations.
@@ -246,7 +270,7 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Code:** `src/experiments/quantum_state_teleportation_geometry_qiskit.py`
 - **Data:** `experiment_logs/quantum_state_teleportation_geometry_simulator/`
 
-### 13. CTC (Closed Timelike Curve) Geometry Experiments
+### 14. CTC (Closed Timelike Curve) Geometry Experiments
 - **Investigates the impact of closed timelike curves and feedback on quantum entanglement and emergent geometry.**
 - **Implements CTC protocols and measures changes in mutual information, entropy, and geometric structure.**
 - **Findings:** Reveals that CTC-induced feedback can alter the geometric and entropic properties of the system, providing insight into the interplay between causality and geometry, within the limits of quantum analog simulation, and that perturbations in the CTC structures do not affect the fixed points in the CTC.
@@ -254,7 +278,7 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Code:** `src/experiments/ctc_geometry_experiment_qiskit.py`, `src/experiments/ctc_conditional_perturbation_experiment_qiskit.py`
 - **Data:** `experiment_logs/ctc_geometry/`, `experiment_logs/ctc_conditional_perturbation_qiskit_statevector_*/`
 
-### 14. Dimensional Reduction Geometry
+### 15. Dimensional Reduction Geometry
 - **Tests the emergence of higher-dimensional bulk geometry from lower-dimensional boundary degrees of freedom.**
 - **Analyzes the eigenvalue spectrum of the MDS embedding and the scaling of bulk volume with boundary size.**
 - **Findings:** Results are consistent with the hypothesis that increasing the number of boundary qubits leads to higher effective bulk dimensionality, within experimental uncertainty.
@@ -262,7 +286,7 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Code:** `src/experiments/dimensional_reduction_geometry_qiskit.py`
 - **Data:** `experiment_logs/dimensional_reduction_geometry_qiskit_*/`
 
-### 15. Modular Flow and Geometry
+### 16. Modular Flow and Geometry
 - **Simulates modular flow (Tomita–Takesaki theory) in quantum circuits and measures its effect on emergent geometry.**
 - **Findings:** Modular evolution of subsystems leads to geometric deformations that are consistent with AdS/CFT conjectures, as observed in quantum analog simulation.
 - **Tested on:** Simulators.
