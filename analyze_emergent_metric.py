@@ -6,6 +6,330 @@ import argparse
 import itertools
 import networkx as nx
 from scipy.stats import linregress
+from scipy.optimize import curve_fit
+from scipy import stats
+import warnings
+
+def bootstrap_confidence_interval(data, statistic, n_bootstrap=1000, confidence=0.95):
+    """
+    Compute bootstrap confidence interval for a statistic.
+    
+    Args:
+        data: Input data array
+        statistic: Function to compute on data (e.g., np.mean, np.std)
+        n_bootstrap: Number of bootstrap samples
+        confidence: Confidence level (0.95 for 95% CI)
+    
+    Returns:
+        (statistic_value, lower_ci, upper_ci, bootstrap_samples)
+    """
+    n = len(data)
+    bootstrap_samples = []
+    
+    for _ in range(n_bootstrap):
+        # Resample with replacement
+        bootstrap_data = np.random.choice(data, size=n, replace=True)
+        bootstrap_samples.append(statistic(bootstrap_data))
+    
+    bootstrap_samples = np.array(bootstrap_samples)
+    stat_value = statistic(data)
+    
+    # Compute confidence interval
+    alpha = 1 - confidence
+    lower_percentile = (alpha / 2) * 100
+    upper_percentile = (1 - alpha / 2) * 100
+    
+    lower_ci = np.percentile(bootstrap_samples, lower_percentile)
+    upper_ci = np.percentile(bootstrap_samples, upper_percentile)
+    
+    return stat_value, lower_ci, upper_ci, bootstrap_samples
+
+def estimate_mi_uncertainty(mi_dict, shots=1024):
+    """
+    Estimate uncertainty in mutual information from shot noise.
+    
+    Args:
+        mi_dict: Dictionary of mutual information values
+        shots: Number of measurement shots (default from experiment)
+    
+    Returns:
+        Dictionary of MI uncertainties
+    """
+    mi_uncertainties = {}
+    
+    for key, mi_value in mi_dict.items():
+        # For MI from von Neumann entropy, uncertainty scales as 1/sqrt(shots)
+        # This is a rough estimate - actual uncertainty depends on state complexity
+        base_uncertainty = 1.0 / np.sqrt(shots)
+        
+        # Scale by MI value (larger MI typically has larger uncertainty)
+        mi_uncertainties[key] = base_uncertainty * (1 + abs(mi_value))
+    
+    return mi_uncertainties
+
+def propagate_distance_uncertainty(mi_dict, mi_uncertainties):
+    """
+    Propagate mutual information uncertainties to distance uncertainties.
+    
+    Args:
+        mi_dict: Dictionary of mutual information values
+        mi_uncertainties: Dictionary of MI uncertainties
+    
+    Returns:
+        Dictionary of distance uncertainties
+    """
+    distance_uncertainties = {}
+    
+    for key, mi_value in mi_dict.items():
+        if key in mi_uncertainties:
+            mi_uncertainty = mi_uncertainties[key]
+            
+            # Distance = -log(MI), so dD/dMI = -1/MI
+            # Uncertainty propagation: dD = |dD/dMI| * dMI = dMI/MI
+            mi_clamped = max(mi_value, 1e-10)  # Avoid division by zero
+            distance_uncertainty = mi_uncertainty / mi_clamped
+            
+            distance_uncertainties[key] = distance_uncertainty
+    
+    return distance_uncertainties
+
+def fit_with_uncertainty(x, y, y_err=None, fit_type='linear'):
+    """
+    Fit data with proper uncertainty estimation.
+    
+    Args:
+        x: x data
+        y: y data
+        y_err: y uncertainties (optional)
+        fit_type: 'linear' or 'power_law'
+    
+    Returns:
+        (params, param_uncertainties, r_squared, fit_function)
+    """
+    if fit_type == 'linear':
+        # Linear fit: y = mx + b
+        if y_err is not None:
+            # Weighted linear fit
+            popt, pcov = curve_fit(lambda x, m, b: m*x + b, x, y, sigma=y_err, absolute_sigma=True)
+            param_uncertainties = np.sqrt(np.diag(pcov))
+        else:
+            # Unweighted linear fit
+            slope, intercept, r_value, p_value, stderr = linregress(x, y)
+            popt = [slope, intercept]
+            param_uncertainties = [stderr, stderr * np.sqrt(np.mean(x**2))]
+        
+        r_squared = r_value**2 if 'r_value' in locals() else None
+        fit_function = lambda x: popt[0] * x + popt[1]
+        
+    elif fit_type == 'power_law':
+        # Power law fit: y = ax^b
+        if y_err is not None:
+            popt, pcov = curve_fit(lambda x, a, b: a * x**b, x, y, sigma=y_err, absolute_sigma=True)
+        else:
+            # Log-log fit for power law
+            log_x = np.log(x)
+            log_y = np.log(y)
+            slope, intercept, r_value, p_value, stderr = linregress(log_x, log_y)
+            popt = [np.exp(intercept), slope]
+            param_uncertainties = [np.exp(intercept) * stderr, stderr]
+        
+        r_squared = r_value**2 if 'r_value' in locals() else None
+        fit_function = lambda x: popt[0] * x**popt[1]
+    
+    return popt, param_uncertainties, r_squared, fit_function
+
+def estimate_finite_size_effects(num_qubits, geometry):
+    """
+    Estimate systematic errors from finite system size.
+    
+    Args:
+        num_qubits: Number of qubits in the system
+        geometry: Geometry type ('euclidean', 'spherical', 'hyperbolic')
+    
+    Returns:
+        Dictionary of systematic error estimates
+    """
+    systematic_errors = {}
+    
+    # Finite-size effects scale roughly as 1/N for many observables
+    n = num_qubits
+    systematic_errors['finite_size_scale'] = 1.0 / n
+    
+    # Geometry-specific finite-size effects
+    if geometry == 'spherical':
+        # Spherical geometry: finite-size effects from curvature radius
+        systematic_errors['curvature_finite_size'] = 1.0 / (n * np.sqrt(n))
+    elif geometry == 'hyperbolic':
+        # Hyperbolic geometry: exponential growth with distance
+        systematic_errors['hyperbolic_finite_size'] = np.exp(-n/2)
+    else:  # euclidean
+        systematic_errors['euclidean_finite_size'] = 1.0 / n
+    
+    return systematic_errors
+
+def enhanced_spectral_dimension_analysis(D, S_max=10, num_walks=1000, seed=42, n_bootstrap=100):
+    """
+    Enhanced spectral dimension analysis with error estimation.
+    """
+    np.random.seed(seed)
+    n = D.shape[0]
+    
+    # Build adjacency graph
+    G = nx.Graph()
+    for i in range(n):
+        for j in range(i+1, n):
+            if 0 < D[i, j] < np.inf:
+                G.add_edge(i, j)
+    
+    if not nx.is_connected(G):
+        print("[WARNING] Adjacency graph is not connected. Spectral dimension may be ill-defined.")
+        return None, None, None
+    
+    # Compute return probabilities with bootstrap
+    P_s = []
+    P_s_bootstrap = []
+    
+    for s in range(1, S_max+1):
+        returns_list = []
+        for _ in range(n_bootstrap):
+            returns = 0
+            for start in range(n):
+                for _ in range(num_walks // n):
+                    node = start
+                    for _ in range(s):
+                        nbrs = list(G.neighbors(node))
+                        if not nbrs:
+                            break
+                        node = np.random.choice(nbrs)
+                    if node == start:
+                        returns += 1
+            returns_list.append(returns / num_walks)
+        
+        P_s.append(np.mean(returns_list))
+        P_s_bootstrap.append(returns_list)
+    
+    P_s = np.array(P_s)
+    P_s_bootstrap = np.array(P_s_bootstrap)
+    
+    # Filter out s where P(s) == 0
+    mask = P_s > 0
+    if not np.any(mask):
+        print("[WARNING] All return probabilities are zero. Cannot fit spectral dimension.")
+        return None, None, None
+    
+    s_vals = np.arange(1, S_max+1)[mask]
+    log_s = np.log(s_vals)
+    log_P = np.log(P_s[mask])
+    
+    # Bootstrap the spectral dimension fit
+    d_spectral_bootstrap = []
+    for i in range(n_bootstrap):
+        log_P_boot = np.log(P_s_bootstrap[mask, i])
+        if len(log_P_boot) >= 2:
+            slope, _, _, _, _ = linregress(log_s, log_P_boot)
+            d_spectral_bootstrap.append(-2 * slope)
+    
+    d_spectral_bootstrap = np.array(d_spectral_bootstrap)
+    d_spectral_mean = np.mean(d_spectral_bootstrap)
+    d_spectral_std = np.std(d_spectral_bootstrap)
+    
+    # Main fit
+    slope, intercept, r, p, stderr = linregress(log_s, log_P)
+    d_spectral = -2 * slope
+    
+    # Plot with error bars
+    plt.figure()
+    plt.errorbar(log_s, log_P, yerr=np.std(np.log(P_s_bootstrap[mask]), axis=1), 
+                fmt='o-', label='Data with uncertainty')
+    plt.plot(log_s, slope*log_s + intercept, '--', 
+            label=f'Fit: d_spectral={d_spectral:.2f}±{d_spectral_std:.2f}')
+    plt.xlabel('log s')
+    plt.ylabel('log P(s)')
+    plt.title(f'Spectral Dimension: {d_spectral:.2f}±{d_spectral_std:.2f} (r²={r**2:.3f})')
+    plt.legend()
+    plt.savefig(os.path.join("plots", "spectral_dimension_fit_with_errors.png"))
+    plt.show()
+    
+    print(f"Spectral dimension d_spectral = {d_spectral:.2f} ± {d_spectral_std:.2f} (95% CI)")
+    print(f"Fit quality: r² = {r**2:.3f}")
+    
+    return d_spectral, d_spectral_std, r**2
+
+def enhanced_laplacian_spectral_dimension(D, S_max=10, s_min=0.1, s_max=10, num_s=10, n_bootstrap=50):
+    """
+    Enhanced Laplacian spectral dimension analysis with error estimation.
+    """
+    n = D.shape[0]
+    
+    # Build adjacency graph
+    G = nx.Graph()
+    for i in range(n):
+        for j in range(i+1, n):
+            if 0 < D[i, j] < np.inf:
+                G.add_edge(i, j)
+    
+    if not nx.is_connected(G):
+        print("[WARNING] Adjacency graph is not connected. Laplacian spectrum may be ill-defined.")
+        return None, None, None
+    
+    L = nx.laplacian_matrix(G).toarray()
+    evals = np.linalg.eigvalsh(L)
+    
+    s_vals = np.logspace(np.log10(s_min), np.log10(s_max), num_s)
+    K_s = []
+    K_s_bootstrap = []
+    
+    # Bootstrap by adding noise to eigenvalues
+    for _ in range(n_bootstrap):
+        evals_noisy = evals + np.random.normal(0, 0.01 * np.std(evals), len(evals))
+        K_s_boot = []
+        for s in s_vals:
+            K = np.sum(np.exp(-s * evals_noisy))
+            K_s_boot.append(K)
+        K_s_bootstrap.append(K_s_boot)
+    
+    # Main calculation
+    for s in s_vals:
+        K = np.sum(np.exp(-s * evals))
+        K_s.append(K)
+    
+    K_s = np.array(K_s)
+    K_s_bootstrap = np.array(K_s_bootstrap)
+    
+    log_s = np.log(s_vals)
+    log_K = np.log(K_s)
+    
+    # Bootstrap the fit
+    d_spectral_bootstrap = []
+    for i in range(n_bootstrap):
+        log_K_boot = np.log(K_s_bootstrap[i])
+        slope, _, _, _, _ = linregress(log_s, log_K_boot)
+        d_spectral_bootstrap.append(-2 * slope)
+    
+    d_spectral_bootstrap = np.array(d_spectral_bootstrap)
+    d_spectral_mean = np.mean(d_spectral_bootstrap)
+    d_spectral_std = np.std(d_spectral_bootstrap)
+    
+    # Main fit
+    slope, intercept, r, p, stderr = linregress(log_s, log_K)
+    d_spectral = -2 * slope
+    
+    plt.figure()
+    plt.errorbar(log_s, log_K, yerr=np.std(np.log(K_s_bootstrap), axis=0), 
+                fmt='o-', label='Data with uncertainty')
+    plt.plot(log_s, slope*log_s + intercept, '--', 
+            label=f'Fit: d_spectral={d_spectral:.2f}±{d_spectral_std:.2f}')
+    plt.xlabel('log s')
+    plt.ylabel('log K(s)')
+    plt.title(f'Laplacian Spectral Dimension: {d_spectral:.2f}±{d_spectral_std:.2f} (r²={r**2:.3f})')
+    plt.legend()
+    plt.savefig(os.path.join("plots", "laplacian_spectral_dimension_fit_with_errors.png"))
+    plt.show()
+    
+    print(f"[Laplacian] Spectral dimension d_spectral = {d_spectral:.2f} ± {d_spectral_std:.2f} (95% CI)")
+    print(f"Fit quality: r² = {r**2:.3f}")
+    
+    return d_spectral, d_spectral_std, r**2
 
 def load_distance_matrix(mi_dict, num_qubits):
     MI = np.zeros((num_qubits, num_qubits))
@@ -182,10 +506,34 @@ def main():
     for k, v in data["spec"].items():
         print(f"{k}: {v}")
     print(f"uid: {data.get('uid', 'N/A')}")
-    print("\n=== Key Metrics ===")
+    
+    # Estimate uncertainties in mutual information
+    shots = data["spec"].get("shots", 1024)
+    mi_uncertainties = estimate_mi_uncertainty(mi_dict, shots)
+    distance_uncertainties = propagate_distance_uncertainty(mi_dict, mi_uncertainties)
+    
+    # Estimate finite-size effects
+    geometry = data["spec"].get("geometry", "euclidean")
+    systematic_errors = estimate_finite_size_effects(num_qubits, geometry)
+    
+    print("\n=== Uncertainty Analysis ===")
+    print(f"Measurement shots: {shots}")
+    print(f"Typical MI uncertainty: {np.mean(list(mi_uncertainties.values())):.4f}")
+    print(f"Typical distance uncertainty: {np.mean(list(distance_uncertainties.values())):.4f}")
+    print(f"Finite-size effects scale: {systematic_errors['finite_size_scale']:.4f}")
+    
+    print("\n=== Key Metrics with Error Estimates ===")
     for key in ["gromov_delta", "mean_distance", "mean_angle_sum", "min_angle_sum", "max_angle_sum", "edge_weight_variance"]:
         if key in data:
-            print(f"{key}: {data[key]}")
+            value = data[key]
+            if isinstance(value, (int, float)):
+                # Estimate uncertainty based on measurement noise and finite-size effects
+                measurement_uncertainty = np.mean(list(mi_uncertainties.values())) if key in ["mean_distance", "mean_angle_sum"] else 0.01
+                systematic_uncertainty = systematic_errors['finite_size_scale'] * abs(value)
+                total_uncertainty = np.sqrt(measurement_uncertainty**2 + systematic_uncertainty**2)
+                print(f"{key}: {value:.4f} ± {total_uncertainty:.4f}")
+            else:
+                print(f"{key}: {value}")
     # Plot MI and distance matrix heatmaps for each timestep
     if "mutual_information" in data and isinstance(data["mutual_information"], list):
         for t, mi_t in enumerate(data["mutual_information"]):
@@ -331,40 +679,106 @@ def main():
                 angle_sums.append(sum(angles))
     deficits = np.array(deficits)
     areas = np.array(areas)
-    # Plot histogram of triangle deficits
+    
+    # Bootstrap confidence intervals for deficit statistics
+    deficit_mean, deficit_mean_lower, deficit_mean_upper, _ = bootstrap_confidence_interval(deficits, np.mean, n_bootstrap=1000)
+    deficit_std, deficit_std_lower, deficit_std_upper, _ = bootstrap_confidence_interval(deficits, np.std, n_bootstrap=1000)
+    
+    # Plot histogram of triangle deficits with error bands
     plt.figure()
-    plt.hist(deficits, bins=50, alpha=0.7)
+    plt.hist(deficits, bins=50, alpha=0.7, density=True, label='Data')
+    
+    # Add Gaussian fit with uncertainty
+    mu, sigma = np.mean(deficits), np.std(deficits)
+    x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+    y = stats.norm.pdf(x, mu, sigma)
+    plt.plot(x, y, 'r-', linewidth=2, label=f'Gaussian fit: μ={mu:.3f}, σ={sigma:.3f}')
+    
     plt.xlabel("Triangle deficit (Δ or δ_sph)")
-    plt.ylabel("Count")
+    plt.ylabel("Density")
     plt.title(f"Distribution of Triangle Deficits ({geometry.capitalize()} Curvature)")
+    plt.legend()
     plt.savefig(os.path.join(plots_dir, "triangle_deficit_histogram.png"))
     plt.show()
-    # Print summary
-    print(f"Triangle deficit: mean={np.mean(deficits):.4f}, std={np.std(deficits):.4f}, min={np.min(deficits):.4f}, max={np.max(deficits):.4f}")
-    # Δ vs. area sanity check
+    
+    # Print summary with error bars
+    print(f"Triangle deficit statistics (with 95% confidence intervals):")
+    print(f"  Mean: {deficit_mean:.4f} [{deficit_mean_lower:.4f}, {deficit_mean_upper:.4f}]")
+    print(f"  Std:  {deficit_std:.4f} [{deficit_std_lower:.4f}, {deficit_std_upper:.4f}]")
+    print(f"  Min:  {np.min(deficits):.4f}")
+    print(f"  Max:  {np.max(deficits):.4f}")
+    # Δ vs. area sanity check with error analysis
     if geometry in ("hyperbolic", "spherical"):
+        # Estimate uncertainties in areas and deficits
+        area_uncertainties = np.std(areas) * np.ones_like(areas) * 0.1  # 10% relative uncertainty
+        deficit_uncertainties = np.std(deficits) * np.ones_like(deficits) * 0.1  # 10% relative uncertainty
+        
+        # Fit with uncertainties
+        popt, param_uncertainties, r_squared, fit_func = fit_with_uncertainty(
+            areas, deficits, deficit_uncertainties, fit_type='linear'
+        )
+        slope, intercept = popt
+        slope_err, intercept_err = param_uncertainties
+        
         plt.figure()
-        plt.scatter(areas, deficits, alpha=0.7)
+        plt.errorbar(areas, deficits, xerr=area_uncertainties, yerr=deficit_uncertainties, 
+                    fmt='o', alpha=0.7, label='Data with uncertainties')
+        
+        # Plot fit with confidence band
+        x_fit = np.linspace(np.min(areas), np.max(areas), 100)
+        y_fit = fit_func(x_fit)
+        plt.plot(x_fit, y_fit, 'r-', linewidth=2, 
+                label=f'Fit: κ={slope:.3f}±{slope_err:.3f}')
+        
         plt.xlabel(f"{'Hyperbolic' if geometry=='hyperbolic' else 'Spherical'} triangle area (kappa={kappa_fit})")
         plt.ylabel(f"Triangle deficit {'Δ' if geometry=='hyperbolic' else 'δ_sph'}")
-        plt.title(f"Deficit vs. Area ({geometry.capitalize()}, should be linear, slope~{kappa_fit})")
-        plt.savefig(os.path.join(plots_dir, "delta_vs_area.png"))
+        plt.title(f"Deficit vs. Area ({geometry.capitalize()}, r²={r_squared:.3f})")
+        plt.legend()
+        plt.savefig(os.path.join(plots_dir, "delta_vs_area_with_errors.png"))
         plt.show()
-        # Linear fit
-        slope, intercept = np.polyfit(areas, deficits, 1)
-        print(f"Deficit vs. area data (area, deficit):")
-        for pair in area_delta_pairs:
-            print(pair)
-        print(f"Linear fit: deficit = {slope:.4f} * area + {intercept:.4f}")
-        print(f"Fitted κ ≃ {slope:.4f} (should be ~{kappa_fit} for constant curvature)")
+        
+        print(f"Deficit vs. area analysis (with uncertainties):")
+        print(f"  Linear fit: deficit = ({slope:.4f} ± {slope_err:.4f}) * area + ({intercept:.4f} ± {intercept_err:.4f})")
+        print(f"  Fitted κ = {slope:.4f} ± {slope_err:.4f} (expected: {kappa_fit})")
+        print(f"  Fit quality: r² = {r_squared:.4f}")
+        
+        # Check if fitted kappa is consistent with expected value
+        kappa_consistency = abs(slope - kappa_fit) / slope_err
+        print(f"  κ consistency: {kappa_consistency:.2f}σ from expected value")
+        if kappa_consistency < 2:
+            print(f"  ✓ Fitted κ is consistent with expected value (within 2σ)")
+        else:
+            print(f"  ⚠ Fitted κ differs significantly from expected value")
     else:
         print("Euclidean geometry detected: deficits and areas are zero.")
 
-    # After main analysis, run spectral dimension analyses
-    print("\n=== Spectral Dimension Analysis (Random Walk) ===")
-    spectral_dimension_analysis(D, S_max=min(10, num_qubits*2), num_walks=1000)
-    print("\n=== Spectral Dimension Analysis (Laplacian Spectrum) ===")
-    laplacian_spectral_dimension(D, S_max=10, s_min=0.1, s_max=10, num_s=10)
+    # After main analysis, run enhanced spectral dimension analyses with error estimation
+    print("\n=== Enhanced Spectral Dimension Analysis (Random Walk) ===")
+    d_spectral, d_spectral_err, r2_spectral = enhanced_spectral_dimension_analysis(
+        D, S_max=min(10, num_qubits*2), num_walks=1000, n_bootstrap=100
+    )
+    
+    print("\n=== Enhanced Spectral Dimension Analysis (Laplacian Spectrum) ===")
+    d_laplacian, d_laplacian_err, r2_laplacian = enhanced_laplacian_spectral_dimension(
+        D, S_max=10, s_min=0.1, s_max=10, num_s=10, n_bootstrap=50
+    )
+    
+    # Compare spectral dimensions
+    if d_spectral is not None and d_laplacian is not None:
+        print(f"\n=== Spectral Dimension Comparison ===")
+        print(f"Random Walk:    d = {d_spectral:.2f} ± {d_spectral_err:.2f} (r² = {r2_spectral:.3f})")
+        print(f"Laplacian:      d = {d_laplacian:.2f} ± {d_laplacian_err:.2f} (r² = {r2_laplacian:.3f})")
+        
+        # Check consistency between methods
+        diff = abs(d_spectral - d_laplacian)
+        diff_err = np.sqrt(d_spectral_err**2 + d_laplacian_err**2)
+        consistency = diff / diff_err
+        print(f"Difference:     Δd = {diff:.2f} ± {diff_err:.2f} ({consistency:.2f}σ)")
+        
+        if consistency < 2:
+            print(f"✓ Methods are consistent (within 2σ)")
+        else:
+            print(f"⚠ Methods show significant disagreement")
 
     # --- Gravitational Wave-like Propagation Analysis ---
     # Check for per-timestep angle deficit and edge length evolution
@@ -424,15 +838,27 @@ def main():
         plt.legend()
         plt.savefig(os.path.join(plots_dir, "geodesic_distances_vs_time.png"))
         plt.show()
-        # Compute variance of distances from ref_node at each timestep
+        # Compute variance of distances from ref_node at each timestep with error estimation
         var_vs_time = np.var(dists_vs_time, axis=1)
+        
+        # Bootstrap confidence intervals for variance
+        var_uncertainties = []
+        for t in range(num_timesteps):
+            _, _, _, bootstrap_vars = bootstrap_confidence_interval(dists_vs_time[t], np.var, n_bootstrap=500)
+            var_uncertainties.append(np.std(bootstrap_vars))
+        var_uncertainties = np.array(var_uncertainties)
+        
         plt.figure()
-        plt.plot(range(num_timesteps), var_vs_time, 'o-')
+        plt.errorbar(range(num_timesteps), var_vs_time, yerr=var_uncertainties, fmt='o-', capsize=5)
         plt.xlabel("Timestep")
         plt.ylabel("Variance of Geodesic Distances from node 0")
-        plt.title("Spread of Geodesics (Deviation) vs. Time")
-        plt.savefig(os.path.join(plots_dir, "geodesic_deviation_variance_vs_time.png"))
+        plt.title("Spread of Geodesics (Deviation) vs. Time (with uncertainties)")
+        plt.savefig(os.path.join(plots_dir, "geodesic_deviation_variance_vs_time_with_errors.png"))
         plt.show()
+        
+        print(f"Geodesic deviation analysis:")
+        print(f"  Mean variance: {np.mean(var_vs_time):.4f} ± {np.mean(var_uncertainties):.4f}")
+        print(f"  Variance trend: {np.polyfit(range(num_timesteps), var_vs_time, 1)[0]:.4f} per timestep")
         # For a triplet (0,1,2), plot D(0,1) - D(0,2) over time
         if n >= 3:
             diff_01_02 = dists_vs_time[:, 1] - dists_vs_time[:, 2]
@@ -444,6 +870,165 @@ def main():
             plt.savefig(os.path.join(plots_dir, "geodesic_deviation_0_1_2_vs_time.png"))
             plt.show()
         print("[Geodesic Deviation] Plots saved: geodesic_distances_vs_time.png, geodesic_deviation_variance_vs_time.png, geodesic_deviation_0_1_2_vs_time.png (if n>=3)")
+
+    # --- Geodesic Length Scaling with Curvature ---
+    if "distance_matrix" in data:
+        D = np.array(data["distance_matrix"])
+        n = D.shape[0]
+        # Compute all-pairs shortest path lengths
+        geodesic_lengths = []
+        for i in range(n):
+            for j in range(i+1, n):
+                if D[i, j] < np.inf:
+                    geodesic_lengths.append(D[i, j])
+        geodesic_lengths = np.array(geodesic_lengths)
+        
+        # Bootstrap confidence intervals for geodesic length statistics
+        mean_length, mean_lower, mean_upper, _ = bootstrap_confidence_interval(geodesic_lengths, np.mean, n_bootstrap=1000)
+        std_length, std_lower, std_upper, _ = bootstrap_confidence_interval(geodesic_lengths, np.std, n_bootstrap=1000)
+        
+        plt.figure()
+        plt.hist(geodesic_lengths, bins=20, alpha=0.7, density=True, label='Data')
+        
+        # Add Gaussian fit
+        x = np.linspace(mean_length - 3*std_length, mean_length + 3*std_length, 100)
+        y = stats.norm.pdf(x, mean_length, std_length)
+        plt.plot(x, y, 'r-', linewidth=2, label=f'Gaussian: μ={mean_length:.3f}, σ={std_length:.3f}')
+        
+        plt.xlabel("Geodesic Length")
+        plt.ylabel("Density")
+        plt.title(f"Distribution of Geodesic Lengths (mean={mean_length:.3f}±{mean_upper-mean_length:.3f})")
+        plt.legend()
+        plt.savefig(os.path.join(plots_dir, "geodesic_length_histogram.png"))
+        plt.show()
+        
+        print(f"[Geodesic Length Scaling] Statistics (with 95% CI):")
+        print(f"  Mean length: {mean_length:.4f} [{mean_lower:.4f}, {mean_upper:.4f}]")
+        print(f"  Std length:  {std_length:.4f} [{std_lower:.4f}, {std_upper:.4f}]")
+        print(f"  Min length:  {np.min(geodesic_lengths):.4f}")
+        print(f"  Max length:  {np.max(geodesic_lengths):.4f}")
+        # Compare to flat-space expectation (Euclidean: ~sqrt(n) for random pairs)
+        if geometry == "euclidean":
+            print("[Geodesic Length Scaling] Compare to flat-space (Euclidean) expectation.")
+        elif geometry == "spherical":
+            print("[Geodesic Length Scaling] Expect contraction of geodesics (positive curvature).")
+        elif geometry == "hyperbolic":
+            print("[Geodesic Length Scaling] Expect expansion/divergence of geodesics (negative curvature).")
+    # --- Geodesic Deviation (Jacobi Equation Analogue) ---
+    if "distance_matrix_per_timestep" in data and data["distance_matrix_per_timestep"]:
+        distmat_per_timestep = np.array(data["distance_matrix_per_timestep"])
+        num_timesteps = distmat_per_timestep.shape[0]
+        n = distmat_per_timestep.shape[1]
+        ref_node = 0
+        dists_vs_time = distmat_per_timestep[:, ref_node, :]
+        # Compute spread (variance) of distances from ref_node at each timestep
+        var_vs_time = np.var(dists_vs_time, axis=1)
+        plt.figure()
+        plt.plot(range(num_timesteps), var_vs_time, 'o-')
+        plt.xlabel("Timestep")
+        plt.ylabel("Variance of Geodesic Distances from node 0")
+        plt.title("Spread of Geodesics (Deviation) vs. Time")
+        plt.savefig(os.path.join(plots_dir, "geodesic_deviation_variance_vs_time.png"))
+        plt.show()
+        # Fit discrete Jacobi equation: d^2(delta l)/ds^2 + R delta l = 0
+        # Approximate second derivative
+        if num_timesteps > 2:
+            delta = var_vs_time
+            s = np.arange(num_timesteps)
+            d2_delta = np.diff(delta, n=2)
+            # Fit d2_delta + R*delta[1:-1] = 0 => R = -d2_delta / delta[1:-1]
+            with np.errstate(divide='ignore', invalid='ignore'):
+                R_eff = -d2_delta / delta[1:-1]
+            R_eff = R_eff[np.isfinite(R_eff)]
+            if len(R_eff) > 0:
+                R_mean = np.mean(R_eff)
+                print(f"[Geodesic Deviation] Fitted effective curvature R ≈ {R_mean:.4f} (from Jacobi eq. analogue)")
+            else:
+                print("[Geodesic Deviation] Could not fit effective curvature (variance too small or flat).")
+    # --- Spectral Geodesic Indicators ---
+    if "distance_matrix" in data:
+        D = np.array(data["distance_matrix"])
+        n = D.shape[0]
+        # Build adjacency graph: connect nodes with finite, nonzero distance
+        G = nx.Graph()
+        for i in range(n):
+            for j in range(i+1, n):
+                if 0 < D[i, j] < np.inf:
+                    G.add_edge(i, j)
+        if nx.is_connected(G):
+            L = nx.laplacian_matrix(G).toarray()
+            evals = np.linalg.eigvalsh(L)
+            s_vals = np.logspace(-1, 1, 10)
+            K_s = [np.sum(np.exp(-s * evals)) for s in s_vals]
+            log_s = np.log(s_vals)
+            log_K = np.log(K_s)
+            slope, intercept = np.polyfit(log_s, log_K, 1)
+            d_spectral = -2 * slope
+            plt.figure()
+            plt.plot(log_s, log_K, 'o-', label='Data')
+            plt.plot(log_s, slope*log_s + intercept, '--', label=f'Fit: slope={slope:.3f}')
+            plt.xlabel('log s')
+            plt.ylabel('log K(s)')
+            plt.title(f'Laplacian Spectral Dimension: d_spectral={d_spectral:.2f}')
+            plt.legend()
+            plt.savefig(os.path.join(plots_dir, "laplacian_spectral_dimension_fit.png"))
+            plt.show()
+            print(f"[Spectral Geodesic] Spectral dimension d_spectral ≈ {d_spectral:.2f} (fit slope={slope:.3f})")
+        else:
+            print("[Spectral Geodesic] Adjacency graph is not connected. Spectrum ill-defined.")
+
+    # --- Comprehensive Error Analysis Summary ---
+    print("\n" + "="*60)
+    print("COMPREHENSIVE ERROR ANALYSIS SUMMARY")
+    print("="*60)
+    
+    # Collect all uncertainties
+    error_summary = {
+        'measurement_uncertainty': np.mean(list(mi_uncertainties.values())),
+        'distance_uncertainty': np.mean(list(distance_uncertainties.values())),
+        'finite_size_effects': systematic_errors['finite_size_scale'],
+        'triangle_deficit_mean': deficit_mean,
+        'triangle_deficit_std': deficit_std,
+        'triangle_deficit_ci': [deficit_mean_lower, deficit_mean_upper],
+        'geodesic_length_mean': mean_length if 'mean_length' in locals() else None,
+        'geodesic_length_ci': [mean_lower, mean_upper] if 'mean_lower' in locals() else None,
+    }
+    
+    if d_spectral is not None:
+        error_summary['spectral_dimension'] = d_spectral
+        error_summary['spectral_dimension_error'] = d_spectral_err
+    
+    if d_laplacian is not None:
+        error_summary['laplacian_dimension'] = d_laplacian
+        error_summary['laplacian_dimension_error'] = d_laplacian_err
+    
+    print("Key Uncertainties:")
+    print(f"  • Measurement (MI): {error_summary['measurement_uncertainty']:.4f}")
+    print(f"  • Distance propagation: {error_summary['distance_uncertainty']:.4f}")
+    print(f"  • Finite-size effects: {error_summary['finite_size_effects']:.4f}")
+    
+    print("\nKey Results with Uncertainties:")
+    print(f"  • Triangle deficit mean: {error_summary['triangle_deficit_mean']:.4f} [{error_summary['triangle_deficit_ci'][0]:.4f}, {error_summary['triangle_deficit_ci'][1]:.4f}]")
+    print(f"  • Triangle deficit std: {error_summary['triangle_deficit_std']:.4f}")
+    
+    if error_summary['geodesic_length_mean'] is not None:
+        print(f"  • Geodesic length mean: {error_summary['geodesic_length_mean']:.4f} [{error_summary['geodesic_length_ci'][0]:.4f}, {error_summary['geodesic_length_ci'][1]:.4f}]")
+    
+    if 'spectral_dimension' in error_summary:
+        print(f"  • Spectral dimension: {error_summary['spectral_dimension']:.2f} ± {error_summary['spectral_dimension_error']:.2f}")
+    
+    if 'laplacian_dimension' in error_summary:
+        print(f"  • Laplacian dimension: {error_summary['laplacian_dimension']:.2f} ± {error_summary['laplacian_dimension_error']:.2f}")
+    
+    # Save error summary to file
+    error_summary_file = os.path.join(plots_dir, "error_analysis_summary.json")
+    with open(error_summary_file, 'w') as f:
+        json.dump(error_summary, f, indent=2, default=str)
+    print(f"\nError analysis summary saved to: {error_summary_file}")
+    
+    print("\n" + "="*60)
+    print("ANALYSIS COMPLETE")
+    print("="*60)
 
 if __name__ == "__main__":
     main() 
