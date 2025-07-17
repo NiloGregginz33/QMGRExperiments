@@ -155,37 +155,37 @@ def build_custom_circuit_layers(num_qubits, topology, custom_edges,
             qc.rx(init_angle, q)
     for t in range(timesteps):
         # Entangling layer for this timestep
-        if geometry in ("spherical", "hyperbolic") and curvature is not None:
-            base_weight = weight
-            std_dev = base_weight * (curvature / 10)
-            edge_weights = {}
-            edge_list = []
-            for i in range(num_qubits):
-                for j in range(i+1, num_qubits):
-                    w = float(np.random.normal(loc=base_weight, scale=std_dev))
-                    w = float(np.clip(w, 0.05, 1.0))
-                    edge_weights[(i, j)] = w
-                    edge_list.append(f"{i}-{j}:{w:.4f}")
-            custom_edges_str = ",".join(edge_list)
-            G = make_graph("custom", num_qubits, custom_edges_str, default_weight=base_weight)
-            for u, v, data in G.edges(data=True):
-                w = data.get('weight', base_weight)
-                qc.ryy(np.pi * w, u, v)
+    if geometry in ("spherical", "hyperbolic") and curvature is not None:
+        base_weight = weight
+        std_dev = base_weight * (curvature / 10)
+        edge_weights = {}
+        edge_list = []
+        for i in range(num_qubits):
+            for j in range(i+1, num_qubits):
+                w = float(np.random.normal(loc=base_weight, scale=std_dev))
+                w = float(np.clip(w, 0.05, 1.0))
+                edge_weights[(i, j)] = w
+                edge_list.append(f"{i}-{j}:{w:.4f}")
+        custom_edges_str = ",".join(edge_list)
+        G = make_graph("custom", num_qubits, custom_edges_str, default_weight=base_weight)
+        for u, v, data in G.edges(data=True):
+            w = data.get('weight', base_weight)
+            qc.ryy(np.pi * w, u, v)
             if log_edge_weights and t == 0:
-                weights = list(edge_weights.values())
-                print(f"[LOG] Edge weights: {weights}")
-                print(f"[LOG] Edge weight variance: {np.var(weights)}")
+            weights = list(edge_weights.values())
+            print(f"[LOG] Edge weights: {weights}")
+            print(f"[LOG] Edge weight variance: {np.var(weights)}")
             if t == 0:
                 qc._custom_edges_str = custom_edges_str
-                qc._edge_weight_variance = float(np.var(list(edge_weights.values())))
-        else:
-            G = make_graph(topology, num_qubits, custom_edges, default_weight=weight)
-            for u, v, data in G.edges(data=True):
-                w = data.get('weight', weight)
-                qc.rzz(w, u, v)
+        qc._edge_weight_variance = float(np.var(list(edge_weights.values())))
+    else:
+        G = make_graph(topology, num_qubits, custom_edges, default_weight=weight)
+        for u, v, data in G.edges(data=True):
+            w = data.get('weight', weight)
+            qc.rzz(w, u, v)
             if t == 0:
-                qc._custom_edges_str = custom_edges if custom_edges is not None else None
-                qc._edge_weight_variance = None
+        qc._custom_edges_str = custom_edges if custom_edges is not None else None
+        qc._edge_weight_variance = None
         # Save a copy of the circuit up to this timestep (before charge injection)
         circuits.append(qc.copy())
     # After all entangling layers, apply charge injection and measurement to the final circuit
@@ -710,6 +710,7 @@ if __name__ == "__main__":
                         idxs = [node_idx[(i, t)] for i in range(n)]
                         D_slice = np.abs(D[np.ix_(idxs, idxs)])
                         triangles = [(i, j, k) for i in range(n) for j in range(i+1, n) for k in range(j+1, n)]
+                        matter_t = matter_per_timestep[t] if 'matter_per_timestep' in locals() else None
                         for (i, j, k) in triangles:
                             a, b, c = D_slice[i, j], D_slice[i, k], D_slice[j, k]
                             # Check triangle inequalities
@@ -723,6 +724,12 @@ if __name__ == "__main__":
                             angle_sum = calculate_angle_sum(D_slice, i, j, k, geometry=args.geometry, curvature=kappa)
                             deficit = np.pi - angle_sum if args.geometry == "hyperbolic" else 0.0
                             total_action += deficit * area
+                            # Add matter term if available
+                            if matter_t is not None:
+                                # For 2D: measure = edge length; for 3D: area
+                                h = tuple(sorted((i, j)))  # for 2D
+                                mval = matter_t.get(h, 0.0)
+                                total_action += mval * (a if args.dimension == 2 else area)
                     return np.real(total_action)
                 # No fixed boundaries: all edge lengths are variables
                 # Minimize action (or solve for stationary point as before)
@@ -813,17 +820,17 @@ if __name__ == "__main__":
         distmat_per_timestep = []
         for t, circ in enumerate(circuits):
             # For simulator, use statevector
-            if args.device == "simulator":
-                backend = FakeBrisbane()
-                statevector = Statevector.from_int(0, 2**args.num_qubits)
+        if args.device == "simulator":
+            backend = FakeBrisbane()
+            statevector = Statevector.from_int(0, 2**args.num_qubits)
                 statevector = statevector.evolve(circ)
-                mi = compute_von_neumann_MI(statevector)
+            mi = compute_von_neumann_MI(statevector)
                 G = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
                 edge_mi = calculate_mi_for_edges_only(mi, G)
                 distance_matrix, _ = compute_graph_shortest_path_distances(edge_mi, G)
                 mi_per_timestep.append(mi)
                 distmat_per_timestep.append(distance_matrix.tolist())
-            else:
+        else:
                 # For hardware, skip for now (could use classical shadows)
                 mi_per_timestep.append(None)
                 distmat_per_timestep.append(None)
@@ -915,22 +922,39 @@ if __name__ == "__main__":
             edge_lengths = np.ones(args.num_qubits * (args.num_qubits-1) // 2)
         mass_hinge = tuple(int(x) for x in args.mass_hinge.split(",")) if args.mass_hinge else None
         mass_value = args.mass_value
+        # --- Ensure robust matter handling for all cases ---
+        matter = None  # Always defined, will be set in non-Lorentzian runs
         # --- MATTER MODEL WITH LOCALIZED MASS ---
         simplices = generate_simplices(args.num_qubits, args.dimension)
         hinges = get_hinges_from_simplices(simplices, args.dimension)
-        matter = {}
-        for h in hinges:
-            if mass_hinge and tuple(sorted(h)) == tuple(sorted(mass_hinge)):
-                matter[h] = mass_value
-            else:
-                matter[h] = 0.0
+        # For Lorentzian runs, allow mass to be present only at t=0
+        if args.lorentzian and args.timesteps > 1:
+            # Create a list of matter dicts, one per timestep
+            matter_per_timestep = []
+            for t in range(args.timesteps):
+                matter_t = {}
+                for h in hinges:
+                    if t == 0 and mass_hinge and tuple(sorted(h)) == tuple(sorted(mass_hinge)):
+                        matter_t[h] = mass_value
+                    else:
+                        matter_t[h] = 0.0
+                matter_per_timestep.append(matter_t)
+        else:
+            # Default: static matter as before
+            matter = {}
+            for h in hinges:
+                if mass_hinge and tuple(sorted(h)) == tuple(sorted(mass_hinge)):
+                    matter[h] = mass_value
+                else:
+                    matter[h] = 0.0
         # --- DYNAMICAL REGGE SOLVER ---
         if args.solve_regge:
             from scipy.optimize import minimize
             n = args.num_qubits
             num_edges = n * (n-1) // 2
             edge_to_tri, tri_list = triangles_for_edge(n)
-            def total_action(edge_lengths):
+            # Refactor: total_action and total_gradient always take a 'matter' argument
+            def total_action(edge_lengths, matter):
                 Dmat = edge_lengths_to_matrix(edge_lengths, n)
                 angle_sums = calculate_all_angle_sums(Dmat, geometry=args.geometry, curvature=kappa)
                 deficits = compute_angle_deficits(angle_sums)
@@ -951,7 +975,7 @@ if __name__ == "__main__":
                         measures[h] = 1.0
                 S_matter = sum(matter[h] * measures[h] for h in hinges)
                 return S_regge + S_matter
-            def total_gradient(edge_lengths):
+            def total_gradient(edge_lengths, matter):
                 Dmat = edge_lengths_to_matrix(edge_lengths, n)
                 angle_sums = calculate_all_angle_sums(Dmat, geometry=args.geometry, curvature=kappa)
                 deficits = compute_angle_deficits(angle_sums)
@@ -962,14 +986,14 @@ if __name__ == "__main__":
                 for i in range(len(edge_lengths)):
                     e0 = edge_lengths[i]
                     edge_lengths[i] = e0 + eps
-                    S_plus = total_action(edge_lengths)
+                    S_plus = total_action(edge_lengths, matter)
                     edge_lengths[i] = e0 - eps
-                    S_minus = total_action(edge_lengths)
+                    S_minus = total_action(edge_lengths, matter)
                     edge_lengths[i] = e0
                     grad_matter[i] = (S_plus - S_minus) / (2 * eps)
                 return grad_regge + grad_matter
             # Constraints: edge_lengths > 0, triangle inequalities
-            bounds = [(1e-3, None)] * len(all_edges)
+            bounds = [(1e-3, None)] * num_edges
             def triangle_ineq(edge_lengths):
                 Dmat = edge_lengths_to_matrix(edge_lengths, n)
                 cons = []
@@ -985,15 +1009,21 @@ if __name__ == "__main__":
                 'fun': triangle_ineq
             }]
             # Minimize squared norm of gradient (stationarity)
+            if args.lorentzian and args.timesteps > 1 and 'matter_per_timestep' in locals():
+                # Lorentzian mode: always use matter_per_timestep[0] (or could loop over t and sum for full time-coupled solver)
+                matter_for_solver = matter_per_timestep[0]
+            else:
+                # Non-Lorentzian mode: always use static matter
+                matter_for_solver = matter
             def grad_norm(edge_lengths):
-                g = total_gradient(edge_lengths)
+                g = total_gradient(edge_lengths, matter_for_solver)
                 return np.sum(g**2)
             result = minimize(grad_norm, edge_lengths, method='SLSQP', bounds=bounds, constraints=constraints, options={'ftol':1e-8, 'maxiter':1000, 'disp':True})
             stationary_edge_lengths = result.x
             Dmat_stat = edge_lengths_to_matrix(stationary_edge_lengths, n)
             angle_sums_stat = calculate_all_angle_sums(Dmat_stat, geometry=args.geometry, curvature=kappa)
             deficits_stat = compute_angle_deficits(angle_sums_stat)
-            S_stat = total_action(stationary_edge_lengths)
+            S_stat = total_action(stationary_edge_lengths, matter_for_solver)
             # Save stationary solution
             stationary_solution = {
                 'stationary_edge_lengths': stationary_edge_lengths.tolist(),
@@ -1009,6 +1039,11 @@ if __name__ == "__main__":
         uid = generate_short_uid()
         short_filename = make_short_filename(args.num_qubits, args.geometry, kappa, args.device, uid)
         output_path = os.path.join(log_dir, short_filename)
+        # --- Output matter correctly for Lorentzian vs. static runs ---
+        if args.lorentzian and args.timesteps > 1 and 'matter_per_timestep' in locals():
+            matter_out = [{str(h): v for h, v in mt.items()} for mt in matter_per_timestep]
+        else:
+            matter_out = {str(h): v for h, v in matter.items()}
         with open(output_path, 'w') as f:
             json.dump({
                 "spec": {**vars(args), "curvature": kappa, "custom_edges": custom_edges, "timesteps": args.timesteps},
@@ -1040,7 +1075,7 @@ if __name__ == "__main__":
                 "gromov_delta_evolution": gromov_delta_evolution,
                 "mass_hinge": mass_hinge,
                 "mass_value": mass_value,
-                "matter": {str(h): v for h, v in matter.items()},
+                "matter": matter_out,
                 "stationary_solution": stationary_solution
             }, f, indent=2)
         print(f"Results saved to {output_path}")
@@ -1074,7 +1109,7 @@ if __name__ == "__main__":
             "gromov_delta_evolution": gromov_delta_evolution,
             "mass_hinge": mass_hinge,
             "mass_value": mass_value,
-            "matter": {str(h): v for h, v in matter.items()},
+            "matter": matter_out,
             "stationary_solution": stationary_solution
         }, indent=2))
 

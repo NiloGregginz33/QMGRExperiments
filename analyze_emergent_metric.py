@@ -366,5 +366,84 @@ def main():
     print("\n=== Spectral Dimension Analysis (Laplacian Spectrum) ===")
     laplacian_spectral_dimension(D, S_max=10, s_min=0.1, s_max=10, num_s=10)
 
+    # --- Gravitational Wave-like Propagation Analysis ---
+    # Check for per-timestep angle deficit and edge length evolution
+    if "angle_deficit_evolution" in data and data["angle_deficit_evolution"]:
+        angle_deficit_evo = np.array(data["angle_deficit_evolution"])  # shape: (timesteps, num_hinges)
+        plt.figure(figsize=(10, 5))
+        plt.imshow(angle_deficit_evo.T, aspect='auto', origin='lower', cmap='RdBu')
+        plt.colorbar(label='Angle Deficit')
+        plt.xlabel('Timestep')
+        plt.ylabel('Hinge Index')
+        plt.title('Spacetime Evolution of Angle Deficits (Gravitational Wave Propagation)')
+        plt.savefig(os.path.join(plots_dir, "angle_deficit_spacetime.png"))
+        plt.show()
+        # Optional: FFT along time to look for wave-like modes
+        from scipy.fft import fft, fftfreq
+        num_hinges = angle_deficit_evo.shape[1]
+        for h in range(num_hinges):
+            signal = angle_deficit_evo[:, h]
+            yf = np.abs(fft(signal - np.mean(signal)))
+            xf = fftfreq(len(signal), d=1)
+            plt.plot(xf[:len(xf)//2], yf[:len(yf)//2], label=f'Hinge {h}')
+        plt.xlabel('Frequency (1/timestep)')
+        plt.ylabel('FFT Amplitude')
+        plt.title('Temporal Spectrum of Angle Deficit (per Hinge)')
+        plt.legend()
+        plt.savefig(os.path.join(plots_dir, "angle_deficit_fft.png"))
+        plt.show()
+    if "edge_length_evolution" in data and data["edge_length_evolution"]:
+        edge_length_evo = np.array(data["edge_length_evolution"])  # shape: (timesteps, num_edges)
+        plt.figure(figsize=(10, 5))
+        plt.imshow(edge_length_evo.T, aspect='auto', origin='lower', cmap='viridis')
+        plt.colorbar(label='Edge Length')
+        plt.xlabel('Timestep')
+        plt.ylabel('Edge Index')
+        plt.title('Spacetime Evolution of Edge Lengths')
+        plt.savefig(os.path.join(plots_dir, "edge_length_spacetime.png"))
+        plt.show()
+    # Highlight mass perturbation location if available
+    if "mass_hinge" in data and data["mass_hinge"] is not None:
+        print(f"Mass perturbation applied at hinge: {data['mass_hinge']} (value: {data.get('mass_value', 'N/A')})")
+
+    # --- Geodesic Deviation Analysis ---
+    if "distance_matrix_per_timestep" in data and data["distance_matrix_per_timestep"]:
+        distmat_per_timestep = np.array(data["distance_matrix_per_timestep"])  # shape: (timesteps, n, n)
+        num_timesteps = distmat_per_timestep.shape[0]
+        n = distmat_per_timestep.shape[1]
+        # Pick a reference node (e.g., node 0)
+        ref_node = 0
+        # For each timestep, compute distances from ref_node to all others
+        dists_vs_time = distmat_per_timestep[:, ref_node, :]
+        plt.figure(figsize=(10, 5))
+        for j in range(n):
+            plt.plot(range(num_timesteps), dists_vs_time[:, j], label=f"0→{j}")
+        plt.xlabel("Timestep")
+        plt.ylabel("Geodesic Distance from node 0")
+        plt.title("Geodesic Distances from Reference Node vs. Time")
+        plt.legend()
+        plt.savefig(os.path.join(plots_dir, "geodesic_distances_vs_time.png"))
+        plt.show()
+        # Compute variance of distances from ref_node at each timestep
+        var_vs_time = np.var(dists_vs_time, axis=1)
+        plt.figure()
+        plt.plot(range(num_timesteps), var_vs_time, 'o-')
+        plt.xlabel("Timestep")
+        plt.ylabel("Variance of Geodesic Distances from node 0")
+        plt.title("Spread of Geodesics (Deviation) vs. Time")
+        plt.savefig(os.path.join(plots_dir, "geodesic_deviation_variance_vs_time.png"))
+        plt.show()
+        # For a triplet (0,1,2), plot D(0,1) - D(0,2) over time
+        if n >= 3:
+            diff_01_02 = dists_vs_time[:, 1] - dists_vs_time[:, 2]
+            plt.figure()
+            plt.plot(range(num_timesteps), diff_01_02, 'o-')
+            plt.xlabel("Timestep")
+            plt.ylabel("D(0,1) - D(0,2)")
+            plt.title("Geodesic Deviation: Difference between Neighboring Geodesics vs. Time")
+            plt.savefig(os.path.join(plots_dir, "geodesic_deviation_0_1_2_vs_time.png"))
+            plt.show()
+        print("[Geodesic Deviation] Plots saved: geodesic_distances_vs_time.png, geodesic_deviation_variance_vs_time.png, geodesic_deviation_0_1_2_vs_time.png (if n>=3)")
+
 if __name__ == "__main__":
     main() 
