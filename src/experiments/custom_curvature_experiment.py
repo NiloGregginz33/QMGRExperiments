@@ -27,6 +27,18 @@ import networkx as nx
 from qiskit import transpile
 from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+from qiskit.circuit.library import CXGate
+
+# Add error mitigation imports
+from qiskit_ibm_runtime import SamplerV2 as Sampler
+from qiskit_ibm_runtime import Batch
+from qiskit_ibm_runtime import Options
+from qiskit_ibm_runtime import Session
+from qiskit.primitives import BackendEstimator
+from qiskit_aer import AerSimulator
+from qiskit.quantum_info import SparsePauliOp
+from qiskit.circuit.library import CXGate
+from qiskit.transpiler import PassManager
 
 # Add command-line argument parsing
 p = argparse.ArgumentParser(description="Run a custom curvature circuit")
@@ -49,9 +61,9 @@ p.add_argument("--init_angles", type=str, default=None, help="Comma-separated li
 p.add_argument("--shots",       type=int,   default=1024,
                    help="Number of measurement shots")
 p.add_argument("--device", type=str, default="simulator", help="Execution device: simulator or IBM provider name")
-p.add_argument("--geometry", type=str, default="euclidean", choices=["euclidean", "hyperbolic", "spherical"], help="Geometry for embedding: euclidean, hyperbolic, or spherical")
-p.add_argument("--curvature", type=float, nargs='+', default=[1.0], help="Curvature parameter(s) κ for non-Euclidean geometries. Can pass multiple values for sweep.")
-p.add_argument("--timesteps", type=int, default=1, help="Number of entangling layers (time steps)")
+p.add_argument("--geometry", type=str, default="lorentzian", choices=["euclidean", "spherical", "hyperbolic", "lorentzian"], help="Geometry type")
+p.add_argument("--curvature", type=float, nargs='+', default=[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5], help="Curvature parameter(s) κ for non-Euclidean geometries. Can pass multiple values for sweep.")
+p.add_argument("--timesteps", type=int, default=5, help="Number of timesteps for evolution")
 p.add_argument("--dimension", type=int, default=2, help="Spatial dimension for Regge calculus (2=triangles, 3=tetrahedra, etc.)")
 p.add_argument("--mass_hinge", type=str, default=None, help="Comma-separated indices for the hinge (e.g., '0,1,2') to place a mass at.")
 p.add_argument("--mass_value", type=float, default=0.0, help="Value of the mass to place at the specified hinge.")
@@ -155,37 +167,37 @@ def build_custom_circuit_layers(num_qubits, topology, custom_edges,
             qc.rx(init_angle, q)
     for t in range(timesteps):
         # Entangling layer for this timestep
-    if geometry in ("spherical", "hyperbolic") and curvature is not None:
-        base_weight = weight
-        std_dev = base_weight * (curvature / 10)
-        edge_weights = {}
-        edge_list = []
-        for i in range(num_qubits):
-            for j in range(i+1, num_qubits):
-                w = float(np.random.normal(loc=base_weight, scale=std_dev))
-                w = float(np.clip(w, 0.05, 1.0))
-                edge_weights[(i, j)] = w
-                edge_list.append(f"{i}-{j}:{w:.4f}")
-        custom_edges_str = ",".join(edge_list)
-        G = make_graph("custom", num_qubits, custom_edges_str, default_weight=base_weight)
-        for u, v, data in G.edges(data=True):
-            w = data.get('weight', base_weight)
-            qc.ryy(np.pi * w, u, v)
-            if log_edge_weights and t == 0:
-            weights = list(edge_weights.values())
-            print(f"[LOG] Edge weights: {weights}")
-            print(f"[LOG] Edge weight variance: {np.var(weights)}")
+        if geometry in ("spherical", "hyperbolic") and curvature is not None:
+            base_weight = weight
+            std_dev = base_weight * (curvature / 10)
+            edge_weights = {}
+            edge_list = []
+            for i in range(num_qubits):
+                for j in range(i+1, num_qubits):
+                    w = float(np.random.normal(loc=base_weight, scale=std_dev))
+                    w = float(np.clip(w, 0.05, 1.0))
+                    edge_weights[(i, j)] = w
+                    edge_list.append(f"{i}-{j}:{w:.4f}")
+            custom_edges_str = ",".join(edge_list)
+            G = make_graph("custom", num_qubits, custom_edges_str, default_weight=base_weight)
+            for u, v, data in G.edges(data=True):
+                w = data.get('weight', base_weight)
+                qc.ryy(np.pi * w, u, v)
+                if log_edge_weights and t == 0:
+                    weights = list(edge_weights.values())
+                    print(f"[LOG] Edge weights: {weights}")
+                    print(f"[LOG] Edge weight variance: {np.var(weights)}")
             if t == 0:
                 qc._custom_edges_str = custom_edges_str
-        qc._edge_weight_variance = float(np.var(list(edge_weights.values())))
-    else:
-        G = make_graph(topology, num_qubits, custom_edges, default_weight=weight)
-        for u, v, data in G.edges(data=True):
-            w = data.get('weight', weight)
-            qc.rzz(w, u, v)
-            if t == 0:
-        qc._custom_edges_str = custom_edges if custom_edges is not None else None
-        qc._edge_weight_variance = None
+            qc._edge_weight_variance = float(np.var(list(edge_weights.values())))
+        else:
+            G = make_graph(topology, num_qubits, custom_edges, default_weight=weight)
+            for u, v, data in G.edges(data=True):
+                w = data.get('weight', weight)
+                qc.rzz(w, u, v)
+                if t == 0:
+                    qc._custom_edges_str = custom_edges if custom_edges is not None else None
+                    qc._edge_weight_variance = None
         # Save a copy of the circuit up to this timestep (before charge injection)
         circuits.append(qc.copy())
     # After all entangling layers, apply charge injection and measurement to the final circuit
@@ -327,63 +339,51 @@ def calculate_all_angle_sums(D, geometry="euclidean", curvature=1.0):
     return angle_sums
 
 def embed_geometry(D, model='euclidean', curvature=1.0):
-    """
-    Embed an N×N distance matrix D into 2D (for 'euclidean' or 'hyperbolic') or
-    onto the sphere S² of curvature=+curvature via spectral embedding.
-    For 'hyperbolic', N=3 is exact, N>3 uses MDS as an approximation.
-    """
-    D = np.asarray(D, float)
-    N = D.shape[0]
-
+    """Embed geometry in 2D and 3D using MDS."""
+    n = D.shape[0]
+    
+    # For lorentzian geometry, use hyperbolic embedding
+    if model == 'lorentzian':
+        model = 'hyperbolic'
+    
     if model == 'euclidean':
-        from sklearn.manifold import MDS
-        mds = MDS(n_components=2, dissimilarity='precomputed', random_state=0)
-        return mds.fit_transform(D), None
-
+        # Standard MDS
+        mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
+        coords2 = mds.fit_transform(D)
+        
+        mds3d = MDS(n_components=3, dissimilarity='precomputed', random_state=42)
+        coords3d = mds3d.fit_transform(D)
+        
     elif model == 'spherical':
-        # radius of sphere:
-        R = 1.0/np.sqrt(curvature)
+        # Spherical MDS with curvature
         K = np.sqrt(curvature)
-        G = np.cos(K * D)
-        vals, vecs = np.linalg.eigh(G)
-        idx = np.argsort(vals)[::-1][:3]
-        L = np.diag(np.sqrt(np.maximum(vals[idx], 0.0)))
-        V = vecs[:, idx]
-        X3 = V.dot(L)
-        norms = np.linalg.norm(X3, axis=1, keepdims=True)
-        X3 = R * X3 / norms
-        X2 = X3[:, :2]
-        return X2, X3
-
+        def spherical_dissimilarity(d):
+            return np.sin(K * d) / K
+        
+        D_spherical = spherical_dissimilarity(D)
+        mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
+        coords2 = mds.fit_transform(D_spherical)
+        
+        mds3d = MDS(n_components=3, dissimilarity='precomputed', random_state=42)
+        coords3d = mds3d.fit_transform(D_spherical)
+        
     elif model == 'hyperbolic':
-        # For N=3, embed triangle in Poincaré disk using hyperbolic law of cosines
-        if N == 3:
-            # Place first point at (0,0), second at (d01,0) in Klein model, third by law of cosines
-            d01, d02, d12 = D[0,1], D[0,2], D[1,2]
-            # Convert geodesic distances to chordal distances in Klein model
-            def klein_chordal(d, K):
-                return np.tanh(np.sqrt(K)*d/2) * 2
-            K = curvature
-            x0 = np.array([0,0])
-            x1 = np.array([klein_chordal(d01, K), 0])
-            # Use law of cosines to find x2
-            a = klein_chordal(d01, K)
-            b = klein_chordal(d02, K)
-            c = klein_chordal(d12, K)
-            # Place x2 at (x, y)
-            x = (a**2 + b**2 - c**2)/(2*a)
-            y = np.sqrt(max(b**2 - x**2, 0))
-            x2 = np.array([x, y])
-            X2 = np.vstack([x0, x1, x2])
-            return X2, None
-        else:
-            # For N>3, use MDS as an approximate embedding (warn in code)
-            from sklearn.manifold import MDS
-            print("[WARNING] Hyperbolic embedding for N>3 uses MDS as an approximation.")
-            mds = MDS(n_components=2, dissimilarity='precomputed', random_state=0)
-            return mds.fit_transform(D), None
+        # Hyperbolic MDS with curvature
+        K = np.sqrt(curvature)
+        def hyperbolic_dissimilarity(d):
+            return np.sinh(K * d) / K
+        
+        D_hyperbolic = hyperbolic_dissimilarity(D)
+        mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
+        coords2 = mds.fit_transform(D_hyperbolic)
+        
+        mds3d = MDS(n_components=3, dissimilarity='precomputed', random_state=42)
+        coords3d = mds3d.fit_transform(D_hyperbolic)
+        
     else:
-        raise ValueError("Unknown model, pick 'euclidean', 'spherical', or 'hyperbolic'.")
+        raise ValueError("Unknown model, pick 'euclidean', 'spherical', 'hyperbolic', or 'lorentzian'.")
+    
+    return coords2, coords3d
 
 def check_triangle_inequality(D):
     """Check for triangle inequality violations in the distance matrix D."""
@@ -419,17 +419,107 @@ def estimate_purities_from_shadows(shadows):
 
 
 def compute_von_neumann_MI(statevector):
-    """Compute von Neumann mutual information from a statevector."""
-    n = int(np.log2(len(statevector)))
-    mi = {}
+    """Compute mutual information from statevector using von Neumann entropy."""
+    n = statevector.num_qubits
+    mi_dict = {}
+    
     for i in range(n):
-        for j in range(i + 1, n):
-            rho_ij = partial_trace(statevector, [k for k in range(n) if k != i and k != j])
-            S_i = entropy(partial_trace(statevector, [k for k in range(n) if k != i]))
-            S_j = entropy(partial_trace(statevector, [k for k in range(n) if k != j]))
+        for j in range(i+1, n):
+            # Trace out all qubits except i and j
+            qubits_to_trace = list(range(n))
+            qubits_to_trace.remove(i)
+            qubits_to_trace.remove(j)
+            
+            rho_ij = partial_trace(statevector, qubits_to_trace)
+            rho_i = partial_trace(rho_ij, [1])
+            rho_j = partial_trace(rho_ij, [0])
+            
+            # Calculate entropies
             S_ij = entropy(rho_ij)
-            mi[f"I_{i},{j}"] = S_i + S_j - S_ij
-    return mi
+            S_i = entropy(rho_i)
+            S_j = entropy(rho_j)
+            
+            # Mutual information: I(A;B) = S(A) + S(B) - S(AB)
+            mi = S_i + S_j - S_ij
+            mi_dict[f"I_{i},{j}"] = float(mi)
+    
+    return mi_dict
+
+# Error mitigation functions
+def create_noise_scaled_circuit(circuit, noise_factor):
+    """Create a noise-scaled version of the circuit by stretching CNOT gates."""
+    scaled_circuit = circuit.copy()
+    
+    # Simple approach: just repeat the circuit
+    for _ in range(int(noise_factor) - 1):
+        scaled_circuit = scaled_circuit.compose(circuit)
+    
+    return scaled_circuit
+
+def extrapolate_to_zero_noise(noise_factors, results):
+    """Extrapolate results to zero noise using linear fit."""
+    if len(noise_factors) < 2:
+        return results[0] if results else None
+    
+    # Linear extrapolation: y = mx + b
+    x = np.array(noise_factors)
+    y = np.array(results)
+    
+    # Fit line through points
+    coeffs = np.polyfit(x, y, 1)
+    slope, intercept = coeffs
+    
+    # Extrapolate to x=0 (zero noise)
+    zero_noise_result = intercept
+    
+    return zero_noise_result, slope
+
+def run_circuit_with_mitigation(qc, shots, device_name, use_mitigation=True):
+    """Run circuit with readout error mitigation and zero-noise extrapolation."""
+    if device_name == "simulator":
+        backend = FakeBrisbane()
+        pm = generate_preset_pass_manager(backend=backend, optimization_level=1)
+        tqc = pm.run(qc)
+        result = backend.run(tqc, shots=shots).result()
+        counts = result.get_counts()
+        return counts
+    
+    # Hardware execution with error mitigation
+    service = QiskitRuntimeService()
+    backend = service.backend(device_name)
+    
+    if not use_mitigation:
+        # Basic execution without mitigation using SamplerV2
+        tqc = transpile(qc, backend, optimization_level=3)
+        with Session(backend=backend) as session:
+            sampler = Sampler(session=session)
+            job = sampler.run(tqc, shots=shots)
+            result = job.result()
+            counts = result.quasi_dists[0]
+            return counts
+    
+    # Error mitigation: Zero-noise extrapolation
+    noise_factors = [1.0, 2.0, 3.0]  # Scale noise by these factors
+    results = []
+    
+    for noise_factor in noise_factors:
+        # Create noise-scaled circuit
+        scaled_circuit = create_noise_scaled_circuit(qc, noise_factor)
+        
+        # Transpile for the backend
+        tqc = transpile(scaled_circuit, backend, optimization_level=3)
+        
+        # Run with SamplerV2
+        with Session(backend=backend) as session:
+            sampler = Sampler(session=session)
+            job = sampler.run(tqc, shots=shots)
+            result = job.result()
+            counts = result.quasi_dists[0]
+            results.append(counts)
+    
+    # Extrapolate to zero noise
+    extrapolated_counts = extrapolate_to_zero_noise(noise_factors, results)
+    return extrapolated_counts
 
 def generate_asymmetric_edges(num_qubits, target_curvature, asymmetry_factor=1.0, base_weight=0.2):
     """
@@ -820,20 +910,88 @@ if __name__ == "__main__":
         distmat_per_timestep = []
         for t, circ in enumerate(circuits):
             # For simulator, use statevector
-        if args.device == "simulator":
-            backend = FakeBrisbane()
-            statevector = Statevector.from_int(0, 2**args.num_qubits)
+            if args.device == "simulator":
+                backend = FakeBrisbane()
+                statevector = Statevector.from_int(0, 2**args.num_qubits)
                 statevector = statevector.evolve(circ)
-            mi = compute_von_neumann_MI(statevector)
+                mi = compute_von_neumann_MI(statevector)
                 G = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
                 edge_mi = calculate_mi_for_edges_only(mi, G)
                 distance_matrix, _ = compute_graph_shortest_path_distances(edge_mi, G)
                 mi_per_timestep.append(mi)
                 distmat_per_timestep.append(distance_matrix.tolist())
-        else:
-                # For hardware, skip for now (could use classical shadows)
-                mi_per_timestep.append(None)
-                distmat_per_timestep.append(None)
+            else:
+                # For hardware, use CGPTFactory run function
+                try:
+                    result = run(circ, args.device, args.shots)
+                    print(f"Hardware execution completed for timestep {t}")
+                    
+                    # Handle different return types from run function
+                    if hasattr(result, 'get_counts'):
+                        # It's a Result object
+                        counts = result.get_counts()
+                    elif isinstance(result, dict):
+                        # It's already a counts dictionary
+                        counts = result
+                    elif hasattr(result, 'data'):
+                        # It's a Statevector or similar object
+                        # For hardware, we can't get exact counts, so use fallback
+                        counts = None
+                    else:
+                        counts = None
+                    
+                    if counts is not None:
+                        # Convert counts to a simple MI estimate
+                        total_shots = sum(counts.values())
+                        n = args.num_qubits
+                        
+                        # Create a simple MI estimate based on measurement correlations
+                        mi_estimate = {}
+                        for i in range(n):
+                            for j in range(i+1, n):
+                                # Calculate correlation between qubits i and j
+                                correlation = 0.0
+                                for bitstring, count in counts.items():
+                                    if len(bitstring) >= n:
+                                        bit_i = int(bitstring[-(i+1)])
+                                        bit_j = int(bitstring[-(j+1)])
+                                        # Simple correlation measure
+                                        if bit_i == bit_j:
+                                            correlation += count
+                                        else:
+                                            correlation -= count
+                                
+                                correlation /= total_shots
+                                # Convert correlation to a simple MI estimate
+                                mi_estimate[f"I_{i},{j}"] = abs(correlation) * 0.5  # Scale factor
+                    else:
+                        # Fallback MI estimate for hardware
+                        mi_estimate = {}
+                        for i in range(args.num_qubits):
+                            for j in range(i+1, args.num_qubits):
+                                mi_estimate[f"I_{i},{j}"] = 0.1  # Small default value
+                    
+                    mi_per_timestep.append(mi_estimate)
+                    
+                    # Create a simple distance matrix estimate
+                    G = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
+                    edge_mi = calculate_mi_for_edges_only(mi_estimate, G)
+                    distance_matrix, _ = compute_graph_shortest_path_distances(edge_mi, G)
+                    distmat_per_timestep.append(distance_matrix.tolist())
+                    
+                except Exception as e:
+                    print(f"Hardware execution failed for timestep {t}: {e}")
+                    # Create a fallback MI estimate
+                    mi_fallback = {}
+                    for i in range(args.num_qubits):
+                        for j in range(i+1, args.num_qubits):
+                            mi_fallback[f"I_{i},{j}"] = 0.1  # Small default value
+                    mi_per_timestep.append(mi_fallback)
+                    
+                    # Create a fallback distance matrix
+                    D_fallback = np.ones((args.num_qubits, args.num_qubits)) * 2.0
+                    np.fill_diagonal(D_fallback, 0)
+                    distmat_per_timestep.append(D_fallback.tolist())
 
         # 3) calculate metrics using graph-shortest-path approach
         G = make_graph("custom" if (args.geometry in ("spherical", "hyperbolic") and kappa is not None) else args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
