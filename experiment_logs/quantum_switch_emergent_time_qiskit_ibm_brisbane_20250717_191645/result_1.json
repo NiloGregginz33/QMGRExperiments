@@ -1,0 +1,74 @@
+{
+  "phi": 1.5707963267948966,
+  "counts": {
+    "01": 1002,
+    "10": 998,
+    "11": 1049,
+    "00": 1047
+  },
+  "shannon_entropy": 0.8780419789285416,
+  "causal_witness": 0.011183333333333349,
+  "device": "ibm_brisbane",
+  "shots": 20000,
+  "use_mitigation": true,
+  "extrapolation": {
+    "zero_noise_witness": 0.011183333333333349,
+    "slope": -0.005500000000000006,
+    "extrapolation_quality": 0.7636317738135302
+  },
+  "statistical_analysis": {
+    "causal_witness": 0.004800000000000006,
+    "std_error": 0.003116957290371493,
+    "confidence_interval_95": [
+      -0.0013092362891281208,
+      0.010909236289128132
+    ],
+    "z_statistic": 1.539963352987721,
+    "p_value": 0.12356928657088906,
+    "chi2_statistic": 2.157366176234769,
+    "chi2_p_value": 0.14188771495125205,
+    "binomial_tests": {
+      "01": {
+        "p_value": 0.0,
+        "statistic": 0.0501,
+        "proportion": 0.0501
+      },
+      "10": {
+        "p_value": 0.0,
+        "statistic": 0.0499,
+        "proportion": 0.0499
+      },
+      "11": {
+        "p_value": 0.0,
+        "statistic": 0.05245,
+        "proportion": 0.05245
+      },
+      "00": {
+        "p_value": 0.0,
+        "statistic": 0.05235,
+        "proportion": 0.05235
+      }
+    },
+    "significance_level": "not_significant",
+    "effect_size": 1.539963352987721
+  },
+  "uncertainty_analysis": {
+    "measurement_uncertainties": {
+      "01": 0.0015425626405433266,
+      "10": 0.0015396426533452493,
+      "11": 0.0015763723782786856,
+      "00": 0.0015749520230787983
+    },
+    "total_measurement_uncertainty": 0.003116957290371493,
+    "systematic_error": 0.01,
+    "total_uncertainty": 0.010474513007772725
+  },
+  "bootstrap_analysis": {
+    "bootstrap_mean": 0.0,
+    "bootstrap_ci_95": [
+      -0.00634765625,
+      0.05078125
+    ],
+    "bootstrap_std": 0.014974413976841091
+  }
+}
