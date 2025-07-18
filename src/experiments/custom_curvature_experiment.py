@@ -61,7 +61,7 @@ p.add_argument("--init_angles", type=str, default=None, help="Comma-separated li
 p.add_argument("--shots",       type=int,   default=1024,
                    help="Number of measurement shots")
 p.add_argument("--device", type=str, default="simulator", help="Execution device: simulator or IBM provider name")
-p.add_argument("--geometry", type=str, default="lorentzian", choices=["euclidean", "spherical", "hyperbolic", "lorentzian"], help="Geometry type")
+p.add_argument("--geometry", type=str, default="hyperbolic", choices=["euclidean", "spherical", "hyperbolic", "lorentzian"], help="Geometry type")
 p.add_argument("--curvature", type=float, nargs='+', default=[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5], help="Curvature parameter(s) κ for non-Euclidean geometries. Can pass multiple values for sweep.")
 p.add_argument("--timesteps", type=int, default=5, help="Number of timesteps for evolution")
 p.add_argument("--dimension", type=int, default=2, help="Spatial dimension for Regge calculus (2=triangles, 3=tetrahedra, etc.)")

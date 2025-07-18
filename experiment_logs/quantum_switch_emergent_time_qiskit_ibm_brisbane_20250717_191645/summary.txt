@@ -1,0 +1,46 @@
+Quantum Switch Emergent Time Experiment Summary
+==============================================
+
+Experiment Parameters:
+  Device: ibm_brisbane
+  Shots: 20000
+  Error mitigation: True
+  Number of phi values: 1
+  Phi value(s): [1.5707963267948966]
+  Total experiment time: 20.3 seconds
+
+Results Summary:
+  Causal Witness Statistics:
+    Mean: 0.0112
+    Std: 0.0000
+    Min: 0.0112
+    Max: 0.0112
+  Shannon Entropy Statistics:
+    Mean: 0.8780
+    Std: 0.0000
+    Min: 0.8780
+    Max: 0.8780
+
+  Statistical Significance Analysis:
+    Result 1 (phi=1.571):
+      Causal Witness: 0.004800 ± 0.003117
+      95% CI: [-0.001309, 0.010909]
+      P-value: 0.123569
+      Significance: not_significant
+      Z-statistic: 1.540
+      Effect size: 1.540
+      Chi² p-value: 0.141888
+      Bootstrap CI: [-0.006348, 0.050781]
+      Bootstrap std: 0.014974
+      Total uncertainty: 0.010475
+      Systematic error: 0.010000
+
+  Causal Non-Separability Analysis:
+    Maximum absolute causal witness: 0.0112
+    WARNING: Weak or no causal non-separability detected
+
+  Overall Statistical Summary:
+    Significant results: 0/1
+
+Detailed Results:
+  phi=1.571: S=0.8780, W=0.0112
