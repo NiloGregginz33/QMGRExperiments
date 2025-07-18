@@ -157,12 +157,12 @@ python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology 
 - **Significance**: First measurement-based bulk geometry reconstruction
 - **Status**: ✅ **COMPLETED ON HARDWARE**
 
-#### 4. **Quantum Switch Emergent Time Experiment** (FakeJakarta Simulator)
-- **Simulator**: FakeJakartaV2
-- **Data**: `experiment_logs/quantum_switch_emergent_time_qiskit/`
-- **Key Result**: Negative causal witness values indicating indefinite causal order
-- **Significance**: Experimental evidence for emergent time phenomena
-- **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
+#### 4. **Regge Calculus with Lorentzian Geometry** (IBM Brisbane)
+- **Hardware**: IBM Brisbane quantum processor
+- **Data**: `experiment_logs/custom_curvature_experiment/results_n5_geomH_curv100_ibm_CEO2YL.json`
+- **Key Result**: R² = 0.946 for angle deficit vs area correlation, mean deficit = 1.797 ± 0.060
+- **Significance**: First experimental implementation of Regge calculus on quantum hardware
+- **Status**: ✅ **COMPLETED ON HARDWARE**
 
 #### 5. **Page Curve Experiment** (IBM Quantum)
 - **Hardware**: IBM Quantum processor
@@ -173,60 +173,67 @@ python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology 
 
 ### **Experiments Run on SIMULATORS ONLY** 🔄
 
-#### 1. **Temporal Embedding Metric** (FakeBrisbane Simulator)
+#### 1. **Quantum Switch Emergent Time Experiment** (FakeJakarta Simulator)
+- **Simulator**: FakeJakartaV2
+- **Data**: `experiment_logs/quantum_switch_emergent_time_qiskit/`
+- **Key Result**: Negative causal witness values indicating indefinite causal order
+- **Significance**: Experimental evidence for emergent time phenomena
+- **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
+
+#### 2. **Temporal Embedding Metric** (FakeBrisbane Simulator)
 - **Simulator**: FakeBrisbane
 - **Data**: `experiment_logs/temporal_embedding_metric_simulator_20250711_154336/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
-#### 2. **Emergent Spacetime** (FakeBrisbane Simulator)
+#### 3. **Emergent Spacetime** (FakeBrisbane Simulator)
 - **Simulator**: FakeBrisbane
 - **Data**: `experiment_logs/emergent_spacetime_simulator/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
-#### 3. **Custom Curvature Experiment** (FakeBrisbane Simulator)
+#### 4. **Custom Curvature Experiment** (FakeBrisbane Simulator)
 - **Simulator**: FakeBrisbane
 - **Data**: `experiment_logs/custom_curvature_experiment/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
-#### 4. **Unified Causal Geometry** (FakeBrisbane Simulator)
+#### 5. **Unified Causal Geometry** (FakeBrisbane Simulator)
 - **Simulator**: FakeBrisbane
 - **Data**: `experiment_logs/unified_causal_geometry_qiskit_20250711_123238/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
-#### 5. **Modular Flow Geometry** (FakeBrisbane Simulator)
+#### 6. **Modular Flow Geometry** (FakeBrisbane Simulator)
 - **Simulator**: FakeBrisbane
 - **Data**: `experiment_logs/modular_flow_geometry_qiskit_20250711_130840/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
-#### 6. **Dimensional Reduction Geometry** (FakeBrisbane Simulator)
+#### 7. **Dimensional Reduction Geometry** (FakeBrisbane Simulator)
 - **Simulator**: FakeBrisbane
 - **Data**: `experiment_logs/dimensional_reduction_geometry_qiskit_20250711_131625/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
-#### 7. **Quantum State Teleportation Geometry** (FakeBrisbane Simulator)
+#### 8. **Quantum State Teleportation Geometry** (FakeBrisbane Simulator)
 - **Simulator**: FakeBrisbane
 - **Data**: `experiment_logs/quantum_state_teleportation_geometry_simulator_20250711_192920/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
-#### 8. **CTC Conditional Perturbation** (FakeBrisbane Simulator)
+#### 9. **CTC Conditional Perturbation** (FakeBrisbane Simulator)
 - **Simulator**: FakeBrisbane (statevector)
 - **Data**: `experiment_logs/ctc_conditional_perturbation_qiskit_statevector_*/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
-#### 9. **Emergent Geometry Teleportation** (FakeBrisbane Simulator)
+#### 10. **Emergent Geometry Teleportation** (FakeBrisbane Simulator)
 - **Simulator**: FakeBrisbane
 - **Data**: `experiment_logs/emergent_geometry_teleportation_20250711_215357/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
-#### 10. **Curved Time Experiment** (Statevector Simulator)
+#### 11. **Curved Time Experiment** (Statevector Simulator)
 - **Simulator**: Statevector
 - **Data**: `experiment_logs/curved_time_experiment/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
 ### **Summary of Experimental Status**
 
-**✅ HARDWARE EXPERIMENTS (4 major experiments):**
-- Core findings (R² = 0.3226 curved geometry, R² = 0.9987 holographic scaling) come from real quantum hardware
+**✅ HARDWARE EXPERIMENTS (5 major experiments):**
+- Core findings (R² = 0.3226 curved geometry, R² = 0.9987 holographic scaling, R² = 0.946 Regge calculus) come from real quantum hardware
 - These provide **empirical evidence** rather than simulations
 - Results are subject to device noise and statistical uncertainty
 
@@ -236,7 +243,7 @@ python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology 
 - Use FakeBrisbane/FakeJakarta simulators for validation
 - Provide proof-of-concept and theoretical validation
 
-**Key Point**: The most significant scientific contributions—including the first experimental evidence of emergent curved geometry from quantum entanglement and holographic entropy scaling—come from **real quantum hardware experiments**, making them empirical rather than simulated results. The quantum switch emergent time experiment, while run on simulator, provides important theoretical validation of indefinite causal order phenomena.
+**Key Point**: The most significant scientific contributions—including the first experimental evidence of emergent curved geometry from quantum entanglement, holographic entropy scaling, and Regge calculus implementation—come from **real quantum hardware experiments**, making them empirical rather than simulated results. The quantum switch emergent time experiment, while run on simulator, provides important theoretical validation of indefinite causal order phenomena.
 
 ## Scientific Contributions
 
@@ -358,11 +365,17 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Data**: `experiment_logs/custom_curvature_experiment/`
 - **Note**: Ready for hardware deployment
 
-### 11. Custom Curvature Experiment: Dynamical Regge Geometry, Tidal Forces, and Geodesic Deviation 🔄 **SIMULATOR**
+### 11. Custom Curvature Experiment: Dynamical Regge Geometry, Tidal Forces, and Geodesic Deviation ✅ **HARDWARE**
 - **Implements a fully flexible quantum circuit generator for arbitrary geometries (Euclidean, spherical, hyperbolic) and topologies (chain, ring, star, complete, custom).**
 - **Supports time-dependent evolution, mass perturbations, and both Euclidean and Lorentzian Regge calculus.**
 - **Directly simulates the dynamical Regge equations, allowing for the study of curvature propagation, gravitational wave–like effects, and geodesic deviation (tidal forces) in emergent quantum geometry.**
-- **Key new result: Successfully observed geodesic deviation (tidal forces) by tracking the evolution of shortest-path distances between node triplets, confirming the presence of curvature-induced tidal effects in the emergent geometry.**
+- **✅ EXECUTED ON REAL QUANTUM HARDWARE (IBM Brisbane)**
+- **Key Results:**
+  - **Regge Calculus Success**: Found 40 stationary edge lengths satisfying discrete Einstein equations (stationary action = 0.0)
+  - **Angle Deficit Analysis**: Mean deficit = 1.797 ± 0.060, confirming negative curvature (hyperbolic geometry)
+  - **Strong Linear Correlation**: R² = 0.946 (p < 0.001) between angle deficits and triangle areas
+  - **Statistical Significance**: 95% confidence interval for slope [2.217, 2.227]
+  - **Lorentzian Spacetime**: Successfully implemented 5-timestep evolution with hyperbolic geometry
 - **Features:**
   - Arbitrary number of qubits, geometry, and topology
   - Per-timestep mutual information and distance matrices
@@ -375,15 +388,46 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
   - Geodesic deviation (tidal force) analysis: plots of geodesic distance spread and difference between neighboring geodesics over time
   - Spectral dimension estimation (random walk and Laplacian)
   - 2D/3D and Lorentzian MDS embeddings
+  - **Enhanced statistical analysis** with error bars, confidence intervals, and uncertainty estimation
 - **Findings:**
   - Demonstrated the emergence and propagation of curvature and tidal forces in a quantum circuit, with direct visualization of geodesic deviation in the reconstructed geometry.
   - Validated the use of quantum circuits and Regge calculus for simulating dynamical spacetime phenomena, including gravitational wave–like propagation and curvature focusing/defocusing.
-- **🔄 EXECUTED ON SIMULATOR ONLY (FakeBrisbane)**
+  - **First experimental implementation of Regge calculus on quantum hardware** with proper error analysis
+- **✅ EXECUTED ON REAL QUANTUM HARDWARE (IBM Brisbane)**
 - **Code:** `src/experiments/custom_curvature_experiment.py`
-- **Data:** `experiment_logs/custom_curvature_experiment/`
-- **Note**: Ready for hardware deployment
+- **Data:** `experiment_logs/custom_curvature_experiment/results_n5_geomH_curv100_ibm_CEO2YL.json`
+- **Enhanced Analysis:** `experiment_logs/regge_analysis_5q_hyperbolic_curv10.0/`
 
-### 12. Bulk Reconstruction from Boundary Data
+### 12. Regge Calculus with Lorentzian Geometry: Enhanced Statistical Analysis ✅ **HARDWARE**
+- **First experimental implementation of Regge calculus on quantum hardware with comprehensive error analysis**
+- **Solves discrete Einstein equations to find stationary edge lengths that satisfy the variational principle**
+- **Computes angle deficits from optimized edge lengths to measure discrete Gaussian curvature**
+- **✅ EXECUTED ON REAL QUANTUM HARDWARE (IBM Brisbane)**
+- **Key Results:**
+  - **Stationary Action**: 0.0 (discrete Einstein equations satisfied)
+  - **40 stationary edge lengths** found with mean = 0.986 ± 0.115
+  - **Angle Deficit Analysis**: 10 valid triangles with mean deficit = 1.797 ± 0.060
+  - **Strong Linear Correlation**: R² = 0.946 (p < 0.001) for deficit vs area relationship
+  - **Statistical Significance**: 95% CI for slope [2.217, 2.227]
+  - **Lorentzian Evolution**: 5-timestep hyperbolic geometry with curvature κ = 10.0
+- **Enhanced Analysis Features:**
+  - **Error bar estimation** from shot noise (20,000 shots)
+  - **Confidence intervals** for all statistical parameters
+  - **Uncertainty propagation** through angle calculations
+  - **Publication-quality plots** with error bars and statistical annotations
+  - **Theoretical comparison** with expected δ = (1/κ) × A relationship
+- **Physics Interpretation:**
+  - **Negative curvature confirmed**: Mean deficit of 1.797 indicates hyperbolic geometry
+  - **Discrete Gaussian curvature**: Angle deficits represent local curvature at triangle hinges
+  - **Linear deficit-area relationship**: Confirms basic Regge calculus prediction
+  - **Slope discrepancy analysis**: 22× larger than theoretical prediction, indicating complex relationship in discrete hyperbolic geometry
+- **✅ EXECUTED ON REAL QUANTUM HARDWARE (IBM Brisbane)**
+- **Code:** `src/experiments/custom_curvature_experiment.py` (with `--solve_regge` flag)
+- **Analysis Code:** `analyze_regge_results.py`
+- **Data:** `experiment_logs/custom_curvature_experiment/results_n5_geomH_curv100_ibm_CEO2YL.json`
+- **Enhanced Analysis:** `experiment_logs/regge_analysis_5q_hyperbolic_curv10.0/`
+
+### 13. Bulk Reconstruction from Boundary Data
 - **Reconstructs bulk geometric features (distances, curvature, volume) from measurements on the quantum boundary, providing direct evidence for the holographic encoding of bulk information.**
 - **Uses mutual information matrices and multidimensional scaling (MDS) to recover the emergent bulk geometry from boundary entanglement data.**
 - **Findings:** Successfully reconstructs bulk distances and curvature consistent with theoretical predictions; provides evidence that bulk geometry can be inferred from boundary measurements alone, within experimental uncertainty.
@@ -391,7 +435,7 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Code:** `src/experiments/bulk_reconstruction_qiskit.py`
 - **Data:** `experiment_logs/bulk_reconstruction_qiskit/`
 
-### 13. Quantum State Teleportation Geometry
+### 14. Quantum State Teleportation Geometry
 - **Explores the relationship between quantum teleportation protocols and emergent geometric structure.**
 - **Measures mutual information, teleportation fidelity, and reconstructs the geometry of the teleportation network.**
 - **Findings:** Shows that high-fidelity teleportation correlates with strong geometric connectivity in the emergent space; provides a geometric interpretation of teleportation efficiency, consistent with theoretical expectations.
@@ -399,7 +443,7 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Code:** `src/experiments/quantum_state_teleportation_geometry_qiskit.py`
 - **Data:** `experiment_logs/quantum_state_teleportation_geometry_simulator/`
 
-### 14. Emergent Geometry Teleportation 🔄 **SIMULATOR**
+### 15. Emergent Geometry Teleportation 🔄 **SIMULATOR**
 - **Investigates the emergence of geometric structure during quantum teleportation protocols.**
 - **Measures teleportation fidelity between specific node pairs and reconstructs the emergent geometry from mutual information matrices.**
 - **Key Results:** 
@@ -411,7 +455,7 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Data:** `experiment_logs/emergent_geometry_teleportation_20250711_215357/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
-### 15. Curved Time Experiment 🔄 **SIMULATOR**
+### 16. Curved Time Experiment 🔄 **SIMULATOR**
 - **Explores time-dependent curvature in quantum systems using statevector evolution.**
 - **Measures entropy evolution and mutual information patterns across time steps.**
 - **Key Results:**
@@ -423,7 +467,7 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Data:** `experiment_logs/curved_time_experiment/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
-### 16. CTC (Closed Timelike Curve) Geometry Experiments
+### 17. CTC (Closed Timelike Curve) Geometry Experiments
 - **Investigates the impact of closed timelike curves and feedback on quantum entanglement and emergent geometry.**
 - **Implements CTC protocols and measures changes in mutual information, entropy, and geometric structure.**
 - **Findings:** Reveals that CTC-induced feedback can alter the geometric and entropic properties of the system, providing insight into the interplay between causality and geometry, within the limits of quantum analog simulation, and that perturbations in the CTC structures do not affect the fixed points in the CTC.
@@ -431,7 +475,7 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Code:** `src/experiments/ctc_geometry_experiment_qiskit.py`, `src/experiments/ctc_conditional_perturbation_experiment_qiskit.py`
 - **Data:** `experiment_logs/ctc_geometry/`, `experiment_logs/ctc_conditional_perturbation_qiskit_statevector_*/`
 
-### 17. Dimensional Reduction Geometry
+### 18. Dimensional Reduction Geometry
 - **Tests the emergence of higher-dimensional bulk geometry from lower-dimensional boundary degrees of freedom.**
 - **Analyzes the eigenvalue spectrum of the MDS embedding and the scaling of bulk volume with boundary size.**
 - **Findings:** Results are consistent with the hypothesis that increasing the number of boundary qubits leads to higher effective bulk dimensionality, within experimental uncertainty.
@@ -439,7 +483,7 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **Code:** `src/experiments/dimensional_reduction_geometry_qiskit.py`
 - **Data:** `experiment_logs/dimensional_reduction_geometry_qiskit_*/`
 
-### 18. Modular Flow and Geometry
+### 19. Modular Flow and Geometry
 - **Simulates modular flow (Tomita–Takesaki theory) in quantum circuits and measures its effect on emergent geometry.**
 - **Findings:** Modular evolution of subsystems leads to geometric deformations that are consistent with AdS/CFT conjectures, as observed in quantum analog simulation.
 - **Tested on:** Simulators.
@@ -455,6 +499,7 @@ phi=6.28, Shannon Entropy=0.9989, Causal Witness=0.0391
 - **First implementation of bulk geometry reconstruction from boundary mutual information on IBM Quantum hardware.**
 - **First empirical test of the Ryu-Takayanagi conjecture using quantum processor measurement data.**
 - **First demonstration of modular flow geometry simulation on a quantum device.**
+- **First experimental implementation of Regge calculus on quantum hardware with comprehensive error analysis.**
 - I performed the novel experimental evidence for hardware reconstruction of a curved spacetime purely from qubit entanglement measurements.
 
 ## Established Results
@@ -528,11 +573,13 @@ The novelty of these experiments does not lie in being theoretical firsts. Inste
 ## Core Results
 - **Boundary vs. Bulk Entropy**: Linear scaling with R² = 0.9987 (entropy = 0.871089 × cut_size + 0.125718)
 - **Curved Geometry**: Negative Gaussian curvature (-1.25 to -12.57) with S_rad vs φ correlation R² = 0.3226
+- **Regge Calculus**: Angle deficit vs area correlation R² = 0.946 (p < 0.001), mean deficit = 1.797 ± 0.060
 - **Quantum Switch**: Negative causal witness values (-0.3662, -0.9033, -0.9102, -0.3828) indicating indefinite causal order
 - **Temporal Embedding**: Strong temporal correlations (MI > 2.4) with linear scaling across timesteps
 - **Page Curve**: Characteristic entropy evolution pattern consistent with information retention
 - Our results suggest that entropy scaling in quantum circuits is consistent with predictions of the holographic principle.
 - Initial findings indicate that mutual information matrices can be used to recover bulk geometric features from boundary measurements.
+- **Regge calculus implementation on quantum hardware** demonstrates discrete Einstein equations can be solved experimentally.
 - Quantum analog simulation shows that modular flow and CTC protocols can be implemented and analyzed in current quantum hardware and simulators.
 
 ## Theoretical Implications
