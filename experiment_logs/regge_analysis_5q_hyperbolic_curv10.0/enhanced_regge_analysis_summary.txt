@@ -1,0 +1,44 @@
+Enhanced Regge Calculus Analysis Summary
+=======================================
+
+Experiment Parameters:
+  Number of qubits: 5
+  Geometry: hyperbolic
+  Curvature: 10.0
+  Device: ibm_brisbane
+  Shots: 20000
+
+Regge Calculus Results:
+  Stationary action: 0.0
+  Number of edges: 40
+
+Edge Length Statistics:
+  Mean: 0.9864
+  Std: 0.1147
+  Range: [0.8138, 1.1878]
+
+Triangle Analysis:
+  Number of valid triangles: 10
+  Mean angle deficit: 1.7968
+  Std angle deficit: 0.0601
+  Deficit range: [1.7036, 1.8997]
+  Mean deficit uncertainty: 0.0002
+
+Correlation Analysis (deficit vs Area):
+  Linear fit: y = 2.221722 × x + 0.964374
+  R^2: 0.9459
+  p-value: 0.0000
+  Slope: 2.221722 +/- 0.002126
+  95% CI for slope: [2.216818, 2.226626]
+  Expected slope (1/kappa): 0.100000
+  Consistency with theory: 997.78sigma
+
+Physics Interpretation:
+  Negative curvature geometry detected
+  Angle deficits represent discrete Gaussian curvature
+  Mean deficit of 1.7968 indicates average negative curvature
+  Linear correlation deficit proportional to A confirms Regge calculus prediction
+  ⚠ Slope differs from theoretical prediction
+  Note: This may indicate the relationship is more complex than linear
+
+Analysis completed: 2025-07-17 18:33:38

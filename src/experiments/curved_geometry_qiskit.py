@@ -17,6 +17,9 @@ from qiskit.quantum_info import DensityMatrix, partial_trace
 from src.CGPTFactory import qiskit_entropy
 from qiskit_ibm_runtime.fake_provider import FakeBrisbane
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+from qiskit.ignis.mitigation.measurement import complete_meas_cal, CompleteMeasFitter
+from qiskit.providers.aer.noise import NoiseModel
+from qiskit.providers.aer import AerSimulator
 
 
 # --- Utility Functions ---
@@ -158,7 +161,7 @@ def run_curved_geometry_qiskit(device_name=None, shots=1024):
     exp_dir = f"experiment_logs/curved_geometry_qiskit_{device_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     os.makedirs(exp_dir, exist_ok=True)
 
-    timesteps = np.linspace(0, 3 * np.pi, 6)  # Range of phi values
+    timesteps = np.linspace(0, 3 * np.pi, 9)  # Range of phi values
     results = {}
     rt_data = []
     coords_list_2d = []
@@ -177,11 +180,17 @@ def run_curved_geometry_qiskit(device_name=None, shots=1024):
             print(f"Running {mode} mode, phi={phi_val:.4f}")
             qc = build_circuit(mode, phi_val)
             tqc = transpile(qc, backend, optimization_level=3)
+            # --- Readout mitigation ---
+            if not backend.configuration().simulator:
+                meas_fitter = apply_readout_mitigation(qc, backend, shots)
             try:
                 counts = cgpt_run(tqc, backend=backend, shots=shots)
                 if counts is None or not isinstance(counts, dict):
                     print(f"[WARNING] cgpt_run returned unexpected value: {counts}. Skipping this step.")
                     continue
+                # Apply readout mitigation if on hardware
+                if not backend.configuration().simulator:
+                    counts = meas_fitter.filter.apply(counts)
             except Exception as e:
                 print(f"[ERROR] cgpt_run failed: {e}")
                 continue

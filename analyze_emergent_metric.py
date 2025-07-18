@@ -9,6 +9,7 @@ from scipy.stats import linregress
 from scipy.optimize import curve_fit
 from scipy import stats
 import warnings
+from datetime import datetime
 
 def bootstrap_confidence_interval(data, statistic, n_bootstrap=1000, confidence=0.95):
     """
@@ -167,6 +168,162 @@ def estimate_finite_size_effects(num_qubits, geometry):
     
     return systematic_errors
 
+def enhanced_statistical_analysis(x_values, y_values, uncertainties=None):
+    """
+    Perform comprehensive statistical analysis similar to IBM Sherbrooke experiments
+    Args:
+        x_values (list): x values
+        y_values (list): y values
+        uncertainties (list): Measurement uncertainties (optional)
+    Returns:
+        dict: Complete statistical analysis results
+    """
+    # Convert to numpy arrays
+    x = np.array(x_values)
+    y = np.array(y_values)
+    
+    # Linear regression with scipy
+    slope, intercept, r_value, p_value, std_err = linregress(x, y, alternative='two-sided')
+    r_squared = r_value ** 2
+    
+    # Calculate confidence intervals
+    n = len(x)
+    df = n - 2  # degrees of freedom
+    
+    # 95% confidence interval for slope
+    t_critical = stats.t.ppf(0.975, df)
+    slope_ci_lower = slope - t_critical * std_err
+    slope_ci_upper = slope + t_critical * std_err
+    
+    # Prediction intervals for individual points
+    x_mean = np.mean(x)
+    ssx = np.sum((x - x_mean) ** 2)
+    
+    # Standard error of prediction
+    se_pred = std_err * np.sqrt(1 + 1/n + (x - x_mean)**2 / ssx)
+    pred_ci_lower = slope * x + intercept - t_critical * se_pred
+    pred_ci_upper = slope * x + intercept + t_critical * se_pred
+    
+    # Calculate residuals and their statistics
+    residuals = y - (slope * x + intercept)
+    residual_std = np.std(residuals)
+    
+    # Durbin-Watson test for autocorrelation
+    dw_statistic = np.sum(np.diff(residuals)**2) / np.sum(residuals**2)
+    
+    # Shapiro-Wilk test for normality of residuals
+    shapiro_stat, shapiro_p = stats.shapiro(residuals)
+    
+    return {
+        'linear_regression': {
+            'slope': slope,
+            'intercept': intercept,
+            'r_squared': r_squared,
+            'p_value': p_value,
+            'std_err': std_err,
+            'slope_ci_95': (slope_ci_lower, slope_ci_upper),
+            'equation': f"y = {slope:.6f} × x + {intercept:.6f}"
+        },
+        'prediction_intervals': {
+            'lower': pred_ci_lower.tolist(),
+            'upper': pred_ci_upper.tolist()
+        },
+        'residuals': {
+            'values': residuals.tolist(),
+            'std': residual_std,
+            'durbin_watson': dw_statistic,
+            'shapiro_stat': shapiro_stat,
+            'shapiro_p': shapiro_p
+        },
+        'sample_size': n,
+        'degrees_of_freedom': df
+    }
+
+def create_publication_quality_plot(x_values, y_values, uncertainties=None, analysis_results=None, 
+                                  x_label='x', y_label='y', title='Analysis Results', save_path=None):
+    """
+    Create publication-quality plot with error bars, confidence bands, and statistical annotations
+    Args:
+        x_values (list): x values
+        y_values (list): y values
+        uncertainties (list): Measurement uncertainties
+        analysis_results (dict): Statistical analysis results
+        x_label (str): x-axis label
+        y_label (str): y-axis label
+        title (str): Plot title
+        save_path (str): Path to save the plot
+    """
+    plt.style.use('seaborn-v0_8-whitegrid')
+    fig, ax = plt.subplots(figsize=(10, 8))
+    
+    # Plot data points with error bars
+    if uncertainties is not None:
+        ax.errorbar(x_values, y_values, yerr=uncertainties, 
+                   fmt='o', capsize=5, capthick=2, markersize=8, 
+                   color='#2E86AB', ecolor='#A23B72', 
+                   label='Experimental Data', alpha=0.8)
+    else:
+        ax.scatter(x_values, y_values, s=100, color='#2E86AB', 
+                  alpha=0.8, label='Experimental Data')
+    
+    # Plot regression line
+    if analysis_results:
+        slope = analysis_results['linear_regression']['slope']
+        intercept = analysis_results['linear_regression']['intercept']
+        r_squared = analysis_results['linear_regression']['r_squared']
+        p_value = analysis_results['linear_regression']['p_value']
+        std_err = analysis_results['linear_regression']['std_err']
+        
+        # Generate line for plotting
+        x_line = np.linspace(min(x_values), max(x_values), 100)
+        y_line = slope * x_line + intercept
+        
+        ax.plot(x_line, y_line, '--', color='#F18F01', linewidth=3, 
+               label=f'Linear Fit: y = {slope:.4f}x + {intercept:.4f}')
+        
+        # Plot confidence band
+        if 'prediction_intervals' in analysis_results:
+            x_sorted = np.array(x_values)
+            y_sorted = np.array(y_values)
+            sort_idx = np.argsort(x_sorted)
+            x_sorted = x_sorted[sort_idx]
+            
+            lower = np.array(analysis_results['prediction_intervals']['lower'])[sort_idx]
+            upper = np.array(analysis_results['prediction_intervals']['upper'])[sort_idx]
+            
+            ax.fill_between(x_sorted, lower, upper, alpha=0.3, color='#F18F01',
+                          label='95% Prediction Interval')
+        
+        # Add statistical annotations
+        stats_text = f'R² = {r_squared:.4f}\np = {p_value:.4f}\nSlope = {slope:.4f} ± {std_err:.4f}'
+        ax.text(0.05, 0.95, stats_text, transform=ax.transAxes, 
+               bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8),
+               verticalalignment='top', fontsize=12)
+    
+    # Customize plot
+    ax.set_xlabel(x_label, fontsize=14, fontweight='bold')
+    ax.set_ylabel(y_label, fontsize=14, fontweight='bold')
+    ax.set_title(title, fontsize=16, fontweight='bold', pad=20)
+    
+    ax.legend(fontsize=12, loc='upper right')
+    ax.grid(True, alpha=0.3)
+    
+    # Set axis limits with some padding
+    ax.set_xlim(min(x_values) - 0.1 * (max(x_values) - min(x_values)), 
+                max(x_values) + 0.1 * (max(x_values) - min(x_values)))
+    y_min, y_max = min(y_values), max(y_values)
+    y_range = y_max - y_min
+    ax.set_ylim(y_min - 0.1 * y_range, y_max + 0.1 * y_range)
+    
+    plt.tight_layout()
+    
+    if save_path:
+        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        print(f"Plot saved to {save_path}")
+    
+    plt.show()
+    return fig
+
 def enhanced_spectral_dimension_analysis(D, S_max=10, num_walks=1000, seed=42, n_bootstrap=100):
     """
     Enhanced spectral dimension analysis with error estimation.
@@ -233,21 +390,48 @@ def enhanced_spectral_dimension_analysis(D, S_max=10, num_walks=1000, seed=42, n
     d_spectral_mean = np.mean(d_spectral_bootstrap)
     d_spectral_std = np.std(d_spectral_bootstrap)
     
-    # Main fit
-    slope, intercept, r, p, stderr = linregress(log_s, log_P)
+    # Main fit with enhanced statistical analysis
+    slope, intercept, r, p, stderr = linregress(log_s, log_P, alternative='two-sided')
     d_spectral = -2 * slope
     
-    # Plot with error bars
-    plt.figure()
+    # Perform enhanced statistical analysis
+    analysis_results = enhanced_statistical_analysis(log_s, log_P)
+    
+    # Plot with error bars and enhanced analysis
+    plt.figure(figsize=(10, 8))
     plt.errorbar(log_s, log_P, yerr=np.std(np.log(P_s_bootstrap[mask]), axis=1), 
-                fmt='o-', label='Data with uncertainty')
-    plt.plot(log_s, slope*log_s + intercept, '--', 
+                fmt='o-', label='Data with uncertainty', capsize=5, capthick=2)
+    plt.plot(log_s, slope*log_s + intercept, '--', linewidth=3, color='#F18F01',
             label=f'Fit: d_spectral={d_spectral:.2f}±{d_spectral_std:.2f}')
-    plt.xlabel('log s')
-    plt.ylabel('log P(s)')
-    plt.title(f'Spectral Dimension: {d_spectral:.2f}±{d_spectral_std:.2f} (r²={r**2:.3f})')
-    plt.legend()
-    plt.savefig(os.path.join("plots", "spectral_dimension_fit_with_errors.png"))
+    
+    # Add confidence band if available
+    if analysis_results and 'prediction_intervals' in analysis_results:
+        lower = np.array(analysis_results['prediction_intervals']['lower'])
+        upper = np.array(analysis_results['prediction_intervals']['upper'])
+        plt.fill_between(log_s, lower, upper, alpha=0.3, color='#F18F01',
+                        label='95% Prediction Interval')
+    
+    plt.xlabel('log s', fontsize=14, fontweight='bold')
+    plt.ylabel('log P(s)', fontsize=14, fontweight='bold')
+    plt.title(f'Spectral Dimension Analysis\n{d_spectral:.2f}±{d_spectral_std:.2f} (R²={r**2:.3f}, p={p:.3f})', 
+              fontsize=16, fontweight='bold')
+    plt.legend(fontsize=12)
+    plt.grid(True, alpha=0.3)
+    
+    # Add statistical annotations
+    if analysis_results:
+        stats_text = f'R² = {analysis_results["linear_regression"]["r_squared"]:.4f}\n'
+        stats_text += f'p = {analysis_results["linear_regression"]["p_value"]:.4f}\n'
+        stats_text += f'Slope = {slope:.4f} ± {analysis_results["linear_regression"]["std_err"]:.4f}'
+        plt.text(0.05, 0.95, stats_text, transform=plt.gca().transAxes, 
+               bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8),
+               verticalalignment='top', fontsize=12)
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join("plots", "spectral_dimension_fit_with_errors.png"), dpi=300, bbox_inches='tight')
+    plt.show()
+    
+    return d_spectral, d_spectral_std, analysis_results
     plt.show()
     
     print(f"Spectral dimension d_spectral = {d_spectral:.2f} ± {d_spectral_std:.2f} (95% CI)")
@@ -477,6 +661,272 @@ def laplacian_spectral_dimension(D, S_max=10, s_min=0.1, s_max=10, num_s=10):
     plt.show()
     print(f"[Laplacian] Spectral dimension d_spectral ≈ {d_spectral:.2f} (fit r={r:.3f})")
 
+def analyze_custom_curvature_results(result_file_path):
+    """
+    Analyze custom curvature experiment results with enhanced statistical analysis
+    Args:
+        result_file_path (str): Path to the custom curvature experiment result file
+    """
+    print(f"Analyzing custom curvature results from: {result_file_path}")
+    
+    # Load the results
+    with open(result_file_path, 'r') as f:
+        results = json.load(f)
+    
+    # Extract key data
+    spec = results.get('spec', {})
+    num_qubits = spec.get('num_qubits', 0)
+    geometry = spec.get('geometry', 'unknown')
+    curvature = spec.get('curvature', 0)
+    device = spec.get('device', 'unknown')
+    
+    print(f"Experiment parameters: {num_qubits} qubits, {geometry} geometry, curvature={curvature}, device={device}")
+    
+    # Extract mutual information data
+    mi_per_timestep = results.get('mutual_information', [])
+    distance_matrix_per_timestep = results.get('distance_matrix_per_timestep', [])
+    
+    if not mi_per_timestep or not distance_matrix_per_timestep:
+        print("No mutual information or distance matrix data found")
+        return
+    
+    # Analyze the final timestep (most evolved state)
+    final_mi = mi_per_timestep[-1]
+    final_distance_matrix = np.array(distance_matrix_per_timestep[-1])
+    
+    print(f"Analyzing final timestep with {len(final_mi)} MI values")
+    
+    # Extract edge MI values for analysis
+    edge_mi_values = []
+    edge_pairs = []
+    
+    for key, value in final_mi.items():
+        if key.startswith('I_') and ',' in key:
+            # Parse qubit indices from key like "I_0,1"
+            try:
+                qubits = key[2:].split(',')
+                i, j = int(qubits[0]), int(qubits[1])
+                edge_mi_values.append(value)
+                edge_pairs.append((i, j))
+            except (ValueError, IndexError):
+                continue
+    
+    if not edge_mi_values:
+        print("No valid edge MI values found")
+        return
+    
+    print(f"Found {len(edge_mi_values)} edge MI values")
+    
+    # Create analysis directory
+    analysis_dir = f"experiment_logs/custom_curvature_analysis_{num_qubits}q_{geometry}_curv{curvature}"
+    os.makedirs(analysis_dir, exist_ok=True)
+    os.makedirs(os.path.join(analysis_dir, "plots"), exist_ok=True)
+    
+    # 1. MI Distribution Analysis
+    print("\n=== Mutual Information Distribution Analysis ===")
+    mi_array = np.array(edge_mi_values)
+    
+    # Basic statistics
+    mi_stats = {
+        'mean': np.mean(mi_array),
+        'std': np.std(mi_array),
+        'min': np.min(mi_array),
+        'max': np.max(mi_array),
+        'median': np.median(mi_array)
+    }
+    
+    print(f"MI Statistics: mean={mi_stats['mean']:.4f}, std={mi_stats['std']:.4f}")
+    print(f"MI Range: [{mi_stats['min']:.4f}, {mi_stats['max']:.4f}]")
+    
+    # Plot MI distribution
+    plt.figure(figsize=(12, 8))
+    
+    plt.subplot(2, 2, 1)
+    plt.hist(mi_array, bins=20, alpha=0.7, color='#2E86AB', edgecolor='black')
+    plt.axvline(mi_stats['mean'], color='red', linestyle='--', label=f'Mean: {mi_stats["mean"]:.4f}')
+    plt.axvline(mi_stats['median'], color='green', linestyle='--', label=f'Median: {mi_stats["median"]:.4f}')
+    plt.xlabel('Mutual Information')
+    plt.ylabel('Frequency')
+    plt.title('MI Distribution')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    
+    # 2. Distance vs MI Analysis
+    print("\n=== Distance vs Mutual Information Analysis ===")
+    
+    # Extract corresponding distances
+    distances = []
+    valid_mi = []
+    
+    for (i, j), mi_val in zip(edge_pairs, edge_mi_values):
+        if i < final_distance_matrix.shape[0] and j < final_distance_matrix.shape[1]:
+            dist = final_distance_matrix[i, j]
+            if dist != np.inf and dist > 0:
+                distances.append(dist)
+                valid_mi.append(mi_val)
+    
+    if len(distances) >= 3:  # Need at least 3 points for regression
+        # Perform enhanced statistical analysis
+        analysis_results = enhanced_statistical_analysis(distances, valid_mi)
+        
+        print(f"Distance vs MI Analysis:")
+        print(f"  R² = {analysis_results['linear_regression']['r_squared']:.4f}")
+        print(f"  p-value = {analysis_results['linear_regression']['p_value']:.4f}")
+        print(f"  Slope = {analysis_results['linear_regression']['slope']:.4f} ± {analysis_results['linear_regression']['std_err']:.4f}")
+        print(f"  Equation: {analysis_results['linear_regression']['equation']}")
+        
+        # Create publication-quality plot
+        plt.subplot(2, 2, 2)
+        create_publication_quality_plot(
+            distances, valid_mi, 
+            analysis_results=analysis_results,
+            x_label='Geodesic Distance', 
+            y_label='Mutual Information',
+            title=f'Distance vs MI ({num_qubits}q, {geometry})',
+            save_path=os.path.join(analysis_dir, "plots", "distance_vs_mi.png")
+        )
+        
+        # Save analysis results
+        with open(os.path.join(analysis_dir, "distance_mi_analysis.json"), 'w') as f:
+            json.dump(analysis_results, f, indent=2)
+    
+    # 3. Spectral Dimension Analysis
+    print("\n=== Spectral Dimension Analysis ===")
+    
+    try:
+        d_spectral, d_spectral_std, spectral_analysis = enhanced_spectral_dimension_analysis(
+            final_distance_matrix, S_max=min(10, num_qubits), n_bootstrap=100
+        )
+        
+        if d_spectral is not None:
+            print(f"Spectral Dimension: {d_spectral:.3f} ± {d_spectral_std:.3f}")
+            
+            # Save spectral analysis
+            spectral_results = {
+                'spectral_dimension': d_spectral,
+                'spectral_dimension_std': d_spectral_std,
+                'analysis': spectral_analysis
+            }
+            
+            with open(os.path.join(analysis_dir, "spectral_analysis.json"), 'w') as f:
+                json.dump(spectral_results, f, indent=2)
+            
+            # Save the plot
+            plt.savefig(os.path.join(analysis_dir, "plots", "spectral_dimension.png"), dpi=300, bbox_inches='tight')
+    except Exception as e:
+        print(f"Spectral dimension analysis failed: {e}")
+    
+    # 4. Curvature Effects Analysis (if multiple curvature values available)
+    print("\n=== Curvature Effects Analysis ===")
+    
+    # Check if we have multiple timesteps for evolution analysis
+    if len(mi_per_timestep) > 1:
+        print(f"Analyzing evolution over {len(mi_per_timestep)} timesteps")
+        
+        # Calculate average MI per timestep
+        avg_mi_per_timestep = []
+        for t, mi_dict in enumerate(mi_per_timestep):
+            if mi_dict:
+                mi_values = [v for v in mi_dict.values() if isinstance(v, (int, float))]
+                if mi_values:
+                    avg_mi_per_timestep.append(np.mean(mi_values))
+                else:
+                    avg_mi_per_timestep.append(0)
+            else:
+                avg_mi_per_timestep.append(0)
+        
+        # Analyze MI evolution
+        timesteps = list(range(len(avg_mi_per_timestep)))
+        evolution_analysis = enhanced_statistical_analysis(timesteps, avg_mi_per_timestep)
+        
+        print(f"MI Evolution Analysis:")
+        print(f"  R² = {evolution_analysis['linear_regression']['r_squared']:.4f}")
+        print(f"  p-value = {evolution_analysis['linear_regression']['p_value']:.4f}")
+        
+        # Plot evolution
+        plt.subplot(2, 2, 3)
+        create_publication_quality_plot(
+            timesteps, avg_mi_per_timestep,
+            analysis_results=evolution_analysis,
+            x_label='Timestep',
+            y_label='Average Mutual Information',
+            title=f'MI Evolution ({num_qubits}q, {geometry})',
+            save_path=os.path.join(analysis_dir, "plots", "mi_evolution.png")
+        )
+        
+        # Save evolution analysis
+        with open(os.path.join(analysis_dir, "evolution_analysis.json"), 'w') as f:
+            json.dump(evolution_analysis, f, indent=2)
+    
+    # 5. Summary Statistics
+    print("\n=== Summary Statistics ===")
+    
+    summary_stats = {
+        'experiment_params': spec,
+        'mi_statistics': mi_stats,
+        'num_edges': len(edge_mi_values),
+        'num_timesteps': len(mi_per_timestep),
+        'analysis_timestamp': datetime.now().isoformat()
+    }
+    
+    # Add analysis results if available
+    if 'analysis_results' in locals():
+        summary_stats['distance_mi_correlation'] = analysis_results['linear_regression']
+    
+    if 'evolution_analysis' in locals():
+        summary_stats['evolution_trend'] = evolution_analysis['linear_regression']
+    
+    if 'd_spectral' in locals() and d_spectral is not None:
+        summary_stats['spectral_dimension'] = {
+            'value': d_spectral,
+            'uncertainty': d_spectral_std
+        }
+    
+    # Save summary
+    with open(os.path.join(analysis_dir, "summary_statistics.json"), 'w') as f:
+        json.dump(summary_stats, f, indent=2)
+    
+    # Create comprehensive summary text
+    with open(os.path.join(analysis_dir, "analysis_summary.txt"), 'w') as f:
+        f.write(f"Custom Curvature Experiment Analysis Summary\n")
+        f.write(f"============================================\n\n")
+        f.write(f"Experiment Parameters:\n")
+        f.write(f"  Number of qubits: {num_qubits}\n")
+        f.write(f"  Geometry: {geometry}\n")
+        f.write(f"  Curvature: {curvature}\n")
+        f.write(f"  Device: {device}\n")
+        f.write(f"  Number of timesteps: {len(mi_per_timestep)}\n\n")
+        
+        f.write(f"Mutual Information Analysis:\n")
+        f.write(f"  Number of edges: {len(edge_mi_values)}\n")
+        f.write(f"  Mean MI: {mi_stats['mean']:.4f} ± {mi_stats['std']:.4f}\n")
+        f.write(f"  MI range: [{mi_stats['min']:.4f}, {mi_stats['max']:.4f}]\n\n")
+        
+        if 'analysis_results' in locals():
+            f.write(f"Distance vs MI Correlation:\n")
+            f.write(f"  R² = {analysis_results['linear_regression']['r_squared']:.4f}\n")
+            f.write(f"  p-value = {analysis_results['linear_regression']['p_value']:.4f}\n")
+            f.write(f"  Slope = {analysis_results['linear_regression']['slope']:.4f} ± {analysis_results['linear_regression']['std_err']:.4f}\n")
+            f.write(f"  Equation: {analysis_results['linear_regression']['equation']}\n\n")
+        
+        if 'evolution_analysis' in locals():
+            f.write(f"MI Evolution Analysis:\n")
+            f.write(f"  R² = {evolution_analysis['linear_regression']['r_squared']:.4f}\n")
+            f.write(f"  p-value = {evolution_analysis['linear_regression']['p_value']:.4f}\n")
+            f.write(f"  Trend: {evolution_analysis['linear_regression']['equation']}\n\n")
+        
+        if 'd_spectral' in locals() and d_spectral is not None:
+            f.write(f"Spectral Dimension:\n")
+            f.write(f"  d_spectral = {d_spectral:.3f} ± {d_spectral_std:.3f}\n\n")
+        
+        f.write(f"Analysis completed: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+    
+    print(f"\nAnalysis complete! Results saved to: {analysis_dir}")
+    print(f"Summary: {os.path.join(analysis_dir, 'analysis_summary.txt')}")
+    print(f"Plots: {os.path.join(analysis_dir, 'plots')}")
+    
+    return analysis_dir
+
 def main():
     parser = argparse.ArgumentParser(description="Analyze emergent metric and curvature from MI data.")
     parser.add_argument("result_json", type=str, nargs='?', default=None, help="Path to result JSON file (if not specified, pick from list)")
@@ -484,7 +934,17 @@ def main():
     parser.add_argument("--curvature", type=float, default=None, help="Curvature parameter (for hyperbolic/spherical geometry); if not set, use experiment value")
     parser.add_argument("--kappa_fit", type=float, default=None, help="Target kappa for area fit; if not set, use experiment value")
     parser.add_argument("--logdir", type=str, default="experiment_logs/custom_curvature_experiment", help="Directory to search for result files")
+    parser.add_argument("--custom_curvature", action="store_true", help="Analyze custom curvature experiment results with enhanced statistical analysis")
     args = parser.parse_args()
+    
+    # Check if custom curvature analysis is requested
+    if args.custom_curvature:
+        if args.result_json is None:
+            result_json = pick_result_file(args.logdir)
+        else:
+            result_json = args.result_json
+        analyze_custom_curvature_results(result_json)
+        return
     # Ensure plots directory exists
     plots_dir = "plots"
     os.makedirs(plots_dir, exist_ok=True)

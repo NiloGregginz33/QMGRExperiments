@@ -15,7 +15,7 @@ qc_t = transpile(qc, backend)
 print(f"Submitting job to backend: {backend.name}")
 
 sampler = Sampler(backend)
-job = sampler.run([qc_t], shots=1024)
+job = sampler.run([qc_t], shots=128)
 result = job.result()
 print("Raw result:", result)
 

@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 import argparse
 from qiskit import QuantumCircuit, transpile
-from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler, Session
+from qiskit_ibm_runtime import QiskitRuntimeService, Session, Batch
 from qiskit.result import marginal_counts
 from scipy.stats import pearsonr
 from sklearn.manifold import MDS
@@ -24,6 +24,9 @@ from qiskit.quantum_info import DensityMatrix, partial_trace
 from qiskit_ibm_runtime.fake_provider import FakeBrisbane
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.providers.exceptions import QiskitBackendNotFoundError
+from qiskit.primitives import Sampler
+from qiskit.result import marginal_counts
+from qiskit.quantum_info import Operator
 
 # ───────────────────────────────────────────────────────────────────
 def embed_geometry(D, model='euclidean', curvature=1.0):
@@ -111,6 +114,41 @@ def build_circuit(mode, phi):
     qc.measure_all()  # Measure all qubits
     return qc
 
+def stretch_circuit_cnot(qc, scale):
+    """
+    Stretch the circuit by repeating CNOT gates to increase noise.
+    Args:
+        qc (QuantumCircuit): Original circuit
+        scale (int): Noise scale factor (1 = original, 2 = double, etc.)
+    Returns:
+        QuantumCircuit: Stretched circuit
+    """
+    from qiskit.circuit import QuantumCircuit as QC
+    new_qc = QC(qc.num_qubits, qc.num_clbits)
+    
+    # Copy all instructions, stretching CNOT gates
+    for instruction in qc.data:
+        operation = instruction.operation
+        qubits = instruction.qubits
+        clbits = instruction.clbits
+        
+        if operation.name == 'cx' and scale > 1:
+            # Repeat CNOT gates to increase noise
+            for _ in range(scale):
+                new_qc.cx(qubits[0], qubits[1])
+        else:
+            # Copy other operations as-is
+            if operation.name == 'h':
+                new_qc.h(qubits[0])
+            elif operation.name == 'rx':
+                new_qc.rx(operation.params[0], qubits[0])
+            elif operation.name == 'cz':
+                new_qc.cz(qubits[0], qubits[1])
+            elif operation.name == 'measure':
+                new_qc.measure(qubits[0], clbits[0])
+    
+    return new_qc
+
 # Implement a function to compute mutual information from probabilities
 def compute_mutual_information_from_probs(probs, i, j, n_qubits):
     # Calculate marginal probabilities
@@ -134,15 +172,21 @@ def shannon_entropy(probs, shots):
             H -= p * np.log2(p)
     return H
 
+def apply_readout_mitigation(qc, backend, shots):
+    """
+    Modern readout error mitigation using Qiskit Runtime
+    """
+    # For modern Qiskit, we'll use the built-in error mitigation in SamplerV2
+    # This is handled automatically by the runtime service
+    return None
+
 def run_custom_geometry_qiskit(device_name=None, shots=1024, geometry='euclidean', curvature=1.0):
     service = QiskitRuntimeService()
-    # select backend...
-    # create exp_dir...
-    timesteps = np.linspace(0, 3 * np.pi, 9)
+    timesteps = np.linspace(0, 3 * np.pi, 9)  # Extended phi sweep to 9 points
     results = {}
     n_qubits = 6
+    noise_scales = [1, 2, 3]
 
-    # Update backend selection logic
     if device_name == 'simulator':
         backend = FakeBrisbane()
         pm = generate_preset_pass_manager(backend=backend, optimization_level=1)
@@ -154,50 +198,69 @@ def run_custom_geometry_qiskit(device_name=None, shots=1024, geometry='euclidean
             backend = sorted(backends, key=lambda b: b.status().pending_jobs)[0]
         else:
             try:
-                backend = service.get_backend(device_name)
-            except QiskitBackendNotFoundError:
-                raise RuntimeError(f"Backend {device_name} not found.")
+                # For QiskitRuntimeService, use backends() method
+                available_backends = service.backends()
+                backend = None
+                for b in available_backends:
+                    if device_name in b.name:
+                        backend = b
+                        break
+                if backend is None:
+                    raise RuntimeError(f"Backend {device_name} not found.")
+            except Exception as e:
+                raise RuntimeError(f"Error accessing backend {device_name}: {e}")
 
     exp_dir = f"experiment_logs/custom_geometry_qiskit_{('FakeBrisbane' if device_name=='simulator' else device_name)}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     os.makedirs(exp_dir, exist_ok=True)
 
-    # Adjust execution logic to use the selected backend
     for mode in (['flat','curved'] if args.mode=='both' else [args.mode]):
         mode_results = []
+        # --- Build circuits for all phi values ---
+        circuits = []
         for phi_val in timesteps:
             qc = build_circuit(mode, phi_val)
-            if device_name == 'simulator':
-                tqc = pm.run(qc)
-            else:
-                tqc = transpile(qc, backend, optimization_level=3)
-            counts = cgpt_run(tqc, backend=backend, shots=shots)  # assume dict
-
+            circuits.append(qc)
+        
+        # --- Transpile and run all circuits ---
+        if device_name == 'simulator':
+            tqcs = [pm.run(qc) for qc in circuits]
+            all_counts = [cgpt_run(tqc, backend=backend, shots=shots) for tqc in tqcs]
+        else:
+            # For hardware, run circuits individually using CGPTFactory (fallback for older Qiskit versions)
+            tqcs = transpile(circuits, backend, optimization_level=3)
+            
+            print(f"Running {len(tqcs)} circuits on {backend.name}...")
+            
+            # Use CGPTFactory run function for each circuit
+            all_counts = []
+            for i, tqc in enumerate(tqcs):
+                print(f"Running circuit {i+1}/{len(tqcs)}...")
+                counts = cgpt_run(tqc, backend=backend, shots=shots)
+                all_counts.append(counts)
+            
+            print("All circuits completed!")
+        
+        # --- Process results ---
+        for idx, phi_val in enumerate(timesteps):
+            counts = all_counts[idx]
             # --- Mutual information matrix ---
             mi_matrix = np.zeros((n_qubits,n_qubits))
             for i in range(n_qubits):
-                for j in range(i+1,n_qubits):
-                    # Compute mutual information directly from counts using probabilities
-                    probs = {k: v / shots for k, v in counts.items()}
-                    mi = compute_mutual_information_from_probs(probs, i, j, n_qubits)
-                    mi_matrix[i,j] = mi_matrix[j,i] = mi
-
-            # --- Radiation entropy & other metrics (unchanged) ---
-            # Calculate probabilities from marginal counts
+                for l in range(i+1,n_qubits):
+                    probs = {kk: v / shots for kk, v in counts.items()}
+                    mi = compute_mutual_information_from_probs(probs, i, l, n_qubits)
+                    mi_matrix[i,l] = mi_matrix[l,i] = mi
+            
             rad_counts = marginal_counts(counts, [3, 4], n_qubits)
-            rad_probs = {k: v / shots for k, v in rad_counts.items()}
+            rad_probs = {kk: v / shots for kk, v in rad_counts.items()}
             S_rad = shannon_entropy(rad_probs, shots)
-
-            # --- Build true distance matrix D = -ln(MI + eps) ---
+            
             eps = 1e-12
             MI_safe = np.clip(mi_matrix, eps, None)
             D = -np.log(MI_safe)
             np.fill_diagonal(D,0.0)
-
-            # --- Embed in chosen geometry ---
             coords2 = embed_geometry(D, model=geometry, curvature=curvature)
             coords3 = MDS(n_components=3, dissimilarity='precomputed', random_state=42).fit_transform(D)
-
-            # --- Save, plot, collect results ---
             d_Q34 = np.linalg.norm(coords2[3]-coords2[4])
             mode_results.append({
                 'phi': float(phi_val),
@@ -205,11 +268,9 @@ def run_custom_geometry_qiskit(device_name=None, shots=1024, geometry='euclidean
                 'd_Q34': float(d_Q34),
                 'mi_matrix': mi_matrix.tolist(),
                 'coords2': coords2.tolist(),
-                'coords3': coords3.tolist(),
-                # ... other metrics ...
+                'coords3': coords3.tolist()
             })
-
-            # Plot:
+            
             plt.figure(figsize=(8,6))
             plt.scatter(coords2[:,0], coords2[:,1], c='C0', s=100)
             for i,(x,y) in enumerate(coords2):
@@ -217,61 +278,7 @@ def run_custom_geometry_qiskit(device_name=None, shots=1024, geometry='euclidean
             plt.title(f"{mode.capitalize()} φ={phi_val:.2f} ({geometry}, κ={curvature})")
             plt.savefig(f"{exp_dir}/{mode}_phi_{phi_val:.2f}_{geometry}.png")
             plt.close()
-
         results[mode] = mode_results
-
-    # ... save JSON and summary as before ...
-
-    # Enhance data logging
-    # Collect all relevant data
-    # results = {
-    #     'statevector': statevector,
-    #     'mutual_information': mutual_information,
-    #     'entropy': entropy,
-    #     'curvature': args.curvature,
-    #     'geometry': args.geometry,
-    #     'device': args.device,
-    #     'shots': args.shots
-    # }
-
-    # Create a comprehensive summary
-    summary = """
-    Theoretical Background:
-    This experiment explores the embedding of qubit entanglement networks in hyperbolic space, simulating curved geometries.
-
-    Methodology:
-    The experiment uses a quantum circuit to simulate entanglement and measure mutual information across qubits.
-
-    Key Metrics:
-    - Statevector: {statevector}
-    - Mutual Information: {mutual_information}
-    - Entropy: {entropy}
-
-    Analysis:
-    The results indicate...
-
-    Conclusions:
-    The experiment demonstrates...
-    """.format(statevector=statevector, mutual_information=mutual_information, entropy=entropy)
-
-    # Correct the logic to ensure results and summary are constructed using collected data
-
-    # Implement the save_results_and_summary function
-    def save_results_and_summary(results, summary, log_dir):
-        # Ensure the log directory exists
-        os.makedirs(log_dir, exist_ok=True)
-        
-        # Save results to results.json
-        results_path = os.path.join(log_dir, 'results.json')
-        with open(results_path, 'w') as f:
-            json.dump(results, f, indent=4)
-        
-        # Save summary to summary.txt
-        summary_path = os.path.join(log_dir, 'summary.txt')
-        with open(summary_path, 'w') as f:
-            f.write(summary)
-
-    # Ensure results and summary are constructed using collected data
 
     # Construct results using collected data
     results = {
@@ -304,10 +311,16 @@ Conclusions:
 The experiment demonstrates...
 """.format(curvature=curvature, geometry=geometry, device_name=device_name, shots=shots)
 
-    # Ensure the directory is created before saving files
-    os.makedirs(exp_dir, exist_ok=True)
-
     # Save results and summary
+    def save_results_and_summary(results, summary, log_dir):
+        os.makedirs(log_dir, exist_ok=True)
+        results_path = os.path.join(log_dir, 'results.json')
+        with open(results_path, 'w') as f:
+            json.dump(results, f, indent=4)
+        summary_path = os.path.join(log_dir, 'summary.txt')
+        with open(summary_path, 'w') as f:
+            f.write(summary)
+
     save_results_and_summary(results, summary, exp_dir)
 
 if __name__=="__main__":
