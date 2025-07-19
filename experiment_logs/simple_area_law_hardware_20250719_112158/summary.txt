@@ -1,0 +1,25 @@
+SIMPLE AREA LAW ENTROPY EXPERIMENT - HARDWARE VERSION
+============================================================
+
+EXPERIMENTAL SETUP
+--------------------
+Device: simulator
+Shots per run: 100
+Number of qubits: 3
+Circuit depth: 1
+Number of runs: 1
+Timestamp: 2025-07-19T11:21:58.942520
+
+STATISTICAL RESULTS
+--------------------
+Cut size 1: S = 1.0000 ± 0.0000, p = nan
+Cut size 2: S = 1.0000 ± 0.0000, p = nan
+Cut size 3: S = 2.0000 ± 0.0000, p = nan
+
+AREA LAW ANALYSIS
+--------------------
+Area Law Fit: S = 1.000 * log(A) + 1.000
+R² = 0.264734
+Chi² p-value = 0.000000
+Volume Law Fit: S = 1.000 * A + 1.000
+R² = -12.500000

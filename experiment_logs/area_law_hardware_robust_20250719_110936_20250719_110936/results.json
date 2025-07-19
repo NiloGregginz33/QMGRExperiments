@@ -1,0 +1,180 @@
+{
+  "experiment_name": "area_law_hardware_robust_20250719_110936",
+  "parameters": {
+    "device": "ibm_brisbane",
+    "shots": 1000,
+    "num_qubits": 4,
+    "depth": 2,
+    "connectivity": "nearest",
+    "num_runs": 2
+  },
+  "backend_info": {
+    "name": "ibm_brisbane",
+    "type": "hardware",
+    "num_qubits": 127,
+    "basis_gates": [
+      "ecr",
+      "id",
+      "rz",
+      "sx",
+      "x"
+    ]
+  },
+  "cut_sizes": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "mean_entropies": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "std_entropies": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "lower_ci": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "upper_ci": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "p_values": [
+    NaN,
+    NaN,
+    NaN,
+    NaN
+  ],
+  "standard_errors": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "statistical_tests": [
+    {
+      "t_stat": NaN,
+      "p_value": NaN,
+      "effect_size": -Infinity,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "t_stat": NaN,
+      "p_value": NaN,
+      "effect_size": -Infinity,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "t_stat": NaN,
+      "p_value": NaN,
+      "effect_size": -Infinity,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "t_stat": NaN,
+      "p_value": NaN,
+      "effect_size": -Infinity,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "area_law_analysis": {
+    "area_law": {
+      "alpha": 1.0,
+      "beta": 1.0,
+      "r2": -Infinity,
+      "chi2": Infinity,
+      "p_chi2": 0.0,
+      "fitted_values": [
+        1.0,
+        1.6931471805599454,
+        2.09861228866811,
+        2.386294361119891
+      ]
+    },
+    "volume_law": null,
+    "linear_fit": null,
+    "model_comparison": null
+  },
+  "individual_runs": [
+    {
+      "run": 1,
+      "cut_sizes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "entropies": [
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0
+      ],
+      "backend": {
+        "name": "ibm_brisbane",
+        "type": "hardware",
+        "num_qubits": 127,
+        "basis_gates": [
+          "ecr",
+          "id",
+          "rz",
+          "sx",
+          "x"
+        ]
+      },
+      "shots": 1000
+    },
+    {
+      "run": 2,
+      "cut_sizes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "entropies": [
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0
+      ],
+      "backend": {
+        "name": "ibm_brisbane",
+        "type": "hardware",
+        "num_qubits": 127,
+        "basis_gates": [
+          "ecr",
+          "id",
+          "rz",
+          "sx",
+          "x"
+        ]
+      },
+      "shots": 1000
+    }
+  ],
+  "timestamp": "20250719_110936"
+}

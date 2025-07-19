@@ -34,7 +34,6 @@ from qiskit_ibm_runtime import SamplerV2 as Sampler
 from qiskit_ibm_runtime import Batch
 from qiskit_ibm_runtime import Options
 from qiskit_ibm_runtime import Session
-from qiskit.primitives import BackendEstimator
 from qiskit_aer import AerSimulator
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.circuit.library import CXGate
@@ -43,8 +42,8 @@ from qiskit.transpiler import PassManager
 # Add command-line argument parsing
 p = argparse.ArgumentParser(description="Run a custom curvature circuit")
 p.add_argument("--num_qubits", type=int,   default=3, help="Number of qubits")
-p.add_argument("--topology", choices=["star","chain","ring","complete","custom"],
-               default="star", help="Entanglement pattern")
+p.add_argument("--topology", choices=["star","chain","ring","complete","triangulated","custom"],
+               default="triangulated", help="Entanglement pattern (triangulated recommended for angle-sum curvature)")
 p.add_argument("--custom_edges", type=str, default=None,
                help="Comma-separated 'u-v[:w]' pairs if topology=custom (e.g., '0-1:1.0,1-2:2.0,2-0:0.5')")
 p.add_argument("--alpha",       type=float, default=0.8,
@@ -115,7 +114,7 @@ def _apply_charge(qc, gamma, sigma=None):
 def make_graph(topology: str, n: int, custom_edges: str = None, default_weight: float = 1.0) -> nx.Graph:
     """
     Return a NetworkX graph on n nodes for the given topology.
-    - 'star', 'chain', 'ring', 'complete'
+    - 'star', 'chain', 'ring', 'complete', 'triangulated'
     - 'custom'    with custom_edges="0-1:1.0,1-3:2.0,2-3:0.5"
     """
     if topology == "star":
@@ -126,6 +125,35 @@ def make_graph(topology: str, n: int, custom_edges: str = None, default_weight: 
         return nx.cycle_graph(n)
     elif topology == "complete":
         return nx.complete_graph(n)
+    elif topology == "triangulated":
+        # Create a triangulated graph that supports angle-sum curvature
+        G = nx.Graph()
+        G.add_nodes_from(range(n))
+        
+        if n < 3:
+            if n == 2:
+                G.add_edge(0, 1, weight=default_weight)
+            return G
+        
+        # Base ring structure
+        for i in range(n):
+            G.add_edge(i, (i+1) % n, weight=default_weight)
+        
+        # Add cross-connections to create triangles
+        if n >= 4:
+            # Connect every other vertex to create triangles
+            for i in range(0, n, 2):
+                G.add_edge(i, (i+2) % n, weight=default_weight)
+        
+        # Add additional connections for more triangulation
+        if n >= 6:
+            # Connect vertices with distance 3 to create more triangles
+            for i in range(n):
+                G.add_edge(i, (i+3) % n, weight=default_weight)
+        
+        # For n=7, this creates a rich triangulated structure with many triangles
+        # Each vertex will have multiple triangles incident to it
+        return G
     elif topology == "custom":
         if not custom_edges:
             raise ValueError("You must pass --custom_edges for topology='custom'")
@@ -167,7 +195,9 @@ def build_custom_circuit_layers(num_qubits, topology, custom_edges,
             qc.rx(init_angle, q)
     for t in range(timesteps):
         # Entangling layer for this timestep
-        if geometry in ("spherical", "hyperbolic") and curvature is not None:
+        if geometry in ("spherical", "hyperbolic") and curvature is not None and topology != "triangulated":
+            # For non-Euclidean geometries, use custom edges with curvature-dependent weights
+            # UNLESS using triangulated topology, which should preserve its structure
             base_weight = weight
             std_dev = base_weight * (curvature / 10)
             edge_weights = {}
@@ -191,10 +221,33 @@ def build_custom_circuit_layers(num_qubits, topology, custom_edges,
                 qc._custom_edges_str = custom_edges_str
             qc._edge_weight_variance = float(np.var(list(edge_weights.values())))
         else:
-            G = make_graph(topology, num_qubits, custom_edges, default_weight=weight)
-            for u, v, data in G.edges(data=True):
-                w = data.get('weight', weight)
-                qc.rzz(w, u, v)
+            # Use the specified topology (including triangulated) with curvature-adjusted weights
+            if geometry in ("spherical", "hyperbolic") and curvature is not None and topology == "triangulated":
+                # For triangulated topology with non-Euclidean geometry, adjust weights based on curvature
+                base_weight = weight
+                std_dev = base_weight * (curvature / 10)
+                # Create triangulated graph first
+                G = make_graph(topology, num_qubits, custom_edges, default_weight=base_weight)
+                # Then adjust weights based on curvature
+                edge_weights = {}
+                for u, v in G.edges():
+                    w = float(np.random.normal(loc=base_weight, scale=std_dev))
+                    w = float(np.clip(w, 0.05, 1.0))
+                    edge_weights[(u, v)] = w
+                    qc.ryy(np.pi * w, u, v)
+                if log_edge_weights and t == 0:
+                    weights = list(edge_weights.values())
+                    print(f"[LOG] Triangulated edge weights: {weights}")
+                    print(f"[LOG] Edge weight variance: {np.var(weights)}")
+                if t == 0:
+                    qc._custom_edges_str = f"triangulated_with_{geometry}_curvature_{curvature}"
+                qc._edge_weight_variance = float(np.var(list(edge_weights.values())))
+            else:
+                # Standard case: use topology as specified
+                G = make_graph(topology, num_qubits, custom_edges, default_weight=weight)
+                for u, v, data in G.edges(data=True):
+                    w = data.get('weight', weight)
+                    qc.rzz(w, u, v)
                 if t == 0:
                     qc._custom_edges_str = custom_edges if custom_edges is not None else None
                     qc._edge_weight_variance = None
@@ -203,6 +256,11 @@ def build_custom_circuit_layers(num_qubits, topology, custom_edges,
     # After all entangling layers, apply charge injection and measurement to the final circuit
     _apply_charge(qc, gamma, sigma)
     qc.measure_all()
+    
+    # Add measurements to all circuits in the list
+    for circ in circuits:
+        circ.measure_all()
+    
     return circuits, qc
 
 # ─── Runner ───────────────────────────────────────────────────────────────────
@@ -282,7 +340,7 @@ def compute_graph_shortest_path_distances(edge_mi, graph):
         return np.full((graph.number_of_nodes(), graph.number_of_nodes()), np.inf), {}
 
 def check_hyperbolicity(D):
-    """Calculate Gromov δ (hyperbolicity) - always ≥0."""
+    """Calculate Gromov delta (hyperbolicity) - always >=0."""
     n = D.shape[0]
     max_delta = 0.0
     for i in range(n):
@@ -303,14 +361,71 @@ def compute_spherical_angle(a, b, c, curvature):
     return np.arccos(np.clip(num / denom, -1.0, 1.0))
 
 def compute_hyperbolic_angle(a, b, c, curvature):
+    """
+    Compute hyperbolic angle using the hyperbolic law of cosines.
+    Handles numerical overflow by scaling distances appropriately.
+    """
     k = np.sqrt(abs(curvature))
-    num = np.cosh(k * b) * np.cosh(k * c) - np.cosh(k * a)
-    denom = np.sinh(k * b) * np.sinh(k * c)
-    return np.arccos(np.clip(num / denom, -1.0, 1.0))
+    
+    # Check for invalid inputs
+    if np.any(np.isnan([a, b, c])) or np.any(np.isinf([a, b, c])):
+        return 0.0
+    
+    # Scale distances to prevent overflow
+    # For large distances, hyperbolic functions grow exponentially
+    # We can use the fact that cosh(x) ≈ sinh(x) ≈ exp(x)/2 for large x
+    max_dist = max(a, b, c)
+    if max_dist > 10.0:  # Threshold for overflow prevention
+        # Use asymptotic approximation for large distances
+        # For large x: cosh(x) ≈ sinh(x) ≈ exp(x)/2
+        # So cosh(b)*cosh(c) - cosh(a) ≈ (exp(b+c) - exp(a))/4
+        # And sinh(b)*sinh(c) ≈ exp(b+c)/4
+        # Therefore ratio ≈ (exp(b+c) - exp(a))/exp(b+c) = 1 - exp(a-b-c)
+        if b + c > a:
+            ratio = 1.0 - np.exp(k * (a - b - c))
+        else:
+            ratio = -1.0  # Angle is π
+    else:
+        # Use standard hyperbolic functions for smaller distances
+        try:
+            num = np.cosh(k * b) * np.cosh(k * c) - np.cosh(k * a)
+            denom = np.sinh(k * b) * np.sinh(k * c)
+            
+            # Check for overflow
+            if np.any(np.isnan([num, denom])) or np.any(np.isinf([num, denom])):
+                return 0.0
+            
+            # Check if denominator is too small
+            if abs(denom) < 1e-10:
+                return 0.0
+            
+            ratio = num / denom
+            if np.isnan(ratio) or np.isinf(ratio):
+                return 0.0
+        except (OverflowError, RuntimeWarning):
+            # Fallback to asymptotic approximation
+            if b + c > a:
+                ratio = 1.0 - np.exp(k * (a - b - c))
+            else:
+                ratio = -1.0
+    
+    # Ensure ratio is in valid range for arccos
+    ratio = np.clip(ratio, -1.0, 1.0)
+    
+    return np.arccos(ratio)
 
 def calculate_angle_sum(D, i, j, k, geometry="euclidean", curvature=1.0):
     """Calculate angle sum for a single triangle using the correct law of cosines for the geometry."""
     a, b, c = D[j,k], D[i,k], D[i,j]
+    
+    # Check for invalid triangle (zero or infinite distances)
+    if np.any(np.isnan([a, b, c])) or np.any(np.isinf([a, b, c])) or np.any(np.array([a, b, c]) <= 0):
+        return 0.0
+    
+    # Check triangle inequality
+    if not (a + b > c and a + c > b and b + c > a):
+        return 0.0
+    
     if geometry == "spherical":
         alpha = compute_spherical_angle(a, b, c, curvature)
         beta  = compute_spherical_angle(b, a, c, curvature)
@@ -326,7 +441,19 @@ def calculate_angle_sum(D, i, j, k, geometry="euclidean", curvature=1.0):
         alpha = euc_angle(a, b, c)
         beta  = euc_angle(b, a, c)
         gamma = euc_angle(c, a, b)
-    return float(alpha + beta + gamma)
+    
+    # Check for valid angles
+    if np.any(np.isnan([alpha, beta, gamma])) or np.any(np.isinf([alpha, beta, gamma])):
+        return 0.0
+    
+    angle_sum = float(alpha + beta + gamma)
+    
+    # For debugging: print first few triangles
+    if i == 0 and j == 1 and k == 2:
+        print(f"DEBUG: Triangle ({i},{j},{k}) with sides a={a:.3f}, b={b:.3f}, c={c:.3f}")
+        print(f"DEBUG: Angles alpha={alpha:.3f}, beta={beta:.3f}, gamma={gamma:.3f}, sum={angle_sum:.3f}")
+    
+    return angle_sum
 
 def calculate_all_angle_sums(D, geometry="euclidean", curvature=1.0):
     """Calculate angle sums for all triangles in the distance matrix."""
@@ -536,6 +663,108 @@ def generate_asymmetric_edges(num_qubits, target_curvature, asymmetry_factor=1.0
             w = float(np.clip(w, 0.05, 1.0))
             edge_list.append(f"{i}-{j}:{w:.4f}")
     return ",".join(edge_list)
+
+def bootstrap_confidence_interval(data, confidence=0.95, n_bootstrap=1000):
+    """
+    Calculate bootstrap confidence interval for a dataset.
+    
+    Args:
+        data: List of values to bootstrap
+        confidence: Confidence level (default 0.95 for 95% CI)
+        n_bootstrap: Number of bootstrap iterations
+    
+    Returns:
+        mean, lower_ci, upper_ci
+    """
+    if len(data) < 2:
+        return np.mean(data), np.mean(data), np.mean(data)
+    
+    bootstrap_means = []
+    for _ in range(n_bootstrap):
+        # Resample with replacement
+        bootstrap_sample = np.random.choice(data, size=len(data), replace=True)
+        bootstrap_means.append(np.mean(bootstrap_sample))
+    
+    # Calculate confidence interval
+    alpha = 1 - confidence
+    lower_percentile = (alpha / 2) * 100
+    upper_percentile = (1 - alpha / 2) * 100
+    
+    mean_val = np.mean(data)
+    lower_ci = np.percentile(bootstrap_means, lower_percentile)
+    upper_ci = np.percentile(bootstrap_means, upper_percentile)
+    
+    return mean_val, lower_ci, upper_ci
+
+def bootstrap_distance_matrix(distance_matrices, confidence=0.95, n_bootstrap=1000):
+    """
+    Calculate bootstrap confidence intervals for distance matrix elements.
+    
+    Args:
+        distance_matrices: List of distance matrices from different timesteps
+        confidence: Confidence level
+        n_bootstrap: Number of bootstrap iterations
+    
+    Returns:
+        mean_matrix, lower_ci_matrix, upper_ci_matrix
+    """
+    if not distance_matrices:
+        return None, None, None
+    
+    # Stack matrices and bootstrap each element
+    stacked = np.array(distance_matrices)
+    n_timesteps, n, m = stacked.shape
+    
+    mean_matrix = np.mean(stacked, axis=0)
+    lower_ci_matrix = np.zeros_like(mean_matrix)
+    upper_ci_matrix = np.zeros_like(mean_matrix)
+    
+    for i in range(n):
+        for j in range(m):
+            element_data = stacked[:, i, j]
+            _, lower_ci, upper_ci = bootstrap_confidence_interval(
+                element_data, confidence, n_bootstrap
+            )
+            lower_ci_matrix[i, j] = lower_ci
+            upper_ci_matrix[i, j] = upper_ci
+    
+    return mean_matrix, lower_ci_matrix, upper_ci_matrix
+
+def calculate_gromov_delta_with_uncertainty(distance_matrices, confidence=0.95, n_bootstrap=1000):
+    """
+    Calculate Gromov delta with bootstrap confidence intervals.
+    
+    Args:
+        distance_matrices: List of distance matrices from different timesteps
+        confidence: Confidence level
+        n_bootstrap: Number of bootstrap iterations
+    
+    Returns:
+        mean_delta, lower_ci, upper_ci, all_deltas
+    """
+    if not distance_matrices:
+        return None, None, None, []
+    
+    # Calculate δ for each timestep
+    deltas = []
+    for D in distance_matrices:
+        if D is not None:
+            # Convert list to numpy array if needed
+            if isinstance(D, list):
+                D = np.array(D)
+            delta = check_hyperbolicity(D)
+            if delta is not None:
+                deltas.append(delta)
+    
+    if not deltas:
+        return None, None, None, []
+    
+    # Bootstrap the δ values
+    mean_delta, lower_ci, upper_ci = bootstrap_confidence_interval(
+        deltas, confidence, n_bootstrap
+    )
+    
+    return mean_delta, lower_ci, upper_ci, deltas
 
 def generate_short_uid(length=6):
     """Generate a short random alphanumeric string for unique file naming."""
@@ -908,7 +1137,12 @@ if __name__ == "__main__":
 
         mi_per_timestep = []
         distmat_per_timestep = []
+        counts_per_timestep = []  # Store counts from all timesteps
+        entropy_per_timestep = []  # Store entropy from all timesteps
+        
         for t, circ in enumerate(circuits):
+            print(f"Executing timestep {t+1}/{len(circuits)}...")
+            
             # For simulator, use statevector
             if args.device == "simulator":
                 backend = FakeBrisbane()
@@ -920,67 +1154,130 @@ if __name__ == "__main__":
                 distance_matrix, _ = compute_graph_shortest_path_distances(edge_mi, G)
                 mi_per_timestep.append(mi)
                 distmat_per_timestep.append(distance_matrix.tolist())
+                counts_per_timestep.append(None)  # No counts for simulator
+                entropy_per_timestep.append(None)  # No entropy for simulator
             else:
                 # For hardware, use CGPTFactory run function
                 try:
-                    result = run(circ, args.device, args.shots)
-                    print(f"Hardware execution completed for timestep {t}")
+                    # Get the backend object
+                    service = QiskitRuntimeService()
+                    backend = service.backend(args.device)
+                    counts = run(circ, backend=backend, shots=args.shots)
+                    print(f"Hardware execution completed for timestep {t+1}")
+                    print(f"Raw counts: {counts}")
                     
-                    # Handle different return types from run function
-                    if hasattr(result, 'get_counts'):
-                        # It's a Result object
-                        counts = result.get_counts()
-                    elif isinstance(result, dict):
-                        # It's already a counts dictionary
-                        counts = result
-                    elif hasattr(result, 'data'):
-                        # It's a Statevector or similar object
-                        # For hardware, we can't get exact counts, so use fallback
-                        counts = None
-                    else:
-                        counts = None
+                    # Store the counts for this timestep
+                    counts_per_timestep.append(counts)
                     
-                    if counts is not None:
-                        # Convert counts to a simple MI estimate
+                    if counts is not None and len(counts) > 0:
+                        # Calculate entropy from counts
+                        entropy = calculate_entropy(counts)
+                        entropy_per_timestep.append(entropy)
+                        print(f"Entropy for timestep {t+1}: {entropy}")
+                        
+                        # Calculate mutual information from actual quantum data
                         total_shots = sum(counts.values())
                         n = args.num_qubits
                         
-                        # Create a simple MI estimate based on measurement correlations
-                        mi_estimate = {}
+                        # Create mutual information matrix from quantum measurements
+                        mi_matrix = np.zeros((n, n))
+                        
                         for i in range(n):
                             for j in range(i+1, n):
-                                # Calculate correlation between qubits i and j
-                                correlation = 0.0
+                                # Calculate mutual information between qubits i and j
+                                # Extract marginal probabilities for qubits i and j
+                                p_i_0 = 0.0  # P(qubit i = 0)
+                                p_i_1 = 0.0  # P(qubit i = 1)
+                                p_j_0 = 0.0  # P(qubit j = 0)
+                                p_j_1 = 0.0  # P(qubit j = 1)
+                                p_ij_00 = 0.0  # P(qubit i = 0, qubit j = 0)
+                                p_ij_01 = 0.0  # P(qubit i = 0, qubit j = 1)
+                                p_ij_10 = 0.0  # P(qubit i = 1, qubit j = 0)
+                                p_ij_11 = 0.0  # P(qubit i = 1, qubit j = 1)
+                                
                                 for bitstring, count in counts.items():
                                     if len(bitstring) >= n:
+                                        # Extract bits for qubits i and j (reverse order for Qiskit)
                                         bit_i = int(bitstring[-(i+1)])
                                         bit_j = int(bitstring[-(j+1)])
-                                        # Simple correlation measure
-                                        if bit_i == bit_j:
-                                            correlation += count
+                                        
+                                        # Update marginal probabilities
+                                        if bit_i == 0:
+                                            p_i_0 += count
+                                            if bit_j == 0:
+                                                p_ij_00 += count
+                                                p_j_0 += count
+                                            else:
+                                                p_ij_01 += count
+                                                p_j_1 += count
                                         else:
-                                            correlation -= count
+                                            p_i_1 += count
+                                            if bit_j == 0:
+                                                p_ij_10 += count
+                                                p_j_0 += count
+                                            else:
+                                                p_ij_11 += count
+                                                p_j_1 += count
                                 
-                                correlation /= total_shots
-                                # Convert correlation to a simple MI estimate
-                                mi_estimate[f"I_{i},{j}"] = abs(correlation) * 0.5  # Scale factor
+                                # Normalize probabilities
+                                p_i_0 /= total_shots
+                                p_i_1 /= total_shots
+                                p_j_0 /= total_shots
+                                p_j_1 /= total_shots
+                                p_ij_00 /= total_shots
+                                p_ij_01 /= total_shots
+                                p_ij_10 /= total_shots
+                                p_ij_11 /= total_shots
+                                
+                                # Calculate mutual information: I(X;Y) = sum p(x,y) * log(p(x,y)/(p(x)*p(y)))
+                                mi_value = 0.0
+                                if p_ij_00 > 0 and p_i_0 > 0 and p_j_0 > 0:
+                                    mi_value += p_ij_00 * np.log(p_ij_00 / (p_i_0 * p_j_0))
+                                if p_ij_01 > 0 and p_i_0 > 0 and p_j_1 > 0:
+                                    mi_value += p_ij_01 * np.log(p_ij_01 / (p_i_0 * p_j_1))
+                                if p_ij_10 > 0 and p_i_1 > 0 and p_j_0 > 0:
+                                    mi_value += p_ij_10 * np.log(p_ij_10 / (p_i_1 * p_j_0))
+                                if p_ij_11 > 0 and p_i_1 > 0 and p_j_1 > 0:
+                                    mi_value += p_ij_11 * np.log(p_ij_11 / (p_i_1 * p_j_1))
+                                
+                                # Store mutual information (symmetric matrix)
+                                mi_matrix[i, j] = mi_value
+                                mi_matrix[j, i] = mi_value
+                        
+                        # Convert to dictionary format for compatibility
+                        mi_dict = {}
+                        for i in range(n):
+                            for j in range(i+1, n):
+                                mi_dict[f"I_{i},{j}"] = mi_matrix[i, j]
+                        
+                        mi_per_timestep.append(mi_dict)
+                        print(f"Mutual information calculated for timestep {t+1}")
+                        
+                        # Create distance matrix from mutual information
+                        G = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
+                        edge_mi = calculate_mi_for_edges_only(mi_dict, G)
+                        distance_matrix, _ = compute_graph_shortest_path_distances(edge_mi, G)
+                        distmat_per_timestep.append(distance_matrix.tolist())
+                        
                     else:
+                        print(f"Warning: No valid counts for timestep {t+1}")
+                        entropy_per_timestep.append(None)
                         # Fallback MI estimate for hardware
                         mi_estimate = {}
                         for i in range(args.num_qubits):
                             for j in range(i+1, args.num_qubits):
                                 mi_estimate[f"I_{i},{j}"] = 0.1  # Small default value
-                    
-                    mi_per_timestep.append(mi_estimate)
-                    
-                    # Create a simple distance matrix estimate
-                    G = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
-                    edge_mi = calculate_mi_for_edges_only(mi_estimate, G)
-                    distance_matrix, _ = compute_graph_shortest_path_distances(edge_mi, G)
-                    distmat_per_timestep.append(distance_matrix.tolist())
+                        mi_per_timestep.append(mi_estimate)
+                        
+                        # Create a fallback distance matrix
+                        D_fallback = np.ones((args.num_qubits, args.num_qubits)) * 2.0
+                        np.fill_diagonal(D_fallback, 0)
+                        distmat_per_timestep.append(D_fallback.tolist())
                     
                 except Exception as e:
-                    print(f"Hardware execution failed for timestep {t}: {e}")
+                    print(f"Hardware execution failed for timestep {t+1}: {e}")
+                    counts_per_timestep.append(None)
+                    entropy_per_timestep.append(None)
                     # Create a fallback MI estimate
                     mi_fallback = {}
                     for i in range(args.num_qubits):
@@ -1007,6 +1304,46 @@ if __name__ == "__main__":
         mean_distance = np.mean(distance_matrix[distance_matrix != np.inf])
         # Calculate deviation from π for each triangle
         angle_sum_deviations = [x - np.pi for x in angle_sums]
+        
+        # 3.5) BOOTSTRAP STATISTICAL ANALYSIS
+        print("Performing bootstrap statistical analysis...")
+        
+        # Bootstrap Gromov delta with confidence intervals
+        gromov_delta_mean, gromov_delta_lower, gromov_delta_upper, all_deltas = calculate_gromov_delta_with_uncertainty(
+            distmat_per_timestep, confidence=0.95, n_bootstrap=1000
+        )
+        
+        # Bootstrap distance matrix with confidence intervals
+        distance_matrix_mean, distance_matrix_lower, distance_matrix_upper = bootstrap_distance_matrix(
+            distmat_per_timestep, confidence=0.95, n_bootstrap=1000
+        )
+        
+        # Bootstrap entropy with confidence intervals
+        valid_entropies = [e for e in entropy_per_timestep if e is not None]
+        entropy_mean, entropy_lower, entropy_upper = bootstrap_confidence_interval(
+            valid_entropies, confidence=0.95, n_bootstrap=1000
+        ) if valid_entropies else (None, None, None)
+        
+        print(f"Bootstrap Results:")
+        print(f"  Gromov delta: {gromov_delta_mean:.3f} ± {gromov_delta_upper - gromov_delta_mean:.3f} (95% CI)")
+        print(f"  Entropy: {entropy_mean:.3f} ± {entropy_upper - entropy_mean:.3f} (95% CI)" if entropy_mean else "  Entropy: No valid data")
+        
+        # Topology compatibility explanation
+        topology_explanation = {
+                        "star": "Star topology has no triangles, so local curvature (angle sums) is undefined. Use global Gromov delta as primary curvature measure.",
+            "chain": "Chain topology has no triangles, so local curvature (angle sums) is undefined. Use global Gromov delta as primary curvature measure.",
+            "ring": "Ring topology supports triangles and local curvature measurements. Both angle sums and Gromov delta are meaningful.",
+            "complete": "Complete topology has maximum triangles and rich local curvature. Both angle sums and Gromov delta are meaningful.",
+            "triangulated": "Triangulated topology is specifically designed for angle-sum curvature. Creates multiple triangles per vertex, enabling robust local curvature measurements. Each vertex has multiple incident triangles for well-defined angle sums.",
+            "custom": "Custom topology may or may not support triangles. Check triangle count for local curvature compatibility."
+        }
+        
+        current_topology = args.topology
+        if args.geometry in ("spherical", "hyperbolic") and kappa is not None and args.topology != "triangulated":
+            current_topology = "custom"  # Using custom edges for non-Euclidean geometries, except triangulated
+        
+        topology_note = topology_explanation.get(current_topology, "Unknown topology")
+        print(f"Topology Note: {topology_note}")
 
         # 4) geometric embedding
         coords2, coords3d = embed_geometry(distance_matrix, model=args.geometry, curvature=kappa)
@@ -1206,8 +1543,9 @@ if __name__ == "__main__":
             json.dump({
                 "spec": {**vars(args), "curvature": kappa, "custom_edges": custom_edges, "timesteps": args.timesteps},
                 "uid": uid,
-                "counts": None,
-                "mutual_information": mi_per_timestep,
+                "counts_per_timestep": counts_per_timestep,  # All quantum measurement results
+                "entropy_per_timestep": entropy_per_timestep,  # Entropy from all timesteps
+                "mutual_information_per_timestep": mi_per_timestep,  # MI from all timesteps
                 "distance_matrix_per_timestep": distmat_per_timestep,
                 "edge_mi": {f"{u},{v}": val for (u, v), val in edge_mi.items()},
                 "distance_matrix": distance_matrix.tolist(),
@@ -1234,14 +1572,41 @@ if __name__ == "__main__":
                 "mass_hinge": mass_hinge,
                 "mass_value": mass_value,
                 "matter": matter_out,
-                "stationary_solution": stationary_solution
+                "stationary_solution": stationary_solution,
+                # BOOTSTRAP STATISTICAL RESULTS
+                "bootstrap_analysis": {
+                    "gromov_delta": {
+                        "mean": gromov_delta_mean,
+                        "lower_ci": gromov_delta_lower,
+                        "upper_ci": gromov_delta_upper,
+                        "all_values": all_deltas,
+                        "uncertainty": gromov_delta_upper - gromov_delta_mean if gromov_delta_upper else None
+                    },
+                    "entropy": {
+                        "mean": entropy_mean,
+                        "lower_ci": entropy_lower,
+                        "upper_ci": entropy_upper,
+                        "uncertainty": entropy_upper - entropy_mean if entropy_upper else None
+                    },
+                    "distance_matrix": {
+                        "mean": distance_matrix_mean.tolist() if distance_matrix_mean is not None else None,
+                        "lower_ci": distance_matrix_lower.tolist() if distance_matrix_lower is not None else None,
+                        "upper_ci": distance_matrix_upper.tolist() if distance_matrix_upper is not None else None
+                    }
+                },
+                "topology_compatibility": {
+                    "current_topology": current_topology,
+                    "explanation": topology_note,
+                    "supports_local_curvature": current_topology in ["ring", "complete", "triangulated"]
+                }
             }, f, indent=2)
         print(f"Results saved to {output_path}")
         print(json.dumps({
             "spec": {**vars(args), "curvature": kappa, "custom_edges": custom_edges, "timesteps": args.timesteps},
             "uid": uid,
-            "counts": None,
-            "mutual_information": mi_per_timestep,
+            "counts_per_timestep": counts_per_timestep,  # All quantum measurement results
+            "entropy_per_timestep": entropy_per_timestep,  # Entropy from all timesteps
+            "mutual_information_per_timestep": mi_per_timestep,  # MI from all timesteps
             "distance_matrix_per_timestep": distmat_per_timestep,
             "edge_mi": {f"{u},{v}": val for (u, v), val in edge_mi.items()},
             "distance_matrix": distance_matrix.tolist(),
@@ -1268,7 +1633,33 @@ if __name__ == "__main__":
             "mass_hinge": mass_hinge,
             "mass_value": mass_value,
             "matter": matter_out,
-            "stationary_solution": stationary_solution
+            "stationary_solution": stationary_solution,
+            # BOOTSTRAP STATISTICAL RESULTS
+            "bootstrap_analysis": {
+                "gromov_delta": {
+                    "mean": gromov_delta_mean,
+                    "lower_ci": gromov_delta_lower,
+                    "upper_ci": gromov_delta_upper,
+                    "all_values": all_deltas,
+                    "uncertainty": gromov_delta_upper - gromov_delta_mean if gromov_delta_upper else None
+                },
+                "entropy": {
+                    "mean": entropy_mean,
+                    "lower_ci": entropy_lower,
+                    "upper_ci": entropy_upper,
+                    "uncertainty": entropy_upper - entropy_mean if entropy_upper else None
+                },
+                "distance_matrix": {
+                    "mean": distance_matrix_mean.tolist() if distance_matrix_mean is not None else None,
+                    "lower_ci": distance_matrix_lower.tolist() if distance_matrix_lower is not None else None,
+                    "upper_ci": distance_matrix_upper.tolist() if distance_matrix_upper is not None else None
+                }
+            },
+            "topology_compatibility": {
+                "current_topology": current_topology,
+                "explanation": topology_note,
+                "supports_local_curvature": current_topology in ["ring", "complete", "triangulated"]
+            }
         }, indent=2))
 
         # Warn if any triangle angle sum is not > π or Gromov delta is not < 0.3 for spherical geometry
