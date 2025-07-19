@@ -1,0 +1,96 @@
+{
+  "experiment_info": {
+    "device": "simulator",
+    "shots": 100,
+    "num_qubits": 3,
+    "depth": 1,
+    "num_runs": 1,
+    "timestamp": "2025-07-19T11:21:58.942520"
+  },
+  "entropy_statistics": [
+    {
+      "cut_size": 1,
+      "mean": 1.0,
+      "std": 0.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "p_value": NaN,
+      "effect_size": Infinity,
+      "n_runs": 1
+    },
+    {
+      "cut_size": 2,
+      "mean": 1.0,
+      "std": 0.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "p_value": NaN,
+      "effect_size": Infinity,
+      "n_runs": 1
+    },
+    {
+      "cut_size": 3,
+      "mean": 2.0,
+      "std": 0.0,
+      "ci_lower": 2.0,
+      "ci_upper": 2.0,
+      "p_value": NaN,
+      "effect_size": Infinity,
+      "n_runs": 1
+    }
+  ],
+  "area_law_analysis": {
+    "area_law_fit": {
+      "A": 1.0,
+      "B": 1.0,
+      "r2": 0.26473390390815366,
+      "chi2": Infinity,
+      "p_value": 0
+    },
+    "volume_law_fit": {
+      "A": 1.0,
+      "B": 1.0,
+      "r2": -12.5
+    },
+    "cut_sizes": [
+      1,
+      2,
+      3
+    ],
+    "mean_entropies": [
+      1.0,
+      1.0,
+      2.0
+    ],
+    "entropy_errors": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "run_results": [
+    {
+      "run": 1,
+      "counts": {
+        "000": 24,
+        "001": 24,
+        "010": 0,
+        "011": 0,
+        "100": 24,
+        "101": 24,
+        "110": 0,
+        "111": 0
+      },
+      "cut_entropies": [
+        1.0,
+        1.0,
+        2.0
+      ],
+      "mutual_infos": [
+        -0.9034620585085744,
+        -0.9034620585085744
+      ],
+      "total_shots": 100
+    }
+  ]
+}

@@ -1615,7 +1615,23 @@ def least_busy_backend(service, filters=None):
 # Extract counts from BitArray
 def extract_counts_from_bitarray(bit_array):
     try:
-        # Attempt to use `get_counts` or related methods
+        # Handle DataBin object from IBM Runtime
+        if hasattr(bit_array, "meas"):
+            # This is a DataBin object with meas attribute containing BitArray
+            bitarray = bit_array.meas
+            if hasattr(bitarray, "get_counts"):
+                counts = bitarray.get_counts()
+                print("Counts from DataBin.meas.get_counts():", counts)
+                return counts
+            elif hasattr(bitarray, "get_int_counts"):
+                int_counts = bitarray.get_int_counts()
+                print("Integer Counts from DataBin.meas.get_int_counts():", int_counts)
+                return int_counts
+            else:
+                print("DataBin.meas found but no get_counts method")
+                return {}
+        
+        # Handle direct BitArray object
         if hasattr(bit_array, "get_counts"):
             counts = bit_array.get_counts()
             print("Counts (get_counts):", counts)
@@ -1632,14 +1648,19 @@ def extract_counts_from_bitarray(bit_array):
             print("Bitstrings (Counter):", counts)
             return counts
 
-        # Manual decoding if above methods are unavailable
+        # Handle string representation as fallback
         print("No direct methods worked; attempting manual decoding.")
         raw_data = str(bit_array)
+        if "DataBin()" in raw_data:
+            print("DataBin object detected but no meas attribute")
+            return {}
         counts = Counter(raw_data.split())
         return counts
 
     except Exception as e:
         print(f"Error processing BitArray: {e}")
+        print(f"Object type: {type(bit_array)}")
+        print(f"Object attributes: {dir(bit_array)}")
         return {}
 
 
@@ -11946,10 +11967,8 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
         return {'counts': counts, 'distribution': (f0, f1)}
     
     if backend is None:
-        # Default to FakeBrisbane when no backend specified
-        from qiskit_ibm_runtime.fake_provider import FakeBrisbane
-        backend = FakeBrisbane()
-        print("Using FakeBrisbane simulator backend")
+        # CRITICAL ERROR: No backend specified - this should never happen in production
+        raise ValueError("CRITICAL ERROR: No backend specified for quantum execution. This indicates a configuration error. Please ensure a valid backend is provided.")
 
     if old_backend:
         qc_t = transpile(qc, backend)
@@ -11958,16 +11977,69 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
         counts = result.get_counts()
         return counts
     
-    # Default: use modern runtime approach
+    # Default: use modern runtime approach with SamplerV2
+    from qiskit_ibm_runtime import SamplerV2 as Sampler
+    
     qc_t = transpile(qc, backend)
-    job = backend.run(qc_t, shots=shots)
+    sampler = Sampler(backend)
+    
+    # Run using the modern primitives interface
+    job = sampler.run([qc_t], shots=shots)
     result = job.result()
-    counts = result.get_counts()
+    
+    # Extract counts using the modern BitArray format
+    # Handle different result structures from IBM Runtime
+    try:
+        print(f"Result data type: {type(result[0].data)}")
+        print(f"Result data attributes: {dir(result[0].data)}")
+        
+        if hasattr(result[0].data, 'c'):
+            # Direct BitArray access
+            counts = extract_counts_from_bitarray(result[0].data.c)
+        elif hasattr(result[0].data, 'get_counts'):
+            # DataBin with get_counts method
+            counts = result[0].data.get_counts()
+        elif hasattr(result[0].data, 'quasi_dists'):
+            # Quasi-probability distribution
+            counts = result[0].data.quasi_dists[0].binary_probabilities()
+        elif hasattr(result[0].data, 'meas'):
+            # DataBin with meas attribute
+            bit_array = result[0].data.meas
+            print(f"BitArray type: {type(bit_array)}")
+            print(f"BitArray attributes: {dir(bit_array)}")
+            
+            # Try to get counts from BitArray
+            if hasattr(bit_array, 'get_counts'):
+                counts = bit_array.get_counts()
+            elif hasattr(bit_array, 'get_int_counts'):
+                counts = bit_array.get_int_counts()
+            else:
+                # Convert BitArray to counts manually
+                counts = {}
+                for i in range(shots):
+                    # Extract individual bitstrings
+                    bitstring = ''.join(str(int(bit)) for bit in bit_array[i])
+                    counts[bitstring] = counts.get(bitstring, 0) + 1
+        else:
+            # Try to extract counts from the data object directly
+            counts = extract_counts_from_bitarray(result[0].data)
+    except Exception as e:
+        print(f"Error extracting counts: {e}")
+        import traceback
+        traceback.print_exc()
+        counts = {}
     
     print(f"Experiment completed with {shots} shots")
     print(f"Results: {counts}")
     
-    return counts
+    # Ensure we return the actual counts, not the DataBin object
+    if isinstance(counts, dict):
+        return counts
+    else:
+        print(f"Warning: run function returned non-dict: {type(counts)}")
+        print(f"Value: {counts}")
+        # Return empty counts if extraction failed
+        return {}
 
 
 #standard qc for multiverse experiments is main_qc()

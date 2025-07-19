@@ -1,0 +1,100 @@
+{
+  "timestamp": "20250719_113047",
+  "n_qubits": 5,
+  "shots": 1000,
+  "device": "ibm_brisbane",
+  "simple_circuit_analysis": {
+    "opt_level_0": {
+      "error": "Maximum allowed dimension exceeded"
+    },
+    "opt_level_1": {
+      "error": "Maximum allowed dimension exceeded"
+    },
+    "opt_level_2": {
+      "error": "Maximum allowed dimension exceeded"
+    },
+    "opt_level_3": {
+      "error": "Maximum allowed dimension exceeded"
+    }
+  },
+  "medium_circuit_analysis": {
+    "opt_level_0": {
+      "error": "Maximum allowed dimension exceeded"
+    },
+    "opt_level_1": {
+      "error": "Maximum allowed dimension exceeded"
+    },
+    "opt_level_2": {
+      "error": "Maximum allowed dimension exceeded"
+    },
+    "opt_level_3": {
+      "error": "Maximum allowed dimension exceeded"
+    }
+  },
+  "simple_hardware_results": {
+    "minimal": {
+      "error": "'Support for backend.run() has been removed. Please see our migration guide https://quantum.cloud.ibm.com/docs/migration-guides/qiskit-runtime for instructions on how to migrate to the primitives interface.'",
+      "success": false
+    },
+    "balanced": {
+      "error": "'Support for backend.run() has been removed. Please see our migration guide https://quantum.cloud.ibm.com/docs/migration-guides/qiskit-runtime for instructions on how to migrate to the primitives interface.'",
+      "success": false
+    },
+    "aggressive": {
+      "error": "'Support for backend.run() has been removed. Please see our migration guide https://quantum.cloud.ibm.com/docs/migration-guides/qiskit-runtime for instructions on how to migrate to the primitives interface.'",
+      "success": false
+    },
+    "maximum": {
+      "error": "'Support for backend.run() has been removed. Please see our migration guide https://quantum.cloud.ibm.com/docs/migration-guides/qiskit-runtime for instructions on how to migrate to the primitives interface.'",
+      "success": false
+    }
+  },
+  "medium_hardware_results": {
+    "minimal": {
+      "error": "'Support for backend.run() has been removed. Please see our migration guide https://quantum.cloud.ibm.com/docs/migration-guides/qiskit-runtime for instructions on how to migrate to the primitives interface.'",
+      "success": false
+    },
+    "balanced": {
+      "error": "'Support for backend.run() has been removed. Please see our migration guide https://quantum.cloud.ibm.com/docs/migration-guides/qiskit-runtime for instructions on how to migrate to the primitives interface.'",
+      "success": false
+    },
+    "aggressive": {
+      "error": "'Support for backend.run() has been removed. Please see our migration guide https://quantum.cloud.ibm.com/docs/migration-guides/qiskit-runtime for instructions on how to migrate to the primitives interface.'",
+      "success": false
+    },
+    "maximum": {
+      "error": "'Support for backend.run() has been removed. Please see our migration guide https://quantum.cloud.ibm.com/docs/migration-guides/qiskit-runtime for instructions on how to migrate to the primitives interface.'",
+      "success": false
+    }
+  },
+  "backend_comparison": {
+    "ibm_brisbane": {
+      "error": "'BackendStatus' object has no attribute 'status'"
+    },
+    "ibm_kyoto": {
+      "status": "unavailable"
+    },
+    "ibm_osaka": {
+      "status": "unavailable"
+    }
+  },
+  "best_backend": null,
+  "fixed_circuit_results": {
+    "minimal": {
+      "error": "'Support for backend.run() has been removed. Please see our migration guide https://quantum.cloud.ibm.com/docs/migration-guides/qiskit-runtime for instructions on how to migrate to the primitives interface.'",
+      "success": false
+    },
+    "balanced": {
+      "error": "'Support for backend.run() has been removed. Please see our migration guide https://quantum.cloud.ibm.com/docs/migration-guides/qiskit-runtime for instructions on how to migrate to the primitives interface.'",
+      "success": false
+    },
+    "aggressive": {
+      "error": "'Support for backend.run() has been removed. Please see our migration guide https://quantum.cloud.ibm.com/docs/migration-guides/qiskit-runtime for instructions on how to migrate to the primitives interface.'",
+      "success": false
+    },
+    "maximum": {
+      "error": "'Support for backend.run() has been removed. Please see our migration guide https://quantum.cloud.ibm.com/docs/migration-guides/qiskit-runtime for instructions on how to migrate to the primitives interface.'",
+      "success": false
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "experiment_info": {
+    "device": "ibm_brisbane",
+    "shots": 100,
+    "num_qubits": 3,
+    "depth": 1,
+    "num_runs": 1,
+    "timestamp": "2025-07-19T11:22:50.243416"
+  },
+  "entropy_statistics": [
+    {
+      "cut_size": 1,
+      "mean": 0.0,
+      "std": 0.0,
+      "ci_lower": 0.0,
+      "ci_upper": 0.0,
+      "p_value": NaN,
+      "effect_size": -Infinity,
+      "n_runs": 1
+    },
+    {
+      "cut_size": 2,
+      "mean": 0.0,
+      "std": 0.0,
+      "ci_lower": 0.0,
+      "ci_upper": 0.0,
+      "p_value": NaN,
+      "effect_size": -Infinity,
+      "n_runs": 1
+    },
+    {
+      "cut_size": 3,
+      "mean": 0.0,
+      "std": 0.0,
+      "ci_lower": 0.0,
+      "ci_upper": 0.0,
+      "p_value": NaN,
+      "effect_size": -Infinity,
+      "n_runs": 1
+    }
+  ],
+  "area_law_analysis": {
+    "area_law_fit": {
+      "A": 1.0,
+      "B": 1.0,
+      "r2": 0,
+      "chi2": Infinity,
+      "p_value": 0
+    },
+    "volume_law_fit": {
+      "A": 1.0,
+      "B": 1.0,
+      "r2": 0
+    },
+    "cut_sizes": [
+      1,
+      2,
+      3
+    ],
+    "mean_entropies": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "entropy_errors": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "run_results": [
+    {
+      "run": 1,
+      "counts": {
+        "000": 100
+      },
+      "cut_entropies": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mutual_infos": [
+        0.0,
+        0.0
+      ],
+      "total_shots": 100
+    }
+  ]
+}
