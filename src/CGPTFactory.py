@@ -73,7 +73,7 @@ def get_best_backend(service, min_qubits=3, max_queue=10):
 open("entropy_oracle_log.csv", "w").close()
 
 # === CONFIG ===
-USE_IBM = os.getenv("USE_IBM", "False").lower() == "false"  # Set this to "True" or "False"
+USE_IBM = os.getenv("USE_IBM", "True").lower() == "true"  # Set this to "True" or "False"
 
 if USE_IBM:
     print("[INFO] Using IBM Quantum...")
