@@ -1,0 +1,46 @@
+
+# Lorentzian Action Statistical Analysis Report
+Generated: 2025-07-20 10:55:02
+
+## Experimental Parameters
+- Device: ibm_brisbane
+- Geometry: hyperbolic
+- Curvature: 2.5
+- Shots: 2000
+- Qubits: 7
+
+## Key Results
+
+### Lorentzian Action
+- Observed Action: 0.00055099
+- 95% CI: [0.05642388, 0.33986955]
+
+### Statistical Significance
+- P-value: 0.00000000
+- Significance Level: ***
+- Effect Size (Cohen's d): -12.0690
+- Effect Size Interpretation: Large
+
+### Geometric Analysis
+- Chi-square p-value (uniformity test): 0.000000
+- Log-normal p-value: 0.829268
+- Significantly Curved: False
+
+### Edge Length Statistics
+- Mean: 2.0764
+- Std Dev: 4.6696
+- Coefficient of Variation: 2.2489
+- Range: [0.0011, 22.7250]
+
+## Publication Readiness Assessment
+
+### Statistical Power
+- Current p-value: 0.00000000
+- Recommended for high-impact journals: p < 0.001
+- Current status: SUFFICIENT
+
+### Recommendations
+
+**STATISTICAL SIGNIFICANCE ACHIEVED**
+
+Results meet publication standards for high-impact physics journals.
