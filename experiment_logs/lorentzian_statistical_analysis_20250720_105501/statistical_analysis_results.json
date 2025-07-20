@@ -1,0 +1,52 @@
+{
+  "basic_stats": {
+    "action_value": 0.0005509879372078878,
+    "edge_lengths_mean": 2.076397296409938,
+    "edge_lengths_std": 4.669602943940826,
+    "edge_lengths_median": 0.2843820503263368,
+    "edge_lengths_min": 0.0010711792678244783,
+    "edge_lengths_max": 22.72501725752945,
+    "edge_lengths_cv": 2.2488966596202493,
+    "num_edges": 68
+  },
+  "p_value": 0.0,
+  "effect_size": -12.069047582044927,
+  "effect_size_interpretation": "Large",
+  "bootstrap_ci": [
+    0.056423884108453656,
+    0.3398695508233922
+  ],
+  "geometric_analysis": {
+    "chi2_statistic": 428.4705882352942,
+    "chi2_p_value": 1.1439000917047518e-86,
+    "lognorm_p_value": 0.8292676644731631,
+    "is_significantly_curved": false
+  },
+  "experiment_params": {
+    "num_qubits": 7,
+    "topology": "triangulated",
+    "custom_edges": "0-1:1.0000,0-2:0.9654,0-3:1.0000,0-4:1.0000,0-5:0.9415,0-6:0.9415,1-2:1.0000,1-3:1.0000,1-4:0.8826,1-5:1.0000,1-6:0.8841,2-3:0.8836,2-4:1.0000,2-5:0.5217,2-6:0.5688,3-4:0.8594,3-5:0.7468,3-6:1.0000,4-5:0.7730,4-6:0.6469,5-6:1.0000",
+    "alpha": 0.8,
+    "weight": 1.0,
+    "gamma": 0.3,
+    "sigma": null,
+    "init_angle": 0.0,
+    "init_angles": null,
+    "shots": 2000,
+    "device": "ibm_brisbane",
+    "geometry": "hyperbolic",
+    "curvature": 2.5,
+    "timesteps": 3,
+    "dimension": 2,
+    "mass_hinge": null,
+    "mass_value": 0.0,
+    "solve_regge": false,
+    "lorentzian": true
+  },
+  "null_distribution_stats": {
+    "mean": 1.1620766378445682,
+    "std": 0.09624004230751043,
+    "min": 0.7104567799159958,
+    "max": 1.5412301813616351
+  }
+}
