@@ -1,0 +1,23 @@
+{
+  "basic_stats": {
+    "action_value": 0.0005509879372078878,
+    "edge_lengths_mean": 2.076397296409938,
+    "edge_lengths_std": 4.669602943940826,
+    "edge_lengths_median": 0.2843820503263368,
+    "edge_lengths_min": 0.0010711792678244783,
+    "edge_lengths_max": 22.72501725752945,
+    "edge_lengths_cv": 2.2488966596202493,
+    "num_edges": 68
+  },
+  "p_value": 0.0,
+  "effect_size": -11.930013570409637,
+  "effect_size_interpretation": "Large",
+  "bootstrap_ci": [
+    0.055663323784494,
+    0.35056299719885425
+  ],
+  "geometric_analysis": {
+    "chi2_statistic": 428.4705882352942,
+    "chi2_p_value": 1.1439000917047518e-86,
+    "lognorm_p_value": 0.8292676644731631,
+    "is_significantly_curved": 
