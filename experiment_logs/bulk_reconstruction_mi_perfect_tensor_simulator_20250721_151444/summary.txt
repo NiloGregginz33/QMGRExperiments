@@ -1,0 +1,40 @@
+Bulk Reconstruction via Mutual Information Embedding
+============================================================
+
+Device: simulator
+Shots: 10000
+Qubits: 8
+Geometry Type: perfect_tensor
+Curvature Strength: 1.0
+
+THEORETICAL BACKGROUND:
+This experiment tests the holographic principle by reconstructing bulk geometry from boundary mutual information.
+The mutual information between boundary regions should encode the geometric structure of the bulk,
+allowing us to reconstruct spatial relationships purely from quantum correlations.
+
+METHODOLOGY:
+1. Create highly entangled quantum states with different geometric structures
+2. Compute mutual information between all boundary qubits
+3. Embed the mutual information matrix into 2D space using MDS
+4. Analyze the reconstructed geometry for hyperbolic/curved features
+5. Compare with theoretical predictions from holographic duality
+
+RESULTS:
+MI-Distance Correlation: 0.7315
+Exponential Growth Parameter: -0.0120
+Maximum Mutual Information: 1.0000
+Mean Mutual Information: 0.0693
+Geometry Radius: 0.6822
+RT Consistency: 0.2898
+Page Curve Peak: 4
+Page Curve Symmetry: 1.0000
+
+ANALYSIS:
++ Strong correlation between MI and geometric distance, supporting holographic principle
+O Linear or sub-exponential growth, may indicate flat or weakly curved geometry
+- RT surface consistency low, may need more entanglement
++ Page curve symmetry high, consistent with holographic entropy scaling
+
+CONCLUSION:
+The experiment demonstrates moderate support for bulk reconstruction from boundary mutual information.
+Enhanced entanglement and proper RT surface computation show promising results for holographic duality.

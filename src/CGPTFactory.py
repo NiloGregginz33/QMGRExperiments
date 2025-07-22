@@ -12942,7 +12942,7 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
     # Option 3: real backend via IBM Runtime Sampler
 
 
-    qc_t = transpile(qc, backend, optimization_level=3)
+    qc_t = transpile(qc, backend, optimization_level=0)
     sampler = Sampler(backend)
     job = sampler.run([qc_t])
     result = job.result()
