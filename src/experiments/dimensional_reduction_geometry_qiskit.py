@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.manifold import MDS
 from qiskit import QuantumCircuit, transpile
 from qiskit_ibm_runtime.fake_provider import FakeJakartaV2
-from qiskit_ibm_runtime import QiskitRuntimeService
+from qiskit_ibm_runtime import QiskitRuntimeService, Sampler
 import os
 import json
 import argparse
@@ -69,9 +69,12 @@ def main():
 
     if args.device.lower() == 'simulator':
         backend = FakeJakartaV2()
+        # For simulator, use direct execution
+        use_sampler = False
     else:
         service = QiskitRuntimeService()
         backend = service.backend(args.device)
+        use_sampler = True
 
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     log_dir = os.path.join('experiment_logs', f'dimensional_reduction_geometry_qiskit_{timestamp}')
@@ -79,12 +82,29 @@ def main():
 
     results = []
     for n_qubits in range(args.min_qubits, args.max_qubits+1):
+        print(f"Running circuit for {n_qubits} qubits...")
         qc = build_geometry_circuit(n_qubits, args.phi)
-        tqc = transpile(qc, backend)
-        job = backend.run(tqc, shots=args.shots)
-        result = job.result()
-        counts = result.get_counts()
-        mi_matrix = compute_mi_matrix(counts, n_qubits, args.shots)
+        tqc = transpile(qc, backend, optimization_level=0)
+        
+        if use_sampler:
+            # Use modern Sampler primitive
+            sampler = Sampler(backend)
+            job = sampler.run([tqc], shots=args.shots)
+            result = job.result()
+            counts = result.quasi_dists[0]
+            # Convert quasi_dists to counts format
+            counts_dict = {}
+            for bitstring, probability in counts.items():
+                count = int(probability * args.shots)
+                if count > 0:
+                    counts_dict[format(bitstring, f'0{n_qubits}b')] = count
+        else:
+            # For simulator, use direct execution
+            job = backend.run(tqc, shots=args.shots)
+            result = job.result()
+            counts_dict = result.get_counts()
+        
+        mi_matrix = compute_mi_matrix(counts_dict, n_qubits, args.shots)
         coords, stress, embedding, mds = mds_embedding(mi_matrix, n_qubits)
         # Eigenvalues of the Gram matrix (covariance of embedding)
         gram = np.cov(coords.T)
