@@ -644,3 +644,21 @@ The novelty of these experiments does not lie in being theoretical firsts. Inste
 - The observed boundary-bulk information recovery supports aspects of the holographic duality, though further work is needed to generalize these findings.
 - The connection between quantum information protocols and geometric structure remains an open area for theoretical exploration.
 
+## Release and Usage Notice
+
+**Always Use the Most Recent Release**
+
+This project is under active development, and both the code and analysis scripts are frequently improved for accuracy, compatibility, and scientific rigor. Regardless of when you access this repository, you should always use the most recent release or the latest version of the scripts for running experiments and analyzing results.
+
+- **Why?**
+    - Older versions may contain bugs, outdated APIs, or incomplete analysis methods.
+    - The latest release incorporates all critical fixes, best practices, and the most robust scientific methodology.
+    - Results and conclusions are only guaranteed to be valid when using the most up-to-date codebase.
+
+**How to ensure you are using the latest version:**
+- Pull the latest changes from the main branch before running any experiment or analysis.
+- Check the release notes or commit history for recent updates.
+- If in doubt, re-download or re-clone the repository.
+
+If you have any questions about version compatibility or reproducibility, please open an issue or contact the maintainers.
+

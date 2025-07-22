@@ -1,0 +1,47 @@
+Comprehensive Curvature Analysis Summary
+==================================================
+
+Source File: results.json
+Device: simulator
+Shots: 10000
+Qubits: 8
+Geometry Type: perfect_tensor
+Curvature Strength: 1.0
+
+MUTUAL INFORMATION ANALYSIS:
+Maximum MI: 0.031342
+Mean MI: 0.002173
+Non-zero MI pairs: 10
+
+RT SURFACE ANALYSIS:
+RT Surfaces computed: 29
+RT Consistency (std): 0.012279
+Mean RT Ratio: 0.008630
+
+GEOMETRY RECONSTRUCTION:
+Geometry Radius: 7.378959
+MI-Distance Correlation: 0.970508
+
+ADVANCED HOLOGRAPHIC ANALYSES:
+------------------------------
+
+RT VERIFICATION:
+MI vs Minimal Path Correlation: 0.452241
+P-value: 0.444468
+Number of pairs analyzed: 5
+
+HOLOGRAPHIC ENTROPY SCALING:
+Area Scaling R²: 0.066249
+Volume Scaling R²: 0.153000
+Supports Holographic Principle: False
+
+BOUNDARY DYNAMICS:
+Boundary-Bulk Correlation: -0.715726
+P-value: 0.045883
+
+OVERALL ASSESSMENT:
++ RT surface consistency high, supporting holographic duality
++ Strong correlation between MI and geometric distance
++ Moderate RT verification
+- Entropy scaling does not clearly support holographic principle
++ Strong boundary-bulk dynamics correlation
