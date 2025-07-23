@@ -95,6 +95,9 @@ p.add_argument("--strong_curvature", action="store_true", help="Apply stronger c
 p.add_argument("--charge_injection", action="store_true", help="Enable charge injection for stronger bulk-boundary coupling")
 p.add_argument("--charge_strength", type=float, default=1.0, help="Strength of charge injection (default: 1.0)")
 p.add_argument("--charge_location", type=int, default=3, help="Location for charge injection (default: 3)")
+p.add_argument("--spin_injection", action="store_true", help="Enable spin injection for magnetic bulk-boundary coupling")
+p.add_argument("--spin_strength", type=float, default=1.0, help="Strength of spin injection (default: 1.0)")
+p.add_argument("--spin_location", type=int, default=3, help="Location for spin injection (default: 3)")
 
 # Use the second parser for command-line arguments
 args = p.parse_args()
@@ -819,9 +822,9 @@ def rt_surface_area(rt_edges, edge_lengths, all_edges):
     idx = {tuple(sorted(e)): i for i, e in enumerate(all_edges)}
     return sum(edge_lengths[idx[tuple(sorted(e))]] for e in rt_edges)
 
-def run_mi_with_excitation(qc, bulk_point_location, excite=False, shots=1024, device_name="simulator", charge_injection=False, charge_strength=1.0, charge_location=3):
+def run_mi_with_excitation(qc, bulk_point_location, excite=False, shots=1024, device_name="simulator", charge_injection=False, charge_strength=1.0, charge_location=3, spin_injection=False, spin_strength=1.0, spin_location=3):
     """
-    Revolutionary bulk-excitation wrapper with charge injection for studying holographic correspondence.
+    Revolutionary bulk-excitation wrapper with charge injection and spin injection for studying holographic correspondence.
     
     Args:
         qc: Quantum circuit (prepared generator state)
@@ -832,6 +835,9 @@ def run_mi_with_excitation(qc, bulk_point_location, excite=False, shots=1024, de
         charge_injection: Whether to apply charge injection
         charge_strength: Strength of charge injection
         charge_location: Location for charge injection
+        spin_injection: Whether to apply spin injection
+        spin_strength: Strength of spin injection
+        spin_location: Location for spin injection
     
     Returns:
         dict: Mutual information matrix and boundary entropies from the excited/non-excited state
@@ -868,6 +874,30 @@ def run_mi_with_excitation(qc, bulk_point_location, excite=False, shots=1024, de
                 if 0 <= neighbor < qc_excited.num_qubits:
                     qc_excited.rz(charge_strength * np.pi/8, neighbor)  # Weaker coupling to neighbors
                     qc_excited.cx(charge_location, neighbor)  # Entangle with neighbors
+        
+        # SPIN INJECTION: Create magnetic bulk-boundary coupling
+        if spin_injection:
+            print(f"    Applying spin injection at qubit {spin_location} with strength {spin_strength}")
+            
+            # Apply spin injection at specified location (magnetic field effects)
+            qc_excited.rx(spin_strength * np.pi, spin_location)  # X-rotation for spin flip
+            qc_excited.ry(spin_strength * np.pi/2, spin_location)  # Y-rotation for spin superposition
+            qc_excited.rz(spin_strength * np.pi/4, spin_location)  # Z-rotation for magnetic phase
+            
+            # Create magnetic coupling between spin location and bulk point
+            if spin_location != bulk_point_location:
+                qc_excited.cx(spin_location, bulk_point_location)  # CNOT for entanglement
+                qc_excited.ry(spin_strength * np.pi/8, bulk_point_location)  # Couple magnetic phases
+                qc_excited.cx(bulk_point_location, spin_location)  # Back-coupling
+                qc_excited.rx(spin_strength * np.pi/6, bulk_point_location)  # Additional magnetic coupling
+            
+            # Spread spin to neighboring qubits for magnetic bulk-boundary coupling
+            neighbors = [spin_location - 1, spin_location + 1]
+            for neighbor in neighbors:
+                if 0 <= neighbor < qc_excited.num_qubits:
+                    qc_excited.ry(spin_strength * np.pi/12, neighbor)  # Weaker magnetic coupling to neighbors
+                    qc_excited.cx(spin_location, neighbor)  # Entangle with neighbors
+                    qc_excited.rx(spin_strength * np.pi/16, neighbor)  # Additional magnetic field effects
     
     # Run the circuit and get counts
     if device_name == "simulator":
@@ -1647,7 +1677,10 @@ if __name__ == "__main__":
                 device_name=args.device,
                 charge_injection=args.charge_injection,
                 charge_strength=args.charge_strength,
-                charge_location=args.charge_location
+                charge_location=args.charge_location,
+                spin_injection=args.spin_injection,
+                spin_strength=args.spin_strength,
+                spin_location=args.spin_location
             )
             
             # Run with excitation
@@ -1660,7 +1693,10 @@ if __name__ == "__main__":
                 device_name=args.device,
                 charge_injection=args.charge_injection,
                 charge_strength=args.charge_strength,
-                charge_location=args.charge_location
+                charge_location=args.charge_location,
+                spin_injection=args.spin_injection,
+                spin_strength=args.spin_strength,
+                spin_location=args.spin_location
             )
             
             # Analyze the difference in mutual information
