@@ -1,0 +1,49 @@
+WORKING EWR EXPERIMENT SUMMARY
+==================================================
+
+EXPERIMENT OVERVIEW
+--------------------
+Experiment: Working EWR Experiment
+Device: simulator
+Number of qubits: 4
+Bulk point location: 2
+Shots per circuit: 100
+Number of runs: 3
+
+RT SURFACE RESULTS
+--------------------
+Region A: RT surface contains bulk = False
+Region B: RT surface contains bulk = True
+
+STATISTICAL ANALYSIS
+--------------------
+Overall EWR Success Rate: 0.500
+Correct Predictions: 1/2
+
+Region A:
+  Mean Success Probability: 0.0000 +/- 0.0000
+  95% Confidence Interval: [0.0000, 0.5615]
+  Expected Probability: 0.2000
+  Z-Score: 0.00
+  RT Contains Bulk: False
+  Statistical Significance: <5 sigma
+
+Region B:
+  Mean Success Probability: 0.0000 +/- 0.0000
+  95% Confidence Interval: [0.0000, 0.5615]
+  Expected Probability: 0.8000
+  Z-Score: 0.00
+  RT Contains Bulk: True
+  Statistical Significance: <5 sigma
+
+THEORETICAL BACKGROUND
+--------------------
+This experiment demonstrates Entanglement-Wedge Reconstruction (EWR) using a simple stabilizer code.
+The principle states that a bulk operator is reconstructable from a boundary region if and only if
+the bulk point is contained within the entanglement wedge of that region.
+
+METHODOLOGY
+--------------------
+1. Create a simple 4-qubit stabilizer code with logical operators XXXX and ZIII
+2. Define boundary regions and compute RT surfaces using geometric methods
+3. Create region-specific decoders that succeed only when RT surface contains bulk

@@ -10,65 +10,76 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.sparse.csgraph import shortest_path
-from scipy.stats import pearsonr, bootstrap
+from scipy.stats import pearsonr, bootstrap, norm
 from sklearn.manifold import MDS
 import argparse
 from datetime import datetime
+import warnings
+warnings.filterwarnings('ignore')
 
 def load_experiment_results(results_file):
     """Load experiment results from JSON file"""
+    print(f"Loading results from: {results_file}")
+    
     with open(results_file, 'r') as f:
-        data = json.load(f)
+        results = json.load(f)
     
-    # Extract key information from the experiment results
-    results = {}
-    
-    # Handle different experiment formats
-    if 'lorentzian_solution' in data:
+    # Handle different result formats
+    if 'lorentzian_solution' in results:
         # Custom curvature experiment format
-        lorentzian = data['lorentzian_solution']
-        results['lorentzian_action'] = lorentzian.get('stationary_action', 0)
-        results['edge_lengths'] = lorentzian.get('stationary_edge_lengths', [])
-        
-        # Extract experiment parameters from filename
-        filename = os.path.basename(results_file)
-        if 'n7' in filename:
-            results['num_qubits'] = 7
-        elif 'n5' in filename:
-            results['num_qubits'] = 5
-        
-        if 'curv25' in filename:
-            results['curvature_strength'] = 2.5
-        elif 'curv100' in filename:
-            results['curvature_strength'] = 10.0
-        
-        if 'geomH' in filename:
-            results['geometry_type'] = 'hyperbolic'
-        
-        if 'ibm' in filename:
-            results['device'] = 'ibm_quantum'
-    
+        lorentzian_data = results['lorentzian_solution']
+        return {
+            'lorentzian_action': lorentzian_data.get('stationary_action'),
+            'edge_lengths': lorentzian_data.get('edge_lengths', []),
+            'counts': results.get('counts'),  # May be None
+            'num_qubits': results.get('spec', {}).get('num_qubits', 0),
+            'geometry': results.get('spec', {}).get('geometry', 'unknown'),
+            'curvature': results.get('spec', {}).get('curvature', 0.0),
+            'device': results.get('spec', {}).get('device', 'unknown'),
+            'shots': results.get('spec', {}).get('shots', 0),
+            'source_file': results_file
+        }
+    elif 'counts_per_timestep' in results:
+        # Custom curvature experiment with timesteps format
+        # Use the first timestep for analysis
+        counts = results['counts_per_timestep'][0] if results['counts_per_timestep'] else {}
+        return {
+            'lorentzian_action': None,  # Not computed in this format
+            'edge_lengths': [],  # Not available in this format
+            'counts': counts,
+            'num_qubits': results.get('spec', {}).get('num_qubits', 0),
+            'geometry': results.get('spec', {}).get('geometry', 'unknown'),
+            'curvature': results.get('spec', {}).get('curvature', 0.0),
+            'device': results.get('spec', {}).get('device', 'unknown'),
+            'shots': results.get('spec', {}).get('shots', 0),
+            'source_file': results_file
+        }
+    elif 'counts' in results:
+        # Bulk reconstruction format
+        return {
+            'lorentzian_action': None,
+            'edge_lengths': [],
+            'counts': results['counts'],
+            'num_qubits': results.get('num_qubits', 0),
+            'geometry': results.get('geometry_type', 'unknown'),
+            'curvature': results.get('curvature_strength', 0.0),
+            'device': results.get('device', 'unknown'),
+            'shots': results.get('shots', 0),
+            'source_file': results_file
+        }
     else:
-        # Bulk reconstruction or other experiment format
-        results['device'] = data.get('device', 'unknown')
-        results['backend'] = data.get('backend', 'unknown')
-        results['shots'] = data.get('shots', 0)
-        results['num_qubits'] = data.get('num_qubits', 0)
-        results['geometry_type'] = data.get('geometry_type', 'unknown')
-        results['curvature_strength'] = data.get('curvature_strength', 0)
-        
-        # Copy counts data if available
-        if 'counts' in data:
-            results['counts'] = data['counts']
-    
-    # Set default values for missing fields
-    results['shots'] = results.get('shots', 2000)
-    results['device'] = results.get('device', 'unknown')
-    results['geometry_type'] = results.get('geometry_type', 'unknown')
-    results['curvature_strength'] = results.get('curvature_strength', 0)
-    results['num_qubits'] = results.get('num_qubits', 0)
-    
-    return results
+        # Fallback for other formats
+        return {
+            'lorentzian_action': results.get('lorentzian_action'),
+            'edge_lengths': results.get('edge_lengths', []),
+            'counts': results.get('counts'),
+            'num_qubits': results.get('num_qubits', 0),
+            'geometry': results.get('geometry', 'unknown'),
+            'curvature': results.get('curvature', 0.0),
+            'device': results.get('device', 'unknown'),
+            'shots': results.get('shots', 0),
+            'source_file': results_file
+        }
 
 def compute_rt_surface_approximation(mi_matrix):
     """Compute Ryu-Takayanagi surface approximation using graph-theoretic approach"""
@@ -388,8 +399,8 @@ def comprehensive_analysis(results_file, output_dir=None):
             'device': results.get('device', 'unknown'),
             'shots': results.get('shots', 0),
             'num_qubits': results.get('num_qubits', 0),
-            'geometry_type': results.get('geometry_type', 'unknown'),
-            'curvature_strength': results.get('curvature_strength', 0)
+            'geometry_type': results.get('geometry', 'unknown'),
+            'curvature_strength': results.get('curvature', 0)
         }
     }
     
@@ -455,28 +466,128 @@ def comprehensive_analysis(results_file, output_dir=None):
         print(f"✓ MI-Distance correlation: {correlation:.6f}")
         
         # 5. Advanced Holographic Analyses
-        print("Running advanced holographic analyses...")
+        print("\n" + "="*60)
+        print("ADVANCED HOLOGRAPHIC ANALYSES")
+        print("="*60)
         
-        # RT Verification
-        print("  - RT Verification analysis...")
-        rt_verification = rt_verification_analysis(mi_matrix, coordinates)
-        if rt_verification:
-            analysis_results['rt_verification'] = rt_verification
-            print(f"    ✓ RT correlation: {rt_verification['correlation']:.6f}")
+        # RT Verification Analysis
+        rt_results = rt_verification_analysis(mi_matrix, coordinates)
+        analysis_results['rt_verification'] = rt_results
         
-        # Holographic Entropy Scaling
-        print("  - Holographic entropy scaling analysis...")
-        entropy_scaling = holographic_entropy_scaling_analysis(mi_matrix, results['num_qubits'])
-        if entropy_scaling:
-            analysis_results['entropy_scaling'] = entropy_scaling
-            print(f"    ✓ Holographic support: {entropy_scaling['holographic_support']}")
+        # Holographic Entropy Scaling Analysis
+        entropy_scaling_results = holographic_entropy_scaling_analysis(mi_matrix, results['num_qubits'])
+        analysis_results['entropy_scaling'] = entropy_scaling_results
         
-        # Boundary Dynamics
-        print("  - Boundary dynamics analysis...")
-        boundary_dynamics = boundary_dynamics_analysis(results, mi_matrix, coordinates)
-        if boundary_dynamics:
-            analysis_results['boundary_dynamics'] = boundary_dynamics
-            print(f"    ✓ Boundary-bulk correlation: {boundary_dynamics['correlation']:.6f}")
+        # Boundary Dynamics Analysis
+        boundary_dynamics_results = boundary_dynamics_analysis(results, mi_matrix, coordinates)
+        analysis_results['boundary_dynamics'] = boundary_dynamics_results
+        
+        # 7. ROBUSTNESS ANALYSIS
+        print("\n" + "="*60)
+        print("ROBUSTNESS ANALYSIS")
+        print("="*60)
+        
+        # Bootstrap resampling for confidence intervals
+        print("\n1. Bootstrap Resampling Analysis...")
+        bootstrap_results = bootstrap_mi_analysis(results['counts'], results['num_qubits'], n_bootstrap=500, confidence_level=0.95)
+        analysis_results['bootstrap_analysis'] = bootstrap_results
+        
+        # Scrambling test
+        print("\n2. Scrambling Test...")
+        scrambling_results = scrambling_test(results['counts'], results['num_qubits'], n_scrambles=50)
+        analysis_results['scrambling_test'] = scrambling_results
+        
+        # Embedding robustness across different techniques
+        print("\n3. Embedding Robustness Analysis...")
+        embedding_robustness = embedding_robustness_analysis(mi_matrix, results['num_qubits'])
+        analysis_results['embedding_robustness'] = embedding_robustness
+        
+        # Quantify embedding error
+        print("\n4. Embedding Quality Assessment...")
+        embedding_quality = quantify_embedding_error(mi_matrix, coordinates)
+        analysis_results['embedding_quality'] = embedding_quality
+        
+        # 8. Generate robustness plots
+        print("\n5. Generating Robustness Analysis Plots...")
+        
+        # Bootstrap confidence intervals plot
+        plt.figure(figsize=(12, 8))
+        
+        plt.subplot(2, 3, 1)
+        mi_lower = np.array(bootstrap_results['mi_confidence_intervals']['lower'])
+        mi_upper = np.array(bootstrap_results['mi_confidence_intervals']['upper'])
+        mi_mean = np.array(bootstrap_results['mi_confidence_intervals']['mean'])
+        
+        # Plot MI matrix with confidence intervals
+        im = plt.imshow(mi_mean, cmap='viridis', aspect='auto')
+        plt.colorbar(im)
+        plt.title('MI Matrix (Bootstrap Mean)')
+        plt.xlabel('Qubit Index')
+        plt.ylabel('Qubit Index')
+        
+        plt.subplot(2, 3, 2)
+        # Plot confidence interval width
+        ci_width = mi_upper - mi_lower
+        im = plt.imshow(ci_width, cmap='plasma', aspect='auto')
+        plt.colorbar(im)
+        plt.title('MI Confidence Interval Width')
+        plt.xlabel('Qubit Index')
+        plt.ylabel('Qubit Index')
+        
+        plt.subplot(2, 3, 3)
+        # Scrambling test results
+        plt.bar(['Original', 'Scrambled'], 
+               [scrambling_results['original_mi_mean'], scrambling_results['scrambled_mi_mean']],
+               yerr=[scrambling_results['original_mi_std'], scrambling_results['scrambled_mi_std']],
+               capsize=5)
+        plt.title('MI: Original vs Scrambled')
+        plt.ylabel('Mean MI')
+        if scrambling_results['significantly_different']:
+            plt.text(0.5, 0.9, 'SIGNIFICANT DIFFERENCE', 
+                    transform=plt.gca().transAxes, ha='center', 
+                    bbox=dict(boxstyle="round,pad=0.3", facecolor="green", alpha=0.7))
+        
+        plt.subplot(2, 3, 4)
+        # Embedding quality metrics
+        methods = list(embedding_robustness.keys())
+        stresses = [embedding_robustness[m]['stress'] for m in methods if not np.isnan(embedding_robustness[m]['stress'])]
+        valid_methods = [m for m in methods if not np.isnan(embedding_robustness[m]['stress'])]
+        
+        plt.bar(range(len(valid_methods)), stresses)
+        plt.xticks(range(len(valid_methods)), valid_methods, rotation=45)
+        plt.title('Embedding Stress Scores')
+        plt.ylabel('Stress')
+        
+        plt.subplot(2, 3, 5)
+        # Curvature confidence intervals
+        curvature_ci = bootstrap_results['curvature_confidence_intervals']
+        plt.errorbar([1], [curvature_ci['mean']], 
+                    yerr=[[curvature_ci['mean'] - curvature_ci['lower']], 
+                          [curvature_ci['upper'] - curvature_ci['mean']]], 
+                    fmt='o', capsize=5, markersize=10)
+        plt.title('Curvature Estimate\nwith 95% CI')
+        plt.ylabel('Curvature')
+        plt.xticks([1], ['Estimated'])
+        
+        plt.subplot(2, 3, 6)
+        # Embedding quality summary
+        quality_metrics = [
+            embedding_quality['stress'],
+            embedding_quality['shepard_correlation'],
+            embedding_quality['local_global_ratio']
+        ]
+        metric_names = ['Stress', 'Shepard Corr', 'Local/Global Ratio']
+        
+        plt.bar(metric_names, quality_metrics)
+        plt.title('Embedding Quality Metrics')
+        plt.ylabel('Value')
+        plt.xticks(rotation=45)
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, 'robustness_analysis.png'), dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        print(f"✓ Robustness analysis plots saved to {output_dir}/robustness_analysis.png")
     
     else:
         print("⚠️  No quantum measurement counts found - skipping advanced holographic analyses")
@@ -489,12 +600,39 @@ def comprehensive_analysis(results_file, output_dir=None):
     
     # 7. Save comprehensive results
     results_file = os.path.join(output_dir, 'comprehensive_analysis.json')
+    
+    # Make results JSON serializable with debugging
+    def make_json_serializable(obj, path=""):
+        try:
+            if isinstance(obj, dict):
+                return {k: make_json_serializable(v, f"{path}.{k}" if path else k) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [make_json_serializable(v, f"{path}[{i}]" if path else f"[{i}]") for i, v in enumerate(obj)]
+            elif isinstance(obj, (np.integer, np.floating)):
+                return float(obj)
+            elif isinstance(obj, np.ndarray):
+                return obj.tolist()
+            elif isinstance(obj, bool):
+                return bool(obj)  # Ensure it's a Python bool
+            elif obj is None:
+                return None
+            elif hasattr(obj, '__class__') and obj.__class__.__name__ == 'bool':
+                print(f"Found problematic bool at {path}: {obj} (type: {type(obj)})")
+                return bool(obj)
+            else:
+                return obj
+        except Exception as e:
+            print(f"Error serializing object at {path}: {obj} (type: {type(obj)}) - {e}")
+            return str(obj)
+    
+    print("Converting results to JSON serializable format...")
+    serializable_results = make_json_serializable(analysis_results)
+    
     with open(results_file, 'w') as f:
-        json.dump(analysis_results, f, indent=2)
+        json.dump(serializable_results, f, indent=2)
     
     # 8. Generate summary
-    summary_file = os.path.join(output_dir, 'analysis_summary.txt')
-    generate_analysis_summary(analysis_results, summary_file)
+    generate_analysis_summary(analysis_results, output_dir)
     
     print(f"\n✓ Comprehensive analysis completed!")
     print(f"✓ Results saved in: {output_dir}")
@@ -603,139 +741,869 @@ def generate_analysis_plots(analysis_results, output_dir):
         plt.savefig(os.path.join(output_dir, 'boundary_dynamics.png'), dpi=300, bbox_inches='tight')
         plt.close()
 
-def generate_analysis_summary(analysis_results, summary_file):
-    """Generate comprehensive analysis summary"""
+def generate_analysis_summary(analysis_results, output_dir):
+    """Generate a comprehensive analysis summary"""
+    summary = f"""
+Comprehensive Curvature Analysis Summary
+==================================================
+
+Source File: {analysis_results['experiment_info']['source_file']}
+Device: {analysis_results['experiment_info']['device']}
+Shots: {analysis_results['experiment_info']['shots']}
+Qubits: {analysis_results['experiment_info']['num_qubits']}
+Geometry Type: {analysis_results['experiment_info']['geometry_type']}
+Curvature Strength: {analysis_results['experiment_info']['curvature_strength']}
+
+LORENTZIAN GEOMETRY ANALYSIS:
+----------------------------
+"""
+    
+    if 'lorentzian_analysis' in analysis_results:
+        lorentzian = analysis_results['lorentzian_analysis']
+        summary += f"""
+Lorentzian Action: {lorentzian.get('lorentzian_action', 'N/A')}
+Chi-squared p-value: {lorentzian.get('chi2_p_value', 'N/A')}
+Lognormal p-value: {lorentzian.get('lognorm_p_value', 'N/A')}
+Significantly Curved: {lorentzian.get('is_significantly_curved', 'N/A')}
+"""
+
+    summary += """
+ADVANCED HOLOGRAPHIC ANALYSES:
+------------------------------
+"""
+    
+    if 'mi_analysis' in analysis_results:
+        mi = analysis_results['mi_analysis']
+        summary += f"""
+Mutual Information Analysis:
+- Max MI: {mi.get('max_mi', 'N/A')}
+- Non-zero MI pairs: {mi.get('non_zero_pairs', 'N/A')}
+- Average MI: {mi.get('average_mi', 'N/A')}
+"""
+
+    if 'rt_analysis' in analysis_results:
+        rt = analysis_results['rt_analysis']
+        summary += f"""
+RT Surface Analysis:
+- RT surfaces computed: {rt.get('num_rt_surfaces', 'N/A')}
+- RT consistency: {rt.get('rt_consistency', 'N/A')}
+- RT ratio range: {rt.get('mean_rt_ratio', 'N/A')}
+"""
+
+    if 'geometry_analysis' in analysis_results:
+        geom = analysis_results['geometry_analysis']
+        summary += f"""
+Geometry Embedding:
+- Geometry radius: {geom.get('geometry_radius', 'N/A')}
+- MI-Distance correlation: {geom.get('mi_distance_correlation', 'N/A')}
+- MDS stress: {geom.get('mds_stress', 'N/A')}
+"""
+
+    if 'entropy_scaling' in analysis_results:
+        entropy_scaling = analysis_results['entropy_scaling']
+        summary += f"""
+Holographic Entropy Scaling:
+- Area Scaling R²: {entropy_scaling.get('area_scaling', {}).get('r_squared', 'N/A')}
+- Volume Scaling R²: {entropy_scaling.get('volume_scaling', {}).get('r_squared', 'N/A')}
+- Supports Holographic Principle: {entropy_scaling.get('holographic_support', 'N/A')}
+"""
+
+    if 'boundary_dynamics' in analysis_results:
+        boundary_dynamics = analysis_results['boundary_dynamics']
+        summary += f"""
+Boundary Dynamics:
+- Boundary-Bulk Correlation: {boundary_dynamics.get('correlation', 'N/A')}
+- P-value: {boundary_dynamics.get('p_value', 'N/A')}
+"""
+
+    if 'rt_verification' in analysis_results:
+        rt_verification = analysis_results['rt_verification']
+        summary += f"""
+RT Verification:
+- MI vs Minimal Path Correlation: {rt_verification.get('correlation', 'N/A')}
+- P-value: {rt_verification.get('p_value', 'N/A')}
+- Number of pairs analyzed: {rt_verification.get('num_pairs', 'N/A')}
+"""
+
+    if 'bootstrap_analysis' in analysis_results:
+        robustness = analysis_results['bootstrap_analysis']
+        scrambling_results = analysis_results['scrambling_test']
+        embedding_quality = analysis_results['embedding_quality']
+        
+        summary += """
+ROBUSTNESS ANALYSIS SUMMARY:
+-----------------------------
+"""
+
+        summary += f"""
+Bootstrap Resampling Results:
+- Bootstrap samples: {robustness.get('bootstrap_samples', 'N/A')}
+- Confidence level: {robustness.get('confidence_level', 'N/A')}
+
+Curvature confidence interval:
+- Curvature estimate: {robustness.get('curvature_confidence_intervals', {}).get('mean', 'N/A')}
+- 95% CI: [{robustness.get('curvature_confidence_intervals', {}).get('lower', 'N/A')}, {robustness.get('curvature_confidence_intervals', {}).get('upper', 'N/A')}]
+
+Stress confidence interval:
+- MDS stress score: {robustness.get('stress_confidence_intervals', {}).get('mean', 'N/A')}
+- Stress 95% CI: [{robustness.get('stress_confidence_intervals', {}).get('lower', 'N/A')}, {robustness.get('stress_confidence_intervals', {}).get('upper', 'N/A')}]
+
+Scrambling Test Results:
+- Original MI mean: {scrambling_results.get('original_mi_mean', 'N/A')}
+- Scrambled MI mean: {scrambling_results.get('scrambled_mi_mean', 'N/A')}
+- Z-score: {scrambling_results.get('z_score', 'N/A')}
+- P-value: {scrambling_results.get('p_value', 'N/A')}
+- Significantly different: {scrambling_results.get('significantly_different', 'N/A')}
+
+Embedding Quality Assessment:
+- MDS stress score: {embedding_quality.get('stress', 'N/A')}
+- Shepard correlation: {embedding_quality.get('shepard_correlation', 'N/A')}
+- Local/global ratio: {embedding_quality.get('local_global_ratio', 'N/A')}
+- Overall quality: {embedding_quality.get('embedding_quality', 'N/A')}
+
+Embedding Robustness Across Methods:
+"""
+        for method, data in analysis_results['embedding_robustness'].items():
+            if not np.isnan(data['stress']):
+                summary += f"- {method}: Stress = {data['stress']:.6f}\n"
+
+        summary += """
+Robustness Conclusions:
+"""
+        if scrambling_results['significantly_different'] and embedding_quality['stress'] < 0.3:
+            summary += "STRONG EVIDENCE: Geometric structure is robust and statistically significant\n"
+            summary += "The observed geometry survives noise and is not an artifact\n"
+            summary += "Confidence intervals provide reliable estimates of geometric properties\n"
+        elif scrambling_results['significantly_different']:
+            summary += "MODERATE EVIDENCE: Structure is real but embedding quality could be improved\n"
+            summary += "Consider using different embedding techniques or more qubits\n"
+        else:
+            summary += "WEAK EVIDENCE: Structure may be fragile or due to noise\n"
+            summary += "Results should be interpreted with caution\n"
+            summary += "Consider increasing shot count or improving circuit design\n"
+
+    summary += """
+OVERALL ASSESSMENT:
+"""
+    
+    if 'lorentzian_analysis' in analysis_results:
+        if analysis_results['lorentzian_analysis']['is_significant']:
+            summary += "+ Strong evidence for Lorentzian geometry\n"
+        else:
+            summary += "- Weak evidence for Lorentzian geometry\n"
+    
+    if 'rt_analysis' in analysis_results:
+        if analysis_results['rt_analysis']['rt_consistency'] < 0.1:
+            summary += "+ RT surface consistency high, supporting holographic duality\n"
+        else:
+            summary += "- RT surface consistency low, may need more entanglement\n"
+    
+    if 'geometry_analysis' in analysis_results:
+        correlation = analysis_results['geometry_analysis']['mi_distance_correlation']
+        if correlation > 0.7:
+            summary += "+ Strong correlation between MI and geometric distance\n"
+        elif correlation > 0.3:
+            summary += "+ Moderate correlation between MI and geometric distance\n"
+        else:
+            summary += "- Weak correlation, may indicate insufficient entanglement\n"
+    
+    if 'entropy_scaling' in analysis_results:
+        if analysis_results['entropy_scaling']['holographic_support']:
+            summary += "+ Entropy scaling supports holographic principle (area > volume)\n"
+        else:
+            summary += "- Entropy scaling does not clearly support holographic principle\n"
+    
+    if 'boundary_dynamics' in analysis_results:
+        boundary_corr = analysis_results['boundary_dynamics']['correlation']
+        if abs(boundary_corr) > 0.5:
+            summary += "+ Strong boundary-bulk dynamics correlation\n"
+        elif abs(boundary_corr) > 0.3:
+            summary += "+ Moderate boundary-bulk dynamics correlation\n"
+        else:
+            summary += "- Weak boundary-bulk dynamics correlation\n"
+
+    # Save summary
+    summary_file = os.path.join(output_dir, 'analysis_summary.txt')
     with open(summary_file, 'w', encoding='utf-8') as f:
-        f.write("Comprehensive Curvature Analysis Summary\n")
-        f.write("=" * 50 + "\n\n")
+        f.write(summary)
+    
+    print(f"✓ Analysis summary saved to {summary_file}")
+    
+    # Save detailed results as JSON
+    # Fix JSON serialization by converting numpy types and ensuring all values are JSON serializable
+    def make_json_serializable(obj):
+        if isinstance(obj, dict):
+            return {k: make_json_serializable(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [make_json_serializable(v) for v in obj]
+        elif isinstance(obj, (np.integer, np.floating)):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, bool):
+            return bool(obj)  # Ensure it's a Python bool
+        elif obj is None:
+            return None
+        else:
+            return obj
+    
+    serializable_results = make_json_serializable(analysis_results)
+    
+    json_file = os.path.join(output_dir, 'comprehensive_analysis.json')
+    with open(json_file, 'w') as f:
+        json.dump(serializable_results, f, indent=2)
+    
+    print(f"✓ Detailed results saved to {json_file}")
+
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.spatial.distance import pdist, squareform
+from scipy.stats import norm
+from sklearn.manifold import MDS, TSNE, Isomap
+from sklearn.decomposition import PCA
+from sklearn.metrics import pairwise_distances
+import json
+import os
+from datetime import datetime
+import warnings
+warnings.filterwarnings('ignore')
+
+def bootstrap_mi_analysis(counts, num_qubits, n_bootstrap=1000, confidence_level=0.95):
+    """
+    Bootstrap resampling of mutual information matrix to compute confidence intervals.
+    
+    Args:
+        counts: Dictionary of measurement counts
+        num_qubits: Number of qubits
+        n_bootstrap: Number of bootstrap samples
+        confidence_level: Confidence level for intervals (0.95 = 95%)
+    
+    Returns:
+        Dictionary with bootstrap statistics
+    """
+    print(f"Running bootstrap resampling with {n_bootstrap} samples...")
+    
+    # Convert counts to probability distribution
+    total_shots = sum(counts.values())
+    prob_dist = {k: v/total_shots for k, v in counts.items()}
+    
+    # Bootstrap samples
+    bootstrap_mi_matrices = []
+    bootstrap_curvatures = []
+    bootstrap_stress_scores = []
+    
+    for i in range(n_bootstrap):
+        if i % 100 == 0:
+            print(f"  Bootstrap sample {i}/{n_bootstrap}")
         
-        # Experiment info
-        exp_info = analysis_results['experiment_info']
-        f.write(f"Source File: {exp_info['source_file']}\n")
-        f.write(f"Device: {exp_info['device']}\n")
-        f.write(f"Shots: {exp_info['shots']}\n")
-        f.write(f"Qubits: {exp_info['num_qubits']}\n")
-        f.write(f"Geometry Type: {exp_info['geometry_type']}\n")
-        f.write(f"Curvature Strength: {exp_info['curvature_strength']}\n\n")
+        # Resample with replacement
+        resampled_counts = {}
+        for _ in range(total_shots):
+            # Sample from probability distribution
+            bitstring = np.random.choice(list(prob_dist.keys()), p=list(prob_dist.values()))
+            resampled_counts[bitstring] = resampled_counts.get(bitstring, 0) + 1
         
-        # Lorentzian analysis
-        if 'lorentzian_analysis' in analysis_results:
-            lorentzian = analysis_results['lorentzian_analysis']
-            f.write("LORENTZIAN GEOMETRY ANALYSIS:\n")
-            f.write(f"Lorentzian Action: {lorentzian['lorentzian_action']:.6f}\n")
-            f.write(f"P-value: {lorentzian['p_value']:.6f}\n")
-            f.write(f"Statistically Significant: {lorentzian['is_significant']}\n")
-            f.write(f"Bootstrap CI: [{lorentzian['bootstrap_ci'][0]:.6f}, {lorentzian['bootstrap_ci'][1]:.6f}]\n\n")
+        # Compute MI matrix for resampled data
+        mi_matrix = compute_mutual_information_matrix(resampled_counts, num_qubits)
+        bootstrap_mi_matrices.append(mi_matrix)
         
-        # MI analysis
-        if 'mi_analysis' in analysis_results:
-            mi_analysis = analysis_results['mi_analysis']
-            f.write("MUTUAL INFORMATION ANALYSIS:\n")
-            f.write(f"Maximum MI: {mi_analysis['max_mi']:.6f}\n")
-            f.write(f"Mean MI: {mi_analysis['mean_mi']:.6f}\n")
-            f.write(f"Non-zero MI pairs: {mi_analysis['non_zero_pairs']}\n\n")
-        
-        # RT analysis
-        if 'rt_analysis' in analysis_results:
-            rt_analysis = analysis_results['rt_analysis']
-            f.write("RT SURFACE ANALYSIS:\n")
-            f.write(f"RT Surfaces computed: {rt_analysis['num_rt_surfaces']}\n")
-            f.write(f"RT Consistency (std): {rt_analysis['rt_consistency']:.6f}\n")
-            f.write(f"Mean RT Ratio: {rt_analysis['mean_rt_ratio']:.6f}\n\n")
-        
-        # Geometry analysis
-        if 'geometry_analysis' in analysis_results:
-            geom_analysis = analysis_results['geometry_analysis']
-            f.write("GEOMETRY RECONSTRUCTION:\n")
-            f.write(f"Geometry Radius: {geom_analysis['geometry_radius']:.6f}\n")
-            f.write(f"MI-Distance Correlation: {geom_analysis['mi_distance_correlation']:.6f}\n\n")
-        
-        # Advanced Holographic Analyses
-        f.write("ADVANCED HOLOGRAPHIC ANALYSES:\n")
-        f.write("-" * 30 + "\n\n")
-        
-        # RT Verification
-        if 'rt_verification' in analysis_results:
-            rt_verification = analysis_results['rt_verification']
-            f.write("RT VERIFICATION:\n")
-            f.write(f"MI vs Minimal Path Correlation: {rt_verification['correlation']:.6f}\n")
-            f.write(f"P-value: {rt_verification['p_value']:.6f}\n")
-            f.write(f"Number of pairs analyzed: {rt_verification['num_pairs']}\n\n")
-        
-        # Entropy Scaling
-        if 'entropy_scaling' in analysis_results:
-            entropy_scaling = analysis_results['entropy_scaling']
-            f.write("HOLOGRAPHIC ENTROPY SCALING:\n")
-            f.write(f"Area Scaling R²: {entropy_scaling['area_scaling']['r_squared']:.6f}\n")
-            f.write(f"Volume Scaling R²: {entropy_scaling['volume_scaling']['r_squared']:.6f}\n")
-            f.write(f"Supports Holographic Principle: {entropy_scaling['holographic_support']}\n\n")
-        
-        # Boundary Dynamics
-        if 'boundary_dynamics' in analysis_results:
-            boundary_dynamics = analysis_results['boundary_dynamics']
-            f.write("BOUNDARY DYNAMICS:\n")
-            f.write(f"Boundary-Bulk Correlation: {boundary_dynamics['correlation']:.6f}\n")
-            f.write(f"P-value: {boundary_dynamics['p_value']:.6f}\n\n")
-        
-        # Overall assessment
-        f.write("OVERALL ASSESSMENT:\n")
-        
-        # Lorentzian assessment
-        if 'lorentzian_analysis' in analysis_results:
-            if analysis_results['lorentzian_analysis']['is_significant']:
-                f.write("+ Strong evidence for Lorentzian geometry\n")
+        # Compute geometric metrics
+        try:
+            # MDS embedding
+            dissimilarity_matrix = 1 - mi_matrix  # Convert MI to dissimilarity
+            mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
+            coords = mds.fit_transform(dissimilarity_matrix)
+            stress = mds.stress_
+            bootstrap_stress_scores.append(stress)
+            
+            # Estimate curvature from coordinates (simplified)
+            if len(coords) >= 3:
+                # Compute triangle areas to estimate curvature
+                areas = []
+                for i in range(len(coords)):
+                    for j in range(i+1, len(coords)):
+                        for k in range(j+1, len(coords)):
+                            # Triangle area
+                            area = 0.5 * abs(np.cross(coords[j] - coords[i], coords[k] - coords[i]))
+                            areas.append(area)
+                
+                if areas:
+                    # Curvature estimate (inverse of average area)
+                    curvature = 1.0 / (np.mean(areas) + 1e-8)
+                    bootstrap_curvatures.append(curvature)
+                else:
+                    bootstrap_curvatures.append(0.0)
             else:
-                f.write("- Weak evidence for Lorentzian geometry\n")
+                bootstrap_curvatures.append(0.0)
+                
+        except Exception as e:
+            print(f"    Warning: Bootstrap sample {i} failed: {e}")
+            bootstrap_stress_scores.append(np.nan)
+            bootstrap_curvatures.append(np.nan)
+    
+    # Compute confidence intervals
+    alpha = 1 - confidence_level
+    lower_percentile = (alpha/2) * 100
+    upper_percentile = (1 - alpha/2) * 100
+    
+    # MI matrix confidence intervals
+    mi_matrices_array = np.array(bootstrap_mi_matrices)
+    mi_lower = np.percentile(mi_matrices_array, lower_percentile, axis=0)
+    mi_upper = np.percentile(mi_matrices_array, upper_percentile, axis=0)
+    mi_mean = np.mean(mi_matrices_array, axis=0)
+    
+    # Curvature confidence intervals
+    valid_curvatures = [c for c in bootstrap_curvatures if not np.isnan(c)]
+    if valid_curvatures:
+        curvature_lower = np.percentile(valid_curvatures, lower_percentile)
+        curvature_upper = np.percentile(valid_curvatures, upper_percentile)
+        curvature_mean = np.mean(valid_curvatures)
+    else:
+        curvature_lower = curvature_upper = curvature_mean = 0.0
+    
+    # Stress score confidence intervals
+    valid_stress = [s for s in bootstrap_stress_scores if not np.isnan(s)]
+    if valid_stress:
+        stress_lower = np.percentile(valid_stress, lower_percentile)
+        stress_upper = np.percentile(valid_stress, upper_percentile)
+        stress_mean = np.mean(valid_stress)
+    else:
+        stress_lower = stress_upper = stress_mean = np.nan
+    
+    return {
+        'mi_confidence_intervals': {
+            'lower': mi_lower.tolist(),
+            'upper': mi_upper.tolist(),
+            'mean': mi_mean.tolist()
+        },
+        'curvature_confidence_intervals': {
+            'lower': float(curvature_lower),
+            'upper': float(curvature_upper),
+            'mean': float(curvature_mean)
+        },
+        'stress_confidence_intervals': {
+            'lower': float(stress_lower) if not np.isnan(stress_lower) else None,
+            'upper': float(stress_upper) if not np.isnan(stress_upper) else None,
+            'mean': float(stress_mean) if not np.isnan(stress_mean) else None
+        },
+        'bootstrap_samples': n_bootstrap,
+        'confidence_level': confidence_level
+    }
+
+def scrambling_test(counts, num_qubits, n_scrambles=100):
+    """
+    Test robustness by randomly shuffling measurement outcomes across qubits.
+    
+    Args:
+        counts: Dictionary of measurement counts
+        num_qubits: Number of qubits
+        n_scrambles: Number of scrambling tests
+    
+    Returns:
+        Dictionary with scrambling test results
+    """
+    print(f"Running scrambling test with {n_scrambles} random shuffles...")
+    
+    # Original MI matrix
+    original_mi = compute_mutual_information_matrix(counts, num_qubits)
+    original_mi_mean = np.mean(original_mi)
+    original_mi_std = np.std(original_mi)
+    
+    # Scrambled MI matrices
+    scrambled_mi_means = []
+    scrambled_mi_stds = []
+    
+    for i in range(n_scrambles):
+        if i % 20 == 0:
+            print(f"  Scramble test {i}/{n_scrambles}")
         
-        # RT assessment
-        if 'rt_analysis' in analysis_results:
-            if analysis_results['rt_analysis']['rt_consistency'] < 0.1:
-                f.write("+ RT surface consistency high, supporting holographic duality\n")
-            else:
-                f.write("- RT surface consistency low, may need more entanglement\n")
+        # Create scrambled counts by shuffling qubit positions
+        scrambled_counts = {}
+        for bitstring, count in counts.items():
+            # Convert bitstring to list of bits
+            bits = list(bitstring)
+            # Shuffle the bits
+            np.random.shuffle(bits)
+            # Convert back to string
+            scrambled_bitstring = ''.join(bits)
+            scrambled_counts[scrambled_bitstring] = count
         
-        # Geometry assessment
-        if 'geometry_analysis' in analysis_results:
-            correlation = analysis_results['geometry_analysis']['mi_distance_correlation']
-            if correlation > 0.7:
-                f.write("+ Strong correlation between MI and geometric distance\n")
-            elif correlation > 0.3:
-                f.write("+ Moderate correlation between MI and geometric distance\n")
+        # Compute MI for scrambled data
+        scrambled_mi = compute_mutual_information_matrix(scrambled_counts, num_qubits)
+        scrambled_mi_means.append(np.mean(scrambled_mi))
+        scrambled_mi_stds.append(np.std(scrambled_mi))
+    
+    # Statistical test: is original MI significantly different from scrambled?
+    scrambled_mean = np.mean(scrambled_mi_means)
+    scrambled_std = np.std(scrambled_mi_means)
+    
+    # Z-score for original vs scrambled
+    z_score = (original_mi_mean - scrambled_mean) / (scrambled_std + 1e-8)
+    p_value = 2 * (1 - norm.cdf(abs(z_score)))  # Two-tailed test
+    
+    return {
+        'original_mi_mean': float(original_mi_mean),
+        'original_mi_std': float(original_mi_std),
+        'scrambled_mi_mean': float(scrambled_mean),
+        'scrambled_mi_std': float(scrambled_std),
+        'z_score': float(z_score),
+        'p_value': float(p_value),
+        'significantly_different': p_value < 0.05,
+        'n_scrambles': n_scrambles
+    }
+
+def embedding_robustness_analysis(mi_matrix, num_qubits):
+    """
+    Test robustness across different embedding techniques and dimensionalities.
+    
+    Args:
+        mi_matrix: Mutual information matrix
+        num_qubits: Number of qubits
+    
+    Returns:
+        Dictionary with embedding robustness results
+    """
+    print("Testing embedding robustness across different techniques...")
+    
+    dissimilarity_matrix = 1 - mi_matrix
+    
+    results = {}
+    
+    # Test different embedding techniques
+    embedding_methods = {
+        'MDS_2D': MDS(n_components=2, dissimilarity='precomputed', random_state=42),
+        'MDS_3D': MDS(n_components=3, dissimilarity='precomputed', random_state=42),
+        'TSNE_2D': TSNE(n_components=2, metric='precomputed', random_state=42),
+        'Isomap_2D': Isomap(n_components=2, metric='precomputed'),
+        'PCA_2D': PCA(n_components=2)
+    }
+    
+    for name, method in embedding_methods.items():
+        try:
+            if 'PCA' in name:
+                # PCA works on the original data, not dissimilarity
+                coords = method.fit_transform(mi_matrix)
             else:
-                f.write("- Weak correlation, may indicate insufficient entanglement\n")
+                coords = method.fit_transform(dissimilarity_matrix)
+            
+            # Compute stress score (for MDS) or reconstruction error
+            if 'MDS' in name:
+                stress = method.stress_
+                results[name] = {
+                    'stress': float(stress),
+                    'coordinates': coords.tolist()
+                }
+            else:
+                # For other methods, compute reconstruction error
+                if 'PCA' in name:
+                    reconstructed = method.inverse_transform(coords)
+                    error = np.mean((mi_matrix - reconstructed) ** 2)
+                else:
+                    # Approximate stress for non-MDS methods
+                    coords_dist = pairwise_distances(coords)
+                    stress = np.mean((dissimilarity_matrix - coords_dist) ** 2)
+                
+                results[name] = {
+                    'stress': float(stress),
+                    'coordinates': coords.tolist()
+                }
+                
+        except Exception as e:
+            print(f"    Warning: {name} failed: {e}")
+            results[name] = {'stress': np.nan, 'coordinates': None}
+    
+    return results
+
+def quantify_embedding_error(mi_matrix, coordinates):
+    """
+    Quantify the quality of the embedding using various metrics.
+    
+    Args:
+        mi_matrix: Mutual information matrix
+        coordinates: 2D coordinates from embedding
+    
+    Returns:
+        Dictionary with embedding quality metrics
+    """
+    dissimilarity_matrix = 1 - mi_matrix
+    
+    # Ensure diagonal is zero for distance matrix
+    np.fill_diagonal(dissimilarity_matrix, 0.0)
+    
+    # MDS stress (how well dissimilarities are preserved)
+    coords_dist = pairwise_distances(coordinates)
+    stress = np.mean((dissimilarity_matrix - coords_dist) ** 2)
+    
+    # Shepard plot correlation
+    try:
+        flat_dissimilarity = squareform(dissimilarity_matrix)
+        flat_coords_dist = squareform(coords_dist)
+        correlation = np.corrcoef(flat_dissimilarity, flat_coords_dist)[0, 1]
+    except Exception as e:
+        print(f"    Warning: Could not compute Shepard correlation: {e}")
+        correlation = 0.0
+    
+    # Local vs global structure preservation
+    # Compute ratio of local to global distances
+    local_distances = []
+    global_distances = []
+    
+    for i in range(len(coordinates)):
+        for j in range(i+1, len(coordinates)):
+            dist = np.linalg.norm(coordinates[i] - coordinates[j])
+            if dist < np.median(coords_dist):  # Local
+                local_distances.append(dist)
+            else:  # Global
+                global_distances.append(dist)
+    
+    if local_distances and global_distances:
+        local_global_ratio = np.mean(local_distances) / (np.mean(global_distances) + 1e-8)
+    else:
+        local_global_ratio = 1.0
+    
+    return {
+        'stress': float(stress),
+        'shepard_correlation': float(correlation) if not np.isnan(correlation) else 0.0,
+        'local_global_ratio': float(local_global_ratio),
+        'embedding_quality': 'good' if stress < 0.1 else 'moderate' if stress < 0.3 else 'poor'
+    }
+
+def analyze_curvature_phase_diagram(experiment_logs_dir):
+    """
+    Analyze phase diagram across multiple curvature values to establish systematic trends.
+    This addresses reviewer concerns about isolated data points vs. systematic behavior.
+    """
+    print("=== CURVATURE PHASE DIAGRAM ANALYSIS ===")
+    print("Establishing systematic trends across curvature values...")
+    
+    # Find all custom curvature experiment results
+    results_files = []
+    for filename in os.listdir(experiment_logs_dir):
+        if filename.startswith('results_') and filename.endswith('.json'):
+            filepath = os.path.join(experiment_logs_dir, filename)
+            results_files.append(filepath)
+    
+    print(f"Found {len(results_files)} result files")
+    
+    # Extract curvature values and organize data
+    curvature_data = {}
+    
+    for filepath in results_files:
+        try:
+            with open(filepath, 'r') as f:
+                data = json.load(f)
+            
+            # Extract curvature value from filename or data
+            curvature = None
+            if 'spec' in data and 'curvature' in data['spec']:
+                curvature = data['spec']['curvature']
+            else:
+                # Try to extract from filename
+                import re
+                match = re.search(r'curv(\d+(?:\.\d+)?)', filename)
+                if match:
+                    curvature = float(match.group(1))
+            
+            if curvature is not None:
+                if curvature not in curvature_data:
+                    curvature_data[curvature] = []
+                curvature_data[curvature].append({
+                    'filepath': filepath,
+                    'data': data,
+                    'filename': filename
+                })
+                
+        except Exception as e:
+            print(f"Error processing {filepath}: {e}")
+            continue
+    
+    print(f"Organized data by curvature: {sorted(curvature_data.keys())}")
+    
+    # Analyze each curvature value
+    phase_diagram_results = {}
+    
+    for curvature in sorted(curvature_data.keys()):
+        print(f"\nAnalyzing curvature κ = {curvature}")
         
-        # Advanced analyses assessment
-        if 'rt_verification' in analysis_results:
-            rt_corr = analysis_results['rt_verification']['correlation']
-            if abs(rt_corr) > 0.5:
-                f.write("+ Strong RT verification: MI tracks with minimal bulk paths\n")
-            elif abs(rt_corr) > 0.3:
-                f.write("+ Moderate RT verification\n")
-            else:
-                f.write("- Weak RT verification\n")
+        curvature_results = []
         
-        if 'entropy_scaling' in analysis_results:
-            if analysis_results['entropy_scaling']['holographic_support']:
-                f.write("+ Entropy scaling supports holographic principle (area > volume)\n")
-            else:
-                f.write("- Entropy scaling does not clearly support holographic principle\n")
+        for result_info in curvature_data[curvature]:
+            data = result_info['data']
+            
+            # Extract key metrics
+            metrics = {
+                'curvature': curvature,
+                'filename': result_info['filename'],
+                'device': data.get('spec', {}).get('device', 'unknown'),
+                'num_qubits': data.get('spec', {}).get('num_qubits', 0),
+                'shots': data.get('spec', {}).get('shots', 0),
+                'geometry': data.get('spec', {}).get('geometry', 'unknown')
+            }
+            
+            # Extract Lorentzian action if available
+            if 'lorentzian_solution' in data:
+                lorentzian_sol = data['lorentzian_solution']
+                metrics['lorentzian_action'] = lorentzian_sol.get('stationary_action')
+                metrics['edge_lengths'] = lorentzian_sol.get('stationary_edge_lengths', [])
+                
+                # Compute edge length statistics
+                if metrics['edge_lengths']:
+                    edge_lengths = np.array(metrics['edge_lengths'])
+                    metrics['mean_edge_length'] = np.mean(edge_lengths)
+                    metrics['std_edge_length'] = np.std(edge_lengths)
+                    metrics['min_edge_length'] = np.min(edge_lengths)
+                    metrics['max_edge_length'] = np.max(edge_lengths)
+            
+            # Extract mutual information if available
+            if 'mutual_information_per_timestep' in data:
+                mi_data = data['mutual_information_per_timestep']
+                if mi_data and len(mi_data) > 0:
+                    # Use first timestep for analysis
+                    mi_timestep = mi_data[0]
+                    
+                    # Convert to matrix format
+                    num_qubits = metrics['num_qubits']
+                    mi_matrix = np.zeros((num_qubits, num_qubits))
+                    
+                    for key, value in mi_timestep.items():
+                        if key.startswith('I_'):
+                            # Parse qubit indices
+                            parts = key[2:].split(',')
+                            if len(parts) == 2:
+                                i, j = int(parts[0]), int(parts[1])
+                                if 0 <= i < num_qubits and 0 <= j < num_qubits:
+                                    mi_matrix[i, j] = mi_matrix[j, i] = value
+                    
+                    # Compute MI statistics
+                    mask = ~np.eye(num_qubits, dtype=bool)
+                    mi_values = mi_matrix[mask]
+                    
+                    metrics['mean_mi'] = np.mean(mi_values)
+                    metrics['std_mi'] = np.std(mi_values)
+                    metrics['min_mi'] = np.min(mi_values)
+                    metrics['max_mi'] = np.max(mi_values)
+                    
+                    # Compute Gromov delta (hyperbolicity measure)
+                    if num_qubits >= 4:
+                        # Use MI as distance metric (inverse relationship)
+                        eps = 1e-8
+                        mi_max = np.max(mi_matrix)
+                        if mi_max > 0:
+                            mi_normalized = mi_matrix / mi_max
+                        else:
+                            mi_normalized = mi_matrix
+                        
+                        distance_matrix = -np.log(mi_normalized + eps)
+                        
+                        # Compute Gromov delta
+                        gromov_deltas = []
+                        for i in range(num_qubits):
+                            for j in range(i+1, num_qubits):
+                                for k in range(j+1, num_qubits):
+                                    for l in range(k+1, num_qubits):
+                                        d_ij = distance_matrix[i, j]
+                                        d_kl = distance_matrix[k, l]
+                                        d_ik = distance_matrix[i, k]
+                                        d_jl = distance_matrix[j, l]
+                                        d_il = distance_matrix[i, l]
+                                        d_jk = distance_matrix[j, k]
+                                        
+                                        # Gromov delta condition
+                                        delta1 = (d_ij + d_kl) - max(d_ik + d_jl, d_il + d_jk)
+                                        delta2 = (d_ik + d_jl) - max(d_ij + d_kl, d_il + d_jk)
+                                        delta3 = (d_il + d_jk) - max(d_ij + d_kl, d_ik + d_jl)
+                                        
+                                        gromov_delta = max(delta1, delta2, delta3)
+                                        if gromov_delta > 0:
+                                            gromov_deltas.append(gromov_delta)
+                        
+                        if gromov_deltas:
+                            metrics['gromov_delta_mean'] = np.mean(gromov_deltas)
+                            metrics['gromov_delta_std'] = np.std(gromov_deltas)
+                            metrics['gromov_delta_max'] = np.max(gromov_deltas)
+                        else:
+                            metrics['gromov_delta_mean'] = 0.0
+                            metrics['gromov_delta_std'] = 0.0
+                            metrics['gromov_delta_max'] = 0.0
+            
+            curvature_results.append(metrics)
         
-        if 'boundary_dynamics' in analysis_results:
-            boundary_corr = analysis_results['boundary_dynamics']['correlation']
-            if abs(boundary_corr) > 0.5:
-                f.write("+ Strong boundary-bulk dynamics correlation\n")
-            elif abs(boundary_corr) > 0.3:
-                f.write("+ Moderate boundary-bulk dynamics correlation\n")
-            else:
-                f.write("- Weak boundary-bulk dynamics correlation\n")
+        # Aggregate statistics for this curvature value
+        if curvature_results:
+            # Separate hardware and simulator results
+            hardware_results = [r for r in curvature_results if 'ibm_' in r.get('device', '')]
+            simulator_results = [r for r in curvature_results if 'sim' in r.get('device', '')]
+            
+            phase_diagram_results[curvature] = {
+                'hardware_results': hardware_results,
+                'simulator_results': simulator_results,
+                'total_experiments': len(curvature_results),
+                'hardware_experiments': len(hardware_results),
+                'simulator_experiments': len(simulator_results)
+            }
+            
+            print(f"  Curvature κ = {curvature}: {len(curvature_results)} experiments")
+            print(f"    Hardware: {len(hardware_results)}, Simulator: {len(simulator_results)}")
+    
+    return phase_diagram_results
+
+def generate_phase_diagram_plots(phase_diagram_results, output_dir):
+    """Generate phase diagram plots showing systematic trends"""
+    print("\n=== GENERATING PHASE DIAGRAM PLOTS ===")
+    
+    curvatures = sorted(phase_diagram_results.keys())
+    
+    # Prepare data for plotting
+    curvature_values = []
+    lorentzian_actions_hw = []
+    lorentzian_actions_sim = []
+    gromov_deltas_hw = []
+    gromov_deltas_sim = []
+    mean_mi_hw = []
+    mean_mi_sim = []
+    
+    for curvature in curvatures:
+        data = phase_diagram_results[curvature]
+        
+        # Hardware results
+        if data['hardware_results']:
+            hw_actions = [r.get('lorentzian_action', 0) for r in data['hardware_results'] if r.get('lorentzian_action') is not None]
+            hw_gromov = [r.get('gromov_delta_mean', 0) for r in data['hardware_results'] if r.get('gromov_delta_mean') is not None]
+            hw_mi = [r.get('mean_mi', 0) for r in data['hardware_results'] if r.get('mean_mi') is not None]
+            
+            if hw_actions:
+                curvature_values.append(curvature)
+                lorentzian_actions_hw.append(np.mean(hw_actions))
+                gromov_deltas_hw.append(np.mean(hw_gromov) if hw_gromov else 0)
+                mean_mi_hw.append(np.mean(hw_mi) if hw_mi else 0)
+        
+        # Simulator results
+        if data['simulator_results']:
+            sim_actions = [r.get('lorentzian_action', 0) for r in data['simulator_results'] if r.get('lorentzian_action') is not None]
+            sim_gromov = [r.get('gromov_delta_mean', 0) for r in data['simulator_results'] if r.get('gromov_delta_mean') is not None]
+            sim_mi = [r.get('mean_mi', 0) for r in data['simulator_results'] if r.get('mean_mi') is not None]
+            
+            if sim_actions:
+                if curvature not in curvature_values:
+                    curvature_values.append(curvature)
+                lorentzian_actions_sim.append(np.mean(sim_actions))
+                gromov_deltas_sim.append(np.mean(sim_gromov) if sim_gromov else 0)
+                mean_mi_sim.append(np.mean(sim_mi) if sim_mi else 0)
+    
+    # Create phase diagram plots
+    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    fig.suptitle('Curvature Phase Diagram: Systematic Trends Across κ Values', fontsize=16, fontweight='bold')
+    
+    # Plot 1: Lorentzian Action vs Curvature
+    ax1 = axes[0, 0]
+    if lorentzian_actions_hw:
+        ax1.plot(curvature_values[:len(lorentzian_actions_hw)], lorentzian_actions_hw, 'o-', 
+                color='red', linewidth=2, markersize=8, label='Hardware (IBM Brisbane)')
+    if lorentzian_actions_sim:
+        ax1.plot(curvature_values[:len(lorentzian_actions_sim)], lorentzian_actions_sim, 's-', 
+                color='blue', linewidth=2, markersize=8, label='Simulator (FakeBrisbane)')
+    
+    ax1.set_xlabel('Curvature κ', fontsize=12)
+    ax1.set_ylabel('Lorentzian Action', fontsize=12)
+    ax1.set_title('Lorentzian Action vs Curvature', fontsize=14, fontweight='bold')
+    ax1.legend()
+    ax1.grid(True, alpha=0.3)
+    
+    # Plot 2: Gromov Delta vs Curvature
+    ax2 = axes[0, 1]
+    if gromov_deltas_hw:
+        ax2.plot(curvature_values[:len(gromov_deltas_hw)], gromov_deltas_hw, 'o-', 
+                color='red', linewidth=2, markersize=8, label='Hardware')
+    if gromov_deltas_sim:
+        ax2.plot(curvature_values[:len(gromov_deltas_sim)], gromov_deltas_sim, 's-', 
+                color='blue', linewidth=2, markersize=8, label='Simulator')
+    
+    ax2.set_xlabel('Curvature κ', fontsize=12)
+    ax2.set_ylabel('Gromov Delta (Hyperbolicity)', fontsize=12)
+    ax2.set_title('Hyperbolicity vs Curvature', fontsize=14, fontweight='bold')
+    ax2.legend()
+    ax2.grid(True, alpha=0.3)
+    
+    # Plot 3: Mean MI vs Curvature
+    ax3 = axes[1, 0]
+    if mean_mi_hw:
+        ax3.plot(curvature_values[:len(mean_mi_hw)], mean_mi_hw, 'o-', 
+                color='red', linewidth=2, markersize=8, label='Hardware')
+    if mean_mi_sim:
+        ax3.plot(curvature_values[:len(mean_mi_sim)], mean_mi_sim, 's-', 
+                color='blue', linewidth=2, markersize=8, label='Simulator')
+    
+    ax3.set_xlabel('Curvature κ', fontsize=12)
+    ax3.set_ylabel('Mean Mutual Information', fontsize=12)
+    ax3.set_title('Entanglement vs Curvature', fontsize=14, fontweight='bold')
+    ax3.legend()
+    ax3.grid(True, alpha=0.3)
+    
+    # Plot 4: Hardware vs Simulator Comparison
+    ax4 = axes[1, 1]
+    if lorentzian_actions_hw and lorentzian_actions_sim:
+        min_len = min(len(lorentzian_actions_hw), len(lorentzian_actions_sim))
+        hw_vals = lorentzian_actions_hw[:min_len]
+        sim_vals = lorentzian_actions_sim[:min_len]
+        curv_vals = curvature_values[:min_len]
+        
+        ax4.scatter(hw_vals, sim_vals, c=curv_vals, cmap='viridis', s=100, alpha=0.7)
+        ax4.plot([0, max(max(hw_vals), max(sim_vals))], [0, max(max(hw_vals), max(sim_vals))], 
+                'k--', alpha=0.5, label='Perfect Agreement')
+        
+        ax4.set_xlabel('Hardware Lorentzian Action', fontsize=12)
+        ax4.set_ylabel('Simulator Lorentzian Action', fontsize=12)
+        ax4.set_title('Hardware vs Simulator Agreement', fontsize=14, fontweight='bold')
+        ax4.legend()
+        ax4.grid(True, alpha=0.3)
+        
+        # Add colorbar
+        cbar = plt.colorbar(ax4.collections[0], ax=ax4)
+        cbar.set_label('Curvature κ', fontsize=10)
+    
+    plt.tight_layout()
+    
+    # Save plot
+    plot_path = os.path.join(output_dir, 'curvature_phase_diagram.png')
+    plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+    print(f"Phase diagram saved to: {plot_path}")
+    
+    plt.show()
+    
+    return plot_path
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Comprehensive Curvature Analyzer')
     parser.add_argument('results_file', help='Path to experiment results JSON file')
     parser.add_argument('--output_dir', help='Output directory for analysis results')
+    parser.add_argument('--phase_diagram', action='store_true', 
+                       help='Generate phase diagram analysis across all curvature values')
     
     args = parser.parse_args()
     
+    if args.phase_diagram:
+        # Run phase diagram analysis
+        experiment_logs_dir = os.path.join(os.path.dirname(args.results_file), '..', 'custom_curvature_experiment')
+        if not os.path.exists(experiment_logs_dir):
+            experiment_logs_dir = os.path.join(os.path.dirname(args.results_file), '..', '..', 'experiment_logs', 'custom_curvature_experiment')
+        
+        if os.path.exists(experiment_logs_dir):
+            phase_results = analyze_curvature_phase_diagram(experiment_logs_dir)
+            
+            if args.output_dir:
+                os.makedirs(args.output_dir, exist_ok=True)
+                generate_phase_diagram_plots(phase_results, args.output_dir)
+                
+                # Save phase diagram data
+                phase_data_path = os.path.join(args.output_dir, 'phase_diagram_data.json')
+                with open(phase_data_path, 'w') as f:
+                    json.dump(phase_results, f, indent=2, default=str)
+                print(f"Phase diagram data saved to: {phase_data_path}")
+        else:
+            print(f"Experiment logs directory not found: {experiment_logs_dir}")
+    else:
+        # Run standard analysis
     if not os.path.exists(args.results_file):
         print(f"Error: Results file {args.results_file} not found!")
         exit(1)

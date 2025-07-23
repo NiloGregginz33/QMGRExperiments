@@ -47,25 +47,55 @@ def marginal_probs(probs, total_qubits, keep):
     return np.array(list(marginal.values()))
 
 def build_perfect_tensor_circuit(num_qubits=6):
-    """Build a perfect tensor circuit with specified number of qubits."""
+    """Build a perfect tensor circuit with enhanced entanglement layers."""
     qc = QuantumCircuit(num_qubits)
     
-    # Create GHZ pairs
+    # Layer 1: Create GHZ pairs with Hadamard + CX
     for i in range(0, num_qubits-1, 2):
         qc.h(i)
         qc.cx(i, i+1)
     
-    # Entangle across pairs (CZ gates)
+    # Layer 2: Entangle across pairs with CZ gates
     for i in range(0, num_qubits-2, 2):
         qc.cz(i, i+2)
         if i+3 < num_qubits:
             qc.cz(i+1, i+3)
+    
+    # Layer 3: Additional entangling layer (CX-CX-CX alternating pattern)
+    # This guarantees at least one Bell pair across each cut
+    for i in range(0, num_qubits-1, 2):
+        if i+1 < num_qubits:
+            qc.cx(i, i+1)
+        if i+2 < num_qubits:
+            qc.cx(i+1, i+2)
+        if i+3 < num_qubits:
+            qc.cx(i+2, i+3)
+    
+    # Layer 4: Final entangling layer with CZ gates
+    for i in range(0, num_qubits-3, 2):
+        qc.cz(i, i+3)
+        if i+4 < num_qubits:
+            qc.cz(i+1, i+4)
     
     # Optional RX rotation to break symmetry
     for q in range(num_qubits):
         qc.rx(np.pi / 4, q)
     
     return qc
+
+def renyi_2_entropy(probs):
+    """Compute Rényi-2 entropy: S_2 = -log(Tr(ρ²)) = -log(sum(p_i²))"""
+    probs = np.array(probs)
+    probs = probs / np.sum(probs)
+    purity = np.sum(probs ** 2)
+    return -np.log2(purity + 1e-12)
+
+def linear_entropy(probs):
+    """Compute linear entropy: S_L = 1 - Tr(ρ²) = 1 - sum(p_i²)"""
+    probs = np.array(probs)
+    probs = probs / np.sum(probs)
+    purity = np.sum(probs ** 2)
+    return 1 - purity
 
 def bootstrap_confidence_interval(data, n_bootstrap=1000, confidence_level=0.95):
     """Calculate bootstrap confidence intervals."""
@@ -143,7 +173,7 @@ def linear_fit_with_statistics(x, y, y_err=None):
         'residuals': residuals
     }
 
-def run_experiment(device='simulator', shots=20000, num_qubits=6, num_runs=5):
+def run_experiment(device='simulator', shots=4096, num_qubits=6, num_runs=5):
     """Run the enhanced boundary vs bulk entropy experiment."""
     
     # Initialize logger
@@ -177,7 +207,7 @@ def run_experiment(device='simulator', shots=20000, num_qubits=6, num_runs=5):
         print("Using FakeBrisbane simulator")
     elif HARDWARE_AVAILABLE:
         try:
-            service = QiskitRuntimeService(channel="ibm_quantum")
+            service = QiskitRuntimeService()
             
             # Try to get the specific backend
             try:
@@ -242,6 +272,23 @@ def run_experiment(device='simulator', shots=20000, num_qubits=6, num_runs=5):
                 sv = Statevector.from_instruction(qc)
                 probs = np.abs(sv.data) ** 2
             else:
+                # Apply readout calibration if available
+                if hasattr(backend, 'properties') and backend.properties() is not None:
+                    try:
+                        from qiskit.ignis.mitigation.measurement import complete_meas_cal, CompleteMeasFitter
+                        # Create measurement calibration circuits
+                        meas_calibs, state_labels = complete_meas_cal(qubit_list=range(num_qubits), qr=qc.qregs[0], cr=qc.cregs[0])
+                        # Run calibration circuits
+                        cal_job = backend.run(meas_calibs, shots=shots)
+                        cal_results = cal_job.result()
+                        # Create measurement filter
+                        meas_fitter = CompleteMeasFitter(cal_results, state_labels, circlabel='mcal')
+                        # Apply correction to counts
+                        counts = meas_fitter.filter.apply(counts)
+                        print("Applied readout calibration")
+                    except Exception as e:
+                        print(f"Readout calibration failed: {e}")
+                
                 # Convert counts to probabilities
                 total_counts = sum(counts.values())
                 probs = np.zeros(2**num_qubits)
@@ -250,32 +297,49 @@ def run_experiment(device='simulator', shots=20000, num_qubits=6, num_runs=5):
                     probs[idx] = count / total_counts
         
         # Calculate entropies for all cut sizes
-        run_entropies = []
+        run_entropies_vn = []  # von Neumann entropy
+        run_entropies_r2 = []  # Rényi-2 entropy
+        run_entropies_lin = [] # Linear entropy
         run_marginals = []
         
         for cut_size in range(1, num_qubits):
             keep = list(range(cut_size))
             marg = marginal_probs(probs, num_qubits, keep)
-            entropy = shannon_entropy(marg)
             
-            valid = not np.isnan(entropy) and entropy >= -1e-6 and entropy <= cut_size
-            print(f"  Cut size {cut_size}: Entropy = {entropy:.6f} {'[VALID]' if valid else '[INVALID]'}")
+            # Calculate different entropy measures
+            entropy_vn = shannon_entropy(marg)
+            entropy_r2 = renyi_2_entropy(marg)
+            entropy_lin = linear_entropy(marg)
             
-            run_entropies.append(entropy)
+            valid_vn = not np.isnan(entropy_vn) and entropy_vn >= -1e-6 and entropy_vn <= cut_size
+            valid_r2 = not np.isnan(entropy_r2) and entropy_r2 >= -1e-6 and entropy_r2 <= cut_size
+            valid_lin = not np.isnan(entropy_lin) and entropy_lin >= -1e-6 and entropy_lin <= 1.0
+            
+            print(f"  Cut size {cut_size}: S_vN = {entropy_vn:.6f} {'[VALID]' if valid_vn else '[INVALID]'}, S_2 = {entropy_r2:.6f} {'[VALID]' if valid_r2 else '[INVALID]'}, S_L = {entropy_lin:.6f} {'[VALID]' if valid_lin else '[INVALID]'}")
+            
+            run_entropies_vn.append(entropy_vn)
+            run_entropies_r2.append(entropy_r2)
+            run_entropies_lin.append(entropy_lin)
             run_marginals.append(marg.tolist())
             
             # Log individual result
             logger.log_result({
                 "run": run_idx + 1,
                 "cut_size": cut_size,
-                "entropy": float(entropy),
-                "valid": bool(valid),
+                "entropy_von_neumann": float(entropy_vn),
+                "entropy_renyi_2": float(entropy_r2),
+                "entropy_linear": float(entropy_lin),
+                "valid_vn": bool(valid_vn),
+                "valid_r2": bool(valid_r2),
+                "valid_lin": bool(valid_lin),
                 "marginal_probs": marg.tolist()
             })
         
         all_results.append({
             'run': run_idx + 1,
-            'entropies': run_entropies,
+            'entropies_von_neumann': run_entropies_vn,
+            'entropies_renyi_2': run_entropies_r2,
+            'entropies_linear': run_entropies_lin,
             'marginals': run_marginals,
             'probabilities': probs.tolist()
         })
