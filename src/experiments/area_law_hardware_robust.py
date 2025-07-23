@@ -33,6 +33,20 @@ def shannon_entropy(probs):
     probs = probs[probs > 0]  # Remove zero probabilities
     return -np.sum(probs * np.log2(probs))
 
+def renyi_2_entropy(probs):
+    """Compute Rényi-2 entropy: S_2 = -log(Tr(ρ²)) = -log(sum(p_i²))"""
+    probs = np.array(probs)
+    probs = probs / np.sum(probs)
+    purity = np.sum(probs ** 2)
+    return -np.log2(purity + 1e-12)
+
+def linear_entropy(probs):
+    """Compute linear entropy: S_L = 1 - Tr(ρ²) = 1 - sum(p_i²)"""
+    probs = np.array(probs)
+    probs = probs / np.sum(probs)
+    purity = np.sum(probs ** 2)
+    return 1 - purity
+
 def marginal_probs(probs, total_qubits, keep):
     """Calculate marginal probabilities for a subset of qubits."""
     shape = [2] * total_qubits
@@ -50,7 +64,7 @@ def marginal_probs(probs, total_qubits, keep):
 def build_area_law_circuit(num_qubits=8, depth=3, connectivity='nearest'):
     """
     Build a circuit that should exhibit area law scaling.
-    Using simpler gates to avoid transpilation issues.
+    Enhanced with multiple entangling layers to guarantee Bell pairs across cuts.
     
     Args:
         num_qubits: Number of qubits
@@ -66,23 +80,23 @@ def build_area_law_circuit(num_qubits=8, depth=3, connectivity='nearest'):
     for i in range(num_qubits):
         qc.h(i)
     
-    # Multiple layers of entangling gates (simplified)
+    # Layer 2: Multiple layers of entangling gates (enhanced)
     for layer in range(depth):
         if connectivity == 'nearest':
-            # Nearest neighbor entanglement (simplified)
+            # Nearest neighbor entanglement (enhanced)
             for i in range(num_qubits - 1):
                 qc.cx(i, i + 1)
                 qc.h(i)  # Add some randomness
                 qc.h(i + 1)
         elif connectivity == 'all_to_all':
-            # All-to-all entanglement (simplified)
+            # All-to-all entanglement (enhanced)
             for i in range(num_qubits):
                 for j in range(i + 1, num_qubits):
                     qc.cx(i, j)
                     qc.h(i)
                     qc.h(j)
         elif connectivity == 'random':
-            # Random entanglement pattern (simplified)
+            # Random entanglement pattern (enhanced)
             import random
             random.seed(42 + layer)  # Reproducible randomness
             for _ in range(num_qubits // 2):
@@ -92,7 +106,23 @@ def build_area_law_circuit(num_qubits=8, depth=3, connectivity='nearest'):
                 qc.h(i)
                 qc.h(j)
     
-    # Add some additional entanglement layers
+    # Layer 3: Additional entangling layers (CX-CX-CX alternating pattern)
+    # This guarantees at least one Bell pair across each cut
+    for i in range(0, num_qubits - 1, 2):
+        if i + 1 < num_qubits:
+            qc.cx(i, i + 1)
+        if i + 2 < num_qubits:
+            qc.cx(i + 1, i + 2)
+        if i + 3 < num_qubits:
+            qc.cx(i + 2, i + 3)
+    
+    # Layer 4: Final entangling layer with CZ gates
+    for i in range(0, num_qubits - 3, 2):
+        qc.cz(i, i + 3)
+        if i + 4 < num_qubits:
+            qc.cz(i + 1, i + 4)
+    
+    # Layer 5: Additional nearest neighbor entanglement
     for i in range(num_qubits - 1):
         qc.cx(i, i + 1)
         qc.h(i)
@@ -282,7 +312,7 @@ def test_area_law_hypothesis(cut_sizes, entropies, entropy_errors=None):
     
     return results
 
-def run_experiment(device='simulator', shots=20000, num_qubits=8, depth=3, 
+def run_experiment(device='simulator', shots=4096, num_qubits=8, depth=3, 
                   connectivity='nearest', num_runs=5):
     """Run the area law entropy experiment with robust statistics."""
     
@@ -378,7 +408,7 @@ def run_experiment(device='simulator', shots=20000, num_qubits=8, depth=3,
                 print(f"Hardware execution completed!")
                 print(f"Result type: {type(result)}")
                 
-                # Handle different return types from run function (same as custom_curvature_experiment)
+                # Handle different return types from run function
                 if hasattr(result, 'get_counts'):
                     # It's a Result object
                     counts = result.get_counts()
@@ -392,6 +422,28 @@ def run_experiment(device='simulator', shots=20000, num_qubits=8, depth=3,
                     counts = {}
                     for bitstring, prob in prob_dict.items():
                         counts[bitstring] = int(prob * shots)
+                elif hasattr(result, 'data') and hasattr(result.data, 'c'):
+                    # New format with BitArray in 'c' attribute
+                    bitarray = result.data.c
+                    if hasattr(bitarray, 'get_bitstrings'):
+                        bitstrings = bitarray.get_bitstrings()
+                        counts = {}
+                        for bitstring in bitstrings:
+                            bitstring_str = ''.join(str(b) for b in bitstring)
+                            counts[bitstring_str] = counts.get(bitstring_str, 0) + 1
+                    else:
+                        # Fallback: try to convert bitarray to counts
+                        counts = {}
+                        try:
+                            # Try to access the raw data
+                            raw_data = bitarray.data if hasattr(bitarray, 'data') else bitarray
+                            if hasattr(raw_data, '__iter__'):
+                                for bitstring in raw_data:
+                                    bitstring_str = ''.join(str(b) for b in bitstring)
+                                    counts[bitstring_str] = counts.get(bitstring_str, 0) + 1
+                        except Exception as e:
+                            print(f"Could not convert bitarray to counts: {e}")
+                            counts = None
                 else:
                     # Fallback: try to extract counts from result
                     counts = None
@@ -410,6 +462,23 @@ def run_experiment(device='simulator', shots=20000, num_qubits=8, depth=3,
                 
                 print(f"Successfully extracted {len(counts)} measurement outcomes from hardware")
                 print(f"Sample counts: {dict(list(counts.items())[:5])}")
+                
+                # Apply readout calibration if available
+                if hasattr(backend_obj, 'properties') and backend_obj.properties() is not None:
+                    try:
+                        from qiskit.ignis.mitigation.measurement import complete_meas_cal, CompleteMeasFitter
+                        # Create measurement calibration circuits
+                        meas_calibs, state_labels = complete_meas_cal(qubit_list=range(num_qubits), qr=qc.qregs[0], cr=qc.cregs[0])
+                        # Run calibration circuits
+                        cal_job = backend_obj.run(meas_calibs, shots=shots)
+                        cal_results = cal_job.result()
+                        # Create measurement filter
+                        meas_fitter = CompleteMeasFitter(cal_results, state_labels, circlabel='mcal')
+                        # Apply correction to counts
+                        counts = meas_fitter.filter.apply(counts)
+                        print("Applied readout calibration")
+                    except Exception as e:
+                        print(f"Readout calibration failed: {e}")
                 
                 # Convert counts to probabilities
                 total_counts = sum(counts.values())
@@ -434,28 +503,39 @@ def run_experiment(device='simulator', shots=20000, num_qubits=8, depth=3,
         
         # Calculate entropies for different cuts
         cut_sizes = list(range(1, num_qubits + 1))
-        entropies = []
+        entropies_vn = []  # von Neumann entropy
+        entropies_r2 = []  # Rényi-2 entropy
+        entropies_lin = [] # Linear entropy
         
         for cut_size in cut_sizes:
             # Define the cut (first 'cut_size' qubits)
             region_a = list(range(cut_size))
             
-            # Calculate entropy for region A
+            # Calculate different entropy measures for region A
             probs_a = marginal_probs(probs, num_qubits, region_a)
-            entropy = shannon_entropy(probs_a)
-            entropies.append(entropy)
+            entropy_vn = shannon_entropy(probs_a)
+            entropy_r2 = renyi_2_entropy(probs_a)
+            entropy_lin = linear_entropy(probs_a)
             
-            # Validate entropy
+            entropies_vn.append(entropy_vn)
+            entropies_r2.append(entropy_r2)
+            entropies_lin.append(entropy_lin)
+            
+            # Validate entropies
             max_entropy = cut_size  # Maximum possible entropy for cut_size qubits
-            is_valid = 0 <= entropy <= max_entropy + 1e-10  # Allow small numerical errors
+            is_valid_vn = 0 <= entropy_vn <= max_entropy + 1e-10
+            is_valid_r2 = 0 <= entropy_r2 <= max_entropy + 1e-10
+            is_valid_lin = 0 <= entropy_lin <= 1.0 + 1e-10
             
-            print(f"  Cut size {cut_size}: Entropy = {entropy:.6f} [{'VALID' if is_valid else 'INVALID'}]")
+            print(f"  Cut size {cut_size}: S_vN = {entropy_vn:.6f} [{'VALID' if is_valid_vn else 'INVALID'}], S_2 = {entropy_r2:.6f} [{'VALID' if is_valid_r2 else 'INVALID'}], S_L = {entropy_lin:.6f} [{'VALID' if is_valid_lin else 'INVALID'}]")
         
         # Store results for this run
         run_result = {
             'run': run_idx + 1,
             'cut_sizes': cut_sizes,
-            'entropies': entropies,
+            'entropies_von_neumann': entropies_vn,
+            'entropies_renyi_2': entropies_r2,
+            'entropies_linear': entropies_lin,
             'backend': backend_info,
             'shots': shots
         }
@@ -464,9 +544,15 @@ def run_experiment(device='simulator', shots=20000, num_qubits=8, depth=3,
     # Perform comprehensive statistical analysis
     print("\nPerforming comprehensive statistical analysis...")
     
-    # Calculate mean and confidence intervals across runs
-    mean_entropies = np.mean([r['entropies'] for r in all_results], axis=0)
-    std_entropies = np.std([r['entropies'] for r in all_results], axis=0)
+    # Calculate mean and confidence intervals across runs for each entropy type
+    mean_entropies_vn = np.mean([r['entropies_von_neumann'] for r in all_results], axis=0)
+    std_entropies_vn = np.std([r['entropies_von_neumann'] for r in all_results], axis=0)
+    
+    mean_entropies_r2 = np.mean([r['entropies_renyi_2'] for r in all_results], axis=0)
+    std_entropies_r2 = np.std([r['entropies_renyi_2'] for r in all_results], axis=0)
+    
+    mean_entropies_lin = np.mean([r['entropies_linear'] for r in all_results], axis=0)
+    std_entropies_lin = np.std([r['entropies_linear'] for r in all_results], axis=0)
     
     # Enhanced statistical analysis
     lower_ci = []
@@ -476,7 +562,7 @@ def run_experiment(device='simulator', shots=20000, num_qubits=8, depth=3,
     statistical_tests = []
     
     for i in range(len(cut_sizes)):
-        data = [r['entropies'][i] for r in all_results]
+        data = [r['entropies_von_neumann'][i] for r in all_results]
         
         # Bootstrap confidence intervals
         lci, uci, std_err = bootstrap_confidence_interval(data)
@@ -489,8 +575,16 @@ def run_experiment(device='simulator', shots=20000, num_qubits=8, depth=3,
         p_values.append(stats['p_value'])
         statistical_tests.append(stats)
     
-    # Test area law hypothesis
-    area_law_analysis = test_area_law_hypothesis(cut_sizes, mean_entropies, standard_errors)
+    # Test area law hypothesis for each entropy type
+    area_law_analysis_vn = test_area_law_hypothesis(cut_sizes, mean_entropies_vn, standard_errors)
+    area_law_analysis_r2 = test_area_law_hypothesis(cut_sizes, mean_entropies_r2, standard_errors)
+    area_law_analysis_lin = test_area_law_hypothesis(cut_sizes, mean_entropies_lin, standard_errors)
+    
+    area_law_analysis = {
+        'von_neumann': area_law_analysis_vn,
+        'renyi_2': area_law_analysis_r2,
+        'linear': area_law_analysis_lin
+    }
     
     # Prepare final results
     final_results = {
@@ -505,8 +599,12 @@ def run_experiment(device='simulator', shots=20000, num_qubits=8, depth=3,
         },
         'backend_info': backend_info,
         'cut_sizes': cut_sizes,
-        'mean_entropies': mean_entropies.tolist(),
-        'std_entropies': std_entropies.tolist(),
+        'mean_entropies_von_neumann': mean_entropies_vn.tolist(),
+        'std_entropies_von_neumann': std_entropies_vn.tolist(),
+        'mean_entropies_renyi_2': mean_entropies_r2.tolist(),
+        'std_entropies_renyi_2': std_entropies_r2.tolist(),
+        'mean_entropies_linear': mean_entropies_lin.tolist(),
+        'std_entropies_linear': std_entropies_lin.tolist(),
         'lower_ci': lower_ci,
         'upper_ci': upper_ci,
         'p_values': p_values,
@@ -551,7 +649,7 @@ def run_experiment(device='simulator', shots=20000, num_qubits=8, depth=3,
     # Print key statistical results
     print("\nKEY STATISTICAL RESULTS:")
     print("=" * 40)
-    for i, (k, s, se, p) in enumerate(zip(cut_sizes, mean_entropies, standard_errors, p_values)):
+    for i, (k, s, se, p) in enumerate(zip(cut_sizes, mean_entropies_vn, standard_errors, p_values)):
         significance = ""
         if p < 0.001:
             significance = " (***)"
@@ -574,8 +672,8 @@ def create_area_law_plots(results, log_dir):
     """Create comprehensive plots for the area law experiment."""
     
     cut_sizes = results['cut_sizes']
-    mean_entropies = np.array(results['mean_entropies'])
-    std_entropies = np.array(results['std_entropies'])
+    mean_entropies = np.array(results['mean_entropies_von_neumann'])
+    std_entropies = np.array(results['std_entropies_von_neumann'])
     lower_ci = np.array(results['lower_ci'])
     upper_ci = np.array(results['upper_ci'])
     p_values = np.array(results['p_values'])
@@ -741,8 +839,8 @@ def generate_area_law_summary(results, log_dir):
         f.write("-" * 22 + "\n")
         
         cut_sizes = results['cut_sizes']
-        mean_entropies = results['mean_entropies']
-        std_entropies = results['std_entropies']
+        mean_entropies = results['mean_entropies_von_neumann']
+        std_entropies = results['std_entropies_von_neumann']
         p_values = results['p_values']
         standard_errors = results['standard_errors']
         

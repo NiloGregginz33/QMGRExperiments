@@ -1,0 +1,266 @@
+{
+  "experiment_name": "area_law_hardware_robust_20250722_151237",
+  "parameters": {
+    "device": "simulator",
+    "shots": 1024,
+    "num_qubits": 6,
+    "depth": 3,
+    "connectivity": "nearest",
+    "num_runs": 1
+  },
+  "backend_info": {
+    "name": "FakeBrisbane",
+    "type": "simulator",
+    "num_qubits": 127
+  },
+  "cut_sizes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "mean_entropies_von_neumann": [
+    1.0000000000000036,
+    1.0000000000000036,
+    1.0000000000000036,
+    1.0000000000000036,
+    1.9999999999999956,
+    1.9999999999999956
+  ],
+  "std_entropies_von_neumann": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "mean_entropies_renyi_2": [
+    0.9999999999971146,
+    0.9999999999971146,
+    0.9999999999971146,
+    0.9999999999971146,
+    1.9999999999942293,
+    1.9999999999942293
+  ],
+  "std_entropies_renyi_2": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "mean_entropies_linear": [
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.75,
+    0.75
+  ],
+  "std_entropies_linear": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "lower_ci": [
+    1.0000000000000036,
+    1.0000000000000036,
+    1.0000000000000036,
+    1.0000000000000036,
+    1.9999999999999956,
+    1.9999999999999956
+  ],
+  "upper_ci": [
+    1.0000000000000036,
+    1.0000000000000036,
+    1.0000000000000036,
+    1.0000000000000036,
+    1.9999999999999956,
+    1.9999999999999956
+  ],
+  "p_values": [
+    NaN,
+    NaN,
+    NaN,
+    NaN,
+    NaN,
+    NaN
+  ],
+  "standard_errors": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    8.881784197001252e-16,
+    8.881784197001252e-16
+  ],
+  "statistical_tests": [
+    {
+      "t_stat": NaN,
+      "p_value": NaN,
+      "effect_size": NaN,
+      "confidence_interval": [
+        NaN,
+        NaN
+      ]
+    },
+    {
+      "t_stat": NaN,
+      "p_value": NaN,
+      "effect_size": NaN,
+      "confidence_interval": [
+        NaN,
+        NaN
+      ]
+    },
+    {
+      "t_stat": NaN,
+      "p_value": NaN,
+      "effect_size": NaN,
+      "confidence_interval": [
+        NaN,
+        NaN
+      ]
+    },
+    {
+      "t_stat": NaN,
+      "p_value": NaN,
+      "effect_size": NaN,
+      "confidence_interval": [
+        NaN,
+        NaN
+      ]
+    },
+    {
+      "t_stat": NaN,
+      "p_value": NaN,
+      "effect_size": NaN,
+      "confidence_interval": [
+        NaN,
+        NaN
+      ]
+    },
+    {
+      "t_stat": NaN,
+      "p_value": NaN,
+      "effect_size": NaN,
+      "confidence_interval": [
+        NaN,
+        NaN
+      ]
+    }
+  ],
+  "area_law_analysis": {
+    "von_neumann": {
+      "area_law": {
+        "alpha": 1.0,
+        "beta": 1.0,
+        "r2": -2.455633742470985,
+        "chi2": Infinity,
+        "p_chi2": 0.0,
+        "fitted_values": [
+          1.0,
+          1.6931471805599454,
+          2.09861228866811,
+          2.386294361119891,
+          2.6094379124341005,
+          2.791759469228055
+        ]
+      },
+      "volume_law": null,
+      "linear_fit": null,
+      "model_comparison": null
+    },
+    "renyi_2": {
+      "area_law": {
+        "alpha": 1.0,
+        "beta": 1.0,
+        "r2": -2.4556337425167616,
+        "chi2": Infinity,
+        "p_chi2": 0.0,
+        "fitted_values": [
+          1.0,
+          1.6931471805599454,
+          2.09861228866811,
+          2.386294361119891,
+          2.6094379124341005,
+          2.791759469228055
+        ]
+      },
+      "volume_law": null,
+      "linear_fit": null,
+      "model_comparison": null
+    },
+    "linear": {
+      "area_law": {
+        "alpha": 1.0,
+        "beta": 1.0,
+        "r2": -183.962707293575,
+        "chi2": Infinity,
+        "p_chi2": 0.0,
+        "fitted_values": [
+          1.0,
+          1.6931471805599454,
+          2.09861228866811,
+          2.386294361119891,
+          2.6094379124341005,
+          2.791759469228055
+        ]
+      },
+      "volume_law": null,
+      "linear_fit": null,
+      "model_comparison": null
+    }
+  },
+  "individual_runs": [
+    {
+      "run": 1,
+      "cut_sizes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "entropies_von_neumann": [
+        1.0000000000000036,
+        1.0000000000000036,
+        1.0000000000000036,
+        1.0000000000000036,
+        1.9999999999999956,
+        1.9999999999999956
+      ],
+      "entropies_renyi_2": [
+        0.9999999999971146,
+        0.9999999999971146,
+        0.9999999999971146,
+        0.9999999999971146,
+        1.9999999999942293,
+        1.9999999999942293
+      ],
+      "entropies_linear": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.75,
+        0.75
+      ],
+      "backend": {
+        "name": "FakeBrisbane",
+        "type": "simulator",
+        "num_qubits": 127
+      },
+      "shots": 1024
+    }
+  ],
+  "timestamp": "20250722_151237"
+}

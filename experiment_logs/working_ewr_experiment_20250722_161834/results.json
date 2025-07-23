@@ -1,0 +1,105 @@
+{
+  "experiment_info": {
+    "name": "Working EWR Experiment",
+    "device": "simulator",
+    "backend_info": {
+      "name": "qasm_simulator",
+      "type": "simulator",
+      "num_qubits": 127
+    },
+    "num_qubits": 4,
+    "bulk_point_location": 2,
+    "shots": 100,
+    "num_runs": 3,
+    "timestamp": "2025-07-22T16:18:34.451095"
+  },
+  "rt_surface_results": {
+    "A": false,
+    "B": true
+  },
+  "regions": {
+    "A": [
+      0,
+      1
+    ],
+    "B": [
+      2,
+      3
+    ]
+  },
+  "all_runs": [
+    {
+      "A": {
+        "success_probability": 0.0,
+        "prob_0": 0.49999999999999895,
+        "prob_1": 0.49999999999999895,
+        "difference": 0.0
+      },
+      "B": {
+        "success_probability": 0.0,
+        "prob_0": 0.4999999999999991,
+        "prob_1": 0.4999999999999991,
+        "difference": 0.0
+      }
+    },
+    {
+      "A": {
+        "success_probability": 0.0,
+        "prob_0": 0.49999999999999895,
+        "prob_1": 0.49999999999999895,
+        "difference": 0.0
+      },
+      "B": {
+        "success_probability": 0.0,
+        "prob_0": 0.4999999999999991,
+        "prob_1": 0.4999999999999991,
+        "difference": 0.0
+      }
+    },
+    {
+      "A": {
+        "success_probability": 0.0,
+        "prob_0": 0.49999999999999895,
+        "prob_1": 0.49999999999999895,
+        "difference": 0.0
+      },
+      "B": {
+        "success_probability": 0.0,
+        "prob_0": 0.4999999999999991,
+        "prob_1": 0.4999999999999991,
+        "difference": 0.0
+      }
+    }
+  ],
+  "statistical_analysis": {
+    "A": {
+      "mean_success_probability": 0.0,
+      "std_success_probability": 0.0,
+      "sem_success_probability": 0.0,
+      "confidence_interval_95": [
+        0.0,
+        0.5615060804490177
+      ],
+      "z_score": 0,
+      "expected_probability": 0.2,
+      "rt_contains_bulk": false
+    },
+    "B": {
+      "mean_success_probability": 0.0,
+      "std_success_probability": 0.0,
+      "sem_success_probability": 0.0,
+      "confidence_interval_95": [
+        0.0,
+        0.5615060804490177
+      ],
+      "z_score": 0,
+      "expected_probability": 0.8,
+      "rt_contains_bulk": true
+    },
+    "overall": {
+      "ewr_success_rate": 0.5,
+      "correct_predictions": 1,
+      "total_predictions": 2
+    }
+  }
+}

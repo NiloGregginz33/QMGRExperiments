@@ -12869,11 +12869,26 @@ def extract_bitarray_from_primitive(prim_result):
     sampler_result = prim_result[0]
     data = sampler_result.data
 
+    # Debug: Print the data structure
+    print(f"Data type: {type(data)}")
+    print(f"Data attributes: {dir(data)}")
+    print(f"Data vars: {vars(data)}")
+
     # Inspect all attributes in the data object
     for attr, val in vars(data).items():
+        print(f"Attribute {attr}: {type(val)} = {val}")
         # Detect by class name 'BitArray'
         if val.__class__.__name__ == 'BitArray':
             return attr, val
+
+    # Try alternative access methods
+    if hasattr(data, 'quasi_dists'):
+        print("Found quasi_dists attribute")
+        return 'quasi_dists', data.quasi_dists
+    
+    if hasattr(data, 'counts'):
+        print("Found counts attribute")
+        return 'counts', data.counts
 
     # If no BitArray is found, raise an error
     raise ValueError("No BitArray attribute found in the PrimitiveResult data")
@@ -12944,26 +12959,40 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
 
     qc_t = transpile(qc, backend, optimization_level=0)
     sampler = Sampler(backend)
-    job = sampler.run([qc_t])
+    job = sampler.run([qc_t], shots=shots)
     result = job.result()
     print("Raw result:", result)
 
+    # Try to get counts directly from the result
     try:
-        attr, bitarray = extract_bitarray_from_primitive(result)
-        print(f"BitArray attribute: {attr}")
-        print("Bitarray: ", bitarray)
-        if hasattr(bitarray, "get_bitstrings"):
-            bitstrings = bitarray.get_bitstrings()
-            print("First 10 bitstrings:", bitstrings[:10])
-        else:
-            print("No bitstrings found in the result")
-            return None
+        # Method 1: Try to get quasi_dists and convert to counts
+        quasi_dists = result.quasi_dists[0]
+        print(f"Quasi distributions: {quasi_dists}")
+        
+        # Convert quasi_dists to counts
+        counts = {}
+        total_shots = shots
+        for bitstring, probability in quasi_dists.items():
+            count = int(probability * total_shots)
+            if count > 0:
+                counts[bitstring] = count
+        
+        print("Converted counts:", counts)
+        
+        if not counts:
+            print("No counts found, trying alternative method...")
+            raise ValueError("No counts converted from quasi_dists")
+            
     except Exception as e:
-        print(f"[ERROR] Could not extract BitArray: {e}")
-        return None
-    
-    counts = extract_counts_from_bitarray(bitarray)
-    print("Sampling counts:", counts)
+        print(f"[ERROR] Could not extract counts from quasi_dists: {e}")
+        
+        # Method 2: Try to get counts directly
+        try:
+            counts = result.counts[0]
+            print("Direct counts:", counts)
+        except Exception as e2:
+            print(f"[ERROR] Could not get direct counts: {e2}")
+            return None
 
     total = sum(counts.values())
     teleported = {'0': 0, '1': 0}
