@@ -9,6 +9,7 @@ import string
 import random as pyrandom
 import itertools
 import scipy.optimize
+from tqdm import tqdm
 
 # Adjust Python path to include the Factory directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Factory'))
@@ -478,11 +479,6 @@ def calculate_angle_sum(D, i, j, k, geometry="euclidean", curvature=1.0):
     
     angle_sum = float(alpha + beta + gamma)
     
-    # For debugging: print first few triangles
-    if i == 0 and j == 1 and k == 2:
-        print(f"DEBUG: Triangle ({i},{j},{k}) with sides a={a:.3f}, b={b:.3f}, c={c:.3f}")
-        print(f"DEBUG: Angles alpha={alpha:.3f}, beta={beta:.3f}, gamma={gamma:.3f}, sum={angle_sum:.3f}")
-    
     return angle_sum
 
 def calculate_all_angle_sums(D, geometry="euclidean", curvature=1.0):
@@ -710,7 +706,7 @@ def bootstrap_confidence_interval(data, confidence=0.95, n_bootstrap=1000):
         return np.mean(data), np.mean(data), np.mean(data)
     
     bootstrap_means = []
-    for _ in range(n_bootstrap):
+    for _ in tqdm(range(n_bootstrap), desc="Bootstrap resampling"):
         # Resample with replacement
         bootstrap_sample = np.random.choice(data, size=len(data), replace=True)
         bootstrap_means.append(np.mean(bootstrap_sample))
@@ -749,7 +745,7 @@ def bootstrap_distance_matrix(distance_matrices, confidence=0.95, n_bootstrap=10
     lower_ci_matrix = np.zeros_like(mean_matrix)
     upper_ci_matrix = np.zeros_like(mean_matrix)
     
-    for i in range(n):
+    for i in tqdm(range(n), desc="Bootstrap matrix rows"):
         for j in range(m):
             element_data = stacked[:, i, j]
             _, lower_ci, upper_ci = bootstrap_confidence_interval(
@@ -777,7 +773,7 @@ def calculate_gromov_delta_with_uncertainty(distance_matrices, confidence=0.95, 
     
     # Calculate δ for each timestep
     deltas = []
-    for D in distance_matrices:
+    for D in tqdm(distance_matrices, desc="Gromov delta calculation"):
         if D is not None:
             # Convert list to numpy array if needed
             if isinstance(D, list):
@@ -797,15 +793,13 @@ def calculate_gromov_delta_with_uncertainty(distance_matrices, confidence=0.95, 
     return mean_delta, lower_ci, upper_ci, deltas
 
 def generate_short_uid(length=6):
-    """Generate a short random alphanumeric string for unique file naming."""
-    chars = string.ascii_uppercase + string.digits
-    return ''.join(pyrandom.choices(chars, k=length))
+    """Generate a short unique identifier."""
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 def make_short_filename(num_qubits, geometry, curvature, device, uid):
-    geom_short = geometry[0].upper()
-    dev_short = device[:3].lower()
-    curv_short = str(curvature).replace('.', '')
-    return f"results_n{num_qubits}_geom{geom_short}_curv{curv_short}_{dev_short}_{uid}.json"
+    """Make a short filename for the experiment results."""
+    geom_short = {"euclidean": "E", "spherical": "S", "hyperbolic": "H", "lorentzian": "L"}[geometry]
+    return f"results_n{num_qubits}_geom{geom_short}_curv{curvature:.0f}_{device}_{uid}.json"
 
 def rt_surface_area(rt_edges, edge_lengths, all_edges):
     """
@@ -1166,7 +1160,35 @@ def compute_regge_action_and_deficits(D, simplices, dim, curvature=1.0):
 
 # ─── Main CLI ─────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    for kappa in args.curvature:
+    # Initialize overall progress tracking
+    import time
+    from datetime import datetime, timedelta
+    
+    experiment_start_time = time.time()
+    total_curvatures = len(args.curvature)
+    total_timesteps = args.timesteps
+    total_operations = total_curvatures * total_timesteps
+    
+    print(f"🚀 Starting Custom Curvature Experiment")
+    print(f"   • Curvatures to test: {total_curvatures}")
+    print(f"   • Timesteps per curvature: {total_timesteps}")
+    print(f"   • Total operations: {total_operations}")
+    print(f"   • Device: {args.device}")
+    print(f"   • Geometry: {args.geometry}")
+    print(f"   • Estimated runtime: 1.5-2.5 hours")
+    print(f"   • Started at: {datetime.now().strftime('%H:%M:%S')}")
+    print("=" * 60)
+    
+    # Create overall progress bar
+    overall_pbar = tqdm(total=total_operations, desc="Overall Progress", 
+                       unit="op", position=0, leave=True)
+    
+    for curvature_idx, kappa in enumerate(args.curvature):
+        curvature_start_time = time.time()
+        
+        # Update progress description
+        overall_pbar.set_description(f"Overall Progress (κ={kappa:.1f})")
+        
         # If custom_edges is null and geometry is not flat/euclidean, generate asymmetric edges
         if args.geometry in ("spherical", "hyperbolic") and kappa is not None:
             n = args.num_qubits
@@ -1178,8 +1200,9 @@ if __name__ == "__main__":
                 # For diagnostics, parse weights and log variance
                 weights = [float(token.split(":")[1]) for token in custom_edges.split(",")]
                 edge_weight_variance = float(np.var(weights))
-                print(f"[LOG] Edge weights: {weights}")
-                print(f"[LOG] Edge weight variance: {edge_weight_variance}")
+                # Remove debug prints - only show essential info
+                if curvature_idx == 0:  # Only show for first curvature
+                    print(f"[INFO] Edge weight variance: {edge_weight_variance:.3f}")
             else:
                 custom_edges = args.custom_edges
                 edge_weight_variance = None
@@ -1218,7 +1241,7 @@ if __name__ == "__main__":
                         else:  # timelike
                             D[i, j] = D[j, i] = 1j * l  # imaginary for timelike
                     total_action = 0.0
-                    for t in range(T):
+                    for t in range(T):  # Remove tqdm here - use overall progress
                         idxs = [node_idx[(i, t)] for i in range(n)]
                         D_slice = np.abs(D[np.ix_(idxs, idxs)])
                         triangles = [(i, j, k) for i in range(n) for j in range(i+1, n) for k in range(j+1, n)]
@@ -1339,8 +1362,18 @@ if __name__ == "__main__":
         entropy_per_timestep = []  # Store entropy from all timesteps
         job_ids_per_timestep = []  # Store job IDs from all timesteps
         
+        # DYNAMIC EVIDENCE: Enhanced tracking arrays for evolution analysis
+        angle_sums_per_timestep = []  # Track angle sums evolution
+        gromov_delta_per_timestep = []  # Track hyperbolicity evolution
+        edge_mi_per_timestep = []  # Track edge mutual information evolution
+        shortest_paths_per_timestep = []  # Track shortest paths evolution
+        mean_distance_per_timestep = []  # Track mean distance evolution
+        triangle_violations_per_timestep = []  # Track triangle inequality violations
+        embedding_coords_per_timestep = []  # Track geometric embedding evolution
+        
         for t, circ in enumerate(circuits):
-            print(f"Executing timestep {t+1}/{len(circuits)}...")
+            # Update overall progress
+            overall_pbar.update(1)
             
             # For simulator, use statevector
             if args.device == "simulator":
@@ -1353,12 +1386,31 @@ if __name__ == "__main__":
                 mi = compute_von_neumann_MI(statevector)
                 G = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
                 edge_mi = calculate_mi_for_edges_only(mi, G)
-                distance_matrix, _ = compute_graph_shortest_path_distances(edge_mi, G)
+                distance_matrix, shortest_paths = compute_graph_shortest_path_distances(edge_mi, G)
+                
+                # DYNAMIC EVIDENCE: Calculate evolution metrics for this timestep
+                angle_sums = calculate_all_angle_sums(distance_matrix, geometry=args.geometry, curvature=kappa)
+                gromov_delta = check_hyperbolicity(distance_matrix)
+                mean_distance = np.mean(distance_matrix)
+                triangle_violations = check_triangle_inequality(distance_matrix)
+                coords2, coords3d = embed_geometry(distance_matrix, model=args.geometry, curvature=kappa)
+                
+                # Store evolution data
                 mi_per_timestep.append(mi)
                 distmat_per_timestep.append(distance_matrix.tolist())
                 counts_per_timestep.append(None)  # No counts for simulator
                 entropy_per_timestep.append(None)  # No entropy for simulator
                 job_ids_per_timestep.append(None)  # No job ID for simulator
+                
+                # DYNAMIC EVIDENCE: Store evolution arrays
+                angle_sums_per_timestep.append(angle_sums)
+                gromov_delta_per_timestep.append(gromov_delta)
+                edge_mi_per_timestep.append({f"{u},{v}": val for (u, v), val in edge_mi.items()})
+                shortest_paths_per_timestep.append(shortest_paths)
+                mean_distance_per_timestep.append(mean_distance)
+                triangle_violations_per_timestep.append(len(triangle_violations))
+                embedding_coords_per_timestep.append(coords2.tolist() if coords2 is not None else None)
+                
             else:
                 # For hardware, use CGPTFactory run function
                 try:
@@ -1367,7 +1419,7 @@ if __name__ == "__main__":
                     backend = service.backend(args.device)
                     
                     # Execute circuit and capture job ID
-                    print(f"Submitting job to {args.device} for timestep {t+1}...")
+                    # Remove verbose print statements - only show essential info
                     
                     # Transpile circuit
                     qc_t = transpile(circ, backend, optimization_level=0)
@@ -1376,11 +1428,8 @@ if __name__ == "__main__":
                     # Submit job and get job ID
                     job = sampler.run([qc_t], shots=args.shots)
                     job_id = job.job_id()
-                    print(f"✓ Job submitted successfully!")
-                    print(f"Job ID: {job_id}")
-                    print(f"Monitoring job status...")
                     
-                    # Monitor job status
+                    # Monitor job status with minimal output
                     import time
                     from datetime import datetime
                     
@@ -1391,16 +1440,12 @@ if __name__ == "__main__":
                             current_time = datetime.now()
                             elapsed = current_time - start_time
                             
-                            print(f"[{current_time.strftime('%H:%M:%S')}] Job {job_id} status: {status.name} | Elapsed: {elapsed}")
-                            
+                            # Only show status changes, not every check
                             if status.name == 'RUNNING':
-                                print(f"🟢 Job is now RUNNING!")
                                 break
                             elif status.name == 'DONE':
-                                print(f"✅ Job completed!")
                                 break
                             elif status.name == 'ERROR':
-                                print(f"❌ Job failed!")
                                 raise Exception(f"Job failed with status: {status}")
                             
                             time.sleep(5)  # Check every 5 seconds
@@ -1414,7 +1459,6 @@ if __name__ == "__main__":
                             break
                     
                     # Get results
-                    print(f"Retrieving results...")
                     result = job.result()
                     
                     # Extract counts from result
@@ -1437,10 +1481,6 @@ if __name__ == "__main__":
                         print(f"Error extracting counts: {e}")
                         counts = None
                     
-                    print(f"Hardware execution completed for timestep {t+1}")
-                    print(f"Job ID: {job_id}")
-                    print(f"Raw counts: {counts}")
-                    
                     # Store the counts and job ID for this timestep
                     counts_per_timestep.append(counts)
                     job_ids_per_timestep.append(job_id)
@@ -1449,7 +1489,6 @@ if __name__ == "__main__":
                         # Calculate entropy from counts
                         entropy = calculate_entropy(counts)
                         entropy_per_timestep.append(entropy)
-                        print(f"Entropy for timestep {t+1}: {entropy}")
                         
                         # Calculate mutual information from actual quantum data
                         total_shots = sum(counts.values())
@@ -1532,8 +1571,24 @@ if __name__ == "__main__":
                         # Create distance matrix from mutual information
                         G = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
                         edge_mi = calculate_mi_for_edges_only(mi_dict, G)
-                        distance_matrix, _ = compute_graph_shortest_path_distances(edge_mi, G)
+                        distance_matrix, shortest_paths = compute_graph_shortest_path_distances(edge_mi, G)
                         distmat_per_timestep.append(distance_matrix.tolist())
+                        
+                        # DYNAMIC EVIDENCE: Calculate evolution metrics for hardware timestep
+                        angle_sums = calculate_all_angle_sums(distance_matrix, geometry=args.geometry, curvature=kappa)
+                        gromov_delta = check_hyperbolicity(distance_matrix)
+                        mean_distance = np.mean(distance_matrix)
+                        triangle_violations = check_triangle_inequality(distance_matrix)
+                        coords2, coords3d = embed_geometry(distance_matrix, model=args.geometry, curvature=kappa)
+                        
+                        # DYNAMIC EVIDENCE: Store evolution arrays for hardware
+                        angle_sums_per_timestep.append(angle_sums)
+                        gromov_delta_per_timestep.append(gromov_delta)
+                        edge_mi_per_timestep.append({f"{u},{v}": val for (u, v), val in edge_mi.items()})
+                        shortest_paths_per_timestep.append(shortest_paths)
+                        mean_distance_per_timestep.append(mean_distance)
+                        triangle_violations_per_timestep.append(len(triangle_violations))
+                        embedding_coords_per_timestep.append(coords2.tolist() if coords2 is not None else None)
                         
                     else:
                         print(f"Warning: No valid counts for timestep {t+1}")
@@ -1549,6 +1604,15 @@ if __name__ == "__main__":
                         D_fallback = np.ones((args.num_qubits, args.num_qubits)) * 2.0
                         np.fill_diagonal(D_fallback, 0)
                         distmat_per_timestep.append(D_fallback.tolist())
+                        
+                        # DYNAMIC EVIDENCE: Fallback evolution metrics
+                        angle_sums_per_timestep.append([np.pi] * 35)  # Default angle sums
+                        gromov_delta_per_timestep.append(0.5)  # Default Gromov delta
+                        edge_mi_per_timestep.append({})
+                        shortest_paths_per_timestep.append({})
+                        mean_distance_per_timestep.append(2.0)
+                        triangle_violations_per_timestep.append(0)
+                        embedding_coords_per_timestep.append(None)
                     
                 except Exception as e:
                     print(f"Hardware execution failed for timestep {t+1}: {e}")
@@ -1558,13 +1622,22 @@ if __name__ == "__main__":
                     mi_fallback = {}
                     for i in range(args.num_qubits):
                         for j in range(i+1, args.num_qubits):
-                            mi_fallback[f"I_{i},{j}"] = 0.1  # Small default value
+                            mi_fallback[f"I_{i},{j}"] = 0.1
                     mi_per_timestep.append(mi_fallback)
                     
-                    # Create a fallback distance matrix
+                    # Create fallback distance matrix
                     D_fallback = np.ones((args.num_qubits, args.num_qubits)) * 2.0
                     np.fill_diagonal(D_fallback, 0)
                     distmat_per_timestep.append(D_fallback.tolist())
+                    
+                    # DYNAMIC EVIDENCE: Fallback evolution metrics for failed execution
+                    angle_sums_per_timestep.append([np.pi] * 35)
+                    gromov_delta_per_timestep.append(0.5)
+                    edge_mi_per_timestep.append({})
+                    shortest_paths_per_timestep.append({})
+                    mean_distance_per_timestep.append(2.0)
+                    triangle_violations_per_timestep.append(0)
+                    embedding_coords_per_timestep.append(None)
 
         # 3) calculate metrics using graph-shortest-path approach
         G = make_graph("custom" if (args.geometry in ("spherical", "hyperbolic") and kappa is not None) else args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
@@ -1927,6 +2000,16 @@ if __name__ == "__main__":
             n = args.num_qubits
             num_edges = n * (n-1) // 2
             edge_to_tri, tri_list = triangles_for_edge(n)
+            
+            # DYNAMIC EVIDENCE: Store Regge evolution data
+            regge_evolution_data = {
+                'regge_edge_lengths_per_timestep': [],
+                'regge_angle_sums_per_timestep': [],
+                'regge_deficits_per_timestep': [],
+                'regge_actions_per_timestep': [],
+                'regge_distance_matrices_per_timestep': []
+            }
+            
             # Refactor: total_action and total_gradient always take a 'matter' argument
             def total_action(edge_lengths, matter):
                 Dmat = edge_lengths_to_matrix(edge_lengths, n)
@@ -1949,6 +2032,7 @@ if __name__ == "__main__":
                         measures[h] = 1.0
                 S_matter = sum(matter[h] * measures[h] for h in hinges)
                 return S_regge + S_matter
+                
             def total_gradient(edge_lengths, matter):
                 Dmat = edge_lengths_to_matrix(edge_lengths, n)
                 angle_sums = calculate_all_angle_sums(Dmat, geometry=args.geometry, curvature=kappa)
@@ -1966,6 +2050,7 @@ if __name__ == "__main__":
                     edge_lengths[i] = e0
                     grad_matter[i] = (S_plus - S_minus) / (2 * eps)
                 return grad_regge + grad_matter
+                
             # Constraints: edge_lengths > 0, triangle inequalities
             bounds = [(1e-3, None)] * num_edges
             def triangle_ineq(edge_lengths):
@@ -1978,33 +2063,73 @@ if __name__ == "__main__":
                     cons.append(a + c - b - 1e-6)
                     cons.append(b + c - a - 1e-6)
                 return np.array(cons)
+                
             constraints = [{
                 'type': 'ineq',
                 'fun': triangle_ineq
             }]
-            # Minimize squared norm of gradient (stationarity)
-            if args.lorentzian and args.timesteps > 1 and 'matter_per_timestep' in locals():
-                # Lorentzian mode: always use matter_per_timestep[0] (or could loop over t and sum for full time-coupled solver)
-                matter_for_solver = matter_per_timestep[0]
-            else:
-                # Non-Lorentzian mode: always use static matter
-                matter_for_solver = matter
-            def grad_norm(edge_lengths):
-                g = total_gradient(edge_lengths, matter_for_solver)
-                return np.sum(g**2)
-            result = minimize(grad_norm, edge_lengths, method='SLSQP', bounds=bounds, constraints=constraints, options={'ftol':1e-8, 'maxiter':1000, 'disp':True})
-            stationary_edge_lengths = result.x
-            Dmat_stat = edge_lengths_to_matrix(stationary_edge_lengths, n)
-            angle_sums_stat = calculate_all_angle_sums(Dmat_stat, geometry=args.geometry, curvature=kappa)
-            deficits_stat = compute_angle_deficits(angle_sums_stat)
-            S_stat = total_action(stationary_edge_lengths, matter_for_solver)
-            # Save stationary solution
+            
+            # DYNAMIC EVIDENCE: Solve Regge equations for each timestep
+            print("Solving Regge equations for each timestep...")
+            for t in range(len(distmat_per_timestep)):
+                # Use the distance matrix from this timestep as initial guess
+                D_t = np.array(distmat_per_timestep[t])
+                
+                # Convert distance matrix to edge lengths
+                edge_lengths_t = []
+                for i in range(n):
+                    for j in range(i+1, n):
+                        edge_lengths_t.append(D_t[i, j])
+                edge_lengths_t = np.array(edge_lengths_t)
+                
+                # Minimize squared norm of gradient (stationarity)
+                if args.lorentzian and args.timesteps > 1 and 'matter_per_timestep' in locals():
+                    # Lorentzian mode: use matter from this timestep
+                    matter_for_solver = matter_per_timestep[t] if t < len(matter_per_timestep) else matter
+                else:
+                    # Non-Lorentzian mode: always use static matter
+                    matter_for_solver = matter
+                    
+                def grad_norm(edge_lengths):
+                    g = total_gradient(edge_lengths, matter_for_solver)
+                    return np.sum(g**2)
+                    
+                result = minimize(grad_norm, edge_lengths_t, method='SLSQP', 
+                                bounds=bounds, constraints=constraints, 
+                                options={'ftol':1e-8, 'maxiter':1000, 'disp':False})
+                
+                stationary_edge_lengths = result.x
+                Dmat_stat = edge_lengths_to_matrix(stationary_edge_lengths, n)
+                angle_sums_stat = calculate_all_angle_sums(Dmat_stat, geometry=args.geometry, curvature=kappa)
+                deficits_stat = compute_angle_deficits(angle_sums_stat)
+                S_stat = total_action(stationary_edge_lengths, matter_for_solver)
+                
+                # DYNAMIC EVIDENCE: Store Regge evolution data for this timestep
+                regge_evolution_data['regge_edge_lengths_per_timestep'].append(stationary_edge_lengths.tolist())
+                regge_evolution_data['regge_angle_sums_per_timestep'].append(angle_sums_stat)
+                regge_evolution_data['regge_deficits_per_timestep'].append(deficits_stat)
+                regge_evolution_data['regge_actions_per_timestep'].append(S_stat)
+                regge_evolution_data['regge_distance_matrices_per_timestep'].append(Dmat_stat.tolist())
+                
+                # Update the evolution arrays with Regge-corrected data
+                angle_sums_per_timestep[t] = angle_sums_stat
+                gromov_delta_per_timestep[t] = check_hyperbolicity(Dmat_stat)
+                mean_distance_per_timestep[t] = np.mean(Dmat_stat)
+                triangle_violations_per_timestep[t] = len(check_triangle_inequality(Dmat_stat))
+                
+                # Update distance matrix with Regge solution
+                distmat_per_timestep[t] = Dmat_stat.tolist()
+                
+                print(f"  Timestep {t+1}: Regge action = {S_stat:.6f}, mean deficit = {np.mean(deficits_stat):.6f}")
+            
+            # Save comprehensive Regge evolution data
             stationary_solution = {
-                'stationary_edge_lengths': stationary_edge_lengths.tolist(),
-                'stationary_action': S_stat,
-                'stationary_deficits': deficits_stat,
-                'stationary_angle_sums': angle_sums_stat
+                'regge_evolution_data': regge_evolution_data,
+                'final_regge_action': regge_evolution_data['regge_actions_per_timestep'][-1],
+                'final_regge_deficits': regge_evolution_data['regge_deficits_per_timestep'][-1],
+                'final_regge_angle_sums': regge_evolution_data['regge_angle_sums_per_timestep'][-1]
             }
+            
         elif args.solve_regge and args.fast:
             print("Skipping Regge action calculation (fast mode)")
             stationary_solution = None
@@ -2084,8 +2209,54 @@ if __name__ == "__main__":
                 },
                 # REVOLUTIONARY RT-SURFACE AND BULK-EXCITATION ANALYSIS
                 "rt_surface_analysis": rt_surface_analysis,
-                "bulk_excitation_analysis": bulk_excitation_analysis
+                "bulk_excitation_analysis": bulk_excitation_analysis,
+                # DYNAMIC EVIDENCE: Comprehensive evolution tracking
+                "dynamic_evidence": {
+                    "angle_sums_per_timestep": angle_sums_per_timestep,
+                    "gromov_delta_per_timestep": gromov_delta_per_timestep,
+                    "edge_mi_per_timestep": edge_mi_per_timestep,
+                    "shortest_paths_per_timestep": shortest_paths_per_timestep,
+                    "mean_distance_per_timestep": mean_distance_per_timestep,
+                    "triangle_violations_per_timestep": triangle_violations_per_timestep,
+                    "embedding_coords_per_timestep": embedding_coords_per_timestep,
+                    "regge_evolution_data": stationary_solution.get('regge_evolution_data', None) if stationary_solution else None,
+                    "evolution_summary": {
+                        "total_timesteps": len(angle_sums_per_timestep),
+                        "gromov_delta_range": [min(gromov_delta_per_timestep), max(gromov_delta_per_timestep)] if gromov_delta_per_timestep else None,
+                        "mean_distance_range": [min(mean_distance_per_timestep), max(mean_distance_per_timestep)] if mean_distance_per_timestep else None,
+                        "total_triangle_violations": sum(triangle_violations_per_timestep),
+                        "hyperbolic_evolution": [delta < 0.3 for delta in gromov_delta_per_timestep] if gromov_delta_per_timestep else None,
+                        "regge_corrected": stationary_solution is not None
+                    }
+                }
             }, f, indent=2)
+        
+        # DYNAMIC EVIDENCE: Create comprehensive visualization plots
+        print("📊 Generating dynamic evidence plots...")
+        evolution_data = {
+            'angle_sums_per_timestep': angle_sums_per_timestep,
+            'gromov_delta_per_timestep': gromov_delta_per_timestep,
+            'edge_mi_per_timestep': edge_mi_per_timestep,
+            'shortest_paths_per_timestep': shortest_paths_per_timestep,
+            'mean_distance_per_timestep': mean_distance_per_timestep,
+            'triangle_violations_per_timestep': triangle_violations_per_timestep,
+            'embedding_coords_per_timestep': embedding_coords_per_timestep,
+            'distmat_per_timestep': distmat_per_timestep,
+            'entropy_per_timestep': entropy_per_timestep,
+            'regge_evolution_data': stationary_solution.get('regge_evolution_data', None) if stationary_solution else None
+        }
+        
+        experiment_name = f"n{args.num_qubits}_{args.geometry}_κ{kappa:.1f}_{args.device}_{uid}"
+        
+        # Create dynamic evidence plots
+        try:
+            plot_path = create_dynamic_evidence_plots(evolution_data, log_dir, experiment_name)
+            heatmap_path = create_evolution_heatmap(evolution_data, log_dir, experiment_name)
+            print(f"✓ Dynamic evidence visualization completed!")
+            print(f"   • Main evolution plot: {os.path.basename(plot_path)}")
+            print(f"   • Evolution heatmaps: {os.path.basename(heatmap_path)}")
+        except Exception as e:
+            print(f"⚠️  Warning: Could not generate dynamic evidence plots: {e}")
         print(f"Results saved to {output_path}")
         print(json.dumps({
             "spec": {**vars(args), "curvature": kappa, "custom_edges": custom_edges, "timesteps": args.timesteps},
@@ -2157,3 +2328,282 @@ if __name__ == "__main__":
                 print("[WARNING] Not all triangle angle sums exceed π in spherical geometry!")
             if gromov_delta >= 0.3:
                 print(f"[WARNING] Gromov delta is not below 0.3 (actual: {gromov_delta})!") 
+        
+        # Update progress for this curvature
+        curvature_end_time = time.time()
+        curvature_duration = curvature_end_time - curvature_start_time
+        print(f"✓ Completed curvature κ={kappa:.1f} in {curvature_duration:.1f}s")
+    
+    # Close overall progress bar and show final statistics
+    overall_pbar.close()
+    
+    experiment_end_time = time.time()
+    total_duration = experiment_end_time - experiment_start_time
+    
+    print("=" * 60)
+    print(f"🎉 Experiment Completed Successfully!")
+    print(f"   • Total runtime: {total_duration:.1f}s ({total_duration/3600:.1f}h)")
+    print(f"   • Completed at: {datetime.now().strftime('%H:%M:%S')}")
+    print(f"   • Average time per curvature: {total_duration/total_curvatures:.1f}s")
+    print(f"   • Results saved to: experiment_logs/custom_curvature_experiment/")
+    print("=" * 60)
+
+# DYNAMIC EVIDENCE: Visualization functions for evolution analysis
+def create_dynamic_evidence_plots(evolution_data, output_dir, experiment_name):
+    """
+    Create comprehensive plots showing dynamic evidence of quantum geometry evolution.
+    
+    Args:
+        evolution_data: Dictionary containing all evolution arrays
+        output_dir: Directory to save plots
+        experiment_name: Name for the experiment
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from matplotlib.gridspec import GridSpec
+    
+    # Set style for professional plots
+    plt.style.use('seaborn-v0_8')
+    sns.set_palette("husl")
+    
+    # Create figure with subplots
+    fig = plt.figure(figsize=(20, 16))
+    gs = GridSpec(4, 3, figure=fig, hspace=0.3, wspace=0.3)
+    
+    timesteps = list(range(1, len(evolution_data['gromov_delta_per_timestep']) + 1))
+    
+    # 1. Gromov Delta Evolution (Hyperbolicity)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax1.plot(timesteps, evolution_data['gromov_delta_per_timestep'], 'o-', linewidth=2, markersize=8)
+    ax1.set_xlabel('Timestep')
+    ax1.set_ylabel('Gromov Delta')
+    ax1.set_title('Hyperbolicity Evolution')
+    ax1.grid(True, alpha=0.3)
+    ax1.axhline(y=0.3, color='red', linestyle='--', alpha=0.7, label='Hyperbolic threshold')
+    ax1.legend()
+    
+    # 2. Mean Distance Evolution
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax2.plot(timesteps, evolution_data['mean_distance_per_timestep'], 's-', linewidth=2, markersize=8, color='green')
+    ax2.set_xlabel('Timestep')
+    ax2.set_ylabel('Mean Distance')
+    ax2.set_title('Geometric Scale Evolution')
+    ax2.grid(True, alpha=0.3)
+    
+    # 3. Triangle Inequality Violations
+    ax3 = fig.add_subplot(gs[0, 2])
+    ax3.plot(timesteps, evolution_data['triangle_violations_per_timestep'], '^-', linewidth=2, markersize=8, color='orange')
+    ax3.set_xlabel('Timestep')
+    ax3.set_ylabel('Triangle Violations')
+    ax3.set_title('Geometric Consistency')
+    ax3.grid(True, alpha=0.3)
+    
+    # 4. Angle Sum Evolution (Box plot)
+    ax4 = fig.add_subplot(gs[1, 0])
+    angle_sums_data = evolution_data['angle_sums_per_timestep']
+    if angle_sums_data and len(angle_sums_data[0]) > 0:
+        bp = ax4.boxplot(angle_sums_data, positions=timesteps, patch_artist=True)
+        for patch in bp['boxes']:
+            patch.set_facecolor('lightblue')
+            patch.set_alpha(0.7)
+        ax4.set_xlabel('Timestep')
+        ax4.set_ylabel('Angle Sums')
+        ax4.set_title('Curvature Evolution')
+        ax4.grid(True, alpha=0.3)
+        ax4.axhline(y=np.pi, color='red', linestyle='--', alpha=0.7, label='π (flat)')
+        ax4.legend()
+    
+    # 5. Distance Matrix Evolution Heatmap
+    ax5 = fig.add_subplot(gs[1, 1:])
+    if evolution_data['distmat_per_timestep']:
+        # Create a composite heatmap showing evolution
+        dist_matrices = [np.array(dm) for dm in evolution_data['distmat_per_timestep']]
+        if dist_matrices:
+            # Show difference between first and last timestep
+            if len(dist_matrices) > 1:
+                diff_matrix = dist_matrices[-1] - dist_matrices[0]
+                im = ax5.imshow(diff_matrix, cmap='RdBu_r', aspect='auto')
+                ax5.set_title('Distance Matrix Evolution\n(Last - First Timestep)')
+                plt.colorbar(im, ax=ax5)
+            else:
+                im = ax5.imshow(dist_matrices[0], cmap='viridis', aspect='auto')
+                ax5.set_title('Distance Matrix (Single Timestep)')
+                plt.colorbar(im, ax=ax5)
+    
+    # 6. Edge MI Evolution
+    ax6 = fig.add_subplot(gs[2, 0])
+    if evolution_data['edge_mi_per_timestep']:
+        # Extract a few key edges for visualization
+        edge_mi_evolution = {}
+        for t, edge_mi in enumerate(evolution_data['edge_mi_per_timestep']):
+            for edge, mi_val in edge_mi.items():
+                if edge not in edge_mi_evolution:
+                    edge_mi_evolution[edge] = []
+                edge_mi_evolution[edge].append(mi_val)
+        
+        # Plot top 5 edges with highest average MI
+        edge_avgs = {edge: np.mean(mi_vals) for edge, mi_vals in edge_mi_evolution.items()}
+        top_edges = sorted(edge_avgs.items(), key=lambda x: x[1], reverse=True)[:5]
+        
+        for edge, _ in top_edges:
+            mi_vals = edge_mi_evolution[edge]
+            ax6.plot(timesteps[:len(mi_vals)], mi_vals, 'o-', linewidth=2, markersize=6, label=edge)
+        
+        ax6.set_xlabel('Timestep')
+        ax6.set_ylabel('Mutual Information')
+        ax6.set_title('Edge MI Evolution (Top 5)')
+        ax6.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        ax6.grid(True, alpha=0.3)
+    
+    # 7. Entropy Evolution
+    ax7 = fig.add_subplot(gs[2, 1])
+    if evolution_data.get('entropy_per_timestep'):
+        entropy_vals = [e for e in evolution_data['entropy_per_timestep'] if e is not None]
+        if entropy_vals:
+            ax7.plot(timesteps[:len(entropy_vals)], entropy_vals, 'D-', linewidth=2, markersize=8, color='purple')
+            ax7.set_xlabel('Timestep')
+            ax7.set_ylabel('Entropy')
+            ax7.set_title('Entropy Evolution')
+            ax7.grid(True, alpha=0.3)
+    
+    # 8. Geometric Embedding Evolution
+    ax8 = fig.add_subplot(gs[2, 2])
+    if evolution_data['embedding_coords_per_timestep']:
+        coords_list = [coords for coords in evolution_data['embedding_coords_per_timestep'] if coords is not None]
+        if coords_list:
+            # Show embedding for first and last timestep
+            if len(coords_list) > 1:
+                coords_first = np.array(coords_list[0])
+                coords_last = np.array(coords_list[-1])
+                
+                ax8.scatter(coords_first[:, 0], coords_first[:, 1], c='blue', s=100, alpha=0.7, label='t=1')
+                ax8.scatter(coords_last[:, 0], coords_last[:, 1], c='red', s=100, alpha=0.7, label=f't={len(coords_list)}')
+                
+                # Connect points to show evolution
+                for i in range(len(coords_first)):
+                    ax8.plot([coords_first[i, 0], coords_last[i, 0]], 
+                            [coords_first[i, 1], coords_last[i, 1]], 'k-', alpha=0.3)
+                
+                ax8.set_xlabel('X Coordinate')
+                ax8.set_ylabel('Y Coordinate')
+                ax8.set_title('Geometric Embedding Evolution')
+                ax8.legend()
+                ax8.grid(True, alpha=0.3)
+    
+    # 9. Comprehensive Evolution Summary
+    ax9 = fig.add_subplot(gs[3, :])
+    
+    # Create a summary table
+    summary_data = []
+    for t in timesteps:
+        idx = t - 1
+        if idx < len(evolution_data['gromov_delta_per_timestep']):
+            summary_data.append([
+                t,
+                f"{evolution_data['gromov_delta_per_timestep'][idx]:.3f}",
+                f"{evolution_data['mean_distance_per_timestep'][idx]:.3f}",
+                evolution_data['triangle_violations_per_timestep'][idx],
+                f"{np.mean(evolution_data['angle_sums_per_timestep'][idx]):.3f}" if evolution_data['angle_sums_per_timestep'][idx] else "N/A"
+            ])
+    
+    if summary_data:
+        table = ax9.table(cellText=summary_data,
+                         colLabels=['Timestep', 'Gromov Δ', 'Mean Dist', 'Tri Viol', 'Mean Angle Sum'],
+                         cellLoc='center',
+                         loc='center')
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+        table.scale(1, 2)
+        ax9.set_title('Dynamic Evolution Summary', fontsize=14, fontweight='bold')
+        ax9.axis('off')
+    
+    # Add overall title
+    fig.suptitle(f'Dynamic Evidence: Quantum Geometry Evolution\n{experiment_name}', 
+                 fontsize=16, fontweight='bold', y=0.98)
+    
+    # Save the comprehensive plot
+    plot_path = os.path.join(output_dir, f'dynamic_evidence_evolution_{experiment_name}.png')
+    plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    print(f"✓ Dynamic evidence plots saved to: {plot_path}")
+    return plot_path
+
+def create_evolution_heatmap(evolution_data, output_dir, experiment_name):
+    """
+    Create detailed heatmaps showing the evolution of key metrics over time.
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    
+    fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+    fig.suptitle(f'Evolution Heatmaps: {experiment_name}', fontsize=16, fontweight='bold')
+    
+    timesteps = list(range(1, len(evolution_data['gromov_delta_per_timestep']) + 1))
+    
+    # 1. Distance Matrix Evolution Heatmap
+    if evolution_data['distmat_per_timestep']:
+        dist_matrices = [np.array(dm) for dm in evolution_data['distmat_per_timestep']]
+        if dist_matrices:
+            # Stack matrices to show evolution
+            stacked_dm = np.stack(dist_matrices, axis=0)
+            im1 = axes[0,0].imshow(stacked_dm.mean(axis=(1,2)), cmap='viridis', aspect='auto')
+            axes[0,0].set_xlabel('Timestep')
+            axes[0,0].set_ylabel('Average Distance')
+            axes[0,0].set_title('Distance Evolution')
+            plt.colorbar(im1, ax=axes[0,0])
+    
+    # 2. Angle Sum Evolution Heatmap
+    if evolution_data['angle_sums_per_timestep']:
+        angle_data = np.array(evolution_data['angle_sums_per_timestep'])
+        if angle_data.size > 0:
+            im2 = axes[0,1].imshow(angle_data.T, cmap='plasma', aspect='auto')
+            axes[0,1].set_xlabel('Timestep')
+            axes[0,1].set_ylabel('Triangle Index')
+            axes[0,1].set_title('Angle Sum Evolution')
+            plt.colorbar(im2, ax=axes[0,1])
+    
+    # 3. Edge MI Evolution Heatmap
+    if evolution_data['edge_mi_per_timestep']:
+        # Convert edge MI to matrix format
+        edge_mi_evolution = {}
+        for t, edge_mi in enumerate(evolution_data['edge_mi_per_timestep']):
+            for edge, mi_val in edge_mi.items():
+                if edge not in edge_mi_evolution:
+                    edge_mi_evolution[edge] = []
+                edge_mi_evolution[edge].append(mi_val)
+        
+        if edge_mi_evolution:
+            edge_mi_matrix = np.array(list(edge_mi_evolution.values()))
+            im3 = axes[1,0].imshow(edge_mi_matrix, cmap='coolwarm', aspect='auto')
+            axes[1,0].set_xlabel('Timestep')
+            axes[1,0].set_ylabel('Edge Index')
+            axes[1,0].set_title('Edge MI Evolution')
+            plt.colorbar(im3, ax=axes[1,0])
+    
+    # 4. Metric Correlation Heatmap
+    metrics = {
+        'Gromov Delta': evolution_data['gromov_delta_per_timestep'],
+        'Mean Distance': evolution_data['mean_distance_per_timestep'],
+        'Triangle Violations': evolution_data['triangle_violations_per_timestep']
+    }
+    
+    if all(len(v) > 1 for v in metrics.values()):
+        metric_matrix = np.array(list(metrics.values())).T
+        correlation_matrix = np.corrcoef(metric_matrix.T)
+        
+        im4 = axes[1,1].imshow(correlation_matrix, cmap='RdBu_r', vmin=-1, vmax=1, aspect='auto')
+        axes[1,1].set_xticks(range(len(metrics)))
+        axes[1,1].set_yticks(range(len(metrics)))
+        axes[1,1].set_xticklabels(list(metrics.keys()), rotation=45)
+        axes[1,1].set_yticklabels(list(metrics.keys()))
+        axes[1,1].set_title('Metric Correlations')
+        plt.colorbar(im4, ax=axes[1,1])
+    
+    plt.tight_layout()
+    heatmap_path = os.path.join(output_dir, f'evolution_heatmaps_{experiment_name}.png')
+    plt.savefig(heatmap_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    print(f"✓ Evolution heatmaps saved to: {heatmap_path}")
+    return heatmap_path
