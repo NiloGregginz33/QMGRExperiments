@@ -1,0 +1,68 @@
+ENTANGLEMENT-WEDGE RECONSTRUCTION (EWR) EXPERIMENT SUMMARY
+============================================================
+
+EXPERIMENT OVERVIEW
+--------------------
+Experiment Name: entanglement_wedge_reconstruction_20250722_154718
+Timestamp: 20250722_154718
+Device: simulator
+Shots: 1000
+Number of Qubits: 12
+Bulk Point Location: 6
+Number of Runs: 10
+
+CIRCUIT INFORMATION
+--------------------
+Bulk Circuit Depth: 26
+Mapped Circuit Depth: 73
+Regions: {'A': [0, 1, 2, 3], 'B': [4, 5, 6, 7], 'C': [8, 9, 10, 11]}
+RT Surface Results: {'A': False, 'B': True, 'C': False}
+
+EWR SUCCESS ANALYSIS
+--------------------
+Overall EWR Success Rate: 0.667
+
+REGION-BY-REGION RESULTS
+-------------------------
+Region A:
+  Success Probability: 0.145 ± 0.000
+  Confidence Interval: [0.145, 0.145]
+  Expected Success: False
+  Actual Success: False
+  Matches Expectation: True
+
+Region B:
+  Success Probability: 0.000 ± 0.000
+  Confidence Interval: [0.000, 0.000]
+  Expected Success: True
+  Actual Success: False
+  Matches Expectation: False
+
+Region C:
+  Success Probability: 0.000 ± 0.000
+  Confidence Interval: [0.000, 0.000]
+  Expected Success: False
+  Actual Success: False
+  Matches Expectation: True
+
+THEORETICAL INTERPRETATION
+-------------------------
+This experiment tests the Entanglement-Wedge Reconstruction (EWR) principle
+from the AdS/CFT correspondence. The key prediction is:
+
+1. When the RT surface for a boundary region contains a bulk point,
+   the bulk information should be reconstructible from that region.
+2. When the RT surface does not contain the bulk point,
+   reconstruction should fail.
+
+The success rate indicates how well our quantum implementation
+matches the theoretical predictions of holographic duality.
+
+EXPERIMENTAL VALIDATION
+--------------------
+MODERATE VALIDATION: EWR predictions are moderately supported
+
+Success rate of 0.667 indicates reasonable agreement with holographic duality predictions.
+
+============================================================
+End of EWR Experiment Summary

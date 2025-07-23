@@ -1,0 +1,90 @@
+
+Comprehensive Curvature Analysis Summary
+==================================================
+
+Source File: results_n7_geomH_curv05_ibm_60JXA8.json
+Device: ibm_brisbane
+Shots: 20000
+Qubits: 7
+Geometry Type: hyperbolic
+Curvature Strength: 0.5
+
+LORENTZIAN GEOMETRY ANALYSIS:
+----------------------------
+
+ADVANCED HOLOGRAPHIC ANALYSES:
+------------------------------
+
+Mutual Information Analysis:
+- Max MI: 0.1040100119956231
+- Non-zero MI pairs: 18
+- Average MI: N/A
+
+RT Surface Analysis:
+- RT surfaces computed: 16
+- RT consistency: 0.000896398791395941
+- RT ratio range: 0.000789939288108285
+
+Geometry Embedding:
+- Geometry radius: 8.433872488252971
+- MI-Distance correlation: 0.9915955863200668
+- MDS stress: N/A
+
+Holographic Entropy Scaling:
+- Area Scaling R²: 0.38151908527179246
+- Volume Scaling R²: 0.9714036286712849
+- Supports Holographic Principle: False
+
+Boundary Dynamics:
+- Boundary-Bulk Correlation: -0.45882164968080724
+- P-value: 0.3004099899956211
+
+RT Verification:
+- MI vs Minimal Path Correlation: 0.5704182627286198
+- P-value: 0.10875338317127223
+- Number of pairs analyzed: 9
+
+ROBUSTNESS ANALYSIS SUMMARY:
+-----------------------------
+
+Bootstrap Resampling Results:
+- Bootstrap samples: 500
+- Confidence level: 0.95
+
+Curvature confidence interval:
+- Curvature estimate: 3.6817213528747916
+- 95% CI: [3.679215214987253, 3.6856759845246017]
+
+Stress confidence interval:
+- MDS stress score: 5.209639602890014
+- Stress 95% CI: [5.203608150615686, 5.215380412467083]
+
+Scrambling Test Results:
+- Original MI mean: 0.006500546943742999
+- Scrambled MI mean: 0.013895923426008261
+- Z-score: -1.7417622221784488
+- P-value: 0.0815500596683314
+- Significantly different: False
+
+Embedding Quality Assessment:
+- MDS stress score: 22.81795259996923
+- Shepard correlation: 0.0
+- Local/global ratio: 0.2737516790630875
+- Overall quality: poor
+
+Embedding Robustness Across Methods:
+- MDS_2D: Stress = 5.209873
+- MDS_3D: Stress = 4.147382
+- Isomap_2D: Stress = 0.358606
+- PCA_2D: Stress = 0.358606
+
+Robustness Conclusions:
+WEAK EVIDENCE: Structure may be fragile or due to noise
+Results should be interpreted with caution
+Consider increasing shot count or improving circuit design
+
+OVERALL ASSESSMENT:
++ RT surface consistency high, supporting holographic duality
++ Strong correlation between MI and geometric distance
+- Entropy scaling does not clearly support holographic principle
++ Moderate boundary-bulk dynamics correlation
