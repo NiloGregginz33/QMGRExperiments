@@ -1,0 +1,177 @@
+{
+  "experiment_name": "rigorous_ewr_experiment_20250722_161007",
+  "parameters": {
+    "device": "simulator",
+    "shots": 100,
+    "num_qubits": 12,
+    "bulk_point_location": 6,
+    "num_runs": 3
+  },
+  "backend_info": {
+    "name": "FakeBrisbane",
+    "type": "simulator",
+    "num_qubits": 127
+  },
+  "rt_surface_results": {
+    "A": false,
+    "B": true,
+    "C": false
+  },
+  "rt_surface_cache": {
+    "region_[0, 1, 2, 3]_bulk_6": false,
+    "region_[4, 5, 6, 7]_bulk_6": true,
+    "region_[8, 9, 10, 11]_bulk_6": false
+  },
+  "happy_code_info": {
+    "code_distance": 3,
+    "logical_x_weight": 3,
+    "logical_z_weight": 4,
+    "encoding_circuit_depth": 14
+  },
+  "decoder_info": {
+    "A": {
+      "region_qubits": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "rt_contains_bulk": false,
+      "preparation_depth": 7,
+      "measurement_depth": 1,
+      "full_depth": 7,
+      "num_qubits": 7,
+      "num_clbits": 1
+    },
+    "B": {
+      "region_qubits": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "rt_contains_bulk": true,
+      "preparation_depth": 17,
+      "measurement_depth": 1,
+      "full_depth": 18,
+      "num_qubits": 11,
+      "num_clbits": 1
+    },
+    "C": {
+      "region_qubits": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "rt_contains_bulk": false,
+      "preparation_depth": 7,
+      "measurement_depth": 1,
+      "full_depth": 7,
+      "num_qubits": 15,
+      "num_clbits": 1
+    }
+  },
+  "statistical_results": {
+    "A": {
+      "mean_success_probability": 0.49999999999999917,
+      "std_success_probability": 0.0,
+      "sem_success_probability": 0.0,
+      "ci_lower": 0.12533145299844728,
+      "ci_upper": 0.8746685470015519,
+      "expected_success": false,
+      "actual_success": false,
+      "matches_expectation": true,
+      "all_values": [
+        0.49999999999999917,
+        0.49999999999999917,
+        0.49999999999999917
+      ]
+    },
+    "B": {
+      "mean_success_probability": 0.0,
+      "std_success_probability": 0.0,
+      "sem_success_probability": 0.0,
+      "ci_lower": 0,
+      "ci_upper": 0.5615060804490177,
+      "expected_success": true,
+      "actual_success": false,
+      "matches_expectation": false,
+      "all_values": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "C": {
+      "mean_success_probability": 0.49999999999999917,
+      "std_success_probability": 0.0,
+      "sem_success_probability": 0.0,
+      "ci_lower": 0.12533145299844728,
+      "ci_upper": 0.8746685470015519,
+      "expected_success": false,
+      "actual_success": false,
+      "matches_expectation": true,
+      "all_values": [
+        0.49999999999999917,
+        0.49999999999999917,
+        0.49999999999999917
+      ]
+    }
+  },
+  "ewr_success_rate": 0.6666666666666666,
+  "individual_runs": [
+    {
+      "A": {
+        "success_probability": 0.49999999999999917,
+        "rt_contains_bulk": false,
+        "expected_success": false
+      },
+      "B": {
+        "success_probability": 0.0,
+        "rt_contains_bulk": true,
+        "expected_success": true
+      },
+      "C": {
+        "success_probability": 0.49999999999999917,
+        "rt_contains_bulk": false,
+        "expected_success": false
+      }
+    },
+    {
+      "A": {
+        "success_probability": 0.49999999999999917,
+        "rt_contains_bulk": false,
+        "expected_success": false
+      },
+      "B": {
+        "success_probability": 0.0,
+        "rt_contains_bulk": true,
+        "expected_success": true
+      },
+      "C": {
+        "success_probability": 0.49999999999999917,
+        "rt_contains_bulk": false,
+        "expected_success": false
+      }
+    },
+    {
+      "A": {
+        "success_probability": 0.49999999999999917,
+        "rt_contains_bulk": false,
+        "expected_success": false
+      },
+      "B": {
+        "success_probability": 0.0,
+        "rt_contains_bulk": true,
+        "expected_success": true
+      },
+      "C": {
+        "success_probability": 0.49999999999999917,
+        "rt_contains_bulk": false,
+        "expected_success": false
+      }
+    }
+  ],
+  "timestamp": "20250722_161007"
+}

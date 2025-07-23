@@ -1,21 +1,11 @@
 {
   "experiment_info": {
-    "source_file": "results_n7_geomH_curv25_ibm_BR9RDF.json",
-    "device": "ibm_quantum",
-    "shots": 2000,
-    "num_qubits": 7,
-    "geometry_type": "hyperbolic",
-    "curvature_strength": 2.5
+    "source_file": "results_n7_geomH_curv05_ibm_60JXA8.json",
+    "device": "unknown",
+    "shots": 0,
+    "num_qubits": 0,
+    "geometry_type": "unknown",
+    "curvature_strength": 0
   },
-  "lorentzian_analysis": {
-    "lorentzian_action": 0.0005509879372078878,
-    "mean_edge_length": 2.076397296409938,
-    "std_edge_length": 4.669602943940826,
-    "bootstrap_ci": [
-      1.2047835724168483,
-      3.534874222734038
-    ],
-    "p_value": 0.0001,
-    "is_significant": true
-  }
+  "analysis_note": "Advanced holographic analyses require quantum measurement counts, which are not available in this experiment."
 }

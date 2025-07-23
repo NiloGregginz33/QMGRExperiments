@@ -1,21 +1,14 @@
 Comprehensive Curvature Analysis Summary
 ==================================================
 
-Source File: results_n7_geomH_curv25_ibm_BR9RDF.json
-Device: ibm_quantum
-Shots: 2000
-Qubits: 7
-Geometry Type: hyperbolic
-Curvature Strength: 2.5
-
-LORENTZIAN GEOMETRY ANALYSIS:
-Lorentzian Action: 0.000551
-P-value: 0.000100
-Statistically Significant: True
-Bootstrap CI: [1.204784, 3.534874]
+Source File: results_n7_geomH_curv05_ibm_60JXA8.json
+Device: unknown
+Shots: 0
+Qubits: 0
+Geometry Type: unknown
+Curvature Strength: 0
 
 ADVANCED HOLOGRAPHIC ANALYSES:
 ------------------------------
 
 OVERALL ASSESSMENT:
-+ Strong evidence for Lorentzian geometry
