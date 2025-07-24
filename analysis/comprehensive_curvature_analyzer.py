@@ -381,6 +381,142 @@ def boundary_dynamics_analysis(results, mi_matrix, coordinates):
     
     return None
 
+def rt_surface_entropy_analysis(results, mi_matrix, coordinates):
+    """
+    RT Surface Analysis: Test S(A) ∝ Area_RT(A) relation
+    
+    This function analyzes the relationship between boundary entropy S(A) and 
+    the area of the corresponding RT surface Area_RT(A) to verify the holographic
+    principle prediction.
+    """
+    print("🔍 Performing RT Surface vs. Boundary Entropy Analysis...")
+    
+    # Extract boundary entropies from results
+    boundary_entropies_data = results.get('boundary_entropies_per_timestep', [])
+    if not boundary_entropies_data:
+        print("⚠️  No boundary entropy data found in results")
+        return None
+    
+    # Use the last timestep for analysis (most evolved state)
+    final_boundary_data = boundary_entropies_data[-1]
+    
+    # Extract multiple region analysis
+    multiple_regions = final_boundary_data.get('multiple_regions', {})
+    if not multiple_regions:
+        print("⚠️  No multiple region analysis found in boundary entropy data")
+        return None
+    
+    # Prepare data for RT surface analysis
+    rt_analysis_data = []
+    
+    for region_key, region_data in multiple_regions.items():
+        region = region_data.get('region', [])
+        entropy = region_data.get('entropy', 0.0)
+        
+        if not region or entropy <= 0:
+            continue
+            
+        # Calculate RT surface area for this region
+        # RT surface is the minimal surface separating this region from its complement
+        complement = [i for i in range(len(mi_matrix)) if i not in region]
+        
+        # Find edges crossing between region and complement
+        rt_edges = []
+        for i in region:
+            for j in complement:
+                if mi_matrix[i, j] > 0:  # Edge exists
+                    rt_edges.append((i, j))
+        
+        # Calculate RT surface area (sum of edge weights)
+        rt_area = sum(mi_matrix[i, j] for i, j in rt_edges)
+        
+        if rt_area > 0:
+            rt_analysis_data.append({
+                'region': region,
+                'region_size': len(region),
+                'entropy': entropy,
+                'rt_area': rt_area,
+                'rt_edges': rt_edges
+            })
+    
+    if len(rt_analysis_data) < 3:
+        print("⚠️  Insufficient data points for RT surface analysis")
+        return None
+    
+    # Extract data for fitting
+    entropies = [data['entropy'] for data in rt_analysis_data]
+    rt_areas = [data['rt_area'] for data in rt_analysis_data]
+    region_sizes = [data['region_size'] for data in rt_analysis_data]
+    
+    # Fit linear relationship S(A) ∝ Area_RT(A)
+    from scipy import stats
+    
+    # Linear fit
+    slope, intercept, r_value, p_value, std_err = stats.linregress(rt_areas, entropies)
+    r_squared = r_value ** 2
+    
+    # Calculate confidence intervals
+    n = len(rt_analysis_data)
+    t_critical = stats.t.ppf(0.975, n-2)  # 95% confidence
+    slope_ci = t_critical * std_err
+    
+    # Test for pure state condition: S(A) = S(B) for complementary regions
+    pure_state_tests = []
+    for data in rt_analysis_data:
+        region = data['region']
+        complement = [i for i in range(len(mi_matrix)) if i not in region]
+        
+        # Find entropy of complement
+        complement_entropy = None
+        for other_data in rt_analysis_data:
+            if set(other_data['region']) == set(complement):
+                complement_entropy = other_data['entropy']
+                break
+        
+        if complement_entropy is not None:
+            entropy_diff = abs(data['entropy'] - complement_entropy)
+            pure_state_tests.append({
+                'region': region,
+                'complement': complement,
+                'entropy_A': data['entropy'],
+                'entropy_B': complement_entropy,
+                'entropy_difference': entropy_diff,
+                'is_pure_state': entropy_diff < 0.1  # Threshold for pure state
+            })
+    
+    # Calculate pure state statistics
+    pure_state_fraction = sum(1 for test in pure_state_tests if test['is_pure_state']) / len(pure_state_tests) if pure_state_tests else 0
+    
+    analysis_results = {
+        'rt_analysis_data': rt_analysis_data,
+        'linear_fit': {
+            'slope': float(slope),
+            'intercept': float(intercept),
+            'r_squared': float(r_squared),
+            'p_value': float(p_value),
+            'slope_confidence_interval': float(slope_ci),
+            'equation': f"S(A) = {slope:.4f} × Area_RT(A) + {intercept:.4f}"
+        },
+        'pure_state_analysis': {
+            'pure_state_tests': pure_state_tests,
+            'pure_state_fraction': float(pure_state_fraction),
+            'mean_entropy_difference': float(np.mean([test['entropy_difference'] for test in pure_state_tests])) if pure_state_tests else 0
+        },
+        'statistics': {
+            'num_regions_analyzed': len(rt_analysis_data),
+            'entropy_range': [float(min(entropies)), float(max(entropies))],
+            'rt_area_range': [float(min(rt_areas)), float(max(rt_areas))],
+            'region_size_range': [min(region_sizes), max(region_sizes)]
+        }
+    }
+    
+    print(f"✅ RT Surface Analysis Complete:")
+    print(f"   - Linear fit: {analysis_results['linear_fit']['equation']}")
+    print(f"   - R² = {analysis_results['linear_fit']['r_squared']:.4f}")
+    print(f"   - Pure state fraction: {analysis_results['pure_state_analysis']['pure_state_fraction']:.2f}")
+    
+    return analysis_results
+
 def comprehensive_analysis(results_file, output_dir=None):
     """Run comprehensive analysis on experiment results"""
     print(f"Loading results from: {results_file}")
@@ -413,8 +549,16 @@ def comprehensive_analysis(results_file, output_dir=None):
         print(f"✓ P-value: {lorentzian_analysis['p_value']:.6f}")
         print(f"✓ Significant: {lorentzian_analysis['is_significant']}")
     
-    # 2. Check if we have counts data for advanced analyses
-    has_counts_data = 'counts' in results and results['counts']
+    # 2. Check if we have counts data or boundary entropy data for advanced analyses
+    has_counts_data = 'counts' in results and results['counts'] is not None and len(results['counts']) > 0
+    has_boundary_entropy_data = 'boundary_entropies_per_timestep' in results and results['boundary_entropies_per_timestep'] and len(results['boundary_entropies_per_timestep']) > 0
+    
+    print(f"DEBUG: has_counts_data = {has_counts_data}")
+    print(f"DEBUG: has_boundary_entropy_data = {has_boundary_entropy_data}")
+    print(f"DEBUG: 'counts' in results = {'counts' in results}")
+    print(f"DEBUG: 'boundary_entropies_per_timestep' in results = {'boundary_entropies_per_timestep' in results}")
+    if 'boundary_entropies_per_timestep' in results:
+        print(f"DEBUG: len(boundary_entropies_per_timestep) = {len(results['boundary_entropies_per_timestep'])}")
     
     if has_counts_data:
         print("✓ Found quantum measurement counts - running advanced holographic analyses...")
@@ -482,30 +626,33 @@ def comprehensive_analysis(results_file, output_dir=None):
         boundary_dynamics_results = boundary_dynamics_analysis(results, mi_matrix, coordinates)
         analysis_results['boundary_dynamics'] = boundary_dynamics_results
         
-        # 7. ROBUSTNESS ANALYSIS
-        print("\n" + "="*60)
-        print("ROBUSTNESS ANALYSIS")
-        print("="*60)
+        # RT Surface vs. Boundary Entropy Analysis
+        rt_entropy_results = rt_surface_entropy_analysis(results, mi_matrix, coordinates)
+        analysis_results['rt_entropy_analysis'] = rt_entropy_results
         
-        # Bootstrap resampling for confidence intervals
-        print("\n1. Bootstrap Resampling Analysis...")
-        bootstrap_results = bootstrap_mi_analysis(results['counts'], results['num_qubits'], n_bootstrap=500, confidence_level=0.95)
-        analysis_results['bootstrap_analysis'] = bootstrap_results
+    elif has_boundary_entropy_data:
+        print("✓ Found boundary entropy data - running RT surface entropy analysis...")
         
-        # Scrambling test
-        print("\n2. Scrambling Test...")
-        scrambling_results = scrambling_test(results['counts'], results['num_qubits'], n_scrambles=50)
-        analysis_results['scrambling_test'] = scrambling_results
+        # RT Surface vs. Boundary Entropy Analysis (using mutual information from results)
+        if 'mutual_information_per_timestep' in results and results['mutual_information_per_timestep']:
+            # Convert mutual information dict to matrix
+            mi_dict = results['mutual_information_per_timestep'][-1]  # Use last timestep
+            num_qubits = results['num_qubits']
+            mi_matrix = np.zeros((num_qubits, num_qubits))
+            
+            for key, value in mi_dict.items():
+                if key.startswith('I_'):
+                    i, j = map(int, key[2:].split(','))
+                    mi_matrix[i, j] = value
+                    mi_matrix[j, i] = value  # Symmetric
+            
+            # Create dummy coordinates for analysis
+            coordinates = np.random.rand(num_qubits, 2)  # Placeholder coordinates
+            
+            rt_entropy_results = rt_surface_entropy_analysis(results, mi_matrix, coordinates)
+            analysis_results['rt_entropy_analysis'] = rt_entropy_results
         
-        # Embedding robustness across different techniques
-        print("\n3. Embedding Robustness Analysis...")
-        embedding_robustness = embedding_robustness_analysis(mi_matrix, results['num_qubits'])
-        analysis_results['embedding_robustness'] = embedding_robustness
-        
-        # Quantify embedding error
-        print("\n4. Embedding Quality Assessment...")
-        embedding_quality = quantify_embedding_error(mi_matrix, coordinates)
-        analysis_results['embedding_quality'] = embedding_quality
+
         
         # 8. Generate robustness plots
         print("\n5. Generating Robustness Analysis Plots...")
@@ -632,6 +779,7 @@ def comprehensive_analysis(results_file, output_dir=None):
         json.dump(serializable_results, f, indent=2)
     
     # 8. Generate summary
+    summary_file = os.path.join(output_dir, 'analysis_summary.txt')
     generate_analysis_summary(analysis_results, output_dir)
     
     print(f"\n✓ Comprehensive analysis completed!")
@@ -737,6 +885,81 @@ def generate_analysis_plots(analysis_results, output_dir):
         plt.xlabel('Bulk Geometry Feature (Distance from Center)')
         plt.ylabel('Boundary Observable (Average MI)')
         plt.title(f'Boundary Dynamics: Observables vs Bulk Geometry\nCorrelation: {boundary_dynamics["correlation"]:.4f}')
+        plt.grid(True, alpha=0.3)
+        plt.savefig(os.path.join(output_dir, 'boundary_dynamics.png'), dpi=300, bbox_inches='tight')
+        plt.close()
+    
+    # 7. RT Surface vs. Boundary Entropy Plot
+    if 'rt_entropy_analysis' in analysis_results:
+        rt_entropy = analysis_results['rt_entropy_analysis']
+        rt_data = rt_entropy['rt_analysis_data']
+        
+        if rt_data:
+            entropies = [data['entropy'] for data in rt_data]
+            rt_areas = [data['rt_area'] for data in rt_data]
+            region_sizes = [data['region_size'] for data in rt_data]
+            
+            plt.figure(figsize=(12, 8))
+            
+            # Main plot: S(A) vs Area_RT(A)
+            plt.subplot(2, 2, 1)
+            plt.scatter(rt_areas, entropies, c=region_sizes, cmap='viridis', s=100, alpha=0.7)
+            
+            # Add linear fit line
+            linear_fit = rt_entropy['linear_fit']
+            x_fit = np.linspace(min(rt_areas), max(rt_areas), 100)
+            y_fit = linear_fit['slope'] * x_fit + linear_fit['intercept']
+            plt.plot(x_fit, y_fit, 'r--', linewidth=2, 
+                    label=f"Fit: {linear_fit['equation']}\nR² = {linear_fit['r_squared']:.4f}")
+            
+            plt.xlabel('RT Surface Area')
+            plt.ylabel('Boundary Entropy S(A)')
+            plt.title('Holographic Principle: S(A) ∝ Area_RT(A)')
+            plt.legend()
+            plt.grid(True, alpha=0.3)
+            
+            # Colorbar for region sizes
+            cbar = plt.colorbar(plt.cm.ScalarMappable(cmap='viridis'))
+            cbar.set_label('Region Size')
+            
+            # Pure state test plot
+            plt.subplot(2, 2, 2)
+            pure_state_tests = rt_entropy['pure_state_analysis']['pure_state_tests']
+            if pure_state_tests:
+                entropy_A = [test['entropy_A'] for test in pure_state_tests]
+                entropy_B = [test['entropy_B'] for test in pure_state_tests]
+                colors = ['green' if test['is_pure_state'] else 'red' for test in pure_state_tests]
+                
+                plt.scatter(entropy_A, entropy_B, c=colors, s=100, alpha=0.7)
+                plt.plot([0, max(max(entropy_A), max(entropy_B))], [0, max(max(entropy_A), max(entropy_B))], 
+                        'k--', alpha=0.5, label='S(A) = S(B)')
+                plt.xlabel('Entropy S(A)')
+                plt.ylabel('Entropy S(B)')
+                plt.title(f'Pure State Test\nFraction: {rt_entropy["pure_state_analysis"]["pure_state_fraction"]:.2f}')
+                plt.legend()
+                plt.grid(True, alpha=0.3)
+            
+            # Region size vs entropy
+            plt.subplot(2, 2, 3)
+            plt.scatter(region_sizes, entropies, alpha=0.7)
+            plt.xlabel('Region Size')
+            plt.ylabel('Boundary Entropy S(A)')
+            plt.title('Entropy vs Region Size')
+            plt.grid(True, alpha=0.3)
+            
+            # RT area vs region size
+            plt.subplot(2, 2, 4)
+            plt.scatter(region_sizes, rt_areas, alpha=0.7)
+            plt.xlabel('Region Size')
+            plt.ylabel('RT Surface Area')
+            plt.title('RT Area vs Region Size')
+            plt.grid(True, alpha=0.3)
+            
+            plt.tight_layout()
+            plt.savefig(os.path.join(output_dir, 'rt_surface_entropy_analysis.png'), dpi=300, bbox_inches='tight')
+            plt.close()
+            
+            print(f"✅ RT Surface vs. Boundary Entropy plot saved")
         plt.grid(True, alpha=0.3)
         plt.savefig(os.path.join(output_dir, 'boundary_dynamics.png'), dpi=300, bbox_inches='tight')
         plt.close()
@@ -1604,8 +1827,8 @@ if __name__ == "__main__":
             print(f"Experiment logs directory not found: {experiment_logs_dir}")
     else:
         # Run standard analysis
-    if not os.path.exists(args.results_file):
-        print(f"Error: Results file {args.results_file} not found!")
-        exit(1)
-    
-    comprehensive_analysis(args.results_file, args.output_dir) 
+        if not os.path.exists(args.results_file):
+            print(f"Error: Results file {args.results_file} not found!")
+            exit(1)
+        
+        comprehensive_analysis(args.results_file, args.output_dir) 
