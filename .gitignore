@@ -29,3 +29,6 @@ experiment_logs/curved_geometry_qiskit_ibm_sherbrooke_20250702_114623/
 
 # Verification and testing folders
 verify/
+
+# Preprint and documentation files
+preprint.md
