@@ -881,6 +881,8 @@ The novelty of these experiments does not lie in being theoretical firsts. Inste
 
 ### **Breakthrough Holographic Principle Validation** 🎯
 
+**Important Note**: The `experiment_logs/` directory contains results collected at different points during development. Most of these results are from early development stages, debugging runs, or incomplete experiments and should be ignored. Only the results highlighted below represent the significant scientific findings.
+
 The most significant results in this repository are found in two specific experiment files that demonstrate the first experimental validation of the holographic principle S(A) ∝ Area_RT(A) using proper hyperbolic triangulation circuits:
 
 #### **1. Hyperbolic Triangulation Circuit (Simulator)** - `results_n7_geomH_curv14_simulator_OJ2EY6.json`
@@ -905,6 +907,17 @@ These experiments implement the **minimal recipe** for holographic principle tes
 - **Proper edge weights** based on hyperbolic distance formulas
 
 This represents the **first experimental evidence** that quantum circuits can encode bulk geometry and produce the holographic scaling relation S(A) ∝ Area_RT(A) predicted by AdS/CFT correspondence.
+
+### **Development History and Result Selection**
+
+The `experiment_logs/` directory contains hundreds of experiment runs spanning the entire development process. These include:
+- **Early prototype runs** with incomplete implementations
+- **Debugging experiments** to fix circuit design issues
+- **Parameter sweeps** to optimize experimental conditions
+- **Failed attempts** that helped identify correct approaches
+- **Development milestones** showing incremental progress
+
+**Only the results highlighted above** represent the final, scientifically significant findings. The vast majority of other results in the directory should be ignored as they represent intermediate development stages rather than final experimental outcomes.
 
 ## Core Results
 - **Boundary vs. Bulk Entropy**: Linear scaling with R² = 0.9987 (entropy = 0.871089 × cut_size + 0.125718)
