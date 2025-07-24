@@ -150,6 +150,7 @@ p.add_argument("--compute_entropies", action="store_true", help="Enable boundary
 p.add_argument("--hyperbolic_triangulation", action="store_true", help="Use proper hyperbolic triangulation circuit with RZZ gates and Trotterized evolution")
 p.add_argument("--trotter_steps", type=int, default=4, help="Number of Trotter steps per timestep for hyperbolic triangulation (default: 4)")
 p.add_argument("--dt", type=float, default=0.1, help="Time step size for Trotter evolution (default: 0.1)")
+p.add_argument("--analyze_curvature", action="store_true", help="Enable entanglement-to-curvature analysis using MDS embedding")
 
 # Use the second parser for command-line arguments
 args = p.parse_args()
@@ -960,6 +961,87 @@ def make_short_filename(num_qubits, geometry, curvature, device, uid):
     """Make a short filename for the experiment results."""
     geom_short = {"euclidean": "E", "spherical": "S", "hyperbolic": "H", "lorentzian": "L"}[geometry]
     return f"results_n{num_qubits}_geom{geom_short}_curv{curvature:.0f}_{device}_{uid}.json"
+
+def define_scalable_regions(num_qubits):
+    """
+    Define boundary regions that scale with any number of qubits.
+    
+    Args:
+        num_qubits: Number of qubits in the system
+    
+    Returns:
+        dict: boundary_A, boundary_B, bulk_point, region_A, region_B
+    """
+    if num_qubits < 2:
+        # For 1 qubit, everything is the same
+        return {
+            'boundary_A': [0],
+            'boundary_B': [0],
+            'bulk_point': 0,
+            'region_A': [0],
+            'region_B': [0]
+        }
+    elif num_qubits == 2:
+        # For 2 qubits, split them
+        return {
+            'boundary_A': [0],
+            'boundary_B': [1],
+            'bulk_point': 0,
+            'region_A': [0],
+            'region_B': [1]
+        }
+    elif num_qubits == 3:
+        # For 3 qubits, split 1-2
+        return {
+            'boundary_A': [0],
+            'boundary_B': [1, 2],
+            'bulk_point': 1,
+            'region_A': [0],
+            'region_B': [1, 2]
+        }
+    elif num_qubits == 4:
+        # For 4 qubits, split 1-3
+        return {
+            'boundary_A': [0],
+            'boundary_B': [1, 2, 3],
+            'bulk_point': 2,
+            'region_A': [0],
+            'region_B': [1, 2, 3]
+        }
+    elif num_qubits == 5:
+        # For 5 qubits, split 2-3
+        return {
+            'boundary_A': [0, 1],
+            'boundary_B': [2, 3, 4],
+            'bulk_point': 2,
+            'region_A': [0, 1],
+            'region_B': [2, 3, 4]
+        }
+    elif num_qubits == 6:
+        # For 6 qubits, split 2-4
+        return {
+            'boundary_A': [0, 1],
+            'boundary_B': [2, 3, 4, 5],
+            'bulk_point': 3,
+            'region_A': [0, 1],
+            'region_B': [2, 3, 4, 5]
+        }
+    else:
+        # For 7+ qubits, use the original 3-4 split
+        boundary_A_size = max(1, num_qubits // 3)  # At least 1 qubit
+        boundary_B_size = num_qubits - boundary_A_size
+        
+        boundary_A = list(range(boundary_A_size))
+        boundary_B = list(range(boundary_A_size, num_qubits))
+        bulk_point = boundary_A_size  # First qubit of region B
+        
+        return {
+            'boundary_A': boundary_A,
+            'boundary_B': boundary_B,
+            'bulk_point': bulk_point,
+            'region_A': boundary_A,
+            'region_B': boundary_B
+        }
 
 def rt_surface_area(rt_edges, edge_lengths, all_edges):
     """
@@ -2252,12 +2334,11 @@ if __name__ == "__main__":
             # Use the final distance matrix for RT-surface analysis
             final_distance_matrix = np.array(distmat_per_timestep[-1])
             
-            # Define boundary regions (for 7 qubits, use qubits 0-2 as boundary A, 3-6 as boundary B)
-            boundary_A = [0, 1, 2]  # First 3 qubits
-            boundary_B = [3, 4, 5, 6]  # Last 4 qubits
-            
-            # Define bulk point (center qubit)
-            bulk_point = 3  # Middle qubit
+            # Define boundary regions that scale with any number of qubits
+            regions = define_scalable_regions(args.num_qubits)
+            boundary_A = regions['boundary_A']
+            boundary_B = regions['boundary_B']
+            bulk_point = regions['bulk_point']
             
             # Extract edge lengths from distance matrix
             n_qubits = args.num_qubits
@@ -2265,10 +2346,9 @@ if __name__ == "__main__":
             edge_lengths = [final_distance_matrix[i, j] for i, j in all_edges]
             
             # Define complementary regions for proper RT surface analysis
-            # Region A: First 3 qubits (boundary)
-            # Region B: Last 4 qubits (boundary + bulk)
-            region_A = boundary_A  # [0, 1, 2]
-            region_B = boundary_B  # [3, 4, 5, 6]
+            # Use the scalable regions
+            region_A = regions['region_A']
+            region_B = regions['region_B']
             
             # Validate that regions are complementary
             all_qubits = set(range(n_qubits))
@@ -2323,7 +2403,7 @@ if __name__ == "__main__":
         if args.excite and circuits and len(circuits) > 0:
             # Use the final circuit for bulk-excitation analysis
             final_circuit = circuits[-1]
-            bulk_point_location = 3  # Same as above
+            bulk_point_location = bulk_point  # Use the scalable bulk point
             
             print(f"  Analyzing bulk excitation at qubit {bulk_point_location}...")
             
