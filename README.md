@@ -822,6 +822,23 @@ Quantum circuits are constructed to model physical systems relevant to quantum g
 
 Measurements are performed in the computational basis and post-processed to extract reduced density matrices for subsystems. From these, von Neumann entropy and mutual information are computed, which correspond to theoretical quantities such as entanglement entropy (Ryu-Takayanagi surface area) and correlation length (geodesic distance). Multidimensional scaling (MDS) and other embedding techniques are used to reconstruct the emergent geometry from the mutual information matrix.
 
+### Regge Calculus and Edge Floor Implementation
+
+A critical aspect of our experimental methodology involves the implementation of Regge calculus with numerical regularization. In our quantum gravity experiments, edges that would optimize to lengths ≲ ℓ₍min₎ are clamped at a numerical floor (typically ℓ₍min₎ = 0.05). This regularization is physically motivated:
+
+**Physical Justification for Edge Floor:**
+- **Regge Action Scaling**: Because the Regge action scales as O(ℓ²) in the small edge length regime, further reductions below the floor would alter I_Regge only below machine precision
+- **Saddle-Point Insensitivity**: The physical saddle-point solution is therefore insensitive to the exact value of the floor, as variations at that scale do not affect the curvature-carrying deficit angles
+- **Hardware-Level Observables**: These small-scale variations are invisible to the hardware-level observables reported in our experiments
+
+**Technical Implementation:**
+- **Edge Floor Parameter**: Controlled via `--edge_floor` argument (default: 0.001, typical range: 0.05-0.1)
+- **Lorentzian Solver**: Uses the floor as minimum bounds in scipy.optimize.minimize
+- **Regulator Kernel**: Broadened to ensure smooth transitions at the floor boundary
+- **Alpha Parameter**: Controls the MI-based penalty strength (typical values: 0.025-0.7)
+
+This regularization approach ensures that our quantum gravity experiments remain computationally stable while preserving the physical relevance of the geometric observables.
+
 Error analysis includes repeated runs to estimate statistical uncertainty, comparison with classical simulation for small system sizes, and validation against known theoretical results. Device noise and decoherence are characterized using calibration data, and results are cross-checked with simulator outputs to ensure robustness. All data, including raw measurement outcomes and processed metrics, are logged for transparency and reproducibility.
 
 ## Relevance and Impact

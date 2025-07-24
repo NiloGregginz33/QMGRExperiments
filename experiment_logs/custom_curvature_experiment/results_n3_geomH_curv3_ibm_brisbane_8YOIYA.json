@@ -1,0 +1,437 @@
+{
+  "spec": {
+    "num_qubits": 3,
+    "topology": "triangulated",
+    "custom_edges": "0-1:1.0000,0-2:0.9585,1-2:1.0000",
+    "alpha": 0.1,
+    "weight": 1.0,
+    "gamma": 0.3,
+    "sigma": null,
+    "init_angle": 0.0,
+    "init_angles": null,
+    "shots": 100,
+    "device": "ibm_brisbane",
+    "geometry": "hyperbolic",
+    "curvature": 3.0,
+    "timesteps": 1,
+    "dimension": 2,
+    "mass_hinge": null,
+    "mass_value": 0.0,
+    "solve_regge": false,
+    "lorentzian": false,
+    "excite": false,
+    "fast": false,
+    "strong_curvature": false,
+    "charge_injection": false,
+    "charge_strength": 1.0,
+    "charge_location": 3,
+    "spin_injection": false,
+    "spin_strength": 1.0,
+    "spin_location": 3
+  },
+  "uid": "8YOIYA",
+  "counts_per_timestep": [
+    null
+  ],
+  "job_ids_per_timestep": [
+    "d20oh6s3s4ss73clc2u0"
+  ],
+  "entropy_per_timestep": [
+    null
+  ],
+  "mutual_information_per_timestep": [
+    {
+      "I_0,1": 0.1,
+      "I_0,2": 0.1,
+      "I_1,2": 0.1
+    }
+  ],
+  "distance_matrix_per_timestep": [
+    [
+      [
+        0.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        0.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        0.0
+      ]
+    ]
+  ],
+  "edge_mi": {
+    "0,1": 0.1,
+    "0,2": 0.1,
+    "1,2": 0.1
+  },
+  "distance_matrix": [
+    [
+      0.0,
+      2.3025850929940455,
+      2.3025850929940455
+    ],
+    [
+      2.3025850929940455,
+      0.0,
+      2.3025850929940455
+    ],
+    [
+      2.3025850929940455,
+      2.3025850929940455,
+      0.0
+    ]
+  ],
+  "shortest_paths": {
+    "0": {
+      "0": 0,
+      "1": 2.3025850929940455,
+      "2": 2.3025850929940455
+    },
+    "1": {
+      "1": 0,
+      "0": 2.3025850929940455,
+      "2": 2.3025850929940455
+    },
+    "2": {
+      "2": 0,
+      "0": 2.3025850929940455,
+      "1": 2.3025850929940455
+    }
+  },
+  "gromov_delta": 1.1512925464970227,
+  "mean_distance": 1.535056728662697,
+  "angle_sums": [
+    0.8043634593045942
+  ],
+  "mean_angle_sum": 0.8043634593045942,
+  "min_angle_sum": 0.8043634593045942,
+  "max_angle_sum": 0.8043634593045942,
+  "angle_sum_deviations": [
+    -2.337229194285199
+  ],
+  "triangle_inequality_violations": [],
+  "embedding_coords": [
+    [
+      -5.195885625976041,
+      -7.331173578596072
+    ],
+    [
+      8.952728185771942,
+      -0.8382025977402554
+    ],
+    [
+      -3.7568425597959,
+      8.169376176336328
+    ]
+  ],
+  "embedding_coords_3d": [
+    [
+      4.689105857545897,
+      -3.381938904105845,
+      6.883604045605471
+    ],
+    [
+      -7.529265293039651,
+      -4.074020710425155,
+      -2.733534942237643
+    ],
+    [
+      2.840159435493753,
+      7.455959614531,
+      -4.150069103367828
+    ]
+  ],
+  "edge_weight_variance": 0.00038272222222222185,
+  "event_nodes": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      2,
+      0
+    ]
+  ],
+  "event_edges": [
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        1,
+        0
+      ],
+      "weight": 2.3025850929940455
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        2,
+        0
+      ],
+      "weight": 2.3025850929940455
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        0
+      ],
+      "to": [
+        2,
+        0
+      ],
+      "weight": 2.3025850929940455
+    }
+  ],
+  "lorentzian_dissimilarity": [
+    [
+      0.0,
+      5.301898110478397,
+      5.301898110478397
+    ],
+    [
+      5.301898110478397,
+      0.0,
+      5.301898110478397
+    ],
+    [
+      5.301898110478397,
+      5.301898110478397,
+      0.0
+    ]
+  ],
+  "lorentzian_embedding": [
+    [
+      0.0,
+      0.4666949570814944,
+      1.6744764905514307
+    ],
+    [
+      0.0,
+      -0.8759404185135443,
+      -0.19614596061731476
+    ],
+    [
+      0.0,
+      1.4153838372511083,
+      -0.4235910742732688
+    ]
+  ],
+  "edge_length_evolution": [],
+  "angle_deficit_evolution": [],
+  "regge_action_evolution": [],
+  "gromov_delta_evolution": [],
+  "mass_hinge": null,
+  "mass_value": 0.0,
+  "matter": {
+    "(0, 1)": 0.0,
+    "(0, 2)": 0.0,
+    "(1, 2)": 0.0
+  },
+  "stationary_solution": null,
+  "bootstrap_analysis": {
+    "gromov_delta": {
+      "mean": 1.0,
+      "lower_ci": 1.0,
+      "upper_ci": 1.0,
+      "all_values": [
+        1.0
+      ],
+      "uncertainty": 0.0
+    },
+    "entropy": {
+      "mean": null,
+      "lower_ci": null,
+      "upper_ci": null,
+      "uncertainty": null
+    },
+    "distance_matrix": {
+      "mean": [
+        [
+          0.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          0.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          0.0
+        ]
+      ],
+      "lower_ci": [
+        [
+          0.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          0.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          0.0
+        ]
+      ],
+      "upper_ci": [
+        [
+          0.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          0.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          0.0
+        ]
+      ]
+    }
+  },
+  "topology_compatibility": {
+    "current_topology": "triangulated",
+    "explanation": "Triangulated topology is specifically designed for angle-sum curvature. Creates multiple triangles per vertex, enabling robust local curvature measurements. Each vertex has multiple incident triangles for well-defined angle sums.",
+    "supports_local_curvature": true
+  },
+  "rt_surface_analysis": {
+    "boundary_A": [
+      0,
+      1,
+      2
+    ],
+    "boundary_B": [
+      3,
+      4,
+      5,
+      6
+    ],
+    "bulk_point": 3,
+    "rt_area_A": 6.0,
+    "rt_area_B": 0.0,
+    "rt_area_ratio": 0.0,
+    "edge_lengths": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "all_edges": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        1,
+        2
+      ]
+    ]
+  },
+  "bulk_excitation_analysis": null,
+  "dynamic_evidence": {
+    "angle_sums_per_timestep": [
+      [
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793
+      ]
+    ],
+    "gromov_delta_per_timestep": [
+      0.5
+    ],
+    "edge_mi_per_timestep": [
+      {}
+    ],
+    "shortest_paths_per_timestep": [
+      {}
+    ],
+    "mean_distance_per_timestep": [
+      2.0
+    ],
+    "triangle_violations_per_timestep": [
+      0
+    ],
+    "embedding_coords_per_timestep": [
+      null
+    ],
+    "regge_evolution_data": null,
+    "evolution_summary": {
+      "total_timesteps": 1,
+      "gromov_delta_range": [
+        0.5,
+        0.5
+      ],
+      "mean_distance_range": [
+        2.0,
+        2.0
+      ],
+      "total_triangle_violations": 0,
+      "hyperbolic_evolution": [
+        false
+      ],
+      "regge_corrected": false
+    }
+  }
+}
