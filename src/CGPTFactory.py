@@ -70,7 +70,6 @@ def get_best_backend(service, min_qubits=3, max_queue=10):
     print(f"Best backend chosen: {best_backend.name}")
     return best_backend
 
-open("entropy_oracle_log.csv", "w").close()
 
 # === CONFIG ===
 USE_IBM = os.getenv("USE_IBM", "True").lower() == "true"  # Set this to "True" or "False"
@@ -137,6 +136,10 @@ _sampler = None
 # Matches strings consisting only of '0' and '1'
 BITSTR_RE = re.compile(r'^[01]+$')
 
+running_locally = False
+
+if running_locally:
+    open("entropy_oracle_log.csv", "w").close()
 
 
 
