@@ -1936,11 +1936,9 @@ if __name__ == "__main__":
                     'all_edges': [((int(a), int(t1)), (int(b), int(t2))) for ((a, t1), (b, t2)) in all_edges]
                 }
                 # Save to output
-                log_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'experiment_logs', 'custom_curvature_experiment')
-                os.makedirs(log_dir, exist_ok=True)
                 uid = generate_short_uid()
                 short_filename = make_short_filename(args.num_qubits, args.geometry, kappa, args.device, uid)
-                output_path = os.path.join(log_dir, short_filename)
+                output_path = os.path.join(experiment_log_dir, short_filename)
                 with open(output_path, 'w') as f:
                     json.dump({
                         'lorentzian_solution': lorentzian_solution,
@@ -2329,8 +2327,8 @@ if __name__ == "__main__":
                     
                     if counts is not None and len(counts) > 0:
                         # Calculate entropy from counts
-                        entropy = calculate_entropy(counts)
-                        entropy_per_timestep.append(entropy)
+                        entropy_value = calculate_entropy(counts)
+                        entropy_per_timestep.append(entropy_value)
                         
                         # Calculate mutual information from actual quantum data
                         total_shots = sum(counts.values())
@@ -2995,7 +2993,15 @@ if __name__ == "__main__":
             # Test RT relation: S(A) ≈ Area(γ_A) / 4G_N (up to constants)
             # We expect the ratio of entropies to match the ratio of RT areas
             entropy_ratio = ground_entropy_B / ground_entropy_A if ground_entropy_A > 0 else 0
-            rt_area_ratio = rt_area_B / rt_area_A if rt_area_A > 0 else 0
+            
+            # Check if RT surface areas are available from previous analysis
+            if rt_surface_analysis is not None:
+                rt_area_AB = rt_surface_analysis['rt_area_AB']
+                rt_area_BA = rt_surface_analysis['rt_area_BA']
+                rt_area_ratio = rt_area_BA / rt_area_AB if rt_area_AB > 0 else 0
+            else:
+                print("  ⚠️  RT surface areas not available for RT relation test")
+                rt_area_ratio = 0
              
             print(f"  RT Relation Test:")
             print(f"    Entropy ratio S(B)/S(A): {entropy_ratio:.4f}")

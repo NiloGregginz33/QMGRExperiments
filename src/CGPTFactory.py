@@ -138,9 +138,6 @@ BITSTR_RE = re.compile(r'^[01]+$')
 
 running_locally = False
 
-if running_locally:
-    open("entropy_oracle_log.csv", "w").close()
-
 
 
 #provider = IonQProvider("dxE2z8zimvBincMENCUZ8RD94qWUQ51l")
