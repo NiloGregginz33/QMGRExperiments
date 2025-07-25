@@ -45,8 +45,6 @@ import argparse
 
 # Prep
 
-open("entropy_oracle_log.csv", "w").close()
-
 # Globals
 charge_history = []
 service = QiskitRuntimeService()

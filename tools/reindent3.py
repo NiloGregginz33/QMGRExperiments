@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 # Python 3 compatible version of reindent tool
-# Based on the original by Tim Peters
+# Based on the original by Tim Peters 
+# Shout out to Tim Peters again
 
 import tokenize
 import os, shutil
