@@ -1,0 +1,48 @@
+================================================================================
+CURVATURE FLOW ANALYSIS REPORT
+================================================================================
+
+EXPERIMENT PARAMETERS:
+-------------------------
+Geometry: spherical
+Curvature: κ = 20.0
+Number of qubits: 11
+Device: ibm_brisbane
+
+1. CURVATURE GRADIENT VECTOR ANALYSIS:
+-----------------------------------
+Mean gradient magnitude: 0.204954
+Gradient magnitude range: [0.017826, 0.683758]
+Gradient magnitude std: 0.208423
+
+2. FLOW DIRECTION ANALYSIS:
+-------------------------
+Inward flow nodes: 0/11 (0.0%)
+Outward flow nodes: 11/11 (100.0%)
+No flow nodes: 0/11 (0.0%)
+Mean convergence measure: 0.173613
+
+❌ DOMINANT OUTWARD FLOW → INCONSISTENT WITH SPHERICAL GEOMETRY
+
+3. EFFECTIVE ENERGY DENSITY ANALYSIS:
+-----------------------------------
+Mean energy density: 0.259026
+Energy density range: [0.047394, 0.694637]
+Energy density std: 0.224676
+
+4. RIEMANN TENSOR ANALYSIS:
+-------------------------
+Mean R_1212 component: 0.050484
+R_1212 range: [0.000022, 0.476043]
+Positive R_1212 components: 11/11 (100.0%)
+✅ DOMINANTLY POSITIVE R_1212 → CONFIRMS SPHERICAL GEOMETRY
+
+5. MASS BACK-PROPAGATION SUMMARY:
+-----------------------------------
+⚠️  MASS BACK-PROPAGATION NOT CLEARLY DETECTED
+   - Flow patterns are inconsistent with spherical geometry
+   - May need adjustment of curvature computation
+
+================================================================================
+END OF FLOW ANALYSIS REPORT
+================================================================================
