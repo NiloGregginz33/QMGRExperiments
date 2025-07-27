@@ -1,3 +1,24 @@
+"""
+PROPRIETARY SOFTWARE - PAGE CURVE EXPERIMENT
+
+Copyright (c) 2024-2025 Matrix Solutions LLC. All rights reserved.
+
+This file contains proprietary research algorithms and experimental protocols
+for quantum holographic geometry experiments. This software is proprietary and
+confidential to Matrix Solutions LLC.
+
+SPECIFIC LICENSE TERMS:
+- Use for academic peer review purposes is permitted
+- Academic research and educational use is allowed with proper attribution
+- Commercial use is strictly prohibited without written permission
+- Redistribution, modification, or derivative works are not permitted
+- Reverse engineering or decompilation is prohibited
+
+For licensing inquiries: manavnaik123@gmail.com
+
+By using this file, you acknowledge and agree to be bound by these terms.
+"""
+
 import numpy as np
 from qiskit import QuantumCircuit, execute, Aer
 import matplotlib.pyplot as plt
