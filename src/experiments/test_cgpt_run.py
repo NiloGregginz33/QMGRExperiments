@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from qiskit import QuantumCircuit
 from qiskit_ibm_runtime import QiskitRuntimeService
-from Factory.CGPTFactory import run
+from src.CGPTFactory import run
 
 def test_simple_circuit():
     """Test a simple 3-qubit circuit on IBM hardware"""

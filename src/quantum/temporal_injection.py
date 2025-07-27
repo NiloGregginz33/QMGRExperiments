@@ -63,7 +63,7 @@ class TemporalInjectionExperiment:
             # probs = np.array(result.values).reshape(-1)
             
             # Use run_experiment from CGPTFactory
-            from Factory.CGPTFactory import run_experiment
+            from src.CGPTFactory import run_experiment
             backend_type = 'simulator'  # or 'quantum' based on your setup
             target_state = '111'  # Example target state, adjust as needed
             t_steps = 5  # Example time steps, adjust as needed
