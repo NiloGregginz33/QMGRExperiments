@@ -12,7 +12,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
 
 # Add parent directory to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Factory'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from CGPTFactory import extract_counts_from_bitarray
 
 def test_direct_hardware():

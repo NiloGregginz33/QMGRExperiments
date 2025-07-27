@@ -4,7 +4,7 @@ import sys
 import os
 
 # Adjust Python path to include the Factory directory
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Factory'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from qiskit import QuantumCircuit
 from qiskit.visualization import plot_histogram

@@ -9,7 +9,7 @@ import argparse
 from datetime import datetime
 import random
 # Add Factory to sys.path and import run
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../Factory')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from CGPTFactory import run
 from qiskit_ibm_runtime.fake_provider import FakeBrisbane
 from sklearn.manifold import MDS

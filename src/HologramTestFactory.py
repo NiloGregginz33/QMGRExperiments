@@ -23,7 +23,6 @@ import time
 from datetime import datetime
 from scipy.stats import binom_test
 import requests
-from qutip import *
 import sys
 import psutil
 import itertools

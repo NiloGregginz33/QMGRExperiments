@@ -12,7 +12,7 @@ import scipy.optimize
 from tqdm import tqdm
 
 # Adjust Python path to include the Factory directory
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Factory'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector, partial_trace, entropy

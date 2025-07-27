@@ -11,7 +11,7 @@ from scipy.stats import pearsonr
 from sklearn.manifold import MDS
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from Factory.CGPTFactory import run
+from src.CGPTFactory import run
 from qiskit_ibm_runtime.fake_provider import FakeBrisbane
 from qiskit.quantum_info import Statevector
 from qiskit.quantum_info import DensityMatrix

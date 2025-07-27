@@ -11,8 +11,8 @@ import itertools
 import scipy.optimize
 from tqdm import tqdm
 
-# Adjust Python path to include the Factory directory
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Factory'))
+# Adjust Python path to include the src directory
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector, partial_trace, entropy
@@ -1601,7 +1601,7 @@ def run_mi_with_excitation(qc, bulk_point_location, excite=False, shots=1024, de
         counts = job.result().get_counts()
     else:
         # For hardware, use the existing run function
-        sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Factory'))
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
         from CGPTFactory import run
         from qiskit_ibm_runtime import QiskitRuntimeService
         service = QiskitRuntimeService()

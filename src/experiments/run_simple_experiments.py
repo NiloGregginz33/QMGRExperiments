@@ -107,7 +107,7 @@ def run_temporal_injection(device_type="simulator", shots=1024):
     
     # Replace current execution method with run_experiment from CGPTFactory
     # Simulate temporal evolution
-    from Factory.CGPTFactory import run_experiment
+    from src.CGPTFactory import run_experiment
     backend_type = 'simulator'  # or 'quantum' based on your setup
     target_state = '111'  # Example target state, adjust as needed
     t_steps = 5  # Example time steps, adjust as needed
