@@ -4322,31 +4322,7 @@ def charge_injection_scaling(qc, max_levels=5):
 ##        print("Removed measurement")
 ##        sys.stdout.flush()# Remove measurements
 ##        state = Statevector.from_instruction(qc_no_measure)
-##
-##        rho_numpy = state.to_operator().data
-##
-### Convert to QuTiP Qobj as a density matrix
-##        print("Qutip initiated")
-##        sys.stdout.flush()
-##        rho_qutip = Qobj(rho_numpy, dims=[[2]*state.num_qubits, [2]*state.num_qubits])
-##        print("More qutip")
-##        sys.stdout.flush()
-##        ent = von_neumann_qiskit_entropy(rho_numpy)
-##        print("Entropy")
-##        sys.stdout.flush()
-##        results.append(ent)
-##        print(f"Charge Level {level}: Entropy = {ent}")
-##        time.sleep(0.05)
-##        sys.stdout.flush()
-##
-##    # **Ensure the final circuit has measurements before returning**
-##    if not qc_injected.clbits:
-##        qc_injected.add_register(ClassicalRegister(qc.num_qubits))
-##
-##    qc_injected.measure_all()
-##
-##    return qc_injected, results  # **Now it returns a QuantumCircuit**
-##
+
 
 def run_experiment_with_target(backend_type, target_state="111", t_steps=5, shots=2048):
     """
@@ -5244,8 +5220,7 @@ def cavity_scaling_test():
 ##    sys.stdout.flush()
 ##    final_state = Statevector.from_instruction(qc_nm)
 ##    rho = final_state.to_operator().data
-##    rho_qutip = Qobj(rho, dims=[[2]*final_state.num_qubits, [2]*final_state.num_qubits])
-##    print("Qutip format")
+
 ##    sys.stdout.flush()
 ##    entropy = von_neumann_qiskit_entropy(rho)
 ##    print(f"Entropy after charge injection with QEC: {entropy}")
@@ -5273,7 +5248,7 @@ def von_neumann_qiskit_entropy(rho):
 ##    qc_nm = remove_measurements(qc_injected_circuit)
 ##    final_state = Statevector.from_instruction(qc_nm)
 ##    rho = final_state.to_operator().data
-##    rho_qutip = Qobj(rho, dims=[[2]*final_state.num_qubits, [2]*final_state.num_qubits])
+
 ##    entropy = von_neumann_qiskit_entropy(rho)
 ##    print(f"Entropy after charge injection without QEC: {entropy}")
 ##    sys.stdout.flush()

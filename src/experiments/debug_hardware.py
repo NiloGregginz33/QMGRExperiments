@@ -13,7 +13,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService
 
 # Add parent directory to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Factory'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from CGPTFactory import run
 
 def debug_bell_state():
