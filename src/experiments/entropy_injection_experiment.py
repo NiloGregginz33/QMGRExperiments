@@ -8,7 +8,7 @@ log_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'experiment_logs',
 os.makedirs(log_dir, exist_ok=True)
 
 # Adjust Python path to include the Factory directory
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Factory'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from qiskit import QuantumCircuit
 from qiskit.visualization import plot_histogram

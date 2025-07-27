@@ -18,7 +18,7 @@ from qiskit.quantum_info import Statevector
 from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.fake_provider import FakeBrisbane
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-from Factory.CGPTFactory import run as cgpt_run, extract_counts_from_bitarray
+from src.CGPTFactory import run as cgpt_run, extract_counts_from_bitarray
 
 def create_simple_test_circuit(n_qubits=3):
     """Create the simplest possible circuit that should work on hardware"""

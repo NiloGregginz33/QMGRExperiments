@@ -10,27 +10,11 @@
 import os
 import re
 
-qi_url = "https://api.quantum-inspire.com"
 
-def patch_qilib_numpy():
-    site_packages_path = os.path.join(os.path.dirname(__file__), "venv", "Lib", "site-packages")
-    target_file = os.path.join(site_packages_path, "qilib", "utils", "python_json_structure.py")
 
-    with open(target_file, "r") as file:
-        content = file.read()
 
-    patched_content = re.sub(r"np\.cfloat", "np.complex128", content)
-
-    with open(target_file, "w") as file:
-        file.write(patched_content)
-
-    print("Patched `qilib` to replace `np.cfloat` with `np.complex128`.")
-
-patch_qilib_numpy()
 
 from qiskit import QuantumCircuit, transpile, ClassicalRegister
-from quantuminspire.credentials import get_authentication
-from quantuminspire.credentials import enable_account
 from qiskit_ibm_runtime import QiskitRuntimeService, Session, Sampler
 from collections import Counter
 from qiskit.quantum_info import Statevector, partial_trace, entropy
@@ -40,7 +24,6 @@ from qiskit.result import Result  # Import for local simulation results
 from qiskit.result import Counts
 from qiskit_aer import Aer
 from scipy.spatial.distance import jensenshannon
-from quantuminspire.qiskit import QI
 import random
 
 simulator = None
@@ -142,92 +125,12 @@ def create_spin_circuit(spin_state):
 
     return qc
 
-def initialize_qi_backend_with_token(token: str):
-
-    enable_account(token)
-    
-    """
-    Initializes the Quantum Inspire backend using the provided API token.
-    
-    Args:
-        token (str): The API token for Quantum Inspire authentication.
-    
-    Returns:
-        backend: The configured Quantum Inspire backend.
-    """
-    from quantuminspire.qiskit import QI
-    from quantuminspire.credentials import enable_account
-    from qiskit.providers import Provider
-    
-    try:
-        # Enable the account with the given token
-        
-        print("Quantum Inspire account enabled successfully.")
-
-        # Initialize the Quantum Inspire provider
-        qi_provider = QI
-        print("Quantum Inspire provider initialized.")
-
-        qi_provider.set_authentication(authentication=token)
-        print("[INFO] Quantum Inspire authentication set.")
-
-        # List available backends and select one
-        available_backends = qi_provider.backends()
-        print("Available Quantum Inspire backends:", available_backends)
-
-        # Select a default backend (e.g., QX single-node simulator)
-        backend_name = "QX single-node simulator"  # You can change this
-        backend = qi_provider.get_backend(backend_name)
-        print(f"Using Quantum Inspire backend: {backend_name}")
-
-        return backend
-
-    except Exception as e:
-        print(f"Failed to initialize Quantum Inspire backend: {e}")
-        return None
 
 
-def initialize_QI(qc):
 
-    enable_account("45fdad1dc3220d6def07be547f5ff7d294c03b2f")
 
-    """
-    Initializes and returns the Quantum Inspire backend.
 
-    Returns:
-        backend: The selected Quantum Inspire backend or None if initialization fails.
-    """
-    try:
-        # Set authentication using stored credentials or manually
-        QI.set_authentication()  # Assumes credentials are set up
 
-        # List available backends (optional debugging step)
-        print("Available Quantum Inspire backends:")
-        available_backends = QI.backends()  # This is iterable, not subscriptable
-        backend_names = [backend.name() for backend in available_backends]
-        print(backend_names)
-
-        # Retrieve a specific backend (replace with your desired backend name)
-        backend_name = 'QX single-node simulator'  # Example backend name
-        backend = QI.get_backend(backend_name)
-        print(f"Using Quantum Inspire backend: {backend_name}")
-        return backend
-    
-    except Exception as e:
-        print(f"Failed to initialize Quantum Inspire backend: {e}")
-        return None
-
-def initialize_qi_backend():
-    """
-    Initializes the Quantum Inspire backend.
-
-    Returns:
-        A Quantum Inspire backend instance.
-    """
-    QI.set_authentication()  # Replace with your QI API token
-    qi_provider = QI()
-    backend = qi_provider.get_backend("QX single-node simulator")  # Choose the desired backend
-    return backend
 
 # Analyze entanglement entropy
 def analyze_entanglement(qc):
@@ -271,54 +174,9 @@ def inject_charge(qc, qubits, injection_type="random"):
 
     return qc
 
-def run_holographic_experiment_qi_with_injection_original(qc, backend, shots, num_iterations=10):
-    """
-    Runs the holographic experiment with charge injections for Quantum Inspire.
 
-    Args:
-        qc (QuantumCircuit): The base quantum circuit.
-        backend: The QI backend to run on.
-        shots (int): Number of shots per iteration.
-        num_iterations (int): Number of iterations to perform.
 
-    Returns:
-        dict: Summary of results across iterations.
-    """
-    results_summary = {}
-    for i in range(1, num_iterations + 1):
-        print(f"--- Iteration {i} ---")
-        
-        # Inject charge dynamically
-        modified_qc = inject_charge(qc.copy(), qubits=[0, 1])  # Example: Inject on qubits 0 and 1
-        
-        # Run the experiment
-        result_counts = run_and_extract_counts_quantum(modified_qc, backend, shots)
-        statevector = get_statevector(modified_qc)
-        entropies = calculate_entropies(statevector)
-        
-        # Log results
-        results_summary[f"Iteration {i}"] = {
-            "Counts": result_counts,
-            "Statevector": statevector,
-            "Entropies": entropies
-        }
 
-        print(f"Iteration {i} Results: {result_counts}")
-        print(f"Entropies: {entropies}")
-    
-    return results_summary
-
-def run_and_extract_counts_qi(qc, backend, shots=1024):
-    """Run a quantum circuit on the QI backend and extract counts."""
-    try:
-        # Submit the quantum circuit to the QI backend
-        job = execute(qc, backend=backend, shots=shots)
-        result = job.result()
-        counts = result.get_counts()
-        return counts
-    except Exception as e:
-        print(f"Error during QI execution: {e}")
-        return None
 
 
 
@@ -1504,57 +1362,9 @@ def run_holographic_experiment_2():
     return counts, entropies
 
 
-def run_experiment_on_qi_backend(qc, backend, shots=8192):
-    """
-    Runs a quantum circuit on the Quantum Inspire backend.
-    Args:
-        qc (QuantumCircuit): The quantum circuit to execute.
-        backend: The Quantum Inspire backend.
-        shots (int): Number of shots for execution.
-    Returns:
-        dict: Counts of the results.
-    """
-    simulator = Aer.get_backend('aer_simulator')
-    job = simulator.run(qc, backend=backend, shots=shots)
-    result = job.result()
-    counts = result.get_counts()
-    return counts
-
-def run_iterative_experiments_qi(backend, num_iterations=10, shots=8192):
-    """
-    Runs iterative quantum experiments on a specified backend.
-
-    Parameters:
-        backend: The quantum backend to execute the experiments.
-        num_iterations (int): Number of times to run the experiment.
-        shots (int): Number of shots per experiment.
-
-    Returns:
-        list[dict]: List of measurement results for each iteration.
-    """
-    results_list = []
-    for iteration in range(num_iterations):
-        print(f"\n--- Iteration {iteration + 1} ---")
-        
-        # Create a holographic interaction circuit
-        qc = create_holographic_interaction_circuit()
 
 
 
-        # Execute the circuit
-        counts = run_and_extract_counts_quantum(qc, backend, shots)
-        if counts is not None:
-            results_list.append(counts)
-            print("Results:", counts)
-
-            # Optional: Analyze entropy
-            if iteration > 0:
-                divergence = analyze_temporal_correlation(results_list[-2:])
-                print(f"Jensen-Shannon divergence: {divergence[-1]}")
-        else:
-            print("Failed to execute the circuit.")
-    
-    return results_list
 
 
 def reverse_time(qc):
@@ -1673,141 +1483,16 @@ def run_and_extract_counts_qi(qc, backend, shots=1024):
         print(f"Failed to execute circuit on QI backend: {e}")
         return None
 
-def run_holographic_experiment_qi_with_injection(qc, backend, shots=1024, num_iterations=10):
-    """Run holographic experiments iteratively with QI backend."""
-    results = []
-    for iteration in range(1, num_iterations + 1):
-        print(f"--- Iteration {iteration} ---")
-        modified_qc = qc.copy()  # Add charge injections or modifications here
-        counts = run_and_extract_counts_qi(modified_qc, backend, shots)
-        if counts:
-            print(f"Iteration {iteration} Results: {counts}")
-            results.append(counts)
-        else:
-            print(f"Failed in iteration {iteration}")
-    return results
-
-def hack_hologram_with_injections(qc, backend, num_iterations=10, shots=8192):
-    """
-    Hacks the hologram through iterative charge injections.
-    
-    Args:
-        qc (QuantumCircuit): The initial quantum circuit.
-        backend: The Quantum Inspire backend for execution.
-        num_iterations (int): Number of iterations for the hacking attempt.
-        shots (int): Number of shots for each experiment.
-    
-    Returns:
-        list[dict]: Results from each iteration.
-    """
-    results = []
-    
-    for iteration in range(1, num_iterations + 1):
-        print(f"--- Iteration {iteration} ---")
-        
-        # Create a copy of the circuit for this iteration
-        modified_qc = qc.copy()
-
-        # Apply charge injections
-        injection_type = "random"  # Alternate between types if needed
-        modified_qc = inject_charge(modified_qc, qubits=[0, 1], injection_type=injection_type)
-
-        # Run the circuit
-        try:
-            counts = run_and_extract_counts_qi(modified_qc, backend, shots)
-            if counts:
-                print(f"Iteration {iteration} Results: {counts}")
-                results.append({
-                    "iteration": iteration,
-                    "counts": counts
-                })
-
-                # Analyze entropy
-                statevector = run_circuit_statevector(modified_qc)
-                entropies = calculate_subsystem_entropy(statevector)
-                results[-1]["entropies"] = entropies
-                print(f"Entropies: {entropies}")
-            else:
-                print(f"Failed in iteration {iteration}")
-        except Exception as e:
-            print(f"Error during iteration {iteration}: {e}")
-            results.append({
-                "iteration": iteration,
-                "counts": None,
-                "error": str(e)
-            })
-
-    # Summarize results
-    print("\nFinal Results Summary:")
-    for result in results:
-        iteration = result.get("iteration", "N/A")
-        counts = result.get("counts", "N/A")
-        entropies = result.get("entropies", "N/A")
-        print(f"Iteration {iteration}: Counts: {counts}, Entropies: {entropies}")
-    
-    return results
-
-def initialize_qi_backend_with_token(token: str, backend_name: str = "QX single-node simulator"):
-    """
-    Initializes the Quantum Inspire backend using the provided API token.
-
-    Args:
-        token (str): The API token for Quantum Inspire authentication.
-        backend_name (str): The name of the backend to use. Default is 'QX single-node simulator'.
-
-    Returns:
-        backend: The configured Quantum Inspire backend or None if initialization fails.
-    """
-    from quantuminspire.qiskit import QI
-    from quantuminspire.credentials import enable_account
-
-    try:
-        # Enable the Quantum Inspire account with the given token
-        enable_account(token)
-        print("[INFO] Quantum Inspire account enabled successfully.")
-
-        # Initialize the Quantum Inspire provider
-        qi_provider = QI
-        print("[INFO] Quantum Inspire provider initialized.")
-
-        # List available backends
-        available_backends = qi_provider.backends()
-        print(f"[INFO] Available Quantum Inspire backends: {available_backends}")
-
-        # Validate the selected backend
-        if backend_name not in available_backends:
-            raise ValueError(f"[ERROR] Backend '{backend_name}' is not available. Choose from: {available_backends}")
-
-        # Select and return the backend
-        backend = qi_provider.get_backend(backend_name)
-        print(f"[INFO] Using Quantum Inspire backend: {backend_name}")
-        return backend
-
-    except Exception as e:
-        print(f"[ERROR] Failed to initialize Quantum Inspire backend: {e}")
-        return None
 
 
 
-if __name__ == "__main__":
 
-    token = "45fdad1dc3220d6def07be547f5ff7d294c03b2f"
-    
-    enable_account(token)
 
-    qc = create_holographic_interaction_circuit()
 
-    qi_backend = initialize_qi_backend_with_token(token)
 
-    # Validate the backend
-    if qi_backend is None:
-        print("[ERROR] Backend initialization failed. Exiting.")
-        exit()
 
-# Proceed to run the experiment with the valid backend
-    results = run_holographic_experiment_qi_with_injection(
-        qc, shots=8192, backend=qi_backend, num_iterations=10
-    )
+
+
 
 
     

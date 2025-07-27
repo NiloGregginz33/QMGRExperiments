@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from sklearn.manifold import MDS, TSNE
 import seaborn as sns
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../Factory'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from CGPTFactory import run
 # Removed import of get_backend from FakeBrisbane
 import argparse

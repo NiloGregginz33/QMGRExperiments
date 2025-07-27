@@ -13,7 +13,7 @@ import numpy as np
 from datetime import datetime
 
 # Add Factory to path
-sys.path.append(os.path.join(os.path.dirname(__file__), 'Factory'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 try:
     from qiskit_ibm_runtime import QiskitRuntimeService
