@@ -1,0 +1,13 @@
+{
+  "total_experiments": 118,
+  "curvature_range": [
+    0.5,
+    20.0
+  ],
+  "mean_curvature": 7.52542372881356,
+  "geometry_distribution": {
+    "hyperbolic": 114,
+    "spherical": 3,
+    "euclidean": 1
+  }
+}

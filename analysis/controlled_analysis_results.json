@@ -1,0 +1,275 @@
+{
+  "total_groups": 3,
+  "significant_mi_groups": 2,
+  "significant_range_groups": 2,
+  "significant_dist_groups": 1,
+  "strongest_correlation": {
+    "group": "n7_hyperbolic_sim",
+    "correlation": -1.0,
+    "p_value": 0.0
+  },
+  "parameter_analysis": {
+    "n_qubits": {
+      "5": 1,
+      "7": 1
+    },
+    "geometry": {
+      "hyperbolic": 2
+    },
+    "device": {
+      "simulator": 1,
+      "sim": 1
+    }
+  },
+  "detailed_results": {
+    "n5_hyperbolic_simulator": {
+      "n_experiments": 6,
+      "curvature_range": [
+        1.0,
+        5.0
+      ],
+      "unique_curvatures": 3,
+      "mi_variance_correlation": {
+        "pearson_r": -0.944118189925313,
+        "pearson_p": 0.004596911838685129,
+        "spearman_r": -0.9837387536759294,
+        "spearman_p": 0.00039449223252331563,
+        "significant": "True"
+      },
+      "mi_range_correlation": {
+        "pearson_r": -0.9968325236634041,
+        "pearson_p": 1.503347001762794e-05,
+        "significant": "True"
+      },
+      "distance_variance_correlation": {
+        "pearson_r": -0.6143549696594567,
+        "pearson_p": 0.1944061667949692,
+        "significant": "False"
+      },
+      "data": [
+        {
+          "curvature": 1.0,
+          "mi_variance": 0.05520737830808784,
+          "mi_range": 0.8817208866900937,
+          "distance_variance": 0.5974129675679625,
+          "mean_distance": 1.7367665157337577,
+          "filename": "results_n5_geomH_curv1_simulator_N1LBWY.json",
+          "params": {
+            "n_qubits": 5,
+            "geometry": "hyperbolic",
+            "curvature": 1.0,
+            "device": "simulator"
+          }
+        },
+        {
+          "curvature": 3.0,
+          "mi_variance": 0.05135584664981733,
+          "mi_range": 0.6874812141192876,
+          "distance_variance": 1.117864280110687,
+          "mean_distance": 1.8826324303932414,
+          "filename": "results_n5_geomH_curv3_simulator_50Z70Q.json",
+          "params": {
+            "n_qubits": 5,
+            "geometry": "hyperbolic",
+            "curvature": 3.0,
+            "device": "simulator"
+          }
+        },
+        {
+          "curvature": 3.0,
+          "mi_variance": 0.03852784528452642,
+          "mi_range": 0.6874812141192876,
+          "distance_variance": 1.117864280110687,
+          "mean_distance": 1.8826324303932414,
+          "filename": "results_n5_geomH_curv3_simulator_8VTYQA.json",
+          "params": {
+            "n_qubits": 5,
+            "geometry": "hyperbolic",
+            "curvature": 3.0,
+            "device": "simulator"
+          }
+        },
+        {
+          "curvature": 5.0,
+          "mi_variance": 0.015531671994272314,
+          "mi_range": 0.431778022618309,
+          "distance_variance": 0.2179232391006581,
+          "mean_distance": 1.0794047497343497,
+          "filename": "results_n5_geomH_curv5_simulator_4XLDWS.json",
+          "params": {
+            "n_qubits": 5,
+            "geometry": "hyperbolic",
+            "curvature": 5.0,
+            "device": "simulator"
+          }
+        },
+        {
+          "curvature": 5.0,
+          "mi_variance": 0.015531671994272314,
+          "mi_range": 0.431778022618309,
+          "distance_variance": 0.2179232391006581,
+          "mean_distance": 1.0794047497343497,
+          "filename": "results_n5_geomH_curv5_simulator_K85LEU.json",
+          "params": {
+            "n_qubits": 5,
+            "geometry": "hyperbolic",
+            "curvature": 5.0,
+            "device": "simulator"
+          }
+        },
+        {
+          "curvature": 5.0,
+          "mi_variance": 0.015531671994272314,
+          "mi_range": 0.431778022618309,
+          "distance_variance": 0.2179232391006581,
+          "mean_distance": 1.0794047497343497,
+          "filename": "results_n5_geomH_curv5_simulator_OEMJUF.json",
+          "params": {
+            "n_qubits": 5,
+            "geometry": "hyperbolic",
+            "curvature": 5.0,
+            "device": "simulator"
+          }
+        }
+      ]
+    },
+    "n7_hyperbolic_sim": {
+      "n_experiments": 3,
+      "curvature_range": [
+        9.0,
+        10.0
+      ],
+      "unique_curvatures": 2,
+      "mi_variance_correlation": {
+        "pearson_r": -1.0,
+        "pearson_p": 0.0,
+        "spearman_r": -1.0,
+        "spearman_p": 0.0,
+        "significant": "True"
+      },
+      "mi_range_correlation": {
+        "pearson_r": -1.0,
+        "pearson_p": 0.0,
+        "significant": "True"
+      },
+      "distance_variance_correlation": {
+        "pearson_r": -1.0,
+        "pearson_p": 0.0,
+        "significant": "True"
+      },
+      "data": [
+        {
+          "curvature": 10.0,
+          "mi_variance": 0.03300893836925442,
+          "mi_range": 1.043255741316139,
+          "distance_variance": 5.05877293801556,
+          "mean_distance": 4.90985096800929,
+          "filename": "results_n7_geomH_curv100_sim_1DXRKY.json",
+          "params": {
+            "n_qubits": 7,
+            "geometry": "hyperbolic",
+            "curvature": 100.0,
+            "device": "sim"
+          }
+        },
+        {
+          "curvature": 9.0,
+          "mi_variance": 0.037565220428646455,
+          "mi_range": 1.1234638810887796,
+          "distance_variance": 11.237895206620015,
+          "mean_distance": 6.345262367800724,
+          "filename": "results_n7_geomH_curv90_sim_IIG4PE.json",
+          "params": {
+            "n_qubits": 7,
+            "geometry": "hyperbolic",
+            "curvature": 90.0,
+            "device": "sim"
+          }
+        },
+        {
+          "curvature": 9.0,
+          "mi_variance": 0.037565220428646455,
+          "mi_range": 1.1234638810887796,
+          "distance_variance": 11.237895206620015,
+          "mean_distance": 6.345262367800724,
+          "filename": "results_n7_geomH_curv90_sim_J70DSX.json",
+          "params": {
+            "n_qubits": 7,
+            "geometry": "hyperbolic",
+            "curvature": 90.0,
+            "device": "sim"
+          }
+        }
+      ]
+    },
+    "n7_hyperbolic_simulator": {
+      "n_experiments": 3,
+      "curvature_range": [
+        12.0,
+        14.0
+      ],
+      "unique_curvatures": 3,
+      "mi_variance_correlation": {
+        "pearson_r": -0.9564336482540134,
+        "pearson_p": 0.18860803192514997,
+        "spearman_r": -1.0,
+        "spearman_p": 0.0,
+        "significant": "False"
+      },
+      "mi_range_correlation": {
+        "pearson_r": -0.970055725600789,
+        "pearson_p": 0.15618586822113897,
+        "significant": "False"
+      },
+      "distance_variance_correlation": {
+        "pearson_r": -0.9730333627551253,
+        "pearson_p": 0.14817991238726613,
+        "significant": "False"
+      },
+      "data": [
+        {
+          "curvature": 12.0,
+          "mi_variance": 0.05248795043437045,
+          "mi_range": 0.9582548830966986,
+          "distance_variance": 2.4670940570211632,
+          "mean_distance": 2.524960898055221,
+          "filename": "results_n7_geomH_curv12_simulator_HRRGVY.json",
+          "params": {
+            "n_qubits": 7,
+            "geometry": "hyperbolic",
+            "curvature": 12.0,
+            "device": "simulator"
+          }
+        },
+        {
+          "curvature": 13.0,
+          "mi_variance": 0.02206420865964406,
+          "mi_range": 0.7923458358915361,
+          "distance_variance": 1.9232509677772667,
+          "mean_distance": 2.825508892323173,
+          "filename": "results_n7_geomH_curv13_simulator_U93E8M.json",
+          "params": {
+            "n_qubits": 7,
+            "geometry": "hyperbolic",
+            "curvature": 13.0,
+            "device": "simulator"
+          }
+        },
+        {
+          "curvature": 14.0,
+          "mi_variance": 0.012684680170540868,
+          "mi_range": 0.372344700782933,
+          "distance_variance": 0.6216975677382083,
+          "mean_distance": 1.8487133666006828,
+          "filename": "results_n7_geomH_curv14_simulator_OJ2EY6.json",
+          "params": {
+            "n_qubits": 7,
+            "geometry": "hyperbolic",
+            "curvature": 14.0,
+            "device": "simulator"
+          }
+        }
+      ]
+    }
+  }
+}

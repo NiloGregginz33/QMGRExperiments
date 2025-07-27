@@ -1,0 +1,88 @@
+{
+  "correlation_analysis": {
+    "mi_variance_correlation": {
+      "pearson_r": -0.10537919989304549,
+      "pearson_p": 0.4908643587593494,
+      "spearman_r": 0.2332039605567133,
+      "spearman_p": 0.12314612173438302,
+      "log_pearson_r": 0.1358199765207265,
+      "log_pearson_p": 0.40335498977514606,
+      "n_samples": 45,
+      "positive_samples": "40"
+    },
+    "mi_range_correlation": {
+      "pearson_r": -0.009418605419721972,
+      "pearson_p": 0.9510364446299098,
+      "n_samples": 45
+    },
+    "distance_variance_correlation": {
+      "pearson_r": 0.22181515413441272,
+      "pearson_p": 0.12158488673716743,
+      "n_samples": 50
+    }
+  },
+  "predictive_analysis": {
+    "mi_variance_prediction": {
+      "r2_score": -0.08477480638467516,
+      "mse": 0.0003777275294948482,
+      "mae": 0.016191566855030745,
+      "slope": -0.0009792535791133669,
+      "intercept": 0.019577555896330118,
+      "n_train": 31,
+      "n_test": 14
+    },
+    "power_law_fit": {
+      "exponent": -0.11307275871823666,
+      "exponent_error": 0.1735898450366435,
+      "amplitude": -44.464409811632784,
+      "amplitude_error": 14.122176972932982,
+      "r2_score": 0.013840595189500426,
+      "n_samples": "40"
+    }
+  },
+  "consistency_analysis": {
+    "hyperbolic_correlation": {
+      "pearson_r": -0.05061967809806485,
+      "pearson_p": 0.7502141506775699,
+      "n_samples": 42,
+      "curvature_range": [
+        0.5,
+        16.0
+      ]
+    },
+    "Low Curvature (k < 3)_stats": {
+      "mean_mi_variance": 0.013823963958671083,
+      "std_mi_variance": 0.027588974427009135,
+      "n_samples": 4
+    },
+    "Medium Curvature (3 \u2264 k < 10)_stats": {
+      "mean_mi_variance": 0.016115717100613252,
+      "std_mi_variance": 0.0373604738882463,
+      "n_samples": 24
+    },
+    "High Curvature (k \u2265 10)_stats": {
+      "mean_mi_variance": 0.007076050093162441,
+      "std_mi_variance": 0.015085397585763582,
+      "n_samples": 17
+    }
+  },
+  "uncertainty_analysis": {
+    "data_quality": {
+      "total_experiments": 118,
+      "valid_mi_data": 45,
+      "valid_distance_data": 50,
+      "mi_data_completeness": 0.3813559322033898,
+      "distance_data_completeness": 0.423728813559322
+    },
+    "measurement_uncertainty": {
+      "coefficient_of_variation": 2.377699561698527,
+      "bootstrap_ci_95": [
+        0.005344383400980479,
+        0.021606429907001408
+      ],
+      "mean_mi_variance": 0.01249702039629253,
+      "std_mi_variance": 0.0297141599188023
+    }
+  },
+  "overall_accuracy": 0.09533898305084745
+}
