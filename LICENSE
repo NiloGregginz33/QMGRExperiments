@@ -1,1 +1,62 @@
-All rights reserved. This code is proprietary and may not be used, copied, modified, or distributed without explicit permission from Matrix Solutions LLC.
+PROPRIETARY SOFTWARE LICENSE AGREEMENT
+
+Copyright (c) 2024-2025 Matrix Solutions LLC. All rights reserved.
+
+This software and associated documentation files (the "Software") are proprietary 
+and confidential to Matrix Solutions LLC ("Licensor"). The Software includes, 
+but is not limited to, all source code, algorithms, methodologies, and 
+experimental protocols contained within this repository.
+
+SPECIFIC PROVISIONS FOR CUSTOM_CURVATURE_EXPERIMENT.PY:
+
+The file `src/experiments/custom_curvature_experiment.py` and its associated 
+experimental protocols are proprietary research materials. However, the following 
+limited permissions are granted:
+
+1. PEER REVIEW USAGE:
+   - This file may be used for academic peer review purposes
+   - Reviewers may examine, test, and evaluate the code for scientific validation
+   - Results may be discussed in peer review contexts
+   - Citation of the methodology is permitted in peer-reviewed publications
+
+2. ACADEMIC RESEARCH:
+   - Use for non-commercial academic research is permitted
+   - Educational purposes at accredited institutions are allowed
+   - Scientific collaboration with proper attribution is permitted
+
+3. RESTRICTIONS:
+   - Commercial use is strictly prohibited without written permission
+   - Redistribution, modification, or derivative works are not permitted
+   - Reverse engineering or decompilation is prohibited
+   - Public posting or sharing outside of peer review contexts is not allowed
+
+GENERAL TERMS FOR ALL SOFTWARE:
+
+1. OWNERSHIP:
+   - All rights, title, and interest in the Software remain with Matrix Solutions LLC
+   - No ownership rights are transferred under this license
+
+2. CONFIDENTIALITY:
+   - The Software contains confidential and proprietary information
+   - Recipients must maintain confidentiality of the Software
+   - Disclosure to third parties is prohibited without written consent
+
+3. NO WARRANTY:
+   - THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND
+   - LICENSOR DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED
+
+4. LIMITATION OF LIABILITY:
+   - IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY DAMAGES ARISING FROM USE OF THE SOFTWARE
+
+5. TERMINATION:
+   - This license terminates automatically if any terms are violated
+   - Upon termination, all rights to use the Software cease immediately
+
+6. GOVERNING LAW:
+   - This agreement is governed by the laws of the jurisdiction where Matrix Solutions LLC is incorporated
+
+For licensing inquiries, commercial use requests, or questions about this agreement, 
+contact: manavnaik123@gmail.com
+
+By using, copying, or distributing the Software, you acknowledge that you have 
+read, understood, and agree to be bound by the terms of this license agreement.
