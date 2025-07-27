@@ -1,0 +1,31 @@
+ENHANCED CURVATURE ANALYSIS SUMMARY
+==================================================
+
+EXPERIMENT PARAMETERS:
+-------------------------
+
+AVAILABLE DATA:
+---------------
+2D Embedding: ✓
+3D Lorentzian: ✓
+MI Matrix: ✗
+Graph Edges: ✓
+Entropy Data: ✓
+
+GENERATED PLOTS:
+----------------
+1. 2D Embedding Scatter with MI-Weighted Edges - 2d_embedding_scatter_mi_weighted.png
+   - Shows MI-weighted edges between all qubit pairs in 2D embedding
+   - Color and thickness indicate MI strength
+
+2. Edge MI vs. Graph Distance - edge_mi_vs_distance.png
+   - Scatter plot of MI vs. shortest path distance
+   - Tests bulk locality hypothesis
+
+ANALYSIS NOTES:
+----------------
+- These visualizations help understand emergent geometry from quantum entanglement
+- The 2D embedding shows the spatial structure of the quantum system
+- The 3D Lorentzian embedding reveals causal structure and temporal evolution
+- The MI vs. distance plot tests whether closer qubits have higher entanglement
+- All plots are saved in the experiment instance directory for easy reference

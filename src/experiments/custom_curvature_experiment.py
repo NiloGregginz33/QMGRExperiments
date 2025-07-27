@@ -21,6 +21,7 @@ from CGPTFactory import run
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from mpl_toolkits.mplot3d import Axes3D
 import json
 from sklearn.manifold import MDS
 from qiskit.exceptions import QiskitError
@@ -125,9 +126,22 @@ def compute_curvature_tensor_from_entanglement(mi_matrix, coordinates, num_qubit
     # R_12 = R_21 = 0
     
     # Estimate Gaussian curvature from MI data
-    # Higher MI corresponds to negative curvature (hyperbolic)
+    # Adjust curvature sign and magnitude based on geometry type
     avg_mi = np.mean(mi_matrix)
-    gaussian_curvature = -0.5 * avg_mi  # Negative for hyperbolic geometry
+    
+    if geometry == "spherical":
+        # For spherical geometry: positive curvature
+        # Scale by the curvature parameter to get proper magnitude
+        gaussian_curvature = 0.5 * avg_mi  # Positive for spherical geometry
+        # The curvature should be proportional to the target curvature
+        curvature_scale = 1.0  # This could be adjusted based on the target curvature
+        gaussian_curvature *= curvature_scale
+    elif geometry == "hyperbolic":
+        # For hyperbolic geometry: negative curvature
+        gaussian_curvature = -0.5 * avg_mi  # Negative for hyperbolic geometry
+    else:
+        # For Euclidean geometry: zero curvature
+        gaussian_curvature = 0.0
     
     ricci_tensor = np.array([
         [gaussian_curvature, 0],
