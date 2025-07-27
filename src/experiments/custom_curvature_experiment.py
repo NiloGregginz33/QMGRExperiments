@@ -55,19 +55,19 @@ class CustomJSONEncoder(json.JSONEncoder):
 # EINSTEIN SOLVER FUNCTIONS
 def compute_einstein_tensor(curvature_tensor, metric_tensor, dimension=2):
     """
-    Compute the Einstein tensor G_μν = R_μν - (1/2) R g_μν
+    Compute the Einstein tensor G_munu = R_munu - (1/2) R g_munu
     
     Args:
-        curvature_tensor: Ricci tensor R_μν (symmetric matrix)
-        metric_tensor: Metric tensor g_μν (symmetric matrix)
+        curvature_tensor: Ricci tensor R_munu (symmetric matrix)
+        metric_tensor: Metric tensor g_munu (symmetric matrix)
         dimension: Spatial dimension (default 2 for 2D)
     
     Returns:
-        einstein_tensor: Einstein tensor G_μν
+        einstein_tensor: Einstein tensor G_munu
         ricci_scalar: Ricci scalar R
     """
-    # Compute Ricci scalar: R = g^μν R_μν
-    # For diagonal metric, this simplifies to R = Σ g^ii R_ii
+    # Compute Ricci scalar: R = g^munu R_munu
+    # For diagonal metric, this simplifies to R = Sigma g^ii R_ii
     if dimension == 2:
         # 2D case: R = g^11 R_11 + g^22 R_22 + 2 g^12 R_12
         g_inv = np.linalg.inv(metric_tensor)
@@ -77,7 +77,7 @@ def compute_einstein_tensor(curvature_tensor, metric_tensor, dimension=2):
         g_inv = np.linalg.inv(metric_tensor)
         ricci_scalar = np.trace(g_inv @ curvature_tensor)
     
-    # Compute Einstein tensor: G_μν = R_μν - (1/2) R g_μν
+    # Compute Einstein tensor: G_munu = R_munu - (1/2) R g_munu
     einstein_tensor = curvature_tensor - 0.5 * ricci_scalar * metric_tensor
     
     return einstein_tensor, ricci_scalar
@@ -93,8 +93,8 @@ def compute_curvature_tensor_from_entanglement(mi_matrix, coordinates, num_qubit
         geometry: Geometry type
     
     Returns:
-        ricci_tensor: Ricci tensor R_μν
-        metric_tensor: Metric tensor g_μν
+        ricci_tensor: Ricci tensor R_munu
+        metric_tensor: Metric tensor g_munu
     """
     if coordinates is None or len(coordinates) < 2:
         # Fallback: create simple metric and curvature
@@ -173,13 +173,13 @@ def compute_entropy_second_derivative(entropy_per_timestep, timesteps):
     # Use finite differences to compute derivatives
     dt = 1.0  # Assuming unit timestep
     
-    # First derivative: dS/dt ≈ (S(t+1) - S(t-1)) / (2*dt)
+    # First derivative: dS/dt ~ (S(t+1) - S(t-1)) / (2*dt)
     first_derivatives = []
     for i in range(1, len(valid_entropies) - 1):
         dS_dt = (valid_entropies[i+1] - valid_entropies[i-1]) / (2 * dt)
         first_derivatives.append(dS_dt)
     
-    # Second derivative: d²S/dt² ≈ (S(t+1) - 2*S(t) + S(t-1)) / dt²
+    # Second derivative: d^2S/dt^2 ~ (S(t+1) - 2*S(t) + S(t-1)) / dt^2
     second_derivatives = []
     for i in range(1, len(valid_entropies) - 1):
         d2S_dt2 = (valid_entropies[i+1] - 2*valid_entropies[i] + valid_entropies[i-1]) / (dt**2)
@@ -193,12 +193,12 @@ def compute_entropy_second_derivative(entropy_per_timestep, timesteps):
 
 def solve_einstein_equations(curvature_tensor, stress_energy_tensor, cosmological_constant=0.0):
     """
-    Solve Einstein's equations: G_μν + Λg_μν = 8πG T_μν
+    Solve Einstein's equations: G_munu + Lambdag_munu = 8piG T_munu
     
     Args:
-        curvature_tensor: Ricci tensor R_μν
-        stress_energy_tensor: Stress-energy tensor T_μν
-        cosmological_constant: Cosmological constant Λ
+        curvature_tensor: Ricci tensor R_munu
+        stress_energy_tensor: Stress-energy tensor T_munu
+        cosmological_constant: Cosmological constant Lambda
     
     Returns:
         einstein_equations: Dictionary with solution data
@@ -212,14 +212,14 @@ def solve_einstein_equations(curvature_tensor, stress_energy_tensor, cosmologica
     # Compute Einstein tensor
     einstein_tensor, ricci_scalar = compute_einstein_tensor(curvature_tensor, metric_tensor, dimension)
     
-    # Einstein's equations: G_μν + Λg_μν = 8πG T_μν
-    # For quantum systems, we set 8πG = 1 (natural units)
+    # Einstein's equations: G_munu + Lambdag_munu = 8piG T_munu
+    # For quantum systems, we set 8piG = 1 (natural units)
     gravitational_constant = 1.0 / (8 * np.pi)
     
-    # Left-hand side: G_μν + Λg_μν
+    # Left-hand side: G_munu + Lambdag_munu
     lhs = einstein_tensor + cosmological_constant * metric_tensor
     
-    # Right-hand side: 8πG T_μν
+    # Right-hand side: 8piG T_munu
     rhs = 8 * np.pi * gravitational_constant * stress_energy_tensor
     
     # Check if equations are satisfied (within numerical tolerance)
@@ -229,7 +229,7 @@ def solve_einstein_equations(curvature_tensor, stress_energy_tensor, cosmologica
     # Compute residual (how well equations are satisfied)
     residual = np.linalg.norm(lhs - rhs)
     
-    # Compute energy-momentum conservation: ∇_μ T^μν = 0
+    # Compute energy-momentum conservation: nabla_mu T^munu = 0
     # For 2D, this gives us additional constraints
     conservation_violation = 0.0
     if dimension == 2:
@@ -261,7 +261,7 @@ def compute_stress_energy_from_entanglement(mi_matrix, coordinates, num_qubits, 
         geometry: Geometry type
     
     Returns:
-        stress_energy_tensor: Stress-energy tensor T_μν
+        stress_energy_tensor: Stress-energy tensor T_munu
     """
     if coordinates is None or len(coordinates) < 2:
         # Fallback: create simple stress-energy tensor
@@ -470,7 +470,7 @@ p.add_argument("--shots",       type=int,   default=1024,
                    help="Number of measurement shots")
 p.add_argument("--device", type=str, default="simulator", help="Execution device: simulator or IBM provider name")
 p.add_argument("--geometry", type=str, default="hyperbolic", choices=["euclidean", "spherical", "hyperbolic", "lorentzian"], help="Geometry type")
-p.add_argument("--curvature", type=float, nargs='+', default=[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5], help="Curvature parameter(s) κ for non-Euclidean geometries. Can pass multiple values for sweep.")
+p.add_argument("--curvature", type=float, nargs='+', default=[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5], help="Curvature parameter(s) k for non-Euclidean geometries. Can pass multiple values for sweep.")
 p.add_argument("--timesteps", type=int, default=5, help="Number of timesteps for evolution")
 p.add_argument("--dimension", type=int, default=2, help="Spatial dimension for Regge calculus (2=triangles, 3=tetrahedra, etc.)")
 p.add_argument("--mass_hinge", type=str, default=None, help="Comma-separated indices for the hinge (e.g., '0,1,2') to place a mass at.")
@@ -487,7 +487,7 @@ p.add_argument("--spin_injection", action="store_true", help="Enable spin inject
 p.add_argument("--spin_strength", type=float, default=1.0, help="Strength of spin injection (default: 1.0)")
 p.add_argument("--spin_location", type=int, default=3, help="Location for spin injection (default: 3)")
 p.add_argument("--edge_floor", type=float, default=0.001, help="Minimum edge length floor for Lorentzian solver (default: 0.001)")
-p.add_argument("--compute_entropies", action="store_true", help="Enable boundary entropy computation for RT relation testing (S(A) ∝ Area_RT(A))")
+p.add_argument("--compute_entropies", action="store_true", help="Enable boundary entropy computation for RT relation testing (S(A) proportional to Area_RT(A))")
 p.add_argument("--hyperbolic_triangulation", action="store_true", help="Use proper hyperbolic triangulation circuit with RZZ gates and Trotterized evolution")
 p.add_argument("--trotter_steps", type=int, default=4, help="Number of Trotter steps per timestep for hyperbolic triangulation (default: 4)")
 p.add_argument("--dt", type=float, default=0.1, help="Time step size for Trotter evolution (default: 0.1)")
@@ -496,6 +496,54 @@ p.add_argument("--einstein_solver", action="store_true", help="Enable Einstein s
 
 # Use the second parser for command-line arguments
 args = p.parse_args()
+
+def auto_set_geometry_from_curvature(args):
+    """
+    Auto-set geometry based on curvature sign with warnings for mismatches.
+    
+    Args:
+        args: Parsed arguments object
+        
+    Returns:
+        args: Modified arguments object with auto-set geometry if needed
+    """
+    # Get the first curvature value (for sweeps, we use the first value to determine geometry)
+    if not args.curvature:
+        return args
+    
+    first_curvature = args.curvature[0] if isinstance(args.curvature, list) else args.curvature
+    
+    # Determine expected geometry from curvature sign
+    if first_curvature > 0:
+        expected_geometry = "spherical"
+    elif first_curvature < 0:
+        expected_geometry = "hyperbolic"
+    else:  # first_curvature == 0
+        expected_geometry = "euclidean"
+    
+    # Check if geometry was explicitly provided by looking at sys.argv
+    import sys
+    geometry_explicitly_provided = any('--geometry' in arg for arg in sys.argv)
+    
+    if geometry_explicitly_provided:
+        # Geometry was explicitly provided - check for mismatch
+        if args.geometry != expected_geometry:
+            print(f"WARNING: Geometry mismatch detected!")
+            print(f"   - Curvature k = {first_curvature} suggests geometry: {expected_geometry}")
+            print(f"   - Explicitly provided geometry: {args.geometry}")
+            print(f"   - This may lead to unexpected results")
+            print(f"   - Consider using --geometry {expected_geometry} for consistency")
+    else:
+        # No geometry explicitly provided - auto-set it
+        print(f"Auto-setting geometry based on curvature sign:")
+        print(f"   - Curvature k = {first_curvature}")
+        print(f"   - Auto-setting geometry: {expected_geometry}")
+        args.geometry = expected_geometry
+    
+    return args
+
+# Auto-set geometry based on curvature sign
+args = auto_set_geometry_from_curvature(args)
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -528,7 +576,7 @@ _ENTANGLERS = {
 
 # ─── Charge injection ─────────────────────────────────────────────────────────
 def _apply_charge(qc, gamma, sigma=None):
-    """Apply RZ phases γ exp[−(q/σ)²] on each qubit q."""
+    """Apply RZ phases gamma exp[−(q/sigma)^2] on each qubit q."""
     n = qc.num_qubits
     if sigma is None:
         sigma = n/2
@@ -694,7 +742,7 @@ def build_hyperbolic_triangulation_circuit(num_qubits, custom_edges, weight, gam
     """
     Build quantum circuit with proper hyperbolic triangulation using RZZ gates and Trotterized evolution.
     
-    This implements the Hamiltonian H = Σ⟨i,j⟩ J_ij Z_i Z_j + Σ_i h_i X_i
+    This implements the Hamiltonian H = Sigma<i,j> J_ij Z_i Z_j + Sigma_i h_i X_i
     where J_ij are set by the edge weights of the hyperbolic triangulation.
     
     Minimal recipe:
@@ -896,18 +944,18 @@ def compute_hyperbolic_angle(a, b, c, curvature):
     
     # Scale distances to prevent overflow
     # For large distances, hyperbolic functions grow exponentially
-    # We can use the fact that cosh(x) ≈ sinh(x) ≈ exp(x)/2 for large x
+    # We can use the fact that cosh(x) ~ sinh(x) ~ exp(x)/2 for large x
     max_dist = max(a, b, c)
     if max_dist > 10.0:  # Threshold for overflow prevention
         # Use asymptotic approximation for large distances
-        # For large x: cosh(x) ≈ sinh(x) ≈ exp(x)/2
-        # So cosh(b)*cosh(c) - cosh(a) ≈ (exp(b+c) - exp(a))/4
-        # And sinh(b)*sinh(c) ≈ exp(b+c)/4
-        # Therefore ratio ≈ (exp(b+c) - exp(a))/exp(b+c) = 1 - exp(a-b-c)
+        # For large x: cosh(x) ~ sinh(x) ~ exp(x)/2
+        # So cosh(b)*cosh(c) - cosh(a) ~ (exp(b+c) - exp(a))/4
+        # And sinh(b)*sinh(c) ~ exp(b+c)/4
+        # Therefore ratio ~ (exp(b+c) - exp(a))/exp(b+c) = 1 - exp(a-b-c)
         if b + c > a:
             ratio = 1.0 - np.exp(k * (a - b - c))
         else:
-            ratio = -1.0  # Angle is π
+            ratio = -1.0  # Angle is pi
     else:
         # Use standard hyperbolic functions for smaller distances
         try:
@@ -1274,7 +1322,7 @@ def calculate_gromov_delta_with_uncertainty(distance_matrices, confidence=0.95, 
     if not distance_matrices:
         return None, None, None, []
     
-    # Calculate δ for each timestep
+    # Calculate delta for each timestep
     deltas = []
     for D in tqdm(distance_matrices, desc="Gromov delta calculation"):
         if D is not None:
@@ -1288,7 +1336,7 @@ def calculate_gromov_delta_with_uncertainty(distance_matrices, confidence=0.95, 
     if not deltas:
         return None, None, None, []
     
-    # Bootstrap the δ values
+    # Bootstrap the delta values
     mean_delta, lower_ci, upper_ci = bootstrap_confidence_interval(
         deltas, confidence, n_bootstrap
     )
@@ -1821,14 +1869,14 @@ if __name__ == "__main__":
     total_timesteps = args.timesteps
     total_operations = total_curvatures * total_timesteps
     
-    print(f"🚀 Starting Custom Curvature Experiment")
-    print(f"   • Curvatures to test: {total_curvatures}")
-    print(f"   • Timesteps per curvature: {total_timesteps}")
-    print(f"   • Total operations: {total_operations}")
-    print(f"   • Device: {args.device}")
-    print(f"   • Geometry: {args.geometry}")
-    print(f"   • Estimated runtime: 1.5-2.5 hours")
-    print(f"   • Started at: {datetime.now().strftime('%H:%M:%S')}")
+    print(f"[ROCKET] Starting Custom Curvature Experiment")
+    print(f"   - Curvatures to test: {total_curvatures}")
+    print(f"   - Timesteps per curvature: {total_timesteps}")
+    print(f"   - Total operations: {total_operations}")
+    print(f"   - Device: {args.device}")
+    print(f"   - Geometry: {args.geometry}")
+    print(f"   - Estimated runtime: 1.5-2.5 hours")
+    print(f"   - Started at: {datetime.now().strftime('%H:%M:%S')}")
     print("=" * 60)
     
     # Create experiment-specific folder structure
@@ -1839,7 +1887,7 @@ if __name__ == "__main__":
     experiment_log_dir = os.path.join(experiment_base_folder, instance_folder_name)
     os.makedirs(experiment_log_dir, exist_ok=True)
 
-    print(f"📁 Experiment results will be saved to: {experiment_log_dir}")
+    print(f"Experiment results will be saved to: {experiment_log_dir}")
     
     # Create overall progress bar
     overall_pbar = tqdm(total=total_operations, desc="Overall Progress", 
@@ -1849,7 +1897,7 @@ if __name__ == "__main__":
         curvature_start_time = time.time()
         
         # Update progress description
-        overall_pbar.set_description(f"Overall Progress (κ={kappa:.1f})")
+        overall_pbar.set_description(f"Overall Progress (k={kappa:.1f})")
         
         # If custom_edges is null and geometry is not flat/euclidean, generate asymmetric edges
         if args.geometry in ("spherical", "hyperbolic") and kappa is not None:
@@ -1960,8 +2008,8 @@ if __name__ == "__main__":
                         'uid': uid
                     }, f, indent=2, cls=CustomJSONEncoder)
                 print(f"Results saved to {output_path}")
-                print(f"📁 Full filename: {os.path.basename(output_path)}")
-                print(f"📂 Complete path: {os.path.abspath(output_path)}")
+                print(f" Full filename: {os.path.basename(output_path)}")
+                print(f" Complete path: {os.path.abspath(output_path)}")
                 print(json.dumps({
                     'lorentzian_solution': lorentzian_solution,
                     'spec': {**vars(args), 'curvature': kappa, 'custom_edges': custom_edges, 'timesteps': args.timesteps},
@@ -1970,7 +2018,7 @@ if __name__ == "__main__":
                 # Don't continue - allow Regge solver to run in Lorentzian mode
             # Build layered circuits for per-timestep MI/distance
             if args.hyperbolic_triangulation:
-                print(f"🔬 Using hyperbolic triangulation circuit with RZZ gates and Trotterized evolution")
+                print(f"[MICROSCOPE] Using hyperbolic triangulation circuit with RZZ gates and Trotterized evolution")
                 circuits, qc = build_hyperbolic_triangulation_circuit(
                     num_qubits = n,
                     custom_edges = custom_edges,
@@ -2006,7 +2054,7 @@ if __name__ == "__main__":
             edge_weight_variance = None
             # Build layered circuits for per-timestep MI/distance
             if args.hyperbolic_triangulation:
-                print(f"🔬 Using hyperbolic triangulation circuit with RZZ gates and Trotterized evolution")
+                print(f"[MICROSCOPE] Using hyperbolic triangulation circuit with RZZ gates and Trotterized evolution")
                 circuits, qc = build_hyperbolic_triangulation_circuit(
                     num_qubits = args.num_qubits,
                     custom_edges = custom_edges,
@@ -2071,17 +2119,17 @@ if __name__ == "__main__":
             
             # For simulator, use statevector
             if args.device == "simulator":
-                print(f"🔬 Running simulator for timestep {t+1}")
+                print(f"[MICROSCOPE] Running simulator for timestep {t+1}")
                 backend = FakeBrisbane()
                 # Remove measurements from circuit for statevector evolution
                 circ_no_measure = circ.copy()
                 circ_no_measure.data = [op for op in circ_no_measure.data if op.operation.name != 'measure']
                 statevector = Statevector.from_int(0, 2**args.num_qubits)
                 statevector = statevector.evolve(circ_no_measure)
-                print(f"🔬 Circuit depth: {circ_no_measure.depth()}")
-                print(f"🔬 Number of gates: {len(circ_no_measure.data)}")
+                print(f"[MICROSCOPE] Circuit depth: {circ_no_measure.depth()}")
+                print(f"[MICROSCOPE] Number of gates: {len(circ_no_measure.data)}")
                 mi = compute_von_neumann_MI(statevector)
-                print(f"🔬 Raw MI values: {mi}")
+                print(f"[MICROSCOPE] Raw MI values: {mi}")
                 G = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
                 edge_mi = calculate_mi_for_edges_only(mi, G)
                 distance_matrix, shortest_paths = compute_graph_shortest_path_distances(edge_mi, G)
@@ -2093,8 +2141,8 @@ if __name__ == "__main__":
                 triangle_violations = check_triangle_inequality(distance_matrix)
                 coords2, coords3d = embed_geometry(distance_matrix, model=args.geometry, curvature=kappa)
                 
-                # MULTIPLE REGION SIZES: Test RT relation S(A) ∝ Area(A) for different region sizes
-                print(f"🔬 Timestep {t+1} - Testing multiple region sizes for RT relation...")
+                # MULTIPLE REGION SIZES: Test RT relation S(A) proportional to Area(A) for different region sizes
+                print(f"[MICROSCOPE] Timestep {t+1} - Testing multiple region sizes for RT relation...")
                 
                 # Test regions of size 1, 2, 3, 4, 5, 6
                 region_sizes = list(range(1, args.num_qubits))
@@ -2148,7 +2196,7 @@ if __name__ == "__main__":
                 rho_AB = partial_trace(statevector, [k for k in range(args.num_qubits) if k not in boundary_A + boundary_B])
                 mi_AB = entropy_A + entropy_B - entropy(rho_AB)
                 
-                # Check pure-state condition: S(A) ≈ S(B) for complementary regions
+                # Check pure-state condition: S(A) ~ S(B) for complementary regions
                 pure_state_check = abs(entropy_A - entropy_B) < 0.01  # Tolerance
                 
                 boundary_entropies = {
@@ -2160,11 +2208,11 @@ if __name__ == "__main__":
                     'multiple_regions': region_entropies
                 }
                 
-                print(f"🔬 Timestep {t+1} boundary entropies - S(A): {entropy_A:.4f}, S(B): {entropy_B:.4f}, I(A:B): {mi_AB:.4f}")
-                print(f"🔬 Pure-state check: S(A) ≈ S(B)? {'✅ YES' if pure_state_check else '❌ NO'} (diff: {abs(entropy_A - entropy_B):.6f})")
+                print(f"[MICROSCOPE] Timestep {t+1} boundary entropies - S(A): {entropy_A:.4f}, S(B): {entropy_B:.4f}, I(A:B): {mi_AB:.4f}")
+                print(f"[MICROSCOPE] Pure-state check: S(A) ~ S(B)? {'[CHECK] YES' if pure_state_check else 'ERROR: NO'} (diff: {abs(entropy_A - entropy_B):.6f})")
                 
-                # Analyze RT relation: S(A) ∝ Area(A)
-                print(f"🔬 RT Relation Analysis:")
+                # Analyze RT relation: S(A) proportional to Area(A)
+                print(f"[MICROSCOPE] RT Relation Analysis:")
                 for size in region_sizes:
                     regions_of_size = [k for k, v in region_entropies.items() if v['size'] == size]
                     if regions_of_size:
@@ -2217,13 +2265,13 @@ if __name__ == "__main__":
                         
                         einstein_data_per_timestep.append(einstein_analysis_timestep)
                         
-                        print(f"🔬 Timestep {t+1} Einstein Analysis:")
-                        print(f"  • Ricci Scalar: {einstein_analysis_timestep['ricci_scalar']:.6f}")
-                        print(f"  • Emergent Gravitational Constant: {einstein_analysis_timestep['emergent_gravitational_constant']:.6f}")
-                        print(f"  • Entropy-Curvature Correlation: {einstein_analysis_timestep['entropy_curvature_correlation']:.6f}")
+                        print(f"[MICROSCOPE] Timestep {t+1} Einstein Analysis:")
+                        print(f"  - Ricci Scalar: {einstein_analysis_timestep['ricci_scalar']:.6f}")
+                        print(f"  - Emergent Gravitational Constant: {einstein_analysis_timestep['emergent_gravitational_constant']:.6f}")
+                        print(f"  - Entropy-Curvature Correlation: {einstein_analysis_timestep['entropy_curvature_correlation']:.6f}")
                         
                     except Exception as e:
-                        print(f"⚠️  Warning: Einstein analysis failed for timestep {t+1}: {e}")
+                        print(f"WARNING: Einstein analysis failed for timestep {t+1}: {e}")
                         einstein_data_per_timestep.append(None)
                 else:
                     einstein_data_per_timestep.append(None)
@@ -2268,17 +2316,17 @@ if __name__ == "__main__":
                             time.sleep(5)  # Check every 5 seconds
                             
                         except KeyboardInterrupt:
-                            print(f"\n⚠️  User interrupted job monitoring")
+                            print(f"\nWARNING: User interrupted job monitoring")
                             print(f"Job ID: {job_id} - You can check status later")
                             break
                         except Exception as e:
-                            print(f"⚠️  Error monitoring job: {e}")
+                            print(f"WARNING: Error monitoring job: {e}")
                             break
                     
                     # Get result and extract counts
                     result = job.result()
-                    print(f"🔧 Job completed for timestep {t+1}")
-                    print(f"🔧 Job ID: {job_id}")
+                    print(f"Job completed for timestep {t+1}")
+                    print(f"Job ID: {job_id}")
                     
                     # Extract counts from result using the fixed function
                     counts = None
@@ -2293,12 +2341,12 @@ if __name__ == "__main__":
                                     counts[bitstring] += 1
                                 else:
                                     counts[bitstring] = 1
-                            print(f"🔧 Extracted {len(counts)} unique bitstrings from SamplerV2 result")
-                            print(f"🔧 Total bitstrings: {len(bitstrings)}")
+                            print(f"Extracted {len(counts)} unique bitstrings from SamplerV2 result")
+                            print(f"Total bitstrings: {len(bitstrings)}")
                         else:
-                            print(f"⚠️  No bitstrings found in result")
-                            print(f"⚠️  Result type: {type(result)}")
-                            print(f"⚠️  Result dir: {dir(result)}")
+                            print(f"WARNING: No bitstrings found in result")
+                            print(f"WARNING: Result type: {type(result)}")
+                            print(f"WARNING: Result dir: {dir(result)}")
                             # Try to save the raw result to a debug file
                             try:
                                 debug_path = os.path.join(experiment_log_dir, f"raw_result_debug_t{t+1}.txt")
@@ -2308,14 +2356,14 @@ if __name__ == "__main__":
                                         dbg.write(json.dumps(result, default=str, indent=2))
                                     except Exception:
                                         dbg.write(str(result))
-                                    print(f"⚠️  Raw result saved to {debug_path}")
+                                    print(f"WARNING: Raw result saved to {debug_path}")
                             except Exception as e_dbg:
-                                print(f"⚠️  Could not save raw result: {e_dbg}")
+                                print(f"WARNING: Could not save raw result: {e_dbg}")
                             counts = None
                     except Exception as e:
-                        print(f"❌ Error extracting counts: {e}")
-                        print(f"❌ Result type: {type(result)}")
-                        print(f"❌ Result dir: {dir(result)}")
+                        print(f"ERROR: Error extracting counts: {e}")
+                        print(f"ERROR: Result type: {type(result)}")
+                        print(f"ERROR: Result dir: {dir(result)}")
                         # Try to save the raw result to a debug file
                         try:
                             debug_path = os.path.join(experiment_log_dir, f"raw_result_debug_t{t+1}.txt")
@@ -2325,15 +2373,15 @@ if __name__ == "__main__":
                                     dbg.write(json.dumps(result, default=str, indent=2))
                                 except Exception:
                                     dbg.write(str(result))
-                                print(f"❌ Raw result saved to {debug_path}")
+                                print(f"ERROR: Raw result saved to {debug_path}")
                         except Exception as e_dbg:
-                            print(f"❌ Could not save raw result: {e_dbg}")
+                            print(f"ERROR: Could not save raw result: {e_dbg}")
                         counts = None
                     
                     if counts and len(counts) > 0:
-                        print(f"✅ Successfully extracted counts for timestep {t+1}")
-                        print(f"✅ Number of unique bitstrings: {len(counts)}")
-                        print(f"✅ Total shots: {sum(counts.values())}")
+                        print(f"[CHECK] Successfully extracted counts for timestep {t+1}")
+                        print(f"[CHECK] Number of unique bitstrings: {len(counts)}")
+                        print(f"[CHECK] Total shots: {sum(counts.values())}")
                     
                     # Store the counts and job ID for this timestep
                     counts_per_timestep.append(counts)
@@ -2419,8 +2467,8 @@ if __name__ == "__main__":
                             for j in range(i+1, n):
                                 mi_dict[f"I_{i},{j}"] = mi_matrix[i, j]
                         
-                        # MULTIPLE REGION SIZES: Test RT relation S(A) ∝ Area(A) for different region sizes (Hardware)
-                        print(f"🔬 Timestep {t+1} - Testing multiple region sizes for RT relation (Hardware)...")
+                        # MULTIPLE REGION SIZES: Test RT relation S(A) proportional to Area(A) for different region sizes (Hardware)
+                        print(f"[MICROSCOPE] Timestep {t+1} - Testing multiple region sizes for RT relation (Hardware)...")
                         
                         # For hardware, we'll use a simplified approach based on counts
                         # Test regions of size 1, 2, 3, 4, 5, 6
@@ -2523,7 +2571,7 @@ if __name__ == "__main__":
                             entropy_AB = -p_AB_00 * np.log(p_AB_00)
                             mi_AB = entropy_A + entropy_B - entropy_AB
                         
-                        # Check pure-state condition: S(A) ≈ S(B) for complementary regions
+                        # Check pure-state condition: S(A) ~ S(B) for complementary regions
                         pure_state_check = abs(entropy_A - entropy_B) < 0.01  # Tolerance
                         
                         boundary_entropies = {
@@ -2535,11 +2583,11 @@ if __name__ == "__main__":
                             'multiple_regions': region_entropies
                         }
                         
-                        print(f"🔬 Timestep {t+1} boundary entropies - S(A): {entropy_A:.4f}, S(B): {entropy_B:.4f}, I(A:B): {mi_AB:.4f}")
-                        print(f"🔬 Pure-state check: S(A) ≈ S(B)? {'✅ YES' if pure_state_check else '❌ NO'} (diff: {abs(entropy_A - entropy_B):.6f})")
+                        print(f"[MICROSCOPE] Timestep {t+1} boundary entropies - S(A): {entropy_A:.4f}, S(B): {entropy_B:.4f}, I(A:B): {mi_AB:.4f}")
+                        print(f"[MICROSCOPE] Pure-state check: S(A) ~ S(B)? {'[CHECK] YES' if pure_state_check else 'ERROR: NO'} (diff: {abs(entropy_A - entropy_B):.6f})")
                         
-                        # Analyze RT relation: S(A) ∝ Area(A)
-                        print(f"🔬 RT Relation Analysis:")
+                        # Analyze RT relation: S(A) proportional to Area(A)
+                        print(f"[MICROSCOPE] RT Relation Analysis:")
                         for size in region_sizes:
                             regions_of_size = [k for k, v in region_entropies.items() if v['size'] == size]
                             if regions_of_size:
@@ -2601,13 +2649,13 @@ if __name__ == "__main__":
                                 
                                 einstein_data_per_timestep.append(einstein_analysis_timestep)
                                 
-                                print(f"🔬 Timestep {t+1} Einstein Analysis (Hardware):")
-                                print(f"  • Ricci Scalar: {einstein_analysis_timestep['ricci_scalar']:.6f}")
-                                print(f"  • Emergent Gravitational Constant: {einstein_analysis_timestep['emergent_gravitational_constant']:.6f}")
-                                print(f"  • Entropy-Curvature Correlation: {einstein_analysis_timestep['entropy_curvature_correlation']:.6f}")
+                                print(f"[MICROSCOPE] Timestep {t+1} Einstein Analysis (Hardware):")
+                                print(f"  - Ricci Scalar: {einstein_analysis_timestep['ricci_scalar']:.6f}")
+                                print(f"  - Emergent Gravitational Constant: {einstein_analysis_timestep['emergent_gravitational_constant']:.6f}")
+                                print(f"  - Entropy-Curvature Correlation: {einstein_analysis_timestep['entropy_curvature_correlation']:.6f}")
                                 
                             except Exception as e:
-                                print(f"⚠️  Warning: Einstein analysis failed for timestep {t+1} (hardware): {e}")
+                                print(f"WARNING: Einstein analysis failed for timestep {t+1} (hardware): {e}")
                                 einstein_data_per_timestep.append(None)
                         else:
                             einstein_data_per_timestep.append(None)
@@ -2634,7 +2682,7 @@ if __name__ == "__main__":
                                     mi_estimate[f"I_{i},{j}"] = np.exp(-distance) if distance > 0 else 0.1
                             
                             distmat_per_timestep.append(D_evolved.tolist())
-                            print(f"🔧 DETERMINISTIC: Using evolved geometry for timestep {t+1}")
+                            print(f"DETERMINISTIC: Using evolved geometry for timestep {t+1}")
                         else:
                             # First timestep or no evolution data - use small random MI
                             mi_estimate = {}
@@ -2646,7 +2694,7 @@ if __name__ == "__main__":
                             D_fallback = np.ones((args.num_qubits, args.num_qubits)) * 2.0
                             np.fill_diagonal(D_fallback, 0)
                             distmat_per_timestep.append(D_fallback.tolist())
-                            print(f"⚠️  INITIAL: Using small random MI values for timestep {t+1}")
+                            print(f"INITIAL: Using small random MI values for timestep {t+1}")
                         
                         # BOUNDARY ENTROPY COMPUTATION: Fallback entropies for deterministic evolution
                         # Create fallback multiple region analysis
@@ -2689,9 +2737,9 @@ if __name__ == "__main__":
                         embedding_coords_per_timestep.append(None)
                     
                 except Exception as e:
-                    print(f"❌ Hardware execution failed for timestep {t+1}: {e}")
-                    print(f"❌ Full error details: {type(e).__name__}: {str(e)}")
-                    print(f"⚠️  FALLBACK: Using default MI values of 0.1 due to execution failure")
+                    print(f"ERROR: Hardware execution failed for timestep {t+1}: {e}")
+                    print(f"ERROR: Full error details: {type(e).__name__}: {str(e)}")
+                    print(f"FALLBACK: Using default MI values of 0.1 due to execution failure")
                     import traceback
                     traceback.print_exc()
                     counts_per_timestep.append(None)
@@ -2752,7 +2800,7 @@ if __name__ == "__main__":
         min_angle_sum = np.min(angle_sums) if angle_sums else np.pi
         max_angle_sum = np.max(angle_sums) if angle_sums else np.pi
         mean_distance = np.mean(distance_matrix[distance_matrix != np.inf])
-        # Calculate deviation from π for each triangle
+        # Calculate deviation from pi for each triangle
         angle_sum_deviations = [x - np.pi for x in angle_sums]
         
         # 3.5) BOOTSTRAP STATISTICAL ANALYSIS
@@ -2776,8 +2824,8 @@ if __name__ == "__main__":
         ) if valid_entropies else (None, None, None)
         
         print(f"Bootstrap Results:")
-        print(f"  Gromov delta: {gromov_delta_mean:.3f} ± {gromov_delta_upper - gromov_delta_mean:.3f} (95% CI)")
-        print(f"  Entropy: {entropy_mean:.3f} ± {entropy_upper - entropy_mean:.3f} (95% CI)" if entropy_mean else "  Entropy: No valid data")
+        print(f"  Gromov delta: {gromov_delta_mean:.3f} +/- {gromov_delta_upper - gromov_delta_mean:.3f} (95% CI)")
+        print(f"  Entropy: {entropy_mean:.3f} +/- {entropy_upper - entropy_mean:.3f} (95% CI)" if entropy_mean else "  Entropy: No valid data")
         
         # REVOLUTIONARY RT-SURFACE AND BULK-EXCITATION ANALYSIS
         print("\n" + "="*60)
@@ -2791,7 +2839,7 @@ if __name__ == "__main__":
         
         einstein_analysis = None
         if args.einstein_solver:
-            print("\n🔬 Computing emergent Einstein tensor from entanglement...")
+            print("\n[MICROSCOPE] Computing emergent Einstein tensor from entanglement...")
             
                     # Use the final MI matrix and coordinates for Einstein analysis
         # Convert MI dictionary to matrix format
@@ -2828,27 +2876,27 @@ if __name__ == "__main__":
         )
         
         # Print key results
-        print(f"🔬 Einstein Tensor Analysis Results:")
-        print(f"  • Ricci Scalar: {einstein_analysis['ricci_scalar']:.6f}")
-        print(f"  • Entropy First Derivative: {einstein_analysis['entropy_first_derivative']:.6f}")
-        print(f"  • Entropy Second Derivative: {einstein_analysis['entropy_second_derivative']:.6f}")
-        print(f"  • Emergent Gravitational Constant: {einstein_analysis['emergent_gravitational_constant']:.6f}")
-        print(f"  • Entropy-Curvature Correlation: {einstein_analysis['entropy_curvature_correlation']:.6f}")
-        print(f"  • Einstein Equations Satisfied: {'✅ YES' if einstein_analysis['analysis_summary']['einstein_equations_satisfied'] else '❌ NO'}")
-        print(f"  • Residual Magnitude: {einstein_analysis['analysis_summary']['residual_magnitude']:.6f}")
-        print(f"  • Conservation Violation: {einstein_analysis['analysis_summary']['conservation_violation']:.6f}")
+        print(f"[MICROSCOPE] Einstein Tensor Analysis Results:")
+        print(f"  - Ricci Scalar: {einstein_analysis['ricci_scalar']:.6f}")
+        print(f"  - Entropy First Derivative: {einstein_analysis['entropy_first_derivative']:.6f}")
+        print(f"  - Entropy Second Derivative: {einstein_analysis['entropy_second_derivative']:.6f}")
+        print(f"  - Emergent Gravitational Constant: {einstein_analysis['emergent_gravitational_constant']:.6f}")
+        print(f"  - Entropy-Curvature Correlation: {einstein_analysis['entropy_curvature_correlation']:.6f}")
+        print(f"  - Einstein Equations Satisfied: {'[CHECK] YES' if einstein_analysis['analysis_summary']['einstein_equations_satisfied'] else 'ERROR: NO'}")
+        print(f"  - Residual Magnitude: {einstein_analysis['analysis_summary']['residual_magnitude']:.6f}")
+        print(f"  - Conservation Violation: {einstein_analysis['analysis_summary']['conservation_violation']:.6f}")
         
         # Check for emergent gravity signatures
         if einstein_analysis['emergent_gravitational_constant'] > 0.01:
-            print(f"🎯 STRONG EVIDENCE: Emergent gravitational constant detected!")
+            print(f"STRONG EVIDENCE: Emergent gravitational constant detected!")
             print(f"   This suggests entanglement is creating effective spacetime geometry")
         
         if abs(einstein_analysis['entropy_second_derivative']) > 0.01:
-            print(f"🎯 STRONG EVIDENCE: Entropy acceleration detected!")
+            print(f"STRONG EVIDENCE: Entropy acceleration detected!")
             print(f"   This suggests geometric evolution is driving entropy dynamics")
         
         if einstein_analysis['analysis_summary']['einstein_equations_satisfied']:
-            print(f"🎯 REVOLUTIONARY: Einstein equations satisfied by entanglement!")
+            print(f"REVOLUTIONARY: Einstein equations satisfied by entanglement!")
             print(f"   This provides direct evidence for emergent gravity from quantum entanglement")
     else:
         print("  Einstein solver analysis skipped (use --einstein_solver flag to enable)")
@@ -2896,15 +2944,15 @@ if __name__ == "__main__":
             area_consistent = rt_validation['area_consistent']
             edges_consistent = rt_validation['edges_consistent']
             
-            print(f"  RT surface area (A→B): {rt_area_AB:.6f}")
-            print(f"  RT surface area (B→A): {rt_area_BA:.6f}")
+            print(f"  RT surface area (A->B): {rt_area_AB:.6f}")
+            print(f"  RT surface area (B->A): {rt_area_BA:.6f}")
             print(f"  Areas consistent: {area_consistent}")
             print(f"  Edges consistent: {edges_consistent}")
             print(f"  Area difference: {rt_validation['area_difference']:.10f}")
             
             if not area_consistent:
-                print(f"  ⚠️  WARNING: RT surface areas are not consistent!")
-                print(f"  ⚠️  This indicates a bug in the RT surface calculation")
+                print(f"  WARNING: RT surface areas are not consistent!")
+                print(f"  WARNING: This indicates a bug in the RT surface calculation")
             
             # Store RT-surface analysis results
             rt_surface_analysis = {
@@ -3004,7 +3052,7 @@ if __name__ == "__main__":
             print(f"  Ground state - S(A): {ground_entropy_A:.4f}, S(B): {ground_entropy_B:.4f}, I(A:B): {ground_mi_AB:.4f}")
             print(f"  Excited state - S(A): {excited_entropy_A:.4f}, S(B): {excited_entropy_B:.4f}, I(A:B): {excited_mi_AB:.4f}")
              
-            # Test RT relation: S(A) ≈ Area(γ_A) / 4G_N (up to constants)
+            # Test RT relation: S(A) ~ Area(gamma_A) / 4G_N (up to constants)
             # We expect the ratio of entropies to match the ratio of RT areas
             entropy_ratio = ground_entropy_B / ground_entropy_A if ground_entropy_A > 0 else 0
             
@@ -3014,7 +3062,7 @@ if __name__ == "__main__":
                 rt_area_BA = rt_surface_analysis['rt_area_BA']
                 rt_area_ratio = rt_area_BA / rt_area_AB if rt_area_AB > 0 else 0
             else:
-                print("  ⚠️  RT surface areas not available for RT relation test")
+                print("  WARNING: RT surface areas not available for RT relation test")
                 rt_area_ratio = 0
              
             print(f"  RT Relation Test:")
@@ -3155,18 +3203,18 @@ if __name__ == "__main__":
                 print("Skipping Lorentzian MDS embedding (fast mode)")
                 lorentzian_embedding = np.zeros((num_events, 3))
         except Exception as e:
-            print(f"🔍 DEBUG: Exception in Lorentzian MDS embedding: {e}")
+            print(f"DEBUG: Exception in Lorentzian MDS embedding: {e}")
             import traceback
             traceback.print_exc()
             lorentzian_embedding = np.zeros((num_events, 3))
 
-        print(f"🔍 DEBUG: After Lorentzian MDS embedding")
-        print(f"🔍 DEBUG: About to enter Regge solver section")
-        print(f"🔍 DEBUG: distmat_per_timestep exists: {'distmat_per_timestep' in locals()}")
+        print(f"DEBUG: After Lorentzian MDS embedding")
+        print(f"DEBUG: About to enter Regge solver section")
+        print(f"DEBUG: distmat_per_timestep exists: {'distmat_per_timestep' in locals()}")
         if 'distmat_per_timestep' in locals():
-            print(f"🔍 DEBUG: distmat_per_timestep length: {len(distmat_per_timestep)}")
+            print(f" DEBUG: distmat_per_timestep length: {len(distmat_per_timestep)}")
         else:
-            print(f"🔍 DEBUG: distmat_per_timestep not found in locals")
+            print(f" DEBUG: distmat_per_timestep not found in locals")
         
         # Initialize evolution arrays in outer scope so they can be accessed by output
         edge_length_evolution = []
@@ -3214,16 +3262,16 @@ if __name__ == "__main__":
                 else:
                     matter[h] = 0.0
         
-        print(f"🔍 DEBUG: About to enter Regge solver section")
-        print(f"🔍 DEBUG: distmat_per_timestep exists: {'distmat_per_timestep' in locals()}")
+        print(f"DEBUG: About to enter Regge solver section")
+        print(f"DEBUG: distmat_per_timestep exists: {'distmat_per_timestep' in locals()}")
         if 'distmat_per_timestep' in locals():
-            print(f"🔍 DEBUG: distmat_per_timestep length: {len(distmat_per_timestep)}")
+            print(f" DEBUG: distmat_per_timestep length: {len(distmat_per_timestep)}")
         else:
-            print(f"🔍 DEBUG: distmat_per_timestep not found in locals")
+            print(f" DEBUG: distmat_per_timestep not found in locals")
         
         # --- DYNAMICAL REGGE SOLVER ---
-        print(f"🔍 DEBUG: solve_regge={args.solve_regge}, fast={args.fast}")
-        print(f"🔍 DEBUG: Condition check: {args.solve_regge and not args.fast}")
+        print(f"DEBUG: solve_regge={args.solve_regge}, fast={args.fast}")
+        print(f"DEBUG: Condition check: {args.solve_regge and not args.fast}")
         
         try:
             if args.solve_regge and not args.fast:
@@ -3241,8 +3289,8 @@ if __name__ == "__main__":
                     'regge_distance_matrices_per_timestep': []
                 }
                 
-                print(f"🔍 DEBUG: distmat_per_timestep length: {len(distmat_per_timestep)}")
-                print(f"🔍 DEBUG: timesteps: {args.timesteps}")
+                print(f"DEBUG: distmat_per_timestep length: {len(distmat_per_timestep)}")
+                print(f"DEBUG: timesteps: {args.timesteps}")
                 
                 # Refactor: total_action and total_gradient always take a 'matter' argument
                 def total_action(edge_lengths, matter):
@@ -3363,10 +3411,10 @@ if __name__ == "__main__":
                 edge_lengths_prev = np.minimum(edge_lengths_prev, max_edge_length)
                 edge_lengths_prev = np.maximum(edge_lengths_prev, effective_edge_floor)
                 
-                print(f"🔧 Initial edge lengths: min={np.min(edge_lengths_prev):.6f}, max={np.max(edge_lengths_prev):.6f}, mean={np.mean(edge_lengths_prev):.6f}")
+                print(f" Initial edge lengths: min={np.min(edge_lengths_prev):.6f}, max={np.max(edge_lengths_prev):.6f}, mean={np.mean(edge_lengths_prev):.6f}")
                 
                 for t in range(len(distmat_per_timestep)):
-                    print(f"🔍 DEBUG: Processing timestep {t+1}/{len(distmat_per_timestep)}")
+                    print(f" DEBUG: Processing timestep {t+1}/{len(distmat_per_timestep)}")
                     
                     if t == 0:
                         # First timestep: use quantum measurements as initial condition
@@ -3389,7 +3437,7 @@ if __name__ == "__main__":
                                         options={'ftol':1e-10, 'maxiter':2000, 'disp':False})
                         
                         if not result.success:
-                            print(f"⚠️  Warning: Optimization failed for timestep {t+1}, trying with relaxed constraints")
+                            print(f"WARNING:  Warning: Optimization failed for timestep {t+1}, trying with relaxed constraints")
                             # Try with relaxed constraints if first attempt fails
                             relaxed_constraints = [{'type': 'ineq', 'fun': triangle_ineq}]
                             result = minimize(grad_norm, edge_lengths_t, method='SLSQP', 
@@ -3402,7 +3450,7 @@ if __name__ == "__main__":
                         Dmat_check = edge_lengths_to_matrix(stationary_edge_lengths, n)
                         triangle_violations = check_triangle_inequality(Dmat_check)
                         if triangle_violations:
-                            print(f"⚠️  Triangle violations detected: {len(triangle_violations)}")
+                            print(f"WARNING:  Triangle violations detected: {len(triangle_violations)}")
                             # Apply additional smoothing to fix violations
                             for violation in triangle_violations[:5]:  # Fix first few violations
                                 i, j, k = violation
@@ -3449,7 +3497,7 @@ if __name__ == "__main__":
                         triangle_violations = check_triangle_inequality(Dmat_evolved)
                         
                         if triangle_violations:
-                            print(f"⚠️  Evolution created {len(triangle_violations)} triangle violations, applying fixes")
+                            print(f"WARNING:  Evolution created {len(triangle_violations)} triangle violations, applying fixes")
                             # Iteratively fix violations
                             for _ in range(3):  # Max 3 iterations of fixes
                                 fixed_violations = 0
@@ -3536,11 +3584,11 @@ if __name__ == "__main__":
                     print(f"  Timestep {t+1}: Triangle violations = {len(triangle_violations_final)}")
                     
                     if len(triangle_violations_final) > 0:
-                        print(f"  ⚠️  Warning: {len(triangle_violations_final)} triangle violations remain")
+                        print(f"  WARNING:  Warning: {len(triangle_violations_final)} triangle violations remain")
                     else:
-                        print(f"  ✅ All triangle inequalities satisfied")
+                        print(f"  [CHECK] All triangle inequalities satisfied")
                 
-                print(f"🔍 DEBUG: Regge evolution data created with {len(regge_evolution_data['regge_edge_lengths_per_timestep'])} timesteps")
+                print(f" DEBUG: Regge evolution data created with {len(regge_evolution_data['regge_edge_lengths_per_timestep'])} timesteps")
                 
                 # Save comprehensive Regge evolution data
                 stationary_solution = {
@@ -3554,7 +3602,7 @@ if __name__ == "__main__":
                 print("Skipping Regge action calculation (fast mode)")
                 stationary_solution = None
             else:
-                print(f"🔍 DEBUG: Regge solver not executed. solve_regge={args.solve_regge}, fast={args.fast}")
+                print(f" DEBUG: Regge solver not executed. solve_regge={args.solve_regge}, fast={args.fast}")
                 # Create empty regge_evolution_data for consistency
                 if args.solve_regge:
                     regge_evolution_data = {
@@ -3573,7 +3621,7 @@ if __name__ == "__main__":
                 else:
                     stationary_solution = None
         except Exception as e:
-            print(f"🔍 DEBUG: Exception in Regge solver section: {e}")
+            print(f" DEBUG: Exception in Regge solver section: {e}")
             import traceback
             traceback.print_exc()
             # Create empty regge_evolution_data for consistency
@@ -3594,9 +3642,9 @@ if __name__ == "__main__":
             else:
                 stationary_solution = None
         
-        print(f"🔍 DEBUG: After Regge solver section, stationary_solution exists: {stationary_solution is not None}")
+        print(f" DEBUG: After Regge solver section, stationary_solution exists: {stationary_solution is not None}")
         if stationary_solution and 'regge_evolution_data' in stationary_solution:
-            print(f"🔍 DEBUG: regge_evolution_data has {len(stationary_solution['regge_evolution_data']['regge_edge_lengths_per_timestep'])} timesteps")
+            print(f" DEBUG: regge_evolution_data has {len(stationary_solution['regge_evolution_data']['regge_edge_lengths_per_timestep'])} timesteps")
         # 4) output
         # Use the experiment-specific folder created at the start
         uid = generate_short_uid()
@@ -3628,7 +3676,7 @@ if __name__ == "__main__":
             floor_count = 0
             
         print("\n" + "="*60)
-        print("🎯 KEY METRICS FOR PREPRINT EVIDENCE")
+        print(" KEY METRICS FOR PREPRINT EVIDENCE")
         print("="*60)
         print(f"Max Angle Deficit: {max_deficit:.6f}")
         print(f"Min Edge Length:   {min_edge:.6f}")
@@ -3734,7 +3782,7 @@ if __name__ == "__main__":
             }, f, indent=2, cls=CustomJSONEncoder)
         
         # DYNAMIC EVIDENCE: Create comprehensive visualization plots
-        print("📊 Generating dynamic evidence plots...")
+        print(" Generating dynamic evidence plots...")
         evolution_data = {
             'angle_sums_per_timestep': angle_sums_per_timestep,
             'gromov_delta_per_timestep': gromov_delta_per_timestep,
@@ -3748,22 +3796,22 @@ if __name__ == "__main__":
             'regge_evolution_data': stationary_solution.get('regge_evolution_data', None) if stationary_solution else None
         }
         
-        experiment_name = f"n{args.num_qubits}_{args.geometry}_κ{kappa:.1f}_{args.device}_{uid}"
+        experiment_name = f"n{args.num_qubits}_{args.geometry}_k{kappa:.1f}_{args.device}_{uid}"
         
         # Create dynamic evidence plots
         try:
             plot_path = create_dynamic_evidence_plots(evolution_data, experiment_log_dir, experiment_name)
             heatmap_path = create_evolution_heatmap(evolution_data, experiment_log_dir, experiment_name)
-            print(f"✓ Dynamic evidence visualization completed!")
-            print(f"   • Main evolution plot: {os.path.basename(plot_path)}")
-            print(f"   • Evolution heatmaps: {os.path.basename(heatmap_path)}")
+            print(f" Dynamic evidence visualization completed!")
+            print(f"   - Main evolution plot: {os.path.basename(plot_path)}")
+            print(f"   - Evolution heatmaps: {os.path.basename(heatmap_path)}")
         except Exception as e:
-            print(f"⚠️  Warning: Could not generate dynamic evidence plots: {e}")
+            print(f"WARNING:  Warning: Could not generate dynamic evidence plots: {e}")
             
         # Create Einstein time evolution plots
         if args.einstein_solver and einstein_data_per_timestep:
             try:
-                print("🔬 Generating Einstein time evolution plots...")
+                print("[MICROSCOPE] Generating Einstein time evolution plots...")
                 einstein_plot_path = create_einstein_time_evolution_plots(einstein_data_per_timestep, experiment_log_dir, experiment_name)
                 einstein_heatmap_path = create_einstein_tensor_heatmaps(einstein_data_per_timestep, experiment_log_dir, experiment_name)
                 einstein_3d_path = create_einstein_3d_visualization(einstein_data_per_timestep, experiment_log_dir, experiment_name)
@@ -3771,9 +3819,9 @@ if __name__ == "__main__":
                 einstein_stats_path = os.path.join(experiment_log_dir, f"{experiment_name}_einstein_statistics.json")
                 with open(einstein_stats_path, 'w') as f:
                     json.dump(einstein_stats, f, indent=2, cls=CustomJSONEncoder)
-                print(f"   • Einstein statistics: {os.path.basename(einstein_stats_path)}")
+                print(f"   - Einstein statistics: {os.path.basename(einstein_stats_path)}")
             except Exception as e:
-                print(f"⚠️  Warning: Could not generate Einstein time evolution plots: {e}")
+                print(f"WARNING:  Warning: Could not generate Einstein time evolution plots: {e}")
         
         # Create comprehensive summary.txt file
         try:
@@ -3841,27 +3889,27 @@ if __name__ == "__main__":
                 f.write(f"Results saved to: {experiment_log_dir}\n")
                 f.write(f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
             
-            print(f"✓ Comprehensive summary saved: {os.path.basename(summary_path)}")
+            print(f" Comprehensive summary saved: {os.path.basename(summary_path)}")
             
         except Exception as e:
-            print(f"⚠️  Warning: Could not create summary file: {e}")
+            print(f"WARNING:  Warning: Could not create summary file: {e}")
         
         print(f"Results saved to {output_path}")
-        print(f"📁 Full filename: {os.path.basename(output_path)}")
-        print(f"📂 Complete path: {os.path.abspath(output_path)}")
-        print(f"📁 Experiment folder: {experiment_log_dir}")
+        print(f"Full filename: {os.path.basename(output_path)}")
+        print(f"Complete path: {os.path.abspath(output_path)}")
+        print(f"Experiment folder: {experiment_log_dir}")
         
-        # Warn if any triangle angle sum is not > π or Gromov delta is not < 0.3 for spherical geometry
+        # Warn if any triangle angle sum is not > pi or Gromov delta is not < 0.3 for spherical geometry
         if args.geometry == "spherical":
             if not all(x > np.pi for x in angle_sums):
-                print("[WARNING] Not all triangle angle sums exceed π in spherical geometry!")
+                print("[WARNING] Not all triangle angle sums exceed pi in spherical geometry!")
             if gromov_delta >= 0.3:
                 print(f"[WARNING] Gromov delta is not below 0.3 (actual: {gromov_delta})!") 
         
         # Update progress for this curvature
         curvature_end_time = time.time()
         curvature_duration = curvature_end_time - curvature_start_time
-        print(f"✓ Completed curvature κ={kappa:.1f} in {curvature_duration:.1f}s")
+        print(f" Completed curvature k={kappa:.1f} in {curvature_duration:.1f}s")
     
     # Close overall progress bar and show final statistics
     overall_pbar.close()
@@ -3870,11 +3918,11 @@ if __name__ == "__main__":
     total_duration = experiment_end_time - experiment_start_time
     
     print("=" * 60)
-    print(f"🎉 Experiment Completed Successfully!")
-    print(f"   • Total runtime: {total_duration:.1f}s ({total_duration/3600:.1f}h)")
-    print(f"   • Completed at: {datetime.now().strftime('%H:%M:%S')}")
-    print(f"   • Average time per curvature: {total_duration/total_curvatures:.1f}s")
-    print(f"   • Results saved to: {experiment_log_dir}")
-    print(f"   • Latest filename: {short_filename}")
-    print(f"   • Full path: {os.path.abspath(output_path)}")
+    print(f"Experiment Completed Successfully!")
+    print(f"   - Total runtime: {total_duration:.1f}s ({total_duration/3600:.1f}h)")
+    print(f"   - Completed at: {datetime.now().strftime('%H:%M:%S')}")
+    print(f"   - Average time per curvature: {total_duration/total_curvatures:.1f}s")
+    print(f"   - Results saved to: {experiment_log_dir}")
+    print(f"   - Latest filename: {short_filename}")
+    print(f"   - Full path: {os.path.abspath(output_path)}")
     print("=" * 60)

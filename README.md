@@ -1056,3 +1056,307 @@ If you have any questions about version compatibility or reproducibility, please
 **Project Status:**
 - The project now includes full dynamic analysis and visualization of emergent geometry, with all data, code, and animations available for peer review and further research.
 
+## Quick Start Tutorial: Using run_experiment.py
+
+The `run_experiment.py` script provides an easy way to run any experiment in this repository. It supports both interactive mode (with prompts) and command-line mode (for automation).
+
+### Method 1: Interactive Mode (Recommended for Beginners)
+
+Run the script without arguments to get an interactive experience:
+
+```bash
+python run_experiment.py
+```
+
+**What happens:**
+1. Lists all available experiments with numbers
+2. Shows the experiment's help output (all available arguments)
+3. Asks if you want to continue
+4. Prompts for key parameters (qubits, device, etc.)
+5. Shows the final command and asks for confirmation
+6. Executes the experiment
+
+**Example Interactive Session:**
+```
+Available experiments:
+  1. Custom Curvature Experiment
+  2. Area Law Experiment
+  3. Area Law Experiment Qiskit
+  ...
+  117. Simple: Holographic (sub-experiment)
+
+Enter experiment number: 1
+
+================================================================================
+HELP FOR EXPERIMENT: custom_curvature_experiment.py
+================================================================================
+usage: custom_curvature_experiment.py [-h] [--num_qubits NUM_QUBITS]
+                                      [--geometry {euclidean,spherical,hyperbolic}]
+                                      [--curvature CURVATURE [CURVATURE ...]]
+                                      [--device DEVICE] [--shots SHOTS]
+                                      [--einstein_solver] [--analyze_curvature]
+                                      ...
+
+Do you want to continue with this experiment? (y/q): y
+
+Common experiment parameters:
+(Press Enter to use defaults, or enter custom values)
+
+Number of qubits (default: varies by experiment): 4
+Number of shots (default: 1000): 500
+Device (default: simulator): simulator
+Geometry type (euclidean/spherical/hyperbolic, default: varies): spherical
+Curvature value(s) (default: varies): 2.0
+
+Final command: python src/experiments/custom_curvature_experiment.py --device simulator --shots 500 --num_qubits 4 --geometry spherical --curvature 2.0
+
+Ready to run the experiment? (y/q): y
+```
+
+### Method 2: Command-Line Mode (Recommended for Automation)
+
+Pass arguments directly to skip all prompts:
+
+```bash
+python run_experiment.py --experiment <number> --args <experiment_arguments>
+```
+
+**Syntax:**
+- `--experiment <number>`: Choose experiment by number
+- `--args <arguments>`: Pass arguments directly to the experiment script
+
+**Examples:**
+
+**Basic Custom Curvature Experiment:**
+```bash
+python run_experiment.py --experiment 1 --args --num_qubits=4 --geometry=spherical --curvature=2.0
+```
+
+**With Einstein Solver and Curvature Analysis:**
+```bash
+python run_experiment.py --experiment 1 --args --num_qubits=3 --einstein_solver --analyze_curvature --geometry=hyperbolic --curvature=-1.5
+```
+
+**Hardware Experiment:**
+```bash
+python run_experiment.py --experiment 1 --args --num_qubits=5 --device=ibm_brisbane --shots=1000 --geometry=spherical --curvature=1.0
+```
+
+**Sub-experiment (Simple Experiments):**
+```bash
+python run_experiment.py --experiment 117 --args --num_qubits=4 --device=simulator
+```
+
+### Key Features
+
+**1. Help Display**
+- Automatically shows `--help` output for each experiment
+- Displays all available arguments and options
+- No need to remember experiment-specific syntax
+
+**2. Smart Argument Handling**
+- Supports both value arguments (`--num_qubits=4`) and boolean flags (`--einstein_solver`)
+- Handles list arguments for parameter sweeps (`--curvature=1.0,2.0,3.0`)
+- Automatically sets geometry based on curvature sign
+
+**3. Experiment Priority**
+- Custom Curvature Experiment appears as #1 (most important)
+- All other experiments maintain original order
+- Easy access to the most significant experiment
+
+**4. Unicode Compatibility**
+- All output works on Windows, Mac, and Linux terminals
+- No encoding issues with special characters
+
+### Common Use Cases
+
+**Quick Test Run:**
+```bash
+python run_experiment.py --experiment 1 --args --num_qubits=3 --device=simulator --shots=100
+```
+
+**Full Analysis Run:**
+```bash
+python run_experiment.py --experiment 1 --args --num_qubits=5 --einstein_solver --analyze_curvature --compute_entropies --geometry=spherical --curvature=2.0 --device=simulator --shots=1000
+```
+
+**Hardware Validation:**
+```bash
+python run_experiment.py --experiment 1 --args --num_qubits=7 --device=ibm_brisbane --shots=1000 --geometry=hyperbolic --curvature=-1.0 --einstein_solver
+```
+
+**Parameter Sweep:**
+```bash
+python run_experiment.py --experiment 1 --args --num_qubits=4 --curvature=1.0,2.0,3.0,4.0 --geometry=spherical --device=simulator
+```
+
+### Tips and Best Practices
+
+1. **Start with Interactive Mode**: Use interactive mode first to understand what arguments each experiment accepts
+2. **Use Simulator for Testing**: Always test with `--device=simulator` before running on hardware
+3. **Check Help Output**: The help display shows all available options for each experiment
+4. **Start Small**: Begin with small qubit counts (3-4) for quick testing
+5. **Save Results**: All results are automatically saved to `experiment_logs/` with timestamps
+6. **Use Command-Line for Automation**: Once you know the parameters, use command-line mode for batch runs
+
+### Troubleshooting
+
+**"Experiment not found"**: Check the experiment number in the list
+**"Invalid argument"**: Check the help output for correct argument names
+**"Device not available"**: Use `simulator` for testing, check IBM Quantum access for hardware
+**"Unicode errors"**: All Unicode issues have been resolved - should work on all terminals
+
+### Advanced Usage
+
+**Batch Processing:**
+```bash
+# Run multiple experiments in sequence
+python run_experiment.py --experiment 1 --args --num_qubits=3 --device=simulator
+python run_experiment.py --experiment 27 --args --num_qubits=4 --device=simulator
+python run_experiment.py --experiment 117 --args --num_qubits=3 --device=simulator
+```
+
+**Scripting:**
+```bash
+#!/bin/bash
+# Example script for running multiple experiments
+for qubits in 3 4 5; do
+    for curvature in 1.0 2.0 3.0; do
+        python run_experiment.py --experiment 1 --args --num_qubits=$qubits --curvature=$curvature --device=simulator
+    done
+done
+```
+
+This tutorial covers the essential usage patterns. The `run_experiment.py` script makes it easy to explore all experiments in this repository while providing helpful guidance and automation options.
+
+## Analyzing Experiment Results with analyze_experiment.py
+
+The `analyze_experiment.py` script provides a convenient way to analyze experiment results from the `experiment_logs` folder. It can analyze the last run experiment or any specific experiment instance.
+
+### Basic Usage
+
+**Analyze the most recent experiment:**
+```bash
+python analyze_experiment.py
+```
+
+**Analyze the most recent instance of a specific experiment:**
+```bash
+python analyze_experiment.py --experiment custom_curvature_experiment
+```
+
+**Analyze a specific experiment instance:**
+```bash
+python analyze_experiment.py --path experiment_logs/custom_curvature_experiment/instance_20250726_153536
+```
+
+### Listing Available Experiments
+
+**List all experiments:**
+```bash
+python analyze_experiment.py --list
+```
+
+**List instances of a specific experiment:**
+```bash
+python analyze_experiment.py --list --experiment custom_curvature_experiment
+```
+
+### Running Specific Analysis Scripts
+
+**Run a specific analysis script:**
+```bash
+python analyze_experiment.py --experiment custom_curvature_experiment --analysis spherical_geometry_verification.py
+```
+
+**Run multiple analysis scripts:**
+```bash
+python analyze_experiment.py --experiment custom_curvature_experiment --analysis spherical_geometry_verification.py curvature_flow_analysis.py
+```
+
+**Run all available analysis scripts:**
+```bash
+python analyze_experiment.py --experiment custom_curvature_experiment --analysis all
+```
+
+### Interactive Mode
+
+When you run `analyze_experiment.py` without specifying analysis scripts, it will:
+
+1. Show you the experiment being analyzed
+2. List all available analysis scripts
+3. Let you choose which scripts to run
+4. Execute the selected analyses
+5. Provide a summary of results
+
+**Example Interactive Session:**
+```
+Using most recent experiment: custom_curvature_experiment (instance_20250726_153536)
+Timestamp: 2025-07-26 15:35:36
+
+================================================================================
+ANALYZING EXPERIMENT: experiment_logs/custom_curvature_experiment/instance_20250726_153536
+================================================================================
+
+Available analysis scripts:
+  1. spherical_geometry_verification.py
+  2. curvature_flow_analysis.py
+  3. comprehensive_curvature_analyzer.py
+  4. check_shot_counts.py
+  ...
+
+Enter script numbers to run (comma-separated) or 'all': 1,2
+
+--- Running spherical_geometry_verification.py ---
+✅ Analysis 'spherical_geometry_verification.py' completed successfully!
+
+--- Running curvature_flow_analysis.py ---
+✅ Analysis 'curvature_flow_analysis.py' completed successfully!
+
+================================================================================
+ANALYSIS SUMMARY
+================================================================================
+Successfully completed: 2/2 analyses
+Experiment: experiment_logs/custom_curvature_experiment/instance_20250726_153536
+✅ All analyses completed successfully!
+```
+
+### Available Analysis Scripts
+
+The analysis folder contains many specialized analysis scripts:
+
+- **`spherical_geometry_verification.py`**: Comprehensive verification of spherical geometry
+- **`curvature_flow_analysis.py`**: Analysis of curvature gradient vectors and mass back-propagation
+- **`comprehensive_curvature_analyzer.py`**: Full curvature analysis with multiple metrics
+- **`check_shot_counts.py`**: Verify quantum measurement statistics
+- **`hardware_simulator_comparison.py`**: Compare hardware vs simulator results
+- **`plot_rt_entropy.py`**: Ryu-Takayanagi entropy analysis
+- **`lorentzian_statistical_analysis.py`**: Statistical analysis of Lorentzian geometry
+
+### Tips for Analysis
+
+1. **Start with the most recent experiment**: Use `python analyze_experiment.py` to analyze your latest results
+2. **Use specific scripts**: Choose analysis scripts based on what you want to investigate
+3. **Check the output**: Analysis results are typically saved in the same directory as the experiment
+4. **Run multiple analyses**: Combine different analysis scripts for comprehensive results
+5. **Use the list feature**: Explore available experiments and instances with `--list`
+
+### Advanced Usage
+
+**Batch analysis of multiple experiments:**
+```bash
+# Analyze the last 3 instances of custom_curvature_experiment
+for instance in $(python analyze_experiment.py --list --experiment custom_curvature_experiment | grep instance | head -3 | awk '{print $3}'); do
+    python analyze_experiment.py --path $instance --analysis spherical_geometry_verification.py
+done
+```
+
+**Compare results across experiments:**
+```bash
+# Run the same analysis on different experiment types
+python analyze_experiment.py --experiment custom_curvature_experiment --analysis curvature_flow_analysis.py
+python analyze_experiment.py --experiment area_law_experiment --analysis curvature_flow_analysis.py
+```
+
+The `analyze_experiment.py` script makes it easy to explore and analyze experiment results without having to remember complex file paths or analysis script syntax.
+
