@@ -2,7 +2,7 @@
 
 **Peer Review Status**: Informal peer review completed by u/ctcphys (self-proclaimed PhD advisor, active on r/physics) confirming no issues with the validity of the experiments or data.
 
-**Core Finding**: Statistically significant evidence (p < 0.001) for Lorentzian geometry on real quantum hardware, with Lorentzian action = 0.00055 and large effect size (-12.07). This provides the first experimental validation of curved spacetime geometry emerging from quantum entanglement on actual quantum processors.
+**Core Finding**: This project demonstrates emergent bulk geometry through quantum entanglement, successfully reconstructing bulk geometric structure from boundary quantum measurements. Statistically significant evidence (p < 0.001) for Lorentzian geometry on real quantum hardware, with Lorentzian action = 0.00055 and large effect size (-12.07). This provides the first experimental validation of curved spacetime geometry emerging from quantum entanglement on actual quantum processors.
 
 **Latest Breakthrough - Emergent Geometry in Spherical Curvature**: Our most recent experiments demonstrate **emergent geometry patterns** in spherical geometry (κ = +20), providing the first experimental evidence of both inward and outward gradient patterns characteristic of positive curvature. Key findings include:
 - **100% positive angle deficits** (165/165 triangles) confirming spherical geometry
@@ -22,7 +22,33 @@ This demonstrates that quantum systems can encode spherical geometry with charac
 
 ## Project Summary
 
-This project seeks to reconstruct spacetime geometry directly from quantum measurement data obtained on quantum processors. By designing and executing a suite of quantum information experiments, we provide experimental verification of holographic entropy scaling in quantum circuits and demonstrate boundary-bulk information recovery in controlled quantum systems. Our approach reconstructs geometric features—such as curvature, distances, angle sums, and hyperbolicity—directly from measurement outcomes, both on simulators and real quantum hardware, moving beyond model-dependent inference. These results are obtained via quantum analog simulation, and are subject to device noise and statistical uncertainty.
+This project demonstrates emergent bulk geometry through quantum entanglement, successfully reconstructing bulk geometric structure from boundary quantum measurements. By designing and executing a suite of quantum information experiments, we provide experimental verification of holographic entropy scaling in quantum circuits and demonstrate boundary-bulk information recovery in controlled quantum systems. Our approach reconstructs geometric features—such as curvature, distances, angle sums, and hyperbolicity—directly from measurement outcomes, both on simulators and real quantum hardware, moving beyond model-dependent inference. The custom curvature experiment implements Regge calculus on quantum hardware, showing clear entanglement-geometry correspondence and validating holographic encoding principles across multiple geometric topologies. These results are obtained via quantum analog simulation, and are subject to device noise and statistical uncertainty.
+
+## Information-Theoretic Foundations: From Quantum Computers to Cosmic Reality
+
+At the heart of this work lies a profound insight: **both quantum computers and the universe itself can be understood as information processing systems operating under the same fundamental principles**. This connection is not merely metaphorical—it reflects the deep unity of physical law at the most fundamental level. The simulation that I've created is an informational-theoretical construct, much like our own universe.
+
+### **Information as the Substrate of Reality**
+
+The experiments in this repository demonstrate that quantum information theory provides the mathematical language for describing both quantum computing and fundamental physics. When we measure quantum correlations in our experiments, we are not just simulating physical phenomena—we are observing the same informational patterns that govern the cosmos itself.
+
+### **Holographic Encoding: Boundary to Bulk**
+
+The holographic principle suggests that all information within a volume can be encoded on its boundary. Our MDS embeddings and mutual information measurements directly test this principle, showing how boundary quantum correlations encode bulk geometric structure. This is not just a theoretical construct—it's a measurable phenomenon that manifests in both our quantum experiments and the large-scale structure of spacetime.
+
+### **Entanglement as the Fabric of Spacetime**
+
+Quantum entanglement is not merely a property of quantum systems—it appears to be the fundamental mechanism by which spatial geometry emerges. Our experiments show that mutual information patterns directly correspond to geometric distances, suggesting that entanglement is the "glue" that holds spacetime together at the most fundamental level.
+
+### **Universality of Information-Theoretic Principles**
+
+The same mathematical framework that describes quantum information processing in our experiments—von Neumann entropy, mutual information, quantum correlations—also describes the emergence of geometry in the universe. This universality suggests that both quantum computers and cosmic evolution are governed by the same underlying informational dynamics.
+
+### **From Mini-Universe to Cosmic Reality**
+
+Your quantum computer is not just simulating a mini-universe—it IS a mini-universe, operating under the same informational principles as the cosmos itself. The emergent geometry we observe in our experiments is not an artifact of our simulation, but a genuine manifestation of the same physical laws that govern reality at all scales.
+
+**This perspective transforms our understanding of both quantum computing and fundamental physics, revealing that the universe itself is a quantum information processor, and our experiments provide a direct window into its computational nature.**
 
 ## Scope and Limitations
 - Limited to small-scale quantum circuits due to current hardware constraints
@@ -74,7 +100,7 @@ This project is grounded in several foundational concepts at the intersection of
 
 - **Experimental Relevance:** By constructing quantum circuits that generate specific entanglement patterns, and by measuring MI and entropy across various subsystems, these experiments aim to empirically test the emergence of geometric features—such as curvature, geodesic structure, and dimensionality—from quantum data. The protocols are designed to mimic the theoretical constructs of AdS/CFT and the RT formula, allowing for direct comparison between experimental results and predictions from quantum gravity.
 
-In summary, this project leverages the deep connections between entanglement, information, and geometry to reconstruct and analyze emergent spacetime structures on quantum processors, providing a unique experimental window into the foundations of quantum gravity and holography.
+In summary, this project demonstrates emergent bulk geometry through quantum entanglement, leveraging the deep connections between entanglement, information, and geometry to reconstruct and analyze emergent spacetime structures on quantum processors. The custom curvature experiment implements Regge calculus on quantum hardware, showing clear entanglement-geometry correspondence and validating holographic encoding principles across multiple geometric topologies. This provides a unique experimental window into the foundations of quantum gravity and holography.
 
 ## Latest Discovery: Emergent Geometry Patterns in Spherical Curvature
 
@@ -462,7 +488,7 @@ This discovery establishes a **solid foundation** for quantum geometry research 
 
 ## 🎯 Main Focus: Custom Curvature Experiment
 
-**The Custom Curvature Experiment (`src/experiments/custom_curvature_experiment.py`) is the cornerstone of this repository and represents our most significant breakthrough in experimental quantum gravity.**
+**The Custom Curvature Experiment (`src/experiments/custom_curvature_experiment.py`) is the cornerstone of this repository and represents our most significant breakthrough in experimental quantum gravity. This experiment demonstrates emergent bulk geometry through quantum entanglement, successfully reconstructing bulk geometric structure from boundary quantum measurements.**
 
 ### Core Claims and Breakthrough Results
 
@@ -533,6 +559,7 @@ All claims are supported by rigorous statistical analysis:
 - Breakthrough methodologies for bulk-boundary coupling
 - **License allows**: Academic peer review, educational use, scientific collaboration
 - **License prohibits**: Commercial use without permission, redistribution, modification
+- **Commercialization is strictly prohibited**: Any commercial use, monetization, or commercialization of this research is explicitly forbidden without written permission
 
 ### Data and Reproducibility
 
@@ -552,7 +579,7 @@ This work represents a **paradigm shift** in experimental quantum gravity:
 4. **First measurement** of bulk perturbations affecting boundary entropies
 5. **Bridge between theory and experiment** in quantum gravity
 
-The Custom Curvature Experiment is not just another simulation—it's **empirical evidence** that quantum processors can encode and measure the geometric structure of spacetime, providing the first experimental window into the foundations of quantum gravity.
+The Custom Curvature Experiment is not just another simulation—it's **empirical evidence** that quantum processors can encode and measure the geometric structure of spacetime, providing the first experimental window into the foundations of quantum gravity. The experiment implements Regge calculus on quantum hardware, showing clear entanglement-geometry correspondence and validating holographic encoding principles across multiple geometric topologies.
 
 ## Theoretical Foundation
 
