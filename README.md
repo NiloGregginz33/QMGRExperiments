@@ -620,6 +620,50 @@ python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology 
 - Use the analysis scripts in `src/analysis/` to extract metrics, visualize geometry, and generate publication-quality figures.
 - All outputs are saved in timestamped directories under `experiment_logs/`.
 
+## Development Tools: Cursor IDE Recommendation
+
+**Recommended but Optional**: While not required to run experiments, we highly recommend using [Cursor IDE](https://cursor.sh/) for viewing and working with this codebase. Cursor provides several advantages that make it particularly well-suited for this quantum physics research project:
+
+### **Why Cursor IDE is Beneficial for This Project**
+
+#### **1. Enhanced Code Navigation** 🔍
+- **AI-powered code understanding**: Cursor's AI can help you quickly understand complex quantum circuit implementations and mathematical algorithms
+- **Intelligent search**: Find specific functions, classes, or experimental protocols across the entire codebase
+- **Context-aware suggestions**: Get relevant code completions and suggestions based on the quantum physics context
+
+#### **2. Rapid Bug Patching** 🐛
+- **Quick issue identification**: AI assistance helps identify potential bugs in quantum circuit implementations
+- **Intelligent fixes**: Get suggestions for fixing common issues in quantum simulation code
+- **Code review assistance**: AI can help review experimental protocols and analysis scripts
+
+#### **3. Quantum Physics Code Optimization** ⚛️
+- **Specialized understanding**: Cursor's AI is trained on scientific code and can better understand quantum mechanics, tensor operations, and mathematical physics
+- **Algorithm suggestions**: Get recommendations for optimizing quantum circuit designs and analysis algorithms
+- **Documentation generation**: Automatically generate or improve documentation for complex experimental protocols
+
+#### **4. Research Workflow Enhancement** 📚
+- **Multi-file context**: Understand how different experiments relate to each other
+- **Experimental parameter tracking**: Easily navigate between experiment definitions and their results
+- **Analysis script integration**: Quickly move between experiment code and analysis tools
+
+### **Getting Started with Cursor**
+
+1. **Install Cursor**: Download from [cursor.sh](https://cursor.sh/)
+2. **Open the project**: Open the QM1 directory in Cursor
+3. **Explore the codebase**: Use Cursor's AI features to understand the experimental protocols
+4. **Run experiments**: Use the terminal within Cursor to execute experiments
+5. **Analyze results**: Navigate between experiment code and analysis scripts seamlessly
+
+### **Alternative Development Environments**
+
+If you prefer other IDEs, the project works well with:
+- **VS Code**: Excellent Python support with quantum computing extensions
+- **PyCharm**: Professional Python IDE with scientific computing features
+- **Jupyter Notebooks**: For interactive analysis and visualization
+- **Command line**: All experiments can be run directly from terminal
+
+**Note**: The choice of development environment is entirely optional. All experiments can be run successfully from any terminal or IDE. Cursor is recommended primarily for its enhanced AI capabilities that are particularly useful for understanding and modifying complex quantum physics code.
+
 ## Hardware vs. Simulator Experiments
 
 **CRITICAL DISTINCTION**: This project contains both real quantum hardware experiments and simulator experiments. The hardware experiments provide empirical evidence, while simulator experiments demonstrate proof-of-concept and theoretical validation.
