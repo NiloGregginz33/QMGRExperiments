@@ -1,0 +1,43 @@
+MI-DISTANCE CORRELATION ANALYSIS SUMMARY
+============================================================
+
+CORRELATION RESULTS:
+-------------------
+Geometric Distance (Pearson): -0.521563
+Graph Distance (Pearson): -0.566079
+Geometric Distance (Spearman): -1.000000
+Graph Distance (Spearman): -0.998629
+
+MI STATISTICS:
+--------------
+Mean MI: 0.001882
+Std MI: 0.004870
+Min MI: 0.000001
+Max MI: 0.034743
+
+DISTANCE STATISTICS:
+-------------------
+Geometric Distance:
+  Mean: 0.424956
+  Std: 0.113385
+  Range: [0.182391, 0.763480]
+
+Graph Distance:
+  Mean: 7.715500
+  Std: 1.847683
+  Range: [3.359764, 12.857643]
+
+INTERPRETATION:
+--------------
+This analysis tests the boundary-bulk correspondence by examining the relationship
+between mutual information (boundary observable) and geometric distance (bulk property).
+
+Strong negative correlations indicate that:
+- Higher mutual information corresponds to shorter geometric distances
+- The bulk geometry emerges from boundary entanglement patterns
+- The holographic principle is manifest in the quantum simulation
+
+The comparison between geometric and graph distances reveals:
+- How well the emergent geometry captures the entanglement structure
+- Whether the bulk geometry is locally consistent with boundary correlations
+- The effectiveness of the MDS embedding in preserving distance relationships
