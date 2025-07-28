@@ -1189,7 +1189,10 @@ phi=1.57, Shannon Entropy=0.878, Causal Witness=0.011, p-value=0.124
 - **Data**: `experiment_logs/custom_curvature_experiment/`
 - **Note**: Ready for hardware deployment
 
-### 11. Custom Curvature Experiment: Dynamical Regge Geometry, Tidal Forces, and Geodesic Deviation ✅ **HARDWARE**
+### 11. Custom Curvature Experiment: Dynamical Regge Geometry, Tidal Forces, and Geodesic Deviation ✅ **HARDWARE** 🎯 **CRITICAL PHENOMENA**
+
+**🎯 MOST CRITICAL EXPERIMENT**: This experiment provides comprehensive evidence for the most critical phenomena in quantum gravity and holography. Most key discoveries can be explored through this single experiment.
+
 - **Implements a fully flexible quantum circuit generator for arbitrary geometries (Euclidean, spherical, hyperbolic) and topologies (chain, ring, star, complete, custom).**
 - **Supports time-dependent evolution, mass perturbations, and both Euclidean and Lorentzian Regge calculus.**
 - **Directly simulates the dynamical Regge equations, allowing for the study of curvature propagation, gravitational wave–like effects, and geodesic deviation (tidal forces) in emergent quantum geometry.**
@@ -1219,8 +1222,28 @@ phi=1.57, Shannon Entropy=0.878, Causal Witness=0.011, p-value=0.124
   - **First experimental implementation of Regge calculus on quantum hardware** with proper error analysis
 - **✅ EXECUTED ON REAL QUANTUM HARDWARE (IBM Brisbane)**
 - **Code:** `src/experiments/custom_curvature_experiment.py`
-- **Data:** `experiment_logs/custom_curvature_experiment/results_n5_geomH_curv100_ibm_CEO2YL.json`
-- **Enhanced Analysis:** `experiment_logs/regge_analysis_5q_hyperbolic_curv10.0/`
+- **Data:** `experiment_logs/custom_curvature_experiment/instance_20250726_153536/results_n11_geomS_curv20_ibm_brisbane_KTNW95.json`
+- **Enhanced Analysis:** `experiment_logs/custom_curvature_experiment/instance_20250726_153536/`
+
+#### **Key Visualizations from Custom Curvature Experiment:**
+
+![MI-Distance Correlation Analysis](experiment_logs/custom_curvature_experiment/instance_20250726_153536/mi_distance_correlation_analysis.png)
+*Boundary-bulk correspondence: Strong correlation between mutual information and geometric distance*
+
+![3D Lorentzian Embedding](experiment_logs/custom_curvature_experiment/instance_20250726_153536/3d_lorentzian_embedding.png)
+*3D embedding showing emergent Lorentzian geometry from quantum entanglement*
+
+![Curvature Flow Analysis](experiment_logs/custom_curvature_experiment/instance_20250726_153536/curvature_flow_analysis.png)
+*Outward flow of curvature and effective energy, consistent with entropic gravity frameworks*
+
+![Boundary Dynamics](experiment_logs/custom_curvature_experiment/instance_20250726_153536/boundary_dynamics.png)
+*Boundary vs bulk entropy dynamics showing holographic encoding*
+
+![Spherical Geometry Verification](experiment_logs/custom_curvature_experiment/instance_20250726_153536/spherical_verification_analysis.png)
+*Verification of spherical geometry with Ricci scalar evolution*
+
+![Detailed MI Analysis](experiment_logs/custom_curvature_experiment/instance_20250726_153536/detailed_mi_analysis.png)
+*Comprehensive mutual information analysis with correlation matrices*
 
 ### 12. Regge Calculus with Lorentzian Geometry: Enhanced Statistical Analysis ✅ **HARDWARE**
 - **First experimental implementation of Regge calculus on quantum hardware with comprehensive error analysis**
@@ -1247,8 +1270,8 @@ phi=1.57, Shannon Entropy=0.878, Causal Witness=0.011, p-value=0.124
   - **Slope discrepancy analysis**: 22× larger than theoretical prediction, indicating complex relationship in discrete hyperbolic geometry
 - **✅ EXECUTED ON REAL QUANTUM HARDWARE (IBM Brisbane)**
 - **Code:** `src/experiments/custom_curvature_experiment.py` (with `--solve_regge` flag)
-- **Analysis Code:** `analyze_regge_results.py`
-- **Data:** `experiment_logs/custom_curvature_experiment/results_n5_geomH_curv100_ibm_CEO2YL.json`
+- **Analysis Code:** `analysis/analyze_regge_results.py`
+- **Data:** `experiment_logs/custom_curvature_experiment/instance_20250726_153536/results_n11_geomS_curv20_ibm_brisbane_KTNW95.json`
 - **Enhanced Analysis:** `experiment_logs/regge_analysis_5q_hyperbolic_curv10.0/`
 
 ### 13. Bulk Reconstruction from Boundary Data
@@ -1257,7 +1280,7 @@ phi=1.57, Shannon Entropy=0.878, Causal Witness=0.011, p-value=0.124
 - **Findings:** Successfully reconstructs bulk distances and curvature consistent with theoretical predictions; provides evidence that bulk geometry can be inferred from boundary measurements alone, within experimental uncertainty.
 - **Tested on:** Both IBM Quantum hardware and simulators.
 - **Code:** `src/experiments/bulk_reconstruction_qiskit.py`
-- **Data:** `experiment_logs/bulk_reconstruction_qiskit/`
+- **Data:** `experiment_logs/older_experiments/bulk_reconstruction_mi_perfect_tensor_simulator_20250721_151444/`
 
 ### 14. Quantum State Teleportation Geometry
 - **Explores the relationship between quantum teleportation protocols and emergent geometric structure.**
@@ -1265,7 +1288,7 @@ phi=1.57, Shannon Entropy=0.878, Causal Witness=0.011, p-value=0.124
 - **Findings:** Shows that high-fidelity teleportation correlates with strong geometric connectivity in the emergent space; provides a geometric interpretation of teleportation efficiency, consistent with theoretical expectations.
 - **Tested on:** Simulators (hardware runs possible).
 - **Code:** `src/experiments/quantum_state_teleportation_geometry_qiskit.py`
-- **Data:** `experiment_logs/quantum_state_teleportation_geometry_simulator/`
+- **Data:** `experiment_logs/older_experiments/quantum_state_teleportation_geometry_simulator_20250711_192920/`
 
 ### 15. Emergent Geometry Teleportation 🔄 **SIMULATOR**
 - **Investigates the emergence of geometric structure during quantum teleportation protocols.**
@@ -1276,7 +1299,7 @@ phi=1.57, Shannon Entropy=0.878, Causal Witness=0.011, p-value=0.124
   - Teleportation fidelities measured for node pairs (0,4) and (1,2)
 - **🔄 EXECUTED ON SIMULATOR ONLY (FakeBrisbane)**
 - **Code:** `src/experiments/emergent_geometry_teleportation.py`
-- **Data:** `experiment_logs/emergent_geometry_teleportation_20250711_215357/`
+- **Data:** `experiment_logs/older_experiments/emergent_geometry_teleportation_20250711_215357/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
 ### 16. Curved Time Experiment 🔄 **SIMULATOR**
@@ -1288,7 +1311,7 @@ phi=1.57, Shannon Entropy=0.878, Causal Witness=0.011, p-value=0.124
   - Statevector analysis reveals complex temporal entanglement patterns
 - **🔄 EXECUTED ON SIMULATOR ONLY (Statevector)**
 - **Code:** `src/experiments/curved_time_experiment.py`
-- **Data:** `experiment_logs/curved_time_experiment/`
+- **Data:** `experiment_logs/older_experiments/curved_time_experiment/`
 - **Status**: 🔄 **SIMULATOR ONLY** (hardware runs possible)
 
 ### 17. CTC (Closed Timelike Curve) Geometry Experiments
@@ -1297,7 +1320,7 @@ phi=1.57, Shannon Entropy=0.878, Causal Witness=0.011, p-value=0.124
 - **Findings:** Reveals that CTC-induced feedback can alter the geometric and entropic properties of the system, providing insight into the interplay between causality and geometry, within the limits of quantum analog simulation, and that perturbations in the CTC structures do not affect the fixed points in the CTC.
 - **Tested on:** Simulators.
 - **Code:** `src/experiments/ctc_geometry_experiment_qiskit.py`, `src/experiments/ctc_conditional_perturbation_experiment_qiskit.py`
-- **Data:** `experiment_logs/ctc_geometry/`, `experiment_logs/ctc_conditional_perturbation_qiskit_statevector_*/`
+- **Data:** `experiment_logs/older_experiments/ctc_geometry/`, `experiment_logs/older_experiments/ctc_conditional_perturbation_qiskit_statevector_*/`
 
 ### 18. Dimensional Reduction Geometry
 - **Tests the emergence of higher-dimensional bulk geometry from lower-dimensional boundary degrees of freedom.**
