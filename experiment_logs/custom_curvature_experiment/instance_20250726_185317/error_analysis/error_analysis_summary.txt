@@ -1,0 +1,55 @@
+
+# Custom Curvature Experiment Error Analysis Report
+
+## Experiment Parameters
+- Number of qubits: 3
+- Geometry: spherical
+- Curvature: 4.5
+- Device: simulator
+- Shots: 10
+- Timesteps: 5
+
+## Error Analysis Parameters
+- Bootstrap samples: 1000
+- Confidence level: 95%
+- Z-score: 1.960
+
+## Mutual Information Analysis
+
+- Mean MI across timesteps: 0.000000 ± 0.000000
+- Average MI error: 0.000000
+- MI range: [0.000000, 0.000000]
+- Coefficient of variation: nan
+
+## Entropy Analysis
+- Mean entropy across timesteps: 0.000000 ± 0.000000
+- Average entropy error: 0.000000
+- Entropy range: [0.000000, 0.000000]
+- Coefficient of variation: nan
+
+## Statistical Significance Tests
+
+### Mutual Information Stability
+
+- Linear trend test: slope = 0.000000 ± 0.000000
+- R² = 0.000, p-value = 1.000
+- Trend significance: Not significant (α = 0.05)
+
+## Error Sources and Recommendations
+
+### Primary Error Sources:
+1. **Shot Noise**: Standard error ∝ 1/√N where N = 10 shots
+2. **Bootstrap Sampling**: 1000 bootstrap samples for error estimation
+3. **Quantum Decoherence**: Hardware-specific errors from simulator
+4. **Statistical Fluctuations**: Natural variation in quantum measurements
+
+### Recommendations:
+1. **Increase Shot Count**: More shots reduce shot noise (current: 10)
+2. **Multiple Runs**: Consider averaging over multiple experiment runs
+3. **Error Mitigation**: Apply quantum error correction techniques
+4. **Calibration**: Regular device calibration for consistent results
+
+## Conclusion
+This error analysis provides confidence intervals and uncertainty estimates for all key measurements
+in the custom curvature experiment. The bootstrap methodology ensures robust error estimation
+even for complex quantum measurements.
