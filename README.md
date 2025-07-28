@@ -622,7 +622,7 @@ python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology 
 
 ## Development Tools: Cursor IDE Recommendation
 
-**Recommended but Optional**: While not required to run experiments, we highly recommend using [Cursor IDE](https://cursor.sh/) for viewing and working with this codebase. Cursor provides several advantages that make it particularly well-suited for this quantum physics research project:
+**Recommended but Optional**: While not required to run experiments, contributor Sidak Sohi highly recommends using [Cursor IDE](https://cursor.sh/) for viewing and working with this codebase. Besides this recommendation and possibly independent replication, this is a one-man effort, and given the project's complexity, scale, and size, it is not impossible that some bugs may have been overlooked. Because of this, it is encouraged to quickly fix bugs yourself using Cursor and submit pull requests when well-substantiated. Cursor provides several advantages that make it particularly well-suited for this quantum physics research project:
 
 ### **Why Cursor IDE is Beneficial for This Project**
 
@@ -633,7 +633,7 @@ python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology 
 
 #### **2. Rapid Bug Patching** 🐛
 - **Quick issue identification**: AI assistance helps identify potential bugs in quantum circuit implementations
-- **Intelligent fixes**: Get suggestions for fixing common issues in quantum simulation code
+- **Intelligent fixes**: Get suggestions for fixing common issues in quantum simulation code from text based prompts. This means theres less of a need to "bug" me about every little thing. (All jokes aside, please feel free to reach out to me for help with the code either through issues on github or through the email at the bottom of the page.)
 - **Code review assistance**: AI can help review experimental protocols and analysis scripts
 
 #### **3. Quantum Physics Code Optimization** ⚛️
@@ -651,7 +651,7 @@ python src/experiments/custom_curvature_experiment.py --num_qubits 5 --topology 
 1. **Install Cursor**: Download from [cursor.sh](https://cursor.sh/)
 2. **Open the project**: Open the QM1 directory in Cursor
 3. **Explore the codebase**: Use Cursor's AI features to understand the experimental protocols
-4. **Run experiments**: Use the terminal within Cursor to execute experiments
+4. **Run experiments**: Use the terminal or prompt engine within Cursor to execute experiments
 5. **Analyze results**: Navigate between experiment code and analysis scripts seamlessly
 
 ### **Alternative Development Environments**
@@ -662,7 +662,7 @@ If you prefer other IDEs, the project works well with:
 - **Jupyter Notebooks**: For interactive analysis and visualization
 - **Command line**: All experiments can be run directly from terminal
 
-**Note**: The choice of development environment is entirely optional. All experiments can be run successfully from any terminal or IDE. Cursor is recommended primarily for its enhanced AI capabilities that are particularly useful for understanding and modifying complex quantum physics code.
+**Note**: The choice of development environment is entirely optional. All experiments can be run successfully from any terminal or IDE. Cursor is recommended primarily for its enhanced AI capabilities that are particularly useful for understanding and modifying complex quantum physics code. 
 
 ## Hardware vs. Simulator Experiments
 
