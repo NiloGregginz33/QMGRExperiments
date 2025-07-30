@@ -191,35 +191,64 @@ def run_experiment(name, script, device, shots, subexp=None, additional_cmd_args
                 script_basename = os.path.basename(script)
                 experiment_name = script_basename.replace('.py', '')
             
-            # Run the analysis script
-            analysis_cmd = ['python', 'tools/analyze_experiment.py', '--experiment', experiment_name]
-            
-            # Add specific analysis scripts if provided
-            if analysis_scripts:
-                analysis_cmd.extend(['--analysis'] + analysis_scripts)
-            
-            print(f"Running analysis command: {' '.join(analysis_cmd)}")
-            
-            try:
-                analysis_result = subprocess.run(analysis_cmd, capture_output=True, text=True, timeout=600)
+            # If no specific analysis scripts provided, run the list generated files script
+            if not analysis_scripts:
+                print("No specific analysis scripts provided. Running file listing analysis...")
                 
-                if analysis_result.stdout:
-                    print("ANALYSIS OUTPUT:")
-                    print(analysis_result.stdout)
+                # Run the list generated files script
+                list_cmd = ['python', 'tools/list_generated_files.py', '--experiment', experiment_name]
+                print(f"Running file listing command: {' '.join(list_cmd)}")
                 
-                if analysis_result.stderr:
-                    print("ANALYSIS ERRORS:")
-                    print(analysis_result.stderr)
-                
-                if analysis_result.returncode == 0:
-                    print("✅ Automatic analysis completed successfully!")
-                else:
-                    print(f"⚠️ Automatic analysis completed with warnings (return code: {analysis_result.returncode})")
+                try:
+                    list_result = subprocess.run(list_cmd, capture_output=True, text=True, timeout=300)
                     
-            except subprocess.TimeoutExpired:
-                print("⚠️ Automatic analysis timed out after 10 minutes")
-            except Exception as e:
-                print(f"⚠️ Error during automatic analysis: {e}")
+                    if list_result.stdout:
+                        print("FILE LISTING OUTPUT:")
+                        print(list_result.stdout)
+                    
+                    if list_result.stderr:
+                        print("FILE LISTING ERRORS:")
+                        print(list_result.stderr)
+                    
+                    if list_result.returncode == 0:
+                        print("✅ File listing analysis completed successfully!")
+                    else:
+                        print(f"⚠️ File listing analysis completed with warnings (return code: {list_result.returncode})")
+                        
+                except subprocess.TimeoutExpired:
+                    print("⚠️ File listing analysis timed out after 5 minutes")
+                except Exception as e:
+                    print(f"⚠️ Error during file listing analysis: {e}")
+            else:
+                # Run specific analysis scripts
+                analysis_cmd = ['python', 'tools/analyze_experiment.py', '--experiment', experiment_name]
+                
+                # Add specific analysis scripts if provided
+                if analysis_scripts:
+                    analysis_cmd.extend(['--analysis'] + analysis_scripts)
+                
+                print(f"Running analysis command: {' '.join(analysis_cmd)}")
+                
+                try:
+                    analysis_result = subprocess.run(analysis_cmd, capture_output=True, text=True, timeout=600)
+                    
+                    if analysis_result.stdout:
+                        print("ANALYSIS OUTPUT:")
+                        print(analysis_result.stdout)
+                    
+                    if analysis_result.stderr:
+                        print("ANALYSIS ERRORS:")
+                        print(analysis_result.stderr)
+                    
+                    if analysis_result.returncode == 0:
+                        print("✅ Automatic analysis completed successfully!")
+                    else:
+                        print(f"⚠️ Automatic analysis completed with warnings (return code: {analysis_result.returncode})")
+                        
+                except subprocess.TimeoutExpired:
+                    print("⚠️ Automatic analysis timed out after 10 minutes")
+                except Exception as e:
+                    print(f"⚠️ Error during automatic analysis: {e}")
         
         return success
     
@@ -362,38 +391,87 @@ def run_experiment(name, script, device, shots, subexp=None, additional_cmd_args
             script_basename = os.path.basename(script)
             experiment_name = script_basename.replace('.py', '')
         
-        # Run the analysis script
-        analysis_cmd = ['python', 'tools/analyze_experiment.py', '--experiment', experiment_name]
-        
-        # Add specific analysis scripts if provided
-        if analysis_scripts:
-            analysis_cmd.extend(['--analysis'] + analysis_scripts)
-        
-        print(f"Running analysis command: {' '.join(analysis_cmd)}")
-        
-        try:
-            analysis_result = subprocess.run(analysis_cmd, capture_output=True, text=True, timeout=600)
+        # If no specific analysis scripts provided, run the list generated files script
+        if not analysis_scripts:
+            print("No specific analysis scripts provided. Running file listing analysis...")
             
-            if analysis_result.stdout:
-                print("ANALYSIS OUTPUT:")
-                print(analysis_result.stdout)
+            # Run the list generated files script
+            list_cmd = ['python', 'tools/list_generated_files.py', '--experiment', experiment_name]
+            print(f"Running file listing command: {' '.join(list_cmd)}")
             
-            if analysis_result.stderr:
-                print("ANALYSIS ERRORS:")
-                print(analysis_result.stderr)
-            
-            if analysis_result.returncode == 0:
-                print("✅ Automatic analysis completed successfully!")
-            else:
-                print(f"⚠️ Automatic analysis completed with warnings (return code: {analysis_result.returncode})")
+            try:
+                list_result = subprocess.run(list_cmd, capture_output=True, text=True, timeout=300)
                 
-        except subprocess.TimeoutExpired:
-            print("⚠️ Automatic analysis timed out after 10 minutes")
-        except Exception as e:
-            print(f"⚠️ Error during automatic analysis: {e}")
+                if list_result.stdout:
+                    print("FILE LISTING OUTPUT:")
+                    print(list_result.stdout)
+                
+                if list_result.stderr:
+                    print("FILE LISTING ERRORS:")
+                    print(list_result.stderr)
+                
+                if list_result.returncode == 0:
+                    print("✅ File listing analysis completed successfully!")
+                else:
+                    print(f"⚠️ File listing analysis completed with warnings (return code: {list_result.returncode})")
+                    
+            except subprocess.TimeoutExpired:
+                print("⚠️ File listing analysis timed out after 5 minutes")
+            except Exception as e:
+                print(f"⚠️ Error during file listing analysis: {e}")
+        else:
+            # Run specific analysis scripts
+            analysis_cmd = ['python', 'tools/analyze_experiment.py', '--experiment', experiment_name]
+            
+            # Add specific analysis scripts if provided
+            if analysis_scripts:
+                analysis_cmd.extend(['--analysis'] + analysis_scripts)
+            
+            print(f"Running analysis command: {' '.join(analysis_cmd)}")
+            
+            try:
+                analysis_result = subprocess.run(analysis_cmd, capture_output=True, text=True, timeout=600)
+                
+                if analysis_result.stdout:
+                    print("ANALYSIS OUTPUT:")
+                    print(analysis_result.stdout)
+                
+                if analysis_result.stderr:
+                    print("ANALYSIS ERRORS:")
+                    print(analysis_result.stderr)
+                
+                if analysis_result.returncode == 0:
+                    print("✅ Automatic analysis completed successfully!")
+                else:
+                    print(f"⚠️ Automatic analysis completed with warnings (return code: {analysis_result.returncode})")
+                    
+            except subprocess.TimeoutExpired:
+                print("⚠️ Automatic analysis timed out after 10 minutes")
+            except Exception as e:
+                print(f"⚠️ Error during automatic analysis: {e}")
     
     return success
 
+
+def get_available_analysis_scripts():
+    """Get list of available analysis scripts."""
+    analysis_dir = 'analysis'
+    tools_dir = 'tools'
+    scripts = []
+    
+    # Check analysis directory
+    if os.path.exists(analysis_dir):
+        for file in os.listdir(analysis_dir):
+            if file.endswith('.py') and not file.startswith('__'):
+                scripts.append(os.path.join(analysis_dir, file))
+    
+    # Check tools directory for analysis scripts
+    if os.path.exists(tools_dir):
+        for file in os.listdir(tools_dir):
+            if file.endswith('.py') and ('analyze' in file.lower() or 'list' in file.lower()):
+                scripts.append(os.path.join(tools_dir, file))
+    
+    return sorted(scripts)
 
 def main():
     parser = argparse.ArgumentParser(description='Run a selected quantum experiment')
@@ -417,13 +495,37 @@ def main():
             print(f"  {idx}. {name} (sub-experiment)")
         else:
             print(f"  {idx}. {name}")
+    
+    # Show available analysis scripts
+    analysis_scripts = get_available_analysis_scripts()
+    if analysis_scripts:
+        print(f"\nAvailable analysis scripts:")
+        for i, script in enumerate(analysis_scripts, 1):
+            script_name = os.path.basename(script)
+            print(f"  {i}. {script_name}")
+        print(f"  {len(analysis_scripts) + 1}. list_generated_files.py (auto-default when no analysis specified)")
 
     if args.experiment is None:
-        try:
-            choice = int(input("\nSelect an experiment by number: "))
-        except Exception as e:
-            print(f"Error: {e}")
-            sys.exit(1)
+        while True:
+            try:
+                user_input = input("\nSelect an experiment by number (or 'q' to quit): ").strip().lower()
+                
+                # Check for quit commands
+                if user_input in ['q', 'quit', 'exit', '']:
+                    print("Exiting...")
+                    sys.exit(0)
+                
+                # Try to convert to integer
+                choice = int(user_input)
+                break
+            except ValueError:
+                print("Invalid input. Please enter a number or 'q' to quit.")
+            except KeyboardInterrupt:
+                print("\nExiting...")
+                sys.exit(0)
+            except Exception as e:
+                print(f"Error: {e}")
+                sys.exit(1)
     else:
         choice = args.experiment
 

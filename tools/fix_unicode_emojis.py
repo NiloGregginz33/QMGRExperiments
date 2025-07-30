@@ -8,6 +8,8 @@ encoding issues on Windows systems.
 
 import re
 import os
+import argparse
+import sys
 
 def fix_unicode_emojis(file_path):
     """Replace problematic Unicode characters with ASCII equivalents."""
@@ -99,25 +101,58 @@ def fix_unicode_emojis(file_path):
     print(f"Fixed Unicode characters in {file_path}")
 
 def main():
-    # Fix the custom curvature experiment file
-    experiment_file = "src/experiments/custom_curvature_experiment.py"
+    parser = argparse.ArgumentParser(description='Fix Unicode and emoji issues in files')
+    parser.add_argument('--file', type=str, help='File to fix Unicode characters in')
+    parser.add_argument('files', nargs='*', help='Files to fix Unicode characters in (positional arguments)')
     
-    if os.path.exists(experiment_file):
-        fix_unicode_emojis(experiment_file)
-        print("[SUCCESS] Unicode fixes applied to custom curvature experiment!")
+    args = parser.parse_args()
+    
+    # Determine which files to process
+    files_to_process = []
+    
+    if args.file:
+        files_to_process.append(args.file)
+    
+    if args.files:
+        files_to_process.extend(args.files)
+    
+    # If no files specified, use default behavior
+    if not files_to_process:
+        # Default behavior - fix the custom curvature experiment file
+        experiment_file = "src/experiments/custom_curvature_experiment.py"
+        
+        if os.path.exists(experiment_file):
+            fix_unicode_emojis(experiment_file)
+            print("[SUCCESS] Unicode fixes applied to custom curvature experiment!")
+        else:
+            print(f"[ERROR] File not found: {experiment_file}")
+        
+        # Fix the analyze experiment script
+        analyze_file = "tools/analyze_experiment.py"
+        
+        if os.path.exists(analyze_file):
+            fix_unicode_emojis(analyze_file)
+            print("[SUCCESS] Unicode fixes applied to analyze experiment script!")
+        else:
+            print(f"[ERROR] File not found: {analyze_file}")
+        
+        print("[SUCCESS] All Unicode fixes applied successfully!")
+        return
+    
+    # Process specified files
+    success_count = 0
+    total_count = len(files_to_process)
+    
+    for file_path in files_to_process:
+        if fix_unicode_emojis(file_path):
+            success_count += 1
+    
+    print(f"\n[SUMMARY] Successfully processed {success_count}/{total_count} files")
+    
+    if success_count == total_count:
+        print("[SUCCESS] All files processed successfully!")
     else:
-        print(f"[ERROR] File not found: {experiment_file}")
-    
-    # Fix the analyze experiment script
-    analyze_file = "tools/analyze_experiment.py"
-    
-    if os.path.exists(analyze_file):
-        fix_unicode_emojis(analyze_file)
-        print("[SUCCESS] Unicode fixes applied to analyze experiment script!")
-    else:
-        print(f"[ERROR] File not found: {analyze_file}")
-    
-    print("[SUCCESS] All Unicode fixes applied successfully!")
+        print("[WARNING] Some files could not be processed. Check the output above for details.")
 
 if __name__ == "__main__":
     main() 
