@@ -1,0 +1,165 @@
+{
+  "entanglement_spectrum": {
+    "analysis": {
+      "total_entanglement": -6.071532165918825e-18,
+      "entanglement_entropy": NaN,
+      "spectrum_gap": 0.0016823947342465052,
+      "spectrum_ratio": 2.209681905037787,
+      "degeneracy": 1,
+      "spectrum_width": 0.005425707392926251,
+      "spectrum_skewness": 0.4954506304392428,
+      "spectrum_kurtosis": 0.10494716317171626
+    },
+    "data_shape": [
+      11
+    ],
+    "data_summary": {
+      "mean": -5.519574696289841e-19,
+      "std": 0.0013966767000241369,
+      "min": -0.0023525381689233228,
+      "max": 0.0030731692240029275
+    }
+  },
+  "geometric_phase": {
+    "analysis": {
+      "total_phase": -119.92158513609047,
+      "phase_variance": 0.0,
+      "phase_trend": 0,
+      "phase_oscillations": 0,
+      "phase_persistence": NaN
+    },
+    "data": [
+      -119.92158513609047
+    ]
+  },
+  "topological_invariants": {
+    "analysis": {
+      "betti_0": 9,
+      "betti_1": 1,
+      "euler_characteristic": 8,
+      "connectivity": 0.03636363636363636,
+      "laplacian_gap": 0.0,
+      "spectral_radius": 2.0,
+      "algebraic_connectivity": 0.0
+    }
+  },
+  "renormalization_group_flow": {
+    "analysis": {
+      "rg_beta_function": -0.0036507340385376176,
+      "rg_r_squared": 0.5050754206598065,
+      "correlation_evolution": [
+        {
+          "time": 0,
+          "mean_entropy": 10.018894315519912,
+          "std_entropy": 0,
+          "max_entropy": 10.018894315519912,
+          "min_entropy": 10.018894315519912,
+          "entropy_entropy": -23.088268853345436
+        },
+        {
+          "time": 1,
+          "mean_entropy": 10.150536416089796,
+          "std_entropy": 0,
+          "max_entropy": 10.150536416089796,
+          "min_entropy": 10.150536416089796,
+          "entropy_entropy": -23.52413767124848
+        },
+        {
+          "time": 2,
+          "mean_entropy": 10.164801078596295,
+          "std_entropy": 0,
+          "max_entropy": 10.164801078596295,
+          "min_entropy": 10.164801078596295,
+          "entropy_entropy": -23.571471086335976
+        },
+        {
+          "time": 3,
+          "mean_entropy": 10.136813994370769,
+          "std_entropy": 0,
+          "max_entropy": 10.136813994370769,
+          "min_entropy": 10.136813994370769,
+          "entropy_entropy": -23.478622452618456
+        }
+      ],
+      "fixed_point": 10.136813994370769,
+      "flow_direction": "away_from_fixed_point"
+    }
+  },
+  "quantum_criticality": {
+    "analysis": {
+      "critical_exponent": -0.34587906365605425,
+      "power_law_r_squared": 0.01958229603794765,
+      "mean_scaling_dimension": Infinity,
+      "scaling_dimension_variance": NaN,
+      "correlation_length": -2.8911839581118124,
+      "is_critical": "False",
+      "scaling_dimensions": [
+        Infinity,
+        20.650850675413995,
+        10.639006951332469,
+        6.220156350579798,
+        5.836921129049869,
+        4.459155566112209,
+        3.6210690587356384,
+        4.9043526515528475,
+        5.037965638741665,
+        3.461699018309807,
+        3.117953665149295,
+        3.235675254924709,
+        6.498611995592891,
+        3.5848480773289646,
+        3.2932581218731807,
+        4.830435975805562,
+        2.9910677268806443,
+        2.9267716268746162,
+        5.125818727183402,
+        2.3524380267434895,
+        2.2401390430430856,
+        3.083994099615583,
+        2.6082883009294995,
+        2.589132372469127,
+        2.4859663458824848,
+        2.2917055167417755,
+        2.4796772286207416,
+        2.523343160942806,
+        3.101601197453436,
+        2.2579321498425946,
+        3.429299287579715,
+        2.036147715652571,
+        2.9460697925830317,
+        2.5698304733513333,
+        2.8677930359481576,
+        2.338374266915285,
+        2.3880265025959493,
+        2.3509217409816285,
+        4.042467494508539,
+        2.250015329104216,
+        1.6976512197597733,
+        2.042348161937256,
+        1.9497912851018644,
+        2.6060758539431848,
+        2.493869094186795,
+        3.0625550613116714,
+        2.9607946525255233,
+        1.8956220170053062,
+        1.7990143580445954,
+        2.412140172788215,
+        2.4974057453079714,
+        2.260040441062878,
+        2.6558401759670223,
+        2.279866074659159,
+        2.614406915816186
+      ]
+    }
+  },
+  "holographic_entropy_cone": {
+    "analysis": {
+      "total_inequalities_tested": 1140,
+      "inequalities_satisfied": 1139,
+      "inequalities_violated": 1,
+      "cone_satisfaction_rate": 0.9991228070175439,
+      "is_holographic": false,
+      "total_regions_analyzed": 20
+    }
+  }
+}
