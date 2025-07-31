@@ -4,7 +4,7 @@
 
 This repository contains experimental quantum mechanics research focused on **holographic duality**, **emergent spacetime geometry**, and **quantum gravity**. The project demonstrates emergent bulk geometry through quantum entanglement, successfully reconstructing bulk geometric structure from boundary quantum measurements.
 
-**Key Achievement**: First experimental validation of curved spacetime geometry emerging from quantum entanglement on actual quantum processors (IBM Brisbane), with p < 0.001 statistical significance.
+**Key Achievement**: First experimental validation of dynamic curved spacetime geometry emerging from quantum entanglement on actual quantum processors (IBM Brisbane), with p < 0.001 statistical significance.
 
 ## Repository Structure
 
@@ -172,6 +172,17 @@ python src/experiments/custom_curvature_experiment.py \
   --curvature 20.0 \
   --device ibm_brisbane \
   --shots 1000
+
+# If running using the run_experiment,py script, which is recommended (notice the 
+# = sign for the arguments after --args)
+python run_experiment.py \
+  --experiment 1 \
+  --args \
+  --num_qubits=7 \
+  --curvature=10.0 \
+  --device=ibm_brisbane \
+  --shots=2000
+  --
 ```
 
 ### Running Other Experiments
@@ -219,7 +230,7 @@ python src/experiments/quantum_switch_emergent_time_qiskit.py
 ### 2. **Hardware Limitations**
 - **Issue**: Limited qubit counts (3-11 qubits) due to current hardware constraints
 - **Impact**: Cannot reach continuum limit for full quantum gravity
-- **Status**: Acknowledged limitation, results are preliminary
+- **Status**: Acknowledged limitation, results are preliminary but still larger qubit count than most quantum computing experiments
 
 ### 3. **Statistical Artifacts**
 - **Issue**: Some analysis methods show conflicting results
