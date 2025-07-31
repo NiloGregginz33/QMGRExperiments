@@ -1,0 +1,45 @@
+{
+  "experiment_type": "bell_state_test",
+  "num_qubits": 2,
+  "circuit_depth": 2,
+  "quantum_state_outputs": [
+    {
+      "timestep": 1,
+      "statevector": [
+        {
+          "real": 0.7071067811865475,
+          "imag": 0.0
+        },
+        {
+          "real": 0.0,
+          "imag": 0.0
+        },
+        {
+          "real": 0.0,
+          "imag": 0.0
+        },
+        {
+          "real": 0.7071067811865475,
+          "imag": 0.0
+        }
+      ],
+      "mutual_information_matrix": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          0.0
+        ]
+      ],
+      "circuit_depth": 2,
+      "num_gates": 2
+    }
+  ],
+  "quantum_properties": {
+    "purity": 0.9999999999999996,
+    "von_neumann_entropy": -1.442679143053433e-10,
+    "bell_state_created": true
+  }
+}

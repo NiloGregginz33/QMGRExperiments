@@ -1,0 +1,37 @@
+COMPREHENSIVE QUANTUM GEOMETRY ANALYSIS SUMMARY
+============================================================
+
+ANALYSIS OVERVIEW:
+  - Input file: experiment_logs/custom_curvature_experiment/instance_20250731_093254/results_n8_geomS_curv15_ibm_brisbane_REZK6P.json
+  - Number of qubits: 8
+  - Overall score: -0.8659
+
+GEOMETRIC LOCALITY:
+  - Locality score: 1.1141
+  - Distance decay rate: 0.0000
+  - Non-local fraction: 1.9286
+
+GRAPH STRUCTURE:
+  - Graph density: 0.1429
+  - Average clustering: 0.0000
+  - Modularity: 0.3750
+  - Number of communities: 4
+
+MDS VISUALIZATION:
+  - 2D MDS stress: 0.3638
+  - 3D MDS stress: 0.2747
+
+RYU-TAKAYANAGI CONSISTENCY:
+  - RT scaling exponent: -3.5297
+  - RT consistency score: -3.5297
+  - Area law violation: 0.1085
+
+ENTANGLEMENT SPECTRUM:
+  - Average entanglement entropy: 0.0000
+  - Haar deviation: 0.0000
+  - Page curve R²: 0.0000
+
+INTERPRETATION:
+  ❌ POOR: Little evidence of quantum geometry
+  - Primarily classical correlations
+  - Significant redesign needed

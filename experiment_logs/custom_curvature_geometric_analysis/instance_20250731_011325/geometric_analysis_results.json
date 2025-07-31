@@ -1,0 +1,81 @@
+{
+  "experiment_info": {
+    "data_path": "experiment_logs\\custom_curvature_experiment\\instance_20250731_005039\\results_n7_geomS_curv2_ibm_brisbane_5PVWS5.json",
+    "n_qubits": 7,
+    "geometry_type": "spherical",
+    "curvature": 1.5,
+    "analysis_timestamp": "2025-07-31T01:13:25.016838"
+  },
+  "locality_analysis": {
+    "locality_scores": [
+      0.00027944412279571365,
+      0.00020619514788765655,
+      0.00023777727958718072,
+      0.0002943578554424109,
+      0.00016052508593989126,
+      0.0005076197296835359,
+      6.491313195100361e-05
+    ],
+    "average_locality": 0.0002501189076124847,
+    "distance_matrix": "[[1.05772515e-03 1.19837158e-03 1.00000000e-06 1.11561164e-03\n  1.29469400e-03 8.19002821e-04 1.37571826e-03]\n [1.19837158e-03 1.05772515e-03 1.17910139e-03 1.16108807e-03\n  1.35467439e-03 7.11461699e-04 1.25536387e-03]\n [1.00000000e-06 1.17910139e-03 1.05772515e-03 9.89079653e-04\n  1.28557483e-03 1.25063260e-03 1.21720062e-03]\n [1.11561164e-03 1.16108807e-03 9.89079653e-04 1.05772515e-03\n  1.08733201e-03 5.05704889e-04 1.35652181e-03]\n [1.29469400e-03 1.35467439e-03 1.28557483e-03 1.08733201e-03\n  1.05772515e-03 3.25120124e-04 1.36895974e-03]\n [8.19002821e-04 7.11461699e-04 1.25063260e-03 5.05704889e-04\n  3.25120124e-04 1.05772515e-03 1.36001410e-03]\n [1.37571826e-03 1.25536387e-03 1.21720062e-03 1.35652181e-03\n  1.36895974e-03 1.36001410e-03 1.05772515e-03]]"
+  },
+  "graph_analysis": {
+    "num_nodes": 7,
+    "num_edges": 6,
+    "density": 0.2857142857142857,
+    "average_clustering": 0.0,
+    "average_shortest_path": Infinity,
+    "num_connected_components": 2,
+    "largest_component_size": 6
+  },
+  "cluster_analysis": {
+    "num_clusters": 1,
+    "cluster_sizes": [
+      "7"
+    ],
+    "cluster_mi_scores": [
+      0.00031880001320173284
+    ],
+    "cluster_labels": "[0 0 0 0 0 0 0]",
+    "size_mi_correlation": 0
+  },
+  "mds_analysis": {
+    "stress": 4.248017652170101e-06,
+    "embedding_shape": [
+      7,
+      3
+    ]
+  },
+  "rt_consistency": {
+    "area_law_correlation": 1.0,
+    "log_correction_correlation": 1.0,
+    "subsystem_sizes": [
+      2,
+      3
+    ],
+    "subsystem_entropies": [
+      0.0003533553502484945,
+      0.00044039318942406494
+    ]
+  },
+  "spectrum_analysis": {
+    "spectrum_properties": {
+      "mean_mi": 0.00031880001320173284,
+      "std_mi": 0.0,
+      "mi_distribution": "[0.0003188 0.0003188 0.0003188 0.0003188 0.0003188 0.0003188 0.0003188]",
+      "max_mi": 0.00031880001320173284,
+      "min_mi": 0.00031880001320173284
+    },
+    "random_predictions": "[0.0003188 0.0003188 0.0003188 0.0003188 0.0003188 0.0003188 0.0003188]",
+    "deviations_from_random": "[0. 0. 0. 0. 0. 0. 0.]",
+    "mean_deviation": 0.0,
+    "std_deviation": 0.0,
+    "random_correlation": NaN
+  },
+  "summary_metrics": {
+    "geometric_locality_score": 0.0002501189076124847,
+    "graph_connectivity": 0.2857142857142857,
+    "rt_consistency_score": 1.0,
+    "random_correlation": NaN
+  }
+}

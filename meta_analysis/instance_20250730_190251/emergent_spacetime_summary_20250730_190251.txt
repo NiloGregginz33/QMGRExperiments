@@ -1,0 +1,66 @@
+EMERGENT SPACETIME ANALYSIS SUMMARY
+==================================================
+
+EXPERIMENTS ANALYZED:
+------------------------------
+Experiment 1:
+  File: ..\experiment_logs\custom_curvature_experiment\instance_20250726_153536\results_n11_geomS_curv20_ibm_brisbane_KTNW95.json
+  Qubits: 11
+  Geometry: spherical
+  Curvature: 20.0
+  Device: ibm_brisbane
+  Shots: 2000
+  Timestamp: unknown
+
+Experiment 2:
+  File: ..\experiment_logs\custom_curvature_experiment\instance_20250724_165949\results_n7_geomH_curv4_ibm_brisbane_YNW0D5.json
+  Qubits: 7
+  Geometry: hyperbolic
+  Curvature: 4.5
+  Device: ibm_brisbane
+  Shots: 1024
+  Timestamp: unknown
+
+Experiment 3:
+  File: ..\experiment_logs\custom_curvature_experiment\instance_20250724_202928\results_n7_geomH_curv16_ibm_brisbane_5Z68RT.json
+  Qubits: 7
+  Geometry: hyperbolic
+  Curvature: 16.0
+  Device: ibm_brisbane
+  Shots: 2000
+  Timestamp: unknown
+
+Experiment 4:
+  File: ..\experiment_logs\custom_curvature_experiment\instance_20250726_185317\results_n3_geomS_curv4_simulator_DI2DQ6.json
+  Qubits: 3
+  Geometry: spherical
+  Curvature: 4.5
+  Device: simulator
+  Shots: 10
+  Timestamp: unknown
+
+Experiment 5:
+  File: ..\experiment_logs\custom_curvature_experiment\instance_20250729_092000\results_n3_geomS_curv5_simulator_SL8XA9.json
+  Qubits: 3
+  Geometry: spherical
+  Curvature: 5.0
+  Device: simulator
+  Shots: 100
+  Timestamp: unknown
+
+CONCLUSION: GEOMETRIC QUANTUM CORRELATIONS
+CONFIDENCE: MODERATE
+
+Evidence Summary:
+  Emergent Geometry: 3/8 tests
+  Quantum Correlations: 5/8 tests
+
+Detailed Test Results:
+  scale_dependence: POWER LAW SCALING → Emergent Geometry
+  continuum_limit: DISCRETE SIGNATURES → Quantum Correlations
+  classical_benchmarks: LOW CLASSICAL AGREEMENT → Quantum Correlations
+  decoherence_sensitivity: NOISE SENSITIVE → Quantum Correlations
+  information_theoretic: CLASSICAL CORRELATIONS → Emergent Geometry
+  causal_structure: CAUSAL VIOLATIONS → Quantum Correlations
+  background_independence: ENHANCED BACKGROUND INDEPENDENT (score: 1.000) → Emergent Geometry
+  holographic_consistency: ENHANCED HOLOGRAPHIC INCONSISTENT (score: 0.565) → Quantum Correlations
