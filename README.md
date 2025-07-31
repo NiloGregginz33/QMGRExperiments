@@ -1,5 +1,165 @@
 # Quantum Circuit Implementation of Holographic Scaling Relations
 
+## **Mathematical Formalism**
+
+### **Holographic Duality and AdS/CFT Correspondence**
+
+The mathematical foundation of our work rests on the **AdS/CFT correspondence** (Anti-de Sitter/Conformal Field Theory), which establishes a duality between:
+
+1. **Bulk Theory**: Quantum gravity in (d+1)-dimensional Anti-de Sitter space
+2. **Boundary Theory**: Conformal field theory on d-dimensional boundary
+
+**Mathematical Statement**:
+```
+Z_{CFT}[J] = Z_{AdS}[φ|_{\partial AdS} = J]
+```
+
+Where:
+- `Z_{CFT}[J]` is the partition function of the boundary CFT with source J
+- `Z_{AdS}[φ|_{\partial AdS} = J]` is the partition function of bulk AdS gravity with boundary condition φ|_{\partial AdS} = J
+
+### **Ryu-Takayanagi Formula**
+
+The **Ryu-Takayanagi formula** relates boundary entanglement entropy to bulk geometry:
+
+```
+S(A) = \frac{\text{Area}(\gamma_A)}{4G_N}
+```
+
+Where:
+- `S(A)` is the von Neumann entropy of boundary region A
+- `γ_A` is the minimal surface in the bulk anchored to ∂A
+- `G_N` is Newton's constant
+
+**Mutual Information Extension**:
+```
+I(A:B) = S(A) + S(B) - S(A ∪ B) = \frac{\text{Area}(\gamma_A) + \text{Area}(\gamma_B) - \text{Area}(\gamma_{A∪B})}{4G_N}
+```
+
+### **Emergent Geometry from Quantum Entanglement**
+
+Our experimental approach implements the **holographic principle** through quantum circuits:
+
+**Quantum State Preparation**:
+```
+|ψ⟩ = U_{holographic} |0⟩^{⊗n}
+```
+
+Where `U_{holographic}` is a parameterized quantum circuit that encodes bulk geometry.
+
+**Mutual Information Matrix**:
+```
+M_{ij} = I(ρ_i : ρ_j) = S(ρ_i) + S(ρ_j) - S(ρ_i ⊗ ρ_j)
+```
+
+Where `ρ_i` is the reduced density matrix of qubit i.
+
+### **Regge Calculus for Discrete Geometry**
+
+We implement **Regge calculus** to compute curvature on discrete triangulations:
+
+**Angle Deficit**:
+```
+δ_i = 2π - \sum_{j} θ_{ij}
+```
+
+Where `θ_{ij}` are the angles around vertex i.
+
+**Curvature Measure**:
+```
+K_i = \frac{δ_i}{A_i}
+```
+
+Where `A_i` is the area associated with vertex i.
+
+**Ricci Scalar Approximation**:
+```
+R ≈ \sum_i \frac{δ_i}{A_i} = \sum_i K_i
+```
+
+### **Multidimensional Scaling (MDS) for Geometric Reconstruction**
+
+**Distance Matrix Construction**:
+```
+D_{ij} = \sqrt{2(1 - M_{ij})}
+```
+
+Where `M_{ij}` is the mutual information between qubits i and j.
+
+**MDS Optimization**:
+```
+\min_{X} \sum_{i,j} (D_{ij} - ||x_i - x_j||)^2
+```
+
+Where `X = {x_1, ..., x_n}` are the embedded coordinates.
+
+### **Bayesian Statistical Framework**
+
+**Likelihood Function**:
+```
+P(D|θ) = \prod_{i=1}^{N} \mathcal{N}(y_i | f(x_i; θ), σ^2)
+```
+
+Where:
+- `D = {(x_i, y_i)}_{i=1}^{N}` is the data
+- `f(x; θ)` is the curvature model
+- `σ^2` is the noise variance
+
+**Prior Distribution**:
+```
+P(θ) = \mathcal{N}(θ | μ_0, Σ_0)
+```
+
+**Posterior Distribution**:
+```
+P(θ|D) ∝ P(D|θ) P(θ)
+```
+
+**Bayes Factor**:
+```
+BF = \frac{P(D|H_1)}{P(D|H_0)} = \frac{\int P(D|θ_1, H_1) P(θ_1|H_1) dθ_1}{\int P(D|θ_0, H_0) P(θ_0|H_0) dθ_0}
+```
+
+### **Quantum Circuit Implementation**
+
+**Parameterized Quantum Circuit**:
+```
+U(θ) = \prod_{l=1}^{L} \left(\prod_{i=1}^{n} R_z(θ_{l,i}) \prod_{i=1}^{n-1} CX_{i,i+1}\right)
+```
+
+Where:
+- `L` is the number of layers
+- `θ_{l,i}` are rotation angles
+- `CX_{i,i+1}` are controlled-X gates
+
+**Curvature Encoding**:
+```
+κ = \sum_{i=1}^{n} \frac{θ_i}{π} \quad \text{(normalized curvature)}
+```
+
+### **Statistical Validation Metrics**
+
+**Effect Size (Cohen's d)**:
+```
+d = \frac{μ_1 - μ_0}{σ_{pooled}}
+```
+
+Where:
+- `μ_1, μ_0` are the means under alternative and null hypotheses
+- `σ_{pooled}` is the pooled standard deviation
+
+**Credible Intervals**:
+```
+P(θ_L ≤ θ ≤ θ_U | D) = 1 - α
+```
+
+Where `[θ_L, θ_U]` is the (1-α) credible interval.
+
+**Probability of Positive Curvature**:
+```
+P(κ > 0 | D) = \int_0^{∞} P(κ|D) dκ
+```
+
 ## **Scientific Context and Significance**
 
 ### **Where This Work Fits in Quantum Gravity Research**
@@ -250,6 +410,18 @@ This enhanced analysis provides:
 ## Project Summary
 
 This project demonstrates emergent bulk geometry through quantum entanglement, successfully reconstructing bulk geometric structure from boundary quantum measurements. By designing and executing a suite of quantum information experiments, we provide experimental verification of holographic entropy scaling in quantum circuits and demonstrate boundary-bulk information recovery in controlled quantum systems. Our approach reconstructs geometric features—such as curvature, distances, angle sums, and hyperbolicity—directly from measurement outcomes, both on simulators and real quantum hardware, moving beyond model-dependent inference. The custom curvature experiment implements Regge calculus on quantum hardware, showing clear entanglement-geometry correspondence and validating holographic encoding principles across multiple geometric topologies. These results are obtained via quantum analog simulation, and are subject to device noise and statistical uncertainty.
+
+## About This Repository: Live Research Journey
+
+This repository represents live, ongoing research that documents the journey of understanding quantum gravity and holographic principles through experimental investigation. As with any scientific exploration, initial thoughts and data sometimes proved misleading, leading to revisions and refinements in both methodology and interpretation.
+
+**What this means for readers:**
+- The repository contains experiments from different stages of understanding
+- Earlier commits may reflect initial hypotheses that were later refined
+- The most recent results represent the current state of understanding
+- This is a living document that evolves as new insights are gained
+
+The iterative nature of scientific discovery is reflected throughout the codebase and documentation. Readers should focus on the most recent experimental results and analysis for the current understanding of the phenomena under investigation.
 
 ## Information-Theoretic Foundations: From Quantum Computers to Cosmic Reality
 
@@ -2235,5 +2407,8 @@ The `analyze_experiment.py` script makes it easy to explore and analyze experime
 - **Statistical power**: Large enough system to overcome quantum noise
 - **Publication significance**: Demonstrates feasibility of larger-scale quantum gravity experiments
 
-#### **Honest Limitations (Not Failures)**
-
+#### **Special Thanks**
+- Thank you to my parents, who understood the decisions I made in lige and decided to support me anyways
+- Thank you Sidak Sohi, youre coding tips have shaved months off the timeline
+- Thank you Roohani Sohi, someone whose bullying inspires me and keeps my oraganized 
+- Thank you Francine Prasad for urging me not to count on faith alone
