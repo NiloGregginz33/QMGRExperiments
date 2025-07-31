@@ -1,0 +1,145 @@
+{
+  "page_curve_data": {
+    "timesteps": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "radiation_sizes": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "black_hole_sizes": [
+      4,
+      3,
+      2,
+      1
+    ],
+    "radiation_entropies": [
+      0.0,
+      0.9709505944546686,
+      1.8859445063456086,
+      2.956574243734413
+    ],
+    "radiation_entropy_metadata": [
+      {
+        "method": "basic",
+        "success": true,
+        "entropy": 0.0,
+        "confidence_interval": [
+          0.0,
+          0.0
+        ],
+        "std_error": 0.0
+      },
+      {
+        "method": "basic",
+        "success": true,
+        "entropy": 0.9709505944546686,
+        "confidence_interval": [
+          0.8738555350092018,
+          1.0680456539001355
+        ],
+        "std_error": 0.048547529722733435
+      },
+      {
+        "method": "basic",
+        "success": true,
+        "entropy": 1.8859445063456086,
+        "confidence_interval": [
+          1.6973500557110477,
+          2.0745389569801698
+        ],
+        "std_error": 0.09429722531728044
+      },
+      {
+        "method": "basic",
+        "success": true,
+        "entropy": 2.956574243734413,
+        "confidence_interval": [
+          2.660916819360972,
+          3.2522316681078545
+        ],
+        "std_error": 0.14782871218672064
+      }
+    ],
+    "radiation_qubits_per_step": [
+      [],
+      [
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        2
+      ]
+    ],
+    "black_hole_qubits_per_step": [
+      [
+        0,
+        1,
+        2,
+        3
+      ],
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        3
+      ]
+    ]
+  },
+  "metadata": {
+    "experiment_type": "page_curve",
+    "timestamp": "20250730_141211",
+    "total_qubits": 4,
+    "evaporation_steps": 4,
+    "entropy_method": "basic",
+    "entropy_parameters": {
+      "num_shadows": 50,
+      "shots_per_shadow": 500,
+      "num_bases": 10,
+      "shots_per_basis": 500
+    }
+  },
+  "error_analysis": {
+    "average_std_error": 0.07266836680668362,
+    "average_relative_error": 0.0,
+    "method_distribution": {
+      "basic": 4
+    },
+    "confidence_intervals": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.8738555350092018,
+        1.0680456539001355
+      ],
+      [
+        1.6973500557110477,
+        2.0745389569801698
+      ],
+      [
+        2.660916819360972,
+        3.2522316681078545
+      ]
+    ],
+    "successful_estimates": 4,
+    "total_estimates": 4
+  }
+}

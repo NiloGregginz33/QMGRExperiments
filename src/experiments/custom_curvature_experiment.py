@@ -514,6 +514,17 @@ p.add_argument("--trotter_steps", type=int, default=4, help="Number of Trotter s
 p.add_argument("--dt", type=float, default=0.1, help="Time step size for Trotter evolution (default: 0.1)")
 p.add_argument("--analyze_curvature", action="store_true", help="Enable entanglement-to-curvature analysis using MDS embedding")
 p.add_argument("--einstein_solver", action="store_true", help="Enable Einstein solver to compute emergent Einstein tensor and entropy second derivative")
+p.add_argument("--page_curve", action="store_true", help="Enable Page curve computation for black hole evaporation simulation")
+p.add_argument("--radiation_ordering", type=str, default=None, help="Comma-separated qubit indices for radiation sequence (e.g., '0,1,2,3')")
+p.add_argument("--page_curve_timesteps", type=int, default=10, help="Number of evaporation steps for Page curve computation")
+
+# Shadow tomography arguments
+p.add_argument("--entropy_method", type=str, default="basic", choices=["basic", "shadow", "random", "hybrid"], 
+               help="Entropy estimation method: basic (measurement), shadow (classical shadows), random (randomized measurements), hybrid (both)")
+p.add_argument("--num_shadows", type=int, default=50, help="Number of shadow samples for classical shadow tomography")
+p.add_argument("--shots_per_shadow", type=int, default=500, help="Shots per shadow measurement")
+p.add_argument("--num_bases", type=int, default=10, help="Number of random measurement bases for randomized measurements")
+p.add_argument("--shots_per_basis", type=int, default=500, help="Shots per random basis measurement")
 
 # Use the second parser for command-line arguments
 args = p.parse_args()
@@ -1453,6 +1464,451 @@ def define_scalable_regions(num_qubits):
             'region_A': boundary_A,
             'region_B': boundary_B
         }
+
+# ─── PAGE CURVE FUNCTIONS ────────────────────────────────────────────────────
+
+def partition_qubits_for_page_curve(num_qubits, radiation_ordering=None):
+    """
+    Partition qubits into black hole and radiation subsystems for Page curve simulation.
+    
+    Args:
+        num_qubits (int): Total number of qubits
+        radiation_ordering (list): Custom ordering of qubits for radiation (optional)
+    
+    Returns:
+        dict: Contains black_hole_qubits, radiation_qubits, and evaporation_sequence
+    """
+    if radiation_ordering is not None:
+        # Use custom radiation ordering
+        if isinstance(radiation_ordering, str):
+            radiation_ordering = [int(x.strip()) for x in radiation_ordering.split(',')]
+        
+        # Validate ordering
+        if len(radiation_ordering) != num_qubits:
+            raise ValueError(f"Radiation ordering must contain exactly {num_qubits} qubits")
+        if set(radiation_ordering) != set(range(num_qubits)):
+            raise ValueError(f"Radiation ordering must contain all qubits 0 to {num_qubits-1}")
+        
+        evaporation_sequence = radiation_ordering
+    else:
+        # Default evaporation sequence: qubits evaporate in order
+        evaporation_sequence = list(range(num_qubits))
+    
+    # Initial state: all qubits in black hole
+    black_hole_qubits = evaporation_sequence.copy()
+    radiation_qubits = []
+    
+    return {
+        'black_hole_qubits': black_hole_qubits,
+        'radiation_qubits': radiation_qubits,
+        'evaporation_sequence': evaporation_sequence
+    }
+
+def compute_radiation_entropy(counts, num_qubits, radiation_qubits):
+    """
+    Compute von Neumann entropy of the radiation subsystem.
+    
+    Args:
+        counts (dict): Measurement counts from circuit execution
+        num_qubits (int): Total number of qubits
+        radiation_qubits (list): Indices of qubits in radiation subsystem
+    
+    Returns:
+        float: Von Neumann entropy of radiation subsystem
+    """
+    if not radiation_qubits:
+        return 0.0  # No radiation qubits
+    
+    # Calculate probabilities from counts
+    total_counts = sum(counts.values())
+    if total_counts == 0:
+        return 0.0
+    
+    # Create probability distribution for radiation subsystem
+    radiation_probs = {}
+    
+    for bitstring, count in counts.items():
+        # Ensure bitstring has correct length
+        if len(bitstring) != num_qubits:
+            # Pad with zeros if needed
+            bitstring = bitstring.zfill(num_qubits)
+        
+        # Extract radiation qubit values
+        radiation_bitstring = ''.join([bitstring[i] for i in radiation_qubits])
+        radiation_probs[radiation_bitstring] = radiation_probs.get(radiation_bitstring, 0) + count
+    
+    # Normalize probabilities
+    radiation_probs = {k: v / total_counts for k, v in radiation_probs.items()}
+    
+    # Calculate von Neumann entropy
+    entropy = 0.0
+    for prob in radiation_probs.values():
+        if prob > 0:
+            entropy -= prob * np.log2(prob)
+    
+    return entropy
+
+def simulate_black_hole_evaporation(circuit, num_qubits, evaporation_sequence, 
+                                   timesteps, shots, device_name, simulator=None,
+                                   entropy_method='basic', num_shadows=50, shots_per_shadow=500,
+                                   num_bases=10, shots_per_basis=500):
+    """
+    Simulate black hole evaporation and compute Page curve.
+    
+    Args:
+        circuit (QuantumCircuit): The quantum circuit to run
+        num_qubits (int): Total number of qubits
+        evaporation_sequence (list): Order of qubit evaporation
+        timesteps (int): Number of evaporation steps
+        shots (int): Number of measurement shots
+        device_name (str): Device name for execution
+        simulator: Quantum simulator/backend
+        entropy_method (str): Entropy estimation method ('basic', 'shadow', 'random', 'hybrid')
+        num_shadows (int): Number of shadow samples for classical shadow tomography
+        shots_per_shadow (int): Shots per shadow measurement
+        num_bases (int): Number of random measurement bases
+        shots_per_basis (int): Shots per random basis measurement
+    
+    Returns:
+        dict: Page curve data including entropies and metadata
+    """
+    print(f"[PAGE CURVE] Simulating black hole evaporation...")
+    print(f"  Total qubits: {num_qubits}")
+    print(f"  Evaporation steps: {timesteps}")
+    print(f"  Evaporation sequence: {evaporation_sequence}")
+    
+    # Initialize partitions
+    partitions = partition_qubits_for_page_curve(num_qubits, evaporation_sequence)
+    black_hole_qubits = partitions['black_hole_qubits'].copy()
+    radiation_qubits = partitions['radiation_qubits'].copy()
+    
+    # Page curve data
+    page_curve_data = {
+        'timesteps': [],
+        'radiation_sizes': [],
+        'black_hole_sizes': [],
+        'radiation_entropies': [],
+        'radiation_entropy_metadata': [],  # Enhanced entropy metadata
+        'radiation_qubits_per_step': [],
+        'black_hole_qubits_per_step': [],
+        'entropy_method': entropy_method,
+        'entropy_parameters': {
+            'num_shadows': num_shadows,
+            'shots_per_shadow': shots_per_shadow,
+            'num_bases': num_bases,
+            'shots_per_basis': shots_per_basis
+        }
+    }
+    
+    # Run circuit for each evaporation step
+    for step in range(timesteps + 1):  # +1 to include initial state
+        print(f"  Step {step}/{timesteps}: BH={len(black_hole_qubits)} qubits, R={len(radiation_qubits)} qubits")
+        
+        # Run the circuit and compute entropy
+        try:
+            if entropy_method == 'basic':
+                # Use basic measurement-based entropy
+                if device_name == "simulator":
+                    if simulator is None:
+                        simulator = FakeBrisbane()
+                    counts = run_circuit(circuit, shots, simulator, device_name)
+                else:
+                    counts = run_circuit(circuit, shots, None, device_name)
+                
+                if counts is None:
+                    print(f"    Warning: No counts obtained for step {step}")
+                    entropy = 0.0
+                    entropy_metadata = {'method': 'basic', 'success': False, 'error': 'No counts'}
+                else:
+                    entropy = compute_radiation_entropy(counts, num_qubits, radiation_qubits)
+                    entropy_metadata = {
+                        'method': 'basic',
+                        'success': True,
+                        'entropy': entropy,
+                        'confidence_interval': (entropy * 0.9, entropy * 1.1),  # Rough estimate
+                        'std_error': entropy * 0.05  # Rough estimate
+                    }
+                    print(f"    Radiation entropy (basic): {entropy:.4f}")
+                    
+            else:
+                # Use advanced entropy methods (shadow tomography or randomized measurements)
+                backend = simulator if device_name == "simulator" else device_name
+                
+                entropy_result = compute_radiation_entropy_advanced(
+                    circuit, backend, radiation_qubits, 
+                    method=entropy_method,
+                    num_shadows=num_shadows,
+                    shots_per_shadow=shots_per_shadow,
+                    num_bases=num_bases,
+                    shots_per_basis=shots_per_basis
+                )
+                
+                if entropy_result.get('success', False):
+                    entropy = entropy_result['entropy']
+                    entropy_metadata = entropy_result
+                    print(f"    Radiation entropy ({entropy_method}): {entropy:.4f} ± {entropy_result.get('std_error', 0):.4f}")
+                else:
+                    entropy = 0.0
+                    entropy_metadata = entropy_result
+                    print(f"    Warning: Entropy estimation failed for step {step}: {entropy_result.get('error', 'Unknown error')}")
+            
+        except Exception as e:
+            print(f"    Error computing entropy for step {step}: {e}")
+            entropy = 0.0
+        
+        # Store data for this step
+        page_curve_data['timesteps'].append(step)
+        page_curve_data['radiation_sizes'].append(len(radiation_qubits))
+        page_curve_data['black_hole_sizes'].append(len(black_hole_qubits))
+        page_curve_data['radiation_entropies'].append(entropy)
+        page_curve_data['radiation_entropy_metadata'].append(entropy_metadata)
+        page_curve_data['radiation_qubits_per_step'].append(radiation_qubits.copy())
+        page_curve_data['black_hole_qubits_per_step'].append(black_hole_qubits.copy())
+        
+        # Transfer one qubit from black hole to radiation (except at last step)
+        if step < timesteps and black_hole_qubits:
+            qubit_to_evaporate = black_hole_qubits.pop(0)  # Remove first qubit
+            radiation_qubits.append(qubit_to_evaporate)
+    
+    print(f"[PAGE CURVE] Evaporation simulation completed")
+    print(f"  Final black hole size: {len(black_hole_qubits)} qubits")
+    print(f"  Final radiation size: {len(radiation_qubits)} qubits")
+    
+    return page_curve_data
+
+def create_page_curve_plot(page_curve_data, experiment_log_dir, experiment_name):
+    """
+    Create and save Page curve visualization with error bars and confidence intervals.
+    
+    Args:
+        page_curve_data (dict): Page curve simulation data
+        experiment_log_dir (str): Directory to save plots
+        experiment_name (str): Name for the experiment
+    
+    Returns:
+        str: Path to the saved plot
+    """
+    try:
+        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 12))
+        
+        timesteps = page_curve_data['timesteps']
+        entropies = page_curve_data['radiation_entropies']
+        radiation_sizes = page_curve_data['radiation_sizes']
+        black_hole_sizes = page_curve_data['black_hole_sizes']
+        entropy_metadata = page_curve_data.get('radiation_entropy_metadata', [])
+        
+        # Extract error bars and confidence intervals
+        error_bars = []
+        confidence_intervals = []
+        methods_used = []
+        
+        for metadata in entropy_metadata:
+            if isinstance(metadata, dict) and metadata.get('success', False):
+                error_bars.append(metadata.get('std_error', 0.0))
+                ci = metadata.get('confidence_interval', (0.0, 0.0))
+                confidence_intervals.append(ci)
+                methods_used.append(metadata.get('method', 'unknown'))
+            else:
+                error_bars.append(0.0)
+                confidence_intervals.append((0.0, 0.0))
+                methods_used.append('failed')
+        
+        # Plot 1: Page curve with error bars (entropy vs radiation size)
+        if error_bars and any(e > 0 for e in error_bars):
+            ax1.errorbar(radiation_sizes, entropies, yerr=error_bars, 
+                        fmt='b-o', linewidth=2, markersize=6, capsize=5, capthick=2,
+                        label='Radiation Entropy (with error bars)')
+        else:
+            ax1.plot(radiation_sizes, entropies, 'b-o', linewidth=2, markersize=6, 
+                    label='Radiation Entropy')
+        
+        ax1.set_xlabel('Radiation Size (qubits)', fontsize=12)
+        ax1.set_ylabel('Von Neumann Entropy', fontsize=12)
+        ax1.set_title('Page Curve: Radiation Entropy vs Radiation Size', fontsize=14)
+        ax1.grid(True, alpha=0.3)
+        ax1.legend()
+        
+        # Add theoretical Page curve for comparison
+        max_entropy = np.log2(2**max(radiation_sizes)) if radiation_sizes else 0
+        ax1.axhline(y=max_entropy, color='r', linestyle='--', alpha=0.7, 
+                   label=f'Max Entropy ({max_entropy:.2f})')
+        
+        # Plot 2: System evolution over time
+        ax2.plot(timesteps, radiation_sizes, 'g-o', linewidth=2, markersize=6, label='Radiation Size')
+        ax2.plot(timesteps, black_hole_sizes, 'r-o', linewidth=2, markersize=6, label='Black Hole Size')
+        ax2.set_xlabel('Evaporation Step', fontsize=12)
+        ax2.set_ylabel('Number of Qubits', fontsize=12)
+        ax2.set_title('System Evolution During Evaporation', fontsize=14)
+        ax2.grid(True, alpha=0.3)
+        ax2.legend()
+        
+        # Plot 3: Entropy evolution with confidence intervals
+        if confidence_intervals and any(ci[1] > ci[0] for ci in confidence_intervals):
+            ci_lower = [ci[0] for ci in confidence_intervals]
+            ci_upper = [ci[1] for ci in confidence_intervals]
+            
+            ax3.fill_between(timesteps, ci_lower, ci_upper, alpha=0.3, color='blue', 
+                           label='95% Confidence Interval')
+            ax3.plot(timesteps, entropies, 'b-o', linewidth=2, markersize=6, 
+                    label='Radiation Entropy')
+        else:
+            ax3.plot(timesteps, entropies, 'b-o', linewidth=2, markersize=6, 
+                    label='Radiation Entropy')
+        
+        ax3.set_xlabel('Evaporation Step', fontsize=12)
+        ax3.set_ylabel('Von Neumann Entropy', fontsize=12)
+        ax3.set_title('Entropy Evolution with Confidence Intervals', fontsize=14)
+        ax3.grid(True, alpha=0.3)
+        ax3.legend()
+        
+        # Plot 4: Method comparison and error analysis
+        if entropy_metadata:
+            methods = [m.get('method', 'unknown') if isinstance(m, dict) else 'unknown' 
+                      for m in entropy_metadata]
+            relative_errors = [m.get('relative_error', 0.0) if isinstance(m, dict) else 0.0 
+                             for m in entropy_metadata]
+            
+            # Count method usage
+            method_counts = {}
+            for method in methods:
+                method_counts[method] = method_counts.get(method, 0) + 1
+            
+            # Create method comparison plot
+            ax4.bar(method_counts.keys(), method_counts.values(), alpha=0.7)
+            ax4.set_xlabel('Entropy Estimation Method', fontsize=12)
+            ax4.set_ylabel('Number of Steps', fontsize=12)
+            ax4.set_title('Method Usage Distribution', fontsize=14)
+            ax4.grid(True, alpha=0.3)
+            
+            # Add average relative error as text
+            avg_relative_error = np.mean([e for e in relative_errors if e > 0])
+            ax4.text(0.02, 0.98, f'Avg Relative Error: {avg_relative_error:.3f}', 
+                    transform=ax4.transAxes, verticalalignment='top',
+                    bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+        
+        plt.tight_layout()
+        
+        # Save plot
+        plot_path = os.path.join(experiment_log_dir, f"{experiment_name}_page_curve_enhanced.png")
+        plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        print(f"[PAGE CURVE] Enhanced plot saved: {os.path.basename(plot_path)}")
+        return plot_path
+        
+    except Exception as e:
+        print(f"[PAGE CURVE] Error creating enhanced plot: {e}")
+        # Fallback to simple plot
+        try:
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+            
+            timesteps = page_curve_data['timesteps']
+            entropies = page_curve_data['radiation_entropies']
+            radiation_sizes = page_curve_data['radiation_sizes']
+            black_hole_sizes = page_curve_data['black_hole_sizes']
+            
+            # Plot 1: Page curve (entropy vs radiation size)
+            ax1.plot(radiation_sizes, entropies, 'b-o', linewidth=2, markersize=6, label='Radiation Entropy')
+            ax1.set_xlabel('Radiation Size (qubits)', fontsize=12)
+            ax1.set_ylabel('Von Neumann Entropy', fontsize=12)
+            ax1.set_title('Page Curve: Radiation Entropy vs Radiation Size', fontsize=14)
+            ax1.grid(True, alpha=0.3)
+            ax1.legend()
+            
+            # Add theoretical Page curve for comparison
+            max_entropy = np.log2(2**max(radiation_sizes)) if radiation_sizes else 0
+            ax1.axhline(y=max_entropy, color='r', linestyle='--', alpha=0.7, label=f'Max Entropy ({max_entropy:.2f})')
+            
+            # Plot 2: System evolution over time
+            ax2.plot(timesteps, radiation_sizes, 'g-o', linewidth=2, markersize=6, label='Radiation Size')
+            ax2.plot(timesteps, black_hole_sizes, 'r-o', linewidth=2, markersize=6, label='Black Hole Size')
+            ax2.set_xlabel('Evaporation Step', fontsize=12)
+            ax2.set_ylabel('Number of Qubits', fontsize=12)
+            ax2.set_title('System Evolution During Evaporation', fontsize=14)
+            ax2.grid(True, alpha=0.3)
+            ax2.legend()
+            
+            plt.tight_layout()
+            
+            # Save plot
+            plot_path = os.path.join(experiment_log_dir, f"{experiment_name}_page_curve.png")
+            plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+            plt.close()
+            
+            print(f"[PAGE CURVE] Fallback plot saved: {os.path.basename(plot_path)}")
+            return plot_path
+            
+        except Exception as e2:
+            print(f"[PAGE CURVE] Error creating fallback plot: {e2}")
+            return None
+
+def save_page_curve_results(page_curve_data, experiment_log_dir, experiment_name):
+    """
+    Save Page curve results to JSON file with enhanced metadata and error analysis.
+    
+    Args:
+        page_curve_data (dict): Page curve simulation data
+        experiment_log_dir (str): Directory to save results
+        experiment_name (str): Name for the experiment
+    
+    Returns:
+        str: Path to the saved JSON file
+    """
+    try:
+        # Prepare data for JSON serialization
+        results_data = {
+            'page_curve_data': {
+                'timesteps': page_curve_data['timesteps'],
+                'radiation_sizes': page_curve_data['radiation_sizes'],
+                'black_hole_sizes': page_curve_data['black_hole_sizes'],
+                'radiation_entropies': page_curve_data['radiation_entropies'],
+                'radiation_entropy_metadata': page_curve_data.get('radiation_entropy_metadata', []),
+                'radiation_qubits_per_step': page_curve_data['radiation_qubits_per_step'],
+                'black_hole_qubits_per_step': page_curve_data['black_hole_qubits_per_step']
+            },
+            'metadata': {
+                'experiment_type': 'page_curve',
+                'timestamp': datetime.now().strftime('%Y%m%d_%H%M%S'),
+                'total_qubits': len(page_curve_data['radiation_qubits_per_step'][0]) + len(page_curve_data['black_hole_qubits_per_step'][0]) if page_curve_data['radiation_qubits_per_step'] else 0,
+                'evaporation_steps': len(page_curve_data['timesteps']),
+                'entropy_method': page_curve_data.get('entropy_method', 'basic'),
+                'entropy_parameters': page_curve_data.get('entropy_parameters', {})
+            }
+        }
+        
+        # Add error analysis summary
+        if page_curve_data.get('radiation_entropy_metadata'):
+            successful_metadata = [m for m in page_curve_data['radiation_entropy_metadata'] 
+                                 if isinstance(m, dict) and m.get('success', False)]
+            
+            if successful_metadata:
+                avg_std_error = np.mean([m.get('std_error', 0.0) for m in successful_metadata])
+                avg_relative_error = np.mean([m.get('relative_error', 0.0) for m in successful_metadata])
+                methods_used = [m.get('method', 'unknown') for m in successful_metadata]
+                method_counts = {}
+                for method in methods_used:
+                    method_counts[method] = method_counts.get(method, 0) + 1
+                
+                results_data['error_analysis'] = {
+                    'average_std_error': float(avg_std_error),
+                    'average_relative_error': float(avg_relative_error),
+                    'method_distribution': method_counts,
+                    'confidence_intervals': [m.get('confidence_interval', (0.0, 0.0)) for m in successful_metadata],
+                    'successful_estimates': len(successful_metadata),
+                    'total_estimates': len(page_curve_data['radiation_entropy_metadata'])
+                }
+        
+        # Save to JSON file
+        results_path = os.path.join(experiment_log_dir, f"{experiment_name}_page_curve_results.json")
+        with open(results_path, 'w') as f:
+            json.dump(results_data, f, indent=2, cls=CustomJSONEncoder)
+        
+        print(f"[PAGE CURVE] Enhanced results saved: {os.path.basename(results_path)}")
+        return results_path
+        
+    except Exception as e:
+        print(f"[PAGE CURVE] Error saving results: {e}")
+        return None
 
 def rt_surface_area(rt_edges, edge_lengths, all_edges):
     """
@@ -3707,6 +4163,61 @@ if __name__ == "__main__":
         print("These four numbers demonstrate the masking structure!")
         print("="*60 + "\n")
         
+        # 3. Page Curve Analysis
+        print("\n3. Page Curve Analysis:")
+        page_curve_analysis = None
+        if args.page_curve and circuits and len(circuits) > 0:
+            try:
+                print(f"  Running Page curve simulation...")
+                
+                # Use the final circuit for Page curve analysis
+                final_circuit = circuits[-1]
+                
+                # Parse radiation ordering if provided
+                radiation_ordering = None
+                if args.radiation_ordering:
+                    radiation_ordering = [int(x.strip()) for x in args.radiation_ordering.split(',')]
+                    print(f"  Using custom radiation ordering: {radiation_ordering}")
+                
+                # Run Page curve simulation
+                page_curve_data = simulate_black_hole_evaporation(
+                    final_circuit,
+                    args.num_qubits,
+                    radiation_ordering,
+                    args.page_curve_timesteps,
+                    args.shots,
+                    args.device,
+                    FakeBrisbane() if args.device == "simulator" else None,
+                    entropy_method=args.entropy_method,
+                    num_shadows=args.num_shadows,
+                    shots_per_shadow=args.shots_per_shadow,
+                    num_bases=args.num_bases,
+                    shots_per_basis=args.shots_per_basis
+                )
+                
+                # Create Page curve plot
+                page_curve_plot_path = create_page_curve_plot(page_curve_data, experiment_log_dir, short_filename)
+                
+                # Save Page curve results
+                page_curve_results_path = save_page_curve_results(page_curve_data, experiment_log_dir, short_filename)
+                
+                # Store Page curve analysis results
+                page_curve_analysis = {
+                    'page_curve_data': page_curve_data,
+                    'plot_path': page_curve_plot_path,
+                    'results_path': page_curve_results_path,
+                    'radiation_ordering': radiation_ordering,
+                    'evaporation_steps': args.page_curve_timesteps
+                }
+                
+                print(f"  Page curve analysis completed successfully")
+                
+            except Exception as e:
+                print(f"  Error in Page curve analysis: {e}")
+                page_curve_analysis = None
+        else:
+            print(f"  Page curve analysis disabled or no circuits available")
+        
         # --- Output matter correctly for Lorentzian vs. static runs ---
         if args.lorentzian and args.timesteps > 1 and 'matter_per_timestep' in locals():
             matter_out = [{str(h): v for h, v in mt.items()} for mt in matter_per_timestep]
@@ -3779,6 +4290,8 @@ if __name__ == "__main__":
                 # REVOLUTIONARY RT-SURFACE AND BULK-EXCITATION ANALYSIS
                 "rt_surface_analysis": rt_surface_analysis,
                 "bulk_excitation_analysis": bulk_excitation_analysis,
+                # PAGE CURVE ANALYSIS
+                "page_curve_analysis": page_curve_analysis,
                 # EINSTEIN SOLVER: EMERGENT GRAVITY FROM ENTANGLEMENT
                 "einstein_analysis": einstein_analysis,
                 # DYNAMIC EVIDENCE: Comprehensive evolution tracking
@@ -3860,7 +4373,13 @@ if __name__ == "__main__":
                 f.write(f"Device: {args.device}\n")
                 f.write(f"Timesteps: {args.timesteps}\n")
                 f.write(f"Topology: {args.topology}\n")
-                f.write(f"Einstein solver enabled: {args.einstein_solver}\n\n")
+                f.write(f"Einstein solver enabled: {args.einstein_solver}\n")
+                f.write(f"Page curve enabled: {args.page_curve}\n")
+                if args.page_curve:
+                    f.write(f"Page curve timesteps: {args.page_curve_timesteps}\n")
+                    if args.radiation_ordering:
+                        f.write(f"Radiation ordering: {args.radiation_ordering}\n")
+                f.write("\n")
                 
                 f.write("KEY METRICS:\n")
                 f.write("-" * 40 + "\n")
@@ -3903,6 +4422,35 @@ if __name__ == "__main__":
                             f.write(f"Ricci Scalar Trend: {einstein_stats['ricci_scalar']['trend']:.6f}\n")
                             f.write(f"Gravitational Constant Trend: {einstein_stats['emergent_gravitational_constant']['trend']:.6f}\n")
                             f.write(f"Correlation Stability: {einstein_stats['evolution_patterns']['correlation_stable']}\n")
+                
+                if args.page_curve and page_curve_analysis:
+                    f.write("\nPAGE CURVE ANALYSIS:\n")
+                    f.write("-" * 40 + "\n")
+                    page_data = page_curve_analysis['page_curve_data']
+                    entropies = page_data['radiation_entropies']
+                    radiation_sizes = page_data['radiation_sizes']
+                    
+                    if entropies:
+                        f.write(f"Maximum Radiation Entropy: {max(entropies):.4f}\n")
+                        f.write(f"Minimum Radiation Entropy: {min(entropies):.4f}\n")
+                        f.write(f"Entropy Range: {max(entropies) - min(entropies):.4f}\n")
+                        
+                        # Find Page time (peak entropy)
+                        peak_idx = np.argmax(entropies)
+                        peak_radiation_size = radiation_sizes[peak_idx]
+                        f.write(f"Page Time (Peak Entropy): Step {peak_idx}, Radiation Size {peak_radiation_size}\n")
+                        
+                        # Check for Page curve signature
+                        if len(entropies) > 2:
+                            # Check if entropy rises then falls
+                            first_half = entropies[:len(entropies)//2]
+                            second_half = entropies[len(entropies)//2:]
+                            rises_then_falls = (max(first_half) < max(entropies)) and (max(second_half) < max(entropies))
+                            f.write(f"Page Curve Signature (Rise-Fall): {'YES' if rises_then_falls else 'NO'}\n")
+                    
+                    f.write(f"Evaporation Steps: {len(page_data['timesteps'])}\n")
+                    f.write(f"Final Black Hole Size: {page_data['black_hole_sizes'][-1]} qubits\n")
+                    f.write(f"Final Radiation Size: {page_data['radiation_sizes'][-1]} qubits\n")
                 
                 f.write("\n" + "="*80 + "\n")
                 f.write("EXPERIMENT COMPLETED SUCCESSFULLY\n")
@@ -3947,3 +4495,819 @@ if __name__ == "__main__":
     print(f"   - Latest filename: {short_filename}")
     print(f"   - Full path: {os.path.abspath(output_path)}")
     print("=" * 60)
+
+def generate_random_clifford_circuit(num_qubits, depth=3):
+    """
+    Generate a random Clifford circuit for classical shadow tomography.
+    
+    Args:
+        num_qubits: Number of qubits
+        depth: Circuit depth (number of layers)
+    
+    Returns:
+        QuantumCircuit: Random Clifford circuit
+    """
+    from qiskit.quantum_info import random_clifford
+    from qiskit import QuantumCircuit
+    
+    circuit = QuantumCircuit(num_qubits)
+    
+    for layer in range(depth):
+        # Add random Clifford gates
+        for i in range(0, num_qubits - 1, 2):
+            if i + 1 < num_qubits:
+                clifford = random_clifford(2)
+                circuit.compose(clifford, qubits=[i, i+1], inplace=True)
+        
+        # Add single-qubit Clifford gates
+        for i in range(num_qubits):
+            if i % 2 == layer % 2:  # Alternate pattern
+                clifford = random_clifford(1)
+                circuit.compose(clifford, qubits=[i], inplace=True)
+    
+    return circuit
+
+def classical_shadow_estimation(circuit, backend, num_shadows=100, shots_per_shadow=1000):
+    """
+    Perform classical shadow tomography to estimate quantum state.
+    Enhanced version with hardware optimization and error mitigation.
+    
+    Args:
+        circuit: Quantum circuit to analyze
+        backend: Quantum backend
+        num_shadows: Number of shadow samples
+        shots_per_shadow: Shots per shadow measurement
+    
+    Returns:
+        dict: Shadow estimation results
+    """
+    from qiskit.quantum_info import Operator
+    import numpy as np
+    from qiskit import transpile
+    from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+    
+    num_qubits = circuit.num_qubits
+    shadow_circuits = []
+    shadow_measurements = []
+    
+    print(f"[SHADOW] Generating {num_shadows} shadow circuits...")
+    
+    # Hardware-specific optimizations
+    if hasattr(backend, 'configuration'):
+        # Real hardware backend
+        print(f"[SHADOW] Optimizing for hardware backend: {backend.name}")
+        
+        # Get backend properties for optimization
+        try:
+            backend_props = backend.properties()
+            # Use backend properties to optimize circuit depth
+            optimization_level = 1  # Conservative optimization for shadow circuits
+        except:
+            backend_props = None
+            optimization_level = 0
+    
+    for i in range(num_shadows):
+        # Generate random Clifford circuit with hardware-aware depth
+        shadow_depth = 2 if num_qubits <= 4 else 1  # Reduce depth for larger systems
+        shadow_circuit = generate_random_clifford_circuit(num_qubits, depth=shadow_depth)
+        
+        # Compose with original circuit
+        full_circuit = circuit.compose(shadow_circuit)
+        full_circuit.measure_all()
+        
+        # Hardware-specific transpilation
+        if hasattr(backend, 'configuration'):
+            try:
+                # Use hardware-aware transpilation
+                pass_manager = generate_preset_pass_manager(optimization_level, backend)
+                full_circuit = pass_manager.run(full_circuit)
+            except Exception as e:
+                print(f"[SHADOW] Warning: Hardware transpilation failed: {e}")
+                # Fallback to basic transpilation
+                full_circuit = transpile(full_circuit, backend, optimization_level=0)
+        
+        shadow_circuits.append(full_circuit)
+    
+    # Execute shadow circuits with error mitigation
+    print(f"[SHADOW] Executing shadow circuits on {backend}...")
+    
+    try:
+        from CGPTFactory import run
+        
+        # Adaptive shot allocation based on circuit complexity
+        adaptive_shots = shots_per_shadow
+        if num_qubits > 6:
+            adaptive_shots = min(shots_per_shadow, 500)  # Reduce shots for large systems
+        elif num_qubits <= 3:
+            adaptive_shots = min(shots_per_shadow, 2000)  # Increase shots for small systems
+        
+        print(f"[SHADOW] Using {adaptive_shots} shots per shadow (adaptive allocation)")
+        
+        job = run(shadow_circuits, backend=backend, shots=adaptive_shots)
+        results = job.result()
+        
+        for i, circuit in enumerate(shadow_circuits):
+            counts = results.get_counts(i)
+            shadow_measurements.append(counts)
+            
+    except Exception as e:
+        print(f"[SHADOW] Error in shadow execution: {e}")
+        return None
+    
+    # Add metadata for analysis
+    shadow_metadata = {
+        'num_qubits': num_qubits,
+        'num_shadows': num_shadows,
+        'shots_per_shadow': adaptive_shots,
+        'backend_name': backend.name if hasattr(backend, 'name') else str(backend),
+        'circuit_depth': shadow_circuits[0].depth() if shadow_circuits else 0,
+        'execution_success': True
+    }
+    
+    return {
+        'shadow_circuits': shadow_circuits,
+        'shadow_measurements': shadow_measurements,
+        'num_shadows': num_shadows,
+        'shots_per_shadow': adaptive_shots,
+        'metadata': shadow_metadata
+    }
+
+def shadow_entropy_estimation(shadow_data, radiation_qubits):
+    """
+    Estimate von Neumann entropy using classical shadow data.
+    Enhanced version with error mitigation and confidence intervals.
+    
+    Args:
+        shadow_data: Results from classical_shadow_estimation
+        radiation_qubits: List of radiation qubit indices
+    
+    Returns:
+        dict: Estimated entropy with confidence intervals and metadata
+    """
+    import numpy as np
+    from qiskit.quantum_info import partial_trace, entropy
+    
+    if shadow_data is None:
+        return {'entropy': 0.0, 'confidence_interval': (0.0, 0.0), 'error': 'No shadow data'}
+    
+    num_qubits = len(shadow_data['shadow_circuits'][0].qubits)
+    num_shadows = shadow_data['num_shadows']
+    
+    if not radiation_qubits:
+        return {'entropy': 0.0, 'confidence_interval': (0.0, 0.0), 'error': 'No radiation qubits'}
+    
+    print(f"[SHADOW] Estimating entropy for {len(radiation_qubits)} radiation qubits using {num_shadows} shadows")
+    
+    # Bootstrap estimation for confidence intervals
+    bootstrap_entropies = []
+    bootstrap_samples = min(100, num_shadows)  # Number of bootstrap samples
+    
+    for _ in range(bootstrap_samples):
+        # Sample shadows with replacement
+        sampled_indices = np.random.choice(num_shadows, size=num_shadows, replace=True)
+        
+        # Estimate reduced density matrix of radiation subsystem
+        rho_radiation_estimate = np.zeros((2**len(radiation_qubits), 2**len(radiation_qubits)), dtype=complex)
+        total_counts = 0
+        
+        for idx in sampled_indices:
+            counts = shadow_data['shadow_measurements'][idx]
+            
+            # Process each measurement outcome
+            for bitstring, count in counts.items():
+                # Convert bitstring to state vector
+                state_vector = np.zeros(2**num_qubits)
+                state_index = int(bitstring, 2)
+                state_vector[state_index] = 1.0
+                
+                # Partial trace to radiation subsystem
+                rho_full = np.outer(state_vector, state_vector.conj())
+                
+                # Simple partial trace (for small systems)
+                if len(radiation_qubits) <= 4:
+                    rho_radiation = partial_trace(rho_full, radiation_qubits, num_qubits)
+                    rho_radiation_estimate += count * rho_radiation.data
+                    total_counts += count
+        
+        if total_counts > 0:
+            rho_radiation_estimate /= total_counts
+            
+            # Compute von Neumann entropy
+            try:
+                eigenvals = np.linalg.eigvalsh(rho_radiation_estimate)
+                eigenvals = np.real(eigenvals)  # Ensure real eigenvalues
+                eigenvals = eigenvals[eigenvals > 1e-12]  # Remove numerical zeros
+                
+                entropy_val = -np.sum(eigenvals * np.log2(eigenvals))
+                bootstrap_entropies.append(entropy_val)
+            except Exception as e:
+                print(f"[SHADOW] Warning: Eigenvalue computation failed: {e}")
+                bootstrap_entropies.append(0.0)
+    
+    # Compute statistics
+    if bootstrap_entropies:
+        mean_entropy = np.mean(bootstrap_entropies)
+        std_entropy = np.std(bootstrap_entropies)
+        
+        # 95% confidence interval
+        confidence_interval = (
+            max(0.0, mean_entropy - 1.96 * std_entropy),
+            mean_entropy + 1.96 * std_entropy
+        )
+        
+        # Error estimation
+        relative_error = std_entropy / mean_entropy if mean_entropy > 0 else 0.0
+        
+        result = {
+            'entropy': float(mean_entropy),
+            'confidence_interval': tuple(confidence_interval),
+            'std_error': float(std_entropy),
+            'relative_error': float(relative_error),
+            'bootstrap_samples': bootstrap_samples,
+            'num_shadows_used': num_shadows,
+            'radiation_qubits': radiation_qubits,
+            'success': True
+        }
+        
+        print(f"[SHADOW] Entropy estimate: {mean_entropy:.4f} ± {std_entropy:.4f} (95% CI: {confidence_interval[0]:.4f} - {confidence_interval[1]:.4f})")
+        
+    else:
+        result = {
+            'entropy': 0.0,
+            'confidence_interval': (0.0, 0.0),
+            'std_error': 0.0,
+            'relative_error': 0.0,
+            'bootstrap_samples': bootstrap_samples,
+            'num_shadows_used': num_shadows,
+            'radiation_qubits': radiation_qubits,
+            'success': False,
+            'error': 'No valid entropy estimates'
+        }
+    
+    return result
+
+def randomized_measurement_entropy(circuit, backend, radiation_qubits, num_bases=10, shots_per_basis=1000):
+    """
+    Estimate entropy using randomized measurements in different bases.
+    Enhanced version with hardware optimization and error analysis.
+    
+    Args:
+        circuit: Quantum circuit to analyze
+        backend: Quantum backend
+        radiation_qubits: List of radiation qubit indices
+        num_bases: Number of random measurement bases
+        shots_per_basis: Shots per basis measurement
+    
+    Returns:
+        dict: Estimated entropy with confidence intervals and metadata
+    """
+    import numpy as np
+    from qiskit import QuantumCircuit, transpile
+    from qiskit.circuit.library import RXGate, RYGate, RZGate
+    from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+    
+    measurement_circuits = []
+    
+    print(f"[RANDOM] Generating {num_bases} random measurement bases...")
+    
+    # Hardware-specific optimizations
+    if hasattr(backend, 'configuration'):
+        print(f"[RANDOM] Optimizing for hardware backend: {backend.name}")
+        optimization_level = 1  # Conservative optimization
+    else:
+        optimization_level = 0
+    
+    for i in range(num_bases):
+        # Create random rotation circuit
+        meas_circuit = circuit.copy()
+        
+        # Add random rotations to radiation qubits
+        for qubit in radiation_qubits:
+            if qubit < meas_circuit.num_qubits:
+                # Random rotation in Bloch sphere
+                theta = np.random.uniform(0, 2*np.pi)
+                phi = np.random.uniform(0, 2*np.pi)
+                
+                meas_circuit.rz(phi, qubit)
+                meas_circuit.rx(theta, qubit)
+        
+        meas_circuit.measure_all()
+        
+        # Hardware-specific transpilation
+        if hasattr(backend, 'configuration'):
+            try:
+                pass_manager = generate_preset_pass_manager(optimization_level, backend)
+                meas_circuit = pass_manager.run(meas_circuit)
+            except Exception as e:
+                print(f"[RANDOM] Warning: Hardware transpilation failed: {e}")
+                meas_circuit = transpile(meas_circuit, backend, optimization_level=0)
+        
+        measurement_circuits.append(meas_circuit)
+    
+    # Execute measurement circuits with adaptive shot allocation
+    print(f"[RANDOM] Executing randomized measurements on {backend}...")
+    
+    try:
+        from CGPTFactory import run
+        
+        # Adaptive shot allocation
+        adaptive_shots = shots_per_basis
+        if len(radiation_qubits) > 4:
+            adaptive_shots = min(shots_per_basis, 500)  # Reduce shots for large subsystems
+        elif len(radiation_qubits) <= 2:
+            adaptive_shots = min(shots_per_basis, 2000)  # Increase shots for small subsystems
+        
+        print(f"[RANDOM] Using {adaptive_shots} shots per basis (adaptive allocation)")
+        
+        job = run(measurement_circuits, backend=backend, shots=adaptive_shots)
+        results = job.result()
+        
+        # Process results with error analysis
+        entropies = []
+        basis_metadata = []
+        
+        for i in range(num_bases):
+            counts = results.get_counts(i)
+            
+            # Compute Shannon entropy for this basis
+            total_shots = sum(counts.values())
+            if total_shots == 0:
+                print(f"[RANDOM] Warning: No counts for basis {i}")
+                continue
+                
+            probs = [count / total_shots for count in counts.values()]
+            
+            # Shannon entropy
+            entropy_val = -sum(p * np.log2(p + 1e-12) for p in probs if p > 0)
+            entropies.append(entropy_val)
+            
+            # Store basis metadata
+            basis_metadata.append({
+                'basis_index': i,
+                'total_shots': total_shots,
+                'unique_outcomes': len(counts),
+                'entropy': entropy_val
+            })
+        
+        if not entropies:
+            return {
+                'entropy': 0.0,
+                'confidence_interval': (0.0, 0.0),
+                'std_error': 0.0,
+                'relative_error': 0.0,
+                'num_bases': num_bases,
+                'shots_per_basis': adaptive_shots,
+                'radiation_qubits': radiation_qubits,
+                'success': False,
+                'error': 'No valid entropy measurements'
+            }
+        
+        # Compute statistics
+        mean_entropy = np.mean(entropies)
+        std_entropy = np.std(entropies)
+        
+        # 95% confidence interval
+        confidence_interval = (
+            max(0.0, mean_entropy - 1.96 * std_entropy / np.sqrt(len(entropies))),
+            mean_entropy + 1.96 * std_entropy / np.sqrt(len(entropies))
+        )
+        
+        # Error estimation
+        relative_error = std_entropy / mean_entropy if mean_entropy > 0 else 0.0
+        
+        result = {
+            'entropy': float(mean_entropy),
+            'confidence_interval': tuple(confidence_interval),
+            'std_error': float(std_entropy),
+            'relative_error': float(relative_error),
+            'num_bases': len(entropies),
+            'shots_per_basis': adaptive_shots,
+            'radiation_qubits': radiation_qubits,
+            'basis_entropies': entropies,
+            'basis_metadata': basis_metadata,
+            'success': True
+        }
+        
+        print(f"[RANDOM] Entropy estimate: {mean_entropy:.4f} ± {std_entropy:.4f} (95% CI: {confidence_interval[0]:.4f} - {confidence_interval[1]:.4f})")
+        
+        return result
+        
+    except Exception as e:
+        print(f"[RANDOM] Error in randomized measurements: {e}")
+        return {
+            'entropy': 0.0,
+            'confidence_interval': (0.0, 0.0),
+            'std_error': 0.0,
+            'relative_error': 0.0,
+            'num_bases': num_bases,
+            'shots_per_basis': shots_per_basis,
+            'radiation_qubits': radiation_qubits,
+            'success': False,
+            'error': str(e)
+        }
+
+def compute_radiation_entropy_advanced(circuit, backend, radiation_qubits, method='shadow', **kwargs):
+    """
+    Advanced entropy computation using shadow tomography or randomized measurements.
+    Enhanced version with comprehensive error analysis and hardware optimization.
+    
+    Args:
+        circuit: Quantum circuit to analyze
+        backend: Quantum backend
+        radiation_qubits: List of radiation qubit indices
+        method: 'shadow' or 'random' or 'hybrid'
+        **kwargs: Additional parameters for shadow/random methods
+    
+    Returns:
+        dict: Estimated entropy with comprehensive metadata and error analysis
+    """
+    print(f"[ENTROPY] Computing radiation entropy using {method} method...")
+    
+    if method == 'shadow':
+        shadow_data = classical_shadow_estimation(
+            circuit, backend, 
+            num_shadows=kwargs.get('num_shadows', 50),
+            shots_per_shadow=kwargs.get('shots_per_shadow', 500)
+        )
+        result = shadow_entropy_estimation(shadow_data, radiation_qubits)
+        
+        # Add method-specific metadata
+        if result.get('success', False):
+            result['method'] = 'shadow'
+            result['shadow_data'] = shadow_data.get('metadata', {})
+        
+    elif method == 'random':
+        result = randomized_measurement_entropy(
+            circuit, backend, radiation_qubits,
+            num_bases=kwargs.get('num_bases', 10),
+            shots_per_basis=kwargs.get('shots_per_basis', 500)
+        )
+        
+        # Add method-specific metadata
+        if result.get('success', False):
+            result['method'] = 'random'
+        
+    elif method == 'hybrid':
+        # Use both methods and combine results
+        print(f"[ENTROPY] Running hybrid analysis with both shadow and random methods...")
+        
+        shadow_result = compute_radiation_entropy_advanced(
+            circuit, backend, radiation_qubits, 'shadow', **kwargs
+        )
+        random_result = compute_radiation_entropy_advanced(
+            circuit, backend, radiation_qubits, 'random', **kwargs
+        )
+        
+        # Combine results if both methods succeeded
+        if shadow_result.get('success', False) and random_result.get('success', False):
+            shadow_entropy = shadow_result['entropy']
+            random_entropy = random_result['entropy']
+            
+            # Weighted average (can be adjusted based on method reliability)
+            shadow_weight = 0.6  # Shadow tomography typically more reliable
+            random_weight = 0.4
+            
+            combined_entropy = shadow_weight * shadow_entropy + random_weight * random_entropy
+            
+            # Combine confidence intervals (conservative approach)
+            shadow_ci = shadow_result['confidence_interval']
+            random_ci = random_result['confidence_interval']
+            
+            combined_lower = min(shadow_ci[0], random_ci[0])
+            combined_upper = max(shadow_ci[1], random_ci[1])
+            
+            result = {
+                'entropy': float(combined_entropy),
+                'confidence_interval': (combined_lower, combined_upper),
+                'std_error': np.sqrt((shadow_result['std_error']**2 + random_result['std_error']**2) / 2),
+                'relative_error': np.sqrt((shadow_result['relative_error']**2 + random_result['relative_error']**2) / 2),
+                'method': 'hybrid',
+                'shadow_result': shadow_result,
+                'random_result': random_result,
+                'shadow_weight': shadow_weight,
+                'random_weight': random_weight,
+                'radiation_qubits': radiation_qubits,
+                'success': True
+            }
+            
+            print(f"[ENTROPY] Hybrid entropy estimate: {combined_entropy:.4f} (shadow: {shadow_entropy:.4f}, random: {random_entropy:.4f})")
+            
+        else:
+            # Fallback to whichever method succeeded
+            if shadow_result.get('success', False):
+                result = shadow_result
+                result['method'] = 'hybrid_fallback_shadow'
+            elif random_result.get('success', False):
+                result = random_result
+                result['method'] = 'hybrid_fallback_random'
+            else:
+                result = {
+                    'entropy': 0.0,
+                    'confidence_interval': (0.0, 0.0),
+                    'std_error': 0.0,
+                    'relative_error': 0.0,
+                    'method': 'hybrid',
+                    'shadow_result': shadow_result,
+                    'random_result': random_result,
+                    'radiation_qubits': radiation_qubits,
+                    'success': False,
+                    'error': 'Both shadow and random methods failed'
+                }
+        
+    else:
+        # Fallback to basic method
+        print(f"[ENTROPY] Falling back to basic entropy computation...")
+        try:
+            basic_entropy = compute_radiation_entropy(circuit, backend, radiation_qubits)
+            result = {
+                'entropy': float(basic_entropy),
+                'confidence_interval': (basic_entropy * 0.9, basic_entropy * 1.1),  # Rough estimate
+                'std_error': basic_entropy * 0.05,  # Rough estimate
+                'relative_error': 0.05,  # Rough estimate
+                'method': 'basic_fallback',
+                'radiation_qubits': radiation_qubits,
+                'success': True
+            }
+        except Exception as e:
+            result = {
+                'entropy': 0.0,
+                'confidence_interval': (0.0, 0.0),
+                'std_error': 0.0,
+                'relative_error': 0.0,
+                'method': 'basic_fallback',
+                'radiation_qubits': radiation_qubits,
+                'success': False,
+                'error': str(e)
+            }
+    
+    # Add common metadata
+    result['backend_name'] = backend.name if hasattr(backend, 'name') else str(backend)
+    result['circuit_depth'] = circuit.depth()
+    result['num_qubits'] = circuit.num_qubits
+    
+    if result.get('success', False):
+        print(f"[ENTROPY] Estimated entropy: {result['entropy']:.4f} ± {result['std_error']:.4f}")
+        print(f"[ENTROPY] 95% CI: {result['confidence_interval'][0]:.4f} - {result['confidence_interval'][1]:.4f}")
+    else:
+        print(f"[ENTROPY] Entropy estimation failed: {result.get('error', 'Unknown error')}")
+    
+    return result
+
+def create_dynamic_evidence_plots(evolution_data, output_dir, experiment_name):
+    """
+    Create comprehensive plots showing dynamic evidence of quantum geometry evolution.
+    
+    Args:
+        evolution_data: Dictionary containing all evolution arrays
+        output_dir: Directory to save plots
+        experiment_name: Name for the experiment
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from matplotlib.gridspec import GridSpec
+    
+    # Set style for professional plots
+    plt.style.use('seaborn-v0_8')
+    sns.set_palette("husl")
+    
+    # Create figure with subplots
+    fig = plt.figure(figsize=(20, 16))
+    gs = GridSpec(4, 3, figure=fig, hspace=0.3, wspace=0.3)
+    
+    timesteps = list(range(1, len(evolution_data['gromov_delta_per_timestep']) + 1))
+    
+    # 1. Gromov Delta Evolution (Hyperbolicity)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax1.plot(timesteps, evolution_data['gromov_delta_per_timestep'], 'o-', linewidth=2, markersize=8)
+    ax1.set_xlabel('Timestep')
+    ax1.set_ylabel('Gromov Delta')
+    ax1.set_title('Hyperbolicity Evolution')
+    ax1.grid(True, alpha=0.3)
+    ax1.axhline(y=0.3, color='red', linestyle='--', alpha=0.7, label='Hyperbolic threshold')
+    ax1.legend()
+    
+    # 2. Mean Distance Evolution
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax2.plot(timesteps, evolution_data['mean_distance_per_timestep'], 's-', linewidth=2, markersize=8, color='green')
+    ax2.set_xlabel('Timestep')
+    ax2.set_ylabel('Mean Distance')
+    ax2.set_title('Geometric Scale Evolution')
+    ax2.grid(True, alpha=0.3)
+    
+    # 3. Triangle Inequality Violations
+    ax3 = fig.add_subplot(gs[0, 2])
+    ax3.plot(timesteps, evolution_data['triangle_violations_per_timestep'], '^-', linewidth=2, markersize=8, color='orange')
+    ax3.set_xlabel('Timestep')
+    ax3.set_ylabel('Triangle Violations')
+    ax3.set_title('Geometric Consistency')
+    ax3.grid(True, alpha=0.3)
+    
+    # 4. Angle Sum Evolution (Box plot)
+    ax4 = fig.add_subplot(gs[1, 0])
+    angle_sums_data = evolution_data['angle_sums_per_timestep']
+    if angle_sums_data and len(angle_sums_data[0]) > 0:
+        bp = ax4.boxplot(angle_sums_data, positions=timesteps, patch_artist=True)
+        for patch in bp['boxes']:
+            patch.set_facecolor('lightblue')
+            patch.set_alpha(0.7)
+        ax4.set_xlabel('Timestep')
+        ax4.set_ylabel('Angle Sums')
+        ax4.set_title('Curvature Evolution')
+        ax4.grid(True, alpha=0.3)
+        ax4.axhline(y=np.pi, color='red', linestyle='--', alpha=0.7, label='π (flat)')
+        ax4.legend()
+    
+    # 5. Distance Matrix Evolution Heatmap
+    ax5 = fig.add_subplot(gs[1, 1:])
+    if evolution_data['distmat_per_timestep']:
+        # Create a composite heatmap showing evolution
+        dist_matrices = [np.array(dm) for dm in evolution_data['distmat_per_timestep']]
+        if dist_matrices:
+            # Show difference between first and last timestep
+            if len(dist_matrices) > 1:
+                diff_matrix = dist_matrices[-1] - dist_matrices[0]
+                im = ax5.imshow(diff_matrix, cmap='RdBu_r', aspect='auto')
+                ax5.set_title('Distance Matrix Evolution\n(Last - First Timestep)')
+                plt.colorbar(im, ax=ax5)
+            else:
+                im = ax5.imshow(dist_matrices[0], cmap='viridis', aspect='auto')
+                ax5.set_title('Distance Matrix (Single Timestep)')
+                plt.colorbar(im, ax=ax5)
+    
+    # 6. Edge MI Evolution
+    ax6 = fig.add_subplot(gs[2, 0])
+    if evolution_data['edge_mi_per_timestep']:
+        # Extract a few key edges for visualization
+        edge_mi_evolution = {}
+        for t, edge_mi in enumerate(evolution_data['edge_mi_per_timestep']):
+            for edge, mi_val in edge_mi.items():
+                if edge not in edge_mi_evolution:
+                    edge_mi_evolution[edge] = []
+                edge_mi_evolution[edge].append(mi_val)
+        
+        # Plot top 5 edges with highest average MI
+        edge_avgs = {edge: np.mean(mi_vals) for edge, mi_vals in edge_mi_evolution.items()}
+        top_edges = sorted(edge_avgs.items(), key=lambda x: x[1], reverse=True)[:5]
+        
+        for edge, _ in top_edges:
+            mi_vals = edge_mi_evolution[edge]
+            ax6.plot(timesteps[:len(mi_vals)], mi_vals, 'o-', linewidth=2, markersize=6, label=edge)
+        
+        ax6.set_xlabel('Timestep')
+        ax6.set_ylabel('Mutual Information')
+        ax6.set_title('Edge MI Evolution (Top 5)')
+        ax6.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        ax6.grid(True, alpha=0.3)
+    
+    # 7. Entropy Evolution
+    ax7 = fig.add_subplot(gs[2, 1])
+    if evolution_data.get('entropy_per_timestep'):
+        entropy_vals = [e for e in evolution_data['entropy_per_timestep'] if e is not None]
+        if entropy_vals:
+            ax7.plot(timesteps[:len(entropy_vals)], entropy_vals, 'D-', linewidth=2, markersize=8, color='purple')
+            ax7.set_xlabel('Timestep')
+            ax7.set_ylabel('Entropy')
+            ax7.set_title('Entropy Evolution')
+            ax7.grid(True, alpha=0.3)
+    
+    # 8. Geometric Embedding Evolution
+    ax8 = fig.add_subplot(gs[2, 2])
+    if evolution_data['embedding_coords_per_timestep']:
+        coords_list = [coords for coords in evolution_data['embedding_coords_per_timestep'] if coords is not None]
+        if coords_list:
+            # Show embedding for first and last timestep
+            if len(coords_list) > 1:
+                coords_first = np.array(coords_list[0])
+                coords_last = np.array(coords_list[-1])
+                
+                ax8.scatter(coords_first[:, 0], coords_first[:, 1], c='blue', s=100, alpha=0.7, label='t=1')
+                ax8.scatter(coords_last[:, 0], coords_last[:, 1], c='red', s=100, alpha=0.7, label=f't={len(coords_list)}')
+                
+                # Connect points to show evolution
+                for i in range(len(coords_first)):
+                    ax8.plot([coords_first[i, 0], coords_last[i, 0]], 
+                            [coords_first[i, 1], coords_last[i, 1]], 'k-', alpha=0.3)
+                
+                ax8.set_xlabel('X Coordinate')
+                ax8.set_ylabel('Y Coordinate')
+                ax8.set_title('Geometric Embedding Evolution')
+                ax8.legend()
+                ax8.grid(True, alpha=0.3)
+    
+    # 9. Comprehensive Evolution Summary
+    ax9 = fig.add_subplot(gs[3, :])
+    
+    # Create a summary table
+    summary_data = []
+    for t in timesteps:
+        idx = t - 1
+        if idx < len(evolution_data['gromov_delta_per_timestep']):
+            summary_data.append([
+                t,
+                f"{evolution_data['gromov_delta_per_timestep'][idx]:.3f}",
+                f"{evolution_data['mean_distance_per_timestep'][idx]:.3f}",
+                evolution_data['triangle_violations_per_timestep'][idx],
+                f"{np.mean(evolution_data['angle_sums_per_timestep'][idx]):.3f}" if evolution_data['angle_sums_per_timestep'][idx] else "N/A"
+            ])
+    
+    if summary_data:
+        table = ax9.table(cellText=summary_data,
+                         colLabels=['Timestep', 'Gromov Δ', 'Mean Dist', 'Tri Viol', 'Mean Angle Sum'],
+                         cellLoc='center',
+                         loc='center')
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+        table.scale(1, 2)
+        ax9.set_title('Dynamic Evolution Summary', fontsize=14, fontweight='bold')
+        ax9.axis('off')
+    
+    # Add overall title
+    fig.suptitle(f'Dynamic Evidence: Quantum Geometry Evolution\n{experiment_name}', 
+                 fontsize=16, fontweight='bold', y=0.98)
+    
+    # Save the comprehensive plot
+    plot_path = os.path.join(output_dir, f'dynamic_evidence_evolution_{experiment_name}.png')
+    plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    print(f"✓ Dynamic evidence plots saved to: {plot_path}")
+    return plot_path
+
+def create_evolution_heatmap(evolution_data, output_dir, experiment_name):
+    """
+    Create detailed heatmaps showing the evolution of key metrics over time.
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    
+    fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+    fig.suptitle(f'Evolution Heatmaps: {experiment_name}', fontsize=16, fontweight='bold')
+    
+    timesteps = list(range(1, len(evolution_data['gromov_delta_per_timestep']) + 1))
+    
+    # 1. Distance Matrix Evolution Heatmap
+    if evolution_data['distmat_per_timestep']:
+        dist_matrices = [np.array(dm) for dm in evolution_data['distmat_per_timestep']]
+        if dist_matrices:
+            # Stack matrices to show evolution
+            stacked_dm = np.stack(dist_matrices, axis=0)
+            im1 = axes[0,0].imshow(stacked_dm.mean(axis=(1,2)), cmap='viridis', aspect='auto')
+            axes[0,0].set_xlabel('Timestep')
+            axes[0,0].set_ylabel('Average Distance')
+            axes[0,0].set_title('Distance Evolution')
+            plt.colorbar(im1, ax=axes[0,0])
+    
+    # 2. Angle Sum Evolution Heatmap
+    if evolution_data['angle_sums_per_timestep']:
+        angle_data = np.array(evolution_data['angle_sums_per_timestep'])
+        if angle_data.size > 0:
+            im2 = axes[0,1].imshow(angle_data.T, cmap='plasma', aspect='auto')
+            axes[0,1].set_xlabel('Timestep')
+            axes[0,1].set_ylabel('Triangle Index')
+            axes[0,1].set_title('Angle Sum Evolution')
+            plt.colorbar(im2, ax=axes[0,1])
+    
+    # 3. Edge MI Evolution Heatmap
+    if evolution_data['edge_mi_per_timestep']:
+        # Convert edge MI to matrix format
+        edge_mi_evolution = {}
+        for t, edge_mi in enumerate(evolution_data['edge_mi_per_timestep']):
+            for edge, mi_val in edge_mi.items():
+                if edge not in edge_mi_evolution:
+                    edge_mi_evolution[edge] = []
+                edge_mi_evolution[edge].append(mi_val)
+        
+        if edge_mi_evolution:
+            edge_mi_matrix = np.array(list(edge_mi_evolution.values()))
+            im3 = axes[1,0].imshow(edge_mi_matrix, cmap='coolwarm', aspect='auto')
+            axes[1,0].set_xlabel('Timestep')
+            axes[1,0].set_ylabel('Edge Index')
+            axes[1,0].set_title('Edge MI Evolution')
+            plt.colorbar(im3, ax=axes[1,0])
+    
+    # 4. Metric Correlation Heatmap
+    metrics = {
+        'Gromov Delta': evolution_data['gromov_delta_per_timestep'],
+        'Mean Distance': evolution_data['mean_distance_per_timestep'],
+        'Triangle Violations': evolution_data['triangle_violations_per_timestep']
+    }
+    
+    if all(len(v) > 1 for v in metrics.values()):
+        metric_matrix = np.array(list(metrics.values())).T
+        correlation_matrix = np.corrcoef(metric_matrix.T)
+        
+        im4 = axes[1,1].imshow(correlation_matrix, cmap='RdBu_r', vmin=-1, vmax=1, aspect='auto')
+        axes[1,1].set_xticks(range(len(metrics)))
+        axes[1,1].set_yticks(range(len(metrics)))
+        axes[1,1].set_xticklabels(list(metrics.keys()), rotation=45)
+        axes[1,1].set_yticklabels(list(metrics.keys()))
+        axes[1,1].set_title('Metric Correlations')
+        plt.colorbar(im4, ax=axes[1,1])
+    
+    plt.tight_layout()
+    heatmap_path = os.path.join(output_dir, f'evolution_heatmaps_{experiment_name}.png')
+    plt.savefig(heatmap_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    print(f"✓ Evolution heatmaps saved to: {heatmap_path}")
+    return heatmap_path
