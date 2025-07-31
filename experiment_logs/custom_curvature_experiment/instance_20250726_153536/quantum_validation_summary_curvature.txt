@@ -1,0 +1,74 @@
+
+# Quantum Structure Validation Summary - Custom Curvature Experiment
+
+## Experiment Details
+- Number of qubits: 11
+- Geometry: spherical
+- Curvature: 20.0
+- Device: ibm_brisbane
+- Timesteps: 4
+- Trotter steps: 4
+
+## Test Results Overview
+
+### Test 1: Classical Geometry Fit Benchmark
+- Original MDS Stress: 0.1609
+- Random Graph Stress: 2.6366
+- Ring Lattice Stress: 13.5776
+- Grid Lattice Stress: 11.5568
+- Thermal State Stress: 9.5307
+
+**Quantum Signature**: False
+
+### Test 2: Entropy vs Classical Noise
+- Geometry preserved under noise: 0/10
+- Average stress increase: 3.2118
+
+**Quantum Signature**: Geometry collapses under noise
+
+### Test 3: Randomized Mutual Information
+- Original Stress: 0.1609
+- Mean Shuffled Stress: 0.2287
+- Stress Ratio: 1.4213
+
+**Quantum Signature**: False
+
+### Test 4: Entropy-Curvature Link Test
+- Significant correlations: 2/4
+- Strongest correlation: 0.9867
+
+**Quantum Signature**: True
+
+### Test 5: Causal Violation Tracker
+- Number of violations: 2
+- Max violation ratio: 1.25
+- Average violation strength: 0.0033
+
+**Quantum Signature**: True
+
+### Test 6: Lorentzian Metric Test
+- Lorentzian signature ratio: 0.0000
+- Average positive eigenvalues: 1.73
+- Average negative eigenvalues: 0.00
+- Null directions found: 11
+
+**Quantum Signature**: False
+
+## Overall Assessment
+
+**Quantum Structure Indicators**:
+- Test 1 (Geometry Benchmark): FAIL
+- Test 2 (Noise Response): PASS
+- Test 3 (Randomization): FAIL
+- Test 4 (Entropy-Curvature): PASS
+- Test 5 (Causal Violations): PASS
+- Test 6 (Lorentzian): FAIL
+
+**Total Quantum Indicators**: 3/6
+
+## Conclusion
+
+This analysis provides strong evidence against the presence of genuine quantum-driven geometric structure 
+in this custom curvature experiment, distinguishing it from classical statistical patterns.
+
+Generated: 2025-07-30 21:23:30

@@ -1,0 +1,11 @@
+EXPERIMENTS USED IN THIS ANALYSIS
+========================================
+
+Analysis timestamp: 20250730_190251
+Total experiments: 5
+
+1. ..\experiment_logs\custom_curvature_experiment\instance_20250726_153536\results_n11_geomS_curv20_ibm_brisbane_KTNW95.json
+2. ..\experiment_logs\custom_curvature_experiment\instance_20250724_165949\results_n7_geomH_curv4_ibm_brisbane_YNW0D5.json
+3. ..\experiment_logs\custom_curvature_experiment\instance_20250724_202928\results_n7_geomH_curv16_ibm_brisbane_5Z68RT.json
+4. ..\experiment_logs\custom_curvature_experiment\instance_20250726_185317\results_n3_geomS_curv4_simulator_DI2DQ6.json
+5. ..\experiment_logs\custom_curvature_experiment\instance_20250729_092000\results_n3_geomS_curv5_simulator_SL8XA9.json

@@ -1,0 +1,91 @@
+{
+  "classical_benchmarks": {
+    "classical_agreement_poor": "False",
+    "deviation_metrics": {
+      "spherical": {
+        "wasserstein_distance": 0.1474954256120392,
+        "kl_divergence": 269.1427455799186,
+        "euclidean_distance": 3.157060103360322,
+        "correlation": 0.39474563034447985
+      },
+      "euclidean": {
+        "wasserstein_distance": 0.06340510118032365,
+        "kl_divergence": 292.69122433056094,
+        "euclidean_distance": 2.7141956124676314,
+        "correlation": 0.36456411754633866
+      }
+    },
+    "best_fit_geometry": "euclidean",
+    "expected_geometry": "spherical",
+    "recommendations": [
+      "Compare reconstructed geometry against classical curved space embeddings (spherical, hyperbolic)",
+      "Report deviation metrics for each classical geometry",
+      "Implement geometry-specific validation tests"
+    ],
+    "command_line_flags": [
+      "--benchmark_against_classical_geometry true",
+      "--geometry_fit_metric wasserstein,kl,euclidean"
+    ]
+  },
+  "decoherence_sensitivity": {
+    "decoherence_sensitive": true,
+    "shot_noise_analysis": {
+      "total_shots": 50000,
+      "count_variance_mean": 38.7677734375,
+      "count_variance_std": 35.58419524412313,
+      "relative_variance": 0.00387677734375
+    },
+    "mi_stability_analysis": {},
+    "hardware_sensitivity": {
+      "is_hardware": true,
+      "device_name": "ibm_brisbane",
+      "insufficient_shots": false
+    },
+    "recommendations": [
+      "Repeat the experiment with different backend seeds and increased shots",
+      "Report standard deviation across MI and entropy metrics",
+      "Test on multiple backends to verify consistency"
+    ],
+    "command_line_flags": [
+      "--verify_noise_robustness true",
+      "--shots 8192",
+      "--run_on_multiple_backends true"
+    ]
+  },
+  "causal_structure": {
+    "significant_causal_violations": false,
+    "causal_violations": {},
+    "temporal_violations": {
+      "backward_influence_score": 0.00245390625,
+      "state_evolution_steps": 5
+    },
+    "lightcone_violations": {},
+    "recommendations": [
+      "Trace MI flow and identify feedback loops violating lightcone constraints",
+      "Suppress or tag non-causal paths",
+      "Implement causal ordering in quantum circuit design"
+    ],
+    "command_line_flags": [
+      "--detect_and_flag_causal_loops true",
+      "--restrict_information_flow_direction forward",
+      "--filter_noncausal_edges true"
+    ]
+  },
+  "holographic_consistency": {
+    "holographic_consistency_weak": true,
+    "holographic_analysis": {
+      "consistency_score": 0.0
+    },
+    "consistency_score": 0.0,
+    "recommendations": [
+      "Refine Ryu-Takayanagi estimates using refined mutual information surfaces",
+      "Compare to exact subsystem entropy instead of approximated MI-only methods",
+      "Implement boundary entropy embedding in geometry reconstruction"
+    ],
+    "command_line_flags": [
+      "--use_ryu_takayanagi_test true",
+      "--compare_MI_vs_subsystem_entropy true",
+      "--embed_boundary_entropy_in_geometry true"
+    ]
+  }
+}

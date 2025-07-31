@@ -1,0 +1,79 @@
+{
+  "results": [
+    {
+      "file_path": "experiment_logs/custom_curvature_experiment/instance_20250731_095344/results_n6_geomS_curv8_ibm_brisbane_OTW03P.json",
+      "num_qubits": 6,
+      "curvature": 8.0,
+      "geometry": "spherical",
+      "device": "ibm_brisbane",
+      "timesteps": 3,
+      "analysis_results": {
+        "temporal_asymmetry": {
+          "forward_mean": 0.0,
+          "backward_mean": 0.0,
+          "asymmetry_ratio": 0.0,
+          "forward_std": 0.0,
+          "backward_std": 0.0
+        },
+        "spatial_asymmetry_evolution": [
+          {
+            "asymmetry_score": 0.0,
+            "top_left_mean": 0.06666666666666668,
+            "bottom_right_mean": 0.06666666666666668,
+            "top_right_mean": 0.1,
+            "bottom_left_mean": 0.1,
+            "overall_mean": 0.08333333333333334
+          },
+          {
+            "asymmetry_score": 0.0,
+            "top_left_mean": 0.06666666666666668,
+            "bottom_right_mean": 0.06666666666666668,
+            "top_right_mean": 0.1,
+            "bottom_left_mean": 0.1,
+            "overall_mean": 0.08333333333333334
+          },
+          {
+            "asymmetry_score": 0.0,
+            "top_left_mean": 0.06666666666666668,
+            "bottom_right_mean": 0.06666666666666668,
+            "top_right_mean": 0.1,
+            "bottom_left_mean": 0.1,
+            "overall_mean": 0.08333333333333334
+          }
+        ],
+        "connectivity_evolution": [
+          {
+            "avg_connectivity": 0.08333333333333334,
+            "clustering_coefficient": 0.9999999999950001,
+            "total_connections": 30,
+            "max_connection": 0.1,
+            "min_connection": 0.0
+          },
+          {
+            "avg_connectivity": 0.08333333333333334,
+            "clustering_coefficient": 0.9999999999950001,
+            "total_connections": 30,
+            "max_connection": 0.1,
+            "min_connection": 0.0
+          },
+          {
+            "avg_connectivity": 0.08333333333333334,
+            "clustering_coefficient": 0.9999999999950001,
+            "total_connections": 30,
+            "max_connection": 0.1,
+            "min_connection": 0.0
+          }
+        ],
+        "causal_violations": {
+          "total_violations": 0,
+          "violations": [],
+          "violation_rate": 0.0
+        }
+      },
+      "has_evolution": true
+    }
+  ],
+  "experiments_analyzed": 1,
+  "experiments_with_evolution": 1,
+  "min_timesteps_required": 3
+}
