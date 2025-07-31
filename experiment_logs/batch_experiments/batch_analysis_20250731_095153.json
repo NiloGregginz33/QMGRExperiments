@@ -1,0 +1,42 @@
+{
+  "total_experiments": 10,
+  "successful": 0,
+  "failed": 10,
+  "timed_out": 0,
+  "crashed": 0,
+  "success_rate": 0.0,
+  "backend_stats": {
+    "ibm_brisbane": {
+      "total": 10,
+      "success": 0
+    }
+  },
+  "weight_success": {
+    "6.0": {
+      "total": 4,
+      "success": 0
+    },
+    "4.0": {
+      "total": 3,
+      "success": 0
+    },
+    "8.0": {
+      "total": 3,
+      "success": 0
+    }
+  },
+  "curvature_success": {
+    "8.0": {
+      "total": 4,
+      "success": 0
+    },
+    "5.0": {
+      "total": 3,
+      "success": 0
+    },
+    "12.0": {
+      "total": 3,
+      "success": 0
+    }
+  }
+}

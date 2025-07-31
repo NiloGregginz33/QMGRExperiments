@@ -1,0 +1,133 @@
+{
+  "condition_1_lorentzian_metric": {
+    "condition_met": "False",
+    "overall_score": 0.196969696969697,
+    "lorentzian_signature": "False",
+    "positive_eigenvalues": 11,
+    "negative_eigenvalues": 1,
+    "null_directions": 39,
+    "chi2_statistic": 0.0,
+    "p_value": 1.0,
+    "signature_consistency": 0.0,
+    "null_consistency": 0.5909090909090909,
+    "statistical_significance": 0.0,
+    "eigenvalues": [
+      -0.392408242714259,
+      2.14867837084281,
+      2.0120347715442946,
+      0.16824830287593256,
+      0.643961321822676,
+      1.2938926305589644,
+      0.7941555000045686,
+      1.2082519568022276,
+      1.1188306843852507,
+      1.032034353133474,
+      0.9765904242824172,
+      0.9957299264616285
+    ]
+  },
+  "condition_2_page_curve": {
+    "condition_met": "False",
+    "overall_score": 1.4952048580078128,
+    "page_curve_detected": true,
+    "best_fit": "page_curve",
+    "page_curve_r2": 0.9952048580078129,
+    "area_law_r2": 0.7857628662244179,
+    "volume_law_r2": 0.7857628662244179,
+    "peak_at_middle": "False",
+    "non_linearity": 0.4628575739637218,
+    "statistical_significance": 0.9999999599999012,
+    "fits": {
+      "area_law": 0.7857628662244179,
+      "volume_law": 0.7857628662244179,
+      "page_curve": 0.9952048580078129
+    }
+  },
+  "condition_3_entanglement_curvature": {
+    "condition_met": "False",
+    "overall_score": 0.23082420664762324,
+    "strong_correlation": "False",
+    "pearson_correlation": -0.056401397081688426,
+    "pearson_r2": 0.0031811175927662916,
+    "pearson_p_value": 0.5019321224724306,
+    "spearman_correlation": -0.2266576222985645,
+    "spearman_r2": 0.05137367774603873,
+    "spearman_p_value": 0.006298285216970469,
+    "max_r2": 0.05137367774603873,
+    "statistically_significant": "True"
+  },
+  "condition_4_causal_violations": {
+    "condition_met": false,
+    "overall_score": 0.0,
+    "causal_violations": [],
+    "non_local_correlations": [],
+    "violation_ratio": 0.0,
+    "total_pairs": 66,
+    "chi2_statistic": 0.0,
+    "p_value": 1.0,
+    "statistically_significant": false
+  },
+  "condition_5_cross_system_consistency": {
+    "condition_met": "False",
+    "overall_score": 0.5788554625694758,
+    "power_law_r2": 0.6971386564236896,
+    "power_law_slope": -1.969361729448896,
+    "p_value": 0.0007260816749864442,
+    "coefficient_of_variation": 1.4156670175283994,
+    "fractal_dimension": 1.0,
+    "statistically_significant": "True"
+  },
+  "condition_6_reproducibility": {
+    "condition_met": "True",
+    "overall_score": 144.95211176469408,
+    "robustness_tests": {
+      "curvature_sensitivity": {
+        "robustness_score": 0.9386613543151814,
+        "variation_coefficient": 0.061338645684818664,
+        "mi_variations": [
+          8.838573950554209e-05,
+          9.303762053214956e-05,
+          0.00010234138258536451
+        ]
+      },
+      "geometry_sensitivity": {
+        "robustness_score": 0.8367006838144548,
+        "variation_coefficient": 0.16329931618554513,
+        "mi_variations": [
+          9.303762053214956e-05,
+          0.00011164514463857947,
+          7.443009642571965e-05
+        ]
+      },
+      "noise_robustness": {
+        "robustness_score": 577.0640078089672,
+        "degradation": -576.0640078089672,
+        "mi_variations": [
+          9.303762053214956e-05,
+          0.01003207339824084,
+          0.047483664241229455,
+          0.053688662181292084
+        ]
+      },
+      "depth_sensitivity": {
+        "robustness_score": 0.9690772116795542,
+        "variation_coefficient": 0.030922788320445836,
+        "mi_variations": [
+          9.071168001884582e-05,
+          9.303762053214956e-05,
+          9.768950155875704e-05
+        ]
+      }
+    },
+    "curvature_robustness": 0.9386613543151814,
+    "geometry_robustness": 0.8367006838144548,
+    "noise_robustness": 577.0640078089672,
+    "depth_robustness": 0.9690772116795542
+  },
+  "overall_assessment": {
+    "extraordinary_evidence_score": 24.575660998148113,
+    "conditions_met": 1,
+    "total_conditions": 6,
+    "extraordinary_evidence_level": "INSUFFICIENT EVIDENCE - Claims not supported"
+  }
+}

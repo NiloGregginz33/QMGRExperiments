@@ -1,0 +1,52 @@
+================================================================================
+SUBSYSTEM ENTROPY SCALING TEST REPORT (Page Curve Analysis)
+================================================================================
+Instance Directory: experiment_logs\custom_curvature_experiment\instance_20250730_190246
+Test Date: 2025-07-30 19:31:47.740628
+
+📋 TEST SUMMARY:
+  Page Curve Detected: ❌ NO
+  Number of Qubits: 9
+  Total Measurements: 10000
+
+📊 PAGE CURVE ANALYSIS:
+  Peak Detected: No
+  Symmetry Score: 0.000
+  Saturation Score: 0.000
+  Entropy Range: [0.000, 7.976]
+
+🔧 PAGE CURVE FIT:
+  R-squared: 0.000
+  Parameters: [0, 0, 0]
+
+⚛️ QUANTUM SIGNATURE ANALYSIS:
+  Quantum Signature Strength: 0.125
+  Individual Scores:
+    Subsystem size 1: 0.000
+    Subsystem size 2: 0.000
+    Subsystem size 3: 0.000
+    Subsystem size 4: 0.000
+    Subsystem size 5: 0.000
+    Subsystem size 6: 0.000
+    Subsystem size 7: 0.000
+    Subsystem size 8: 1.000
+
+📈 SUBSYSTEM ENTROPY DETAILS:
+  Size 1: 0.000 ± 0.000
+  Size 2: 0.000 ± 0.000
+  Size 3: 0.000 ± 0.000
+  Size 4: 1.560 ± 2.221
+  Size 5: 4.471 ± 2.847
+  Size 6: 6.744 ± 2.338
+  Size 7: 6.781 ± 1.146
+  Size 8: 7.976 ± 0.001
+
+🔬 INTERPRETATION:
+  ❌ Page curve behavior not clearly detected
+  ❌ May indicate classical or mixed behavior
+  ❌ Consider increasing system size or measurement precision
+
+  This could be due to:
+  - Insufficient system size
+  - Measurement noise
+  - Classical geometry dominance

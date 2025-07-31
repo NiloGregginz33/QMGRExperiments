@@ -1,0 +1,99 @@
+# Curvature Artifact Analysis Report
+
+## Executive Summary
+
+This analysis investigates whether the observed negative correlation between curvature and quantum signatures is a real physical effect or a statistical artifact.
+
+### Key Findings
+
+**Overall Curvature Effect:**
+- Correlation: -0.144
+- P-value: 0.084
+- Statistical Significance: NO (α=0.05)
+
+## Detailed Analysis Results
+
+### 1. Statistical Significance Testing
+
+**Pearson Correlations:**
+- Curvature vs EE Score: r=-0.144, p=0.084
+- Curvature vs QES Score: r=nan, p=nan
+
+**Spearman Correlations:**
+- Curvature vs EE Score: ρ=-0.140, p=0.094
+
+**Bootstrap Confidence Interval:**
+- 95% CI: [nan, nan]
+
+### 2. Control Experiments Analysis
+
+**By Qubit Count:**
+- 3 qubits (n=9): r=nan, p=nan
+- 4 qubits (n=9): r=0.391, p=0.298
+- 5 qubits (n=12): r=nan, p=nan
+- 6 qubits (n=4): r=nan, p=nan
+- 7 qubits (n=98): r=-0.125, p=0.219
+- 9 qubits (n=2): r=nan, p=nan
+- 11 qubits (n=2): r=nan, p=nan
+- 12 qubits (n=5): r=-1.000, p=0.000
+
+**By Device:**
+- ibm (n=101): r=-0.171, p=0.087
+- simulator (n=42): r=nan, p=nan
+
+### 3. Curvature Range Analysis
+
+**Quadratic Fit:**
+- R²: 0.024
+
+### 4. Reproducibility Analysis
+
+**Reproducible Effects:**
+- 12q spherical ibm_brisbane: r=-1.000, p=0.000
+
+### 5. Alternative Explanations
+
+**Device Effects:**
+- ibm_brisbane: 0.749 ± 4.172 (n=101)
+- simulator: 0.000 ± 0.000 (n=42)
+- unknown: 0.000 ± 0.000 (n=1)
+
+**Geometry Effects:**
+- hyperbolic: 0.000 ± 0.000 (n=114)
+- spherical: 2.700 ± 7.583 (n=28)
+- unknown: 0.000 ± 0.000 (n=1)
+- euclidean: 0.000 ± 0.000 (n=1)
+
+### 6. Synthetic Data Testing
+
+**Methodology Validation:**
+- Negative effect detection: CORRECT
+- No effect detection: CORRECT
+
+## Conclusions
+
+### Is the Curvature Effect Real?
+
+**Evidence FOR Real Effect:**
+- Reproducible in 1 parameter groups
+
+**Evidence AGAINST Real Effect:**
+- No statistically significant overall correlation
+- Bootstrap confidence interval includes zero
+
+### Final Assessment
+
+Based on the comprehensive analysis:
+
+**Curvature Effect Assessment: ARTIFACT**
+
+**Confidence Level: LOW**
+
+**Recommendations:**
+
+1. The curvature effect appears to be a statistical artifact
+2. Focus on other parameters (system size, device type) for optimization
+3. Conduct more controlled experiments with larger sample sizes
+4. Re-evaluate the analysis methodology
+
+Generated: 2025-07-31 03:22:19

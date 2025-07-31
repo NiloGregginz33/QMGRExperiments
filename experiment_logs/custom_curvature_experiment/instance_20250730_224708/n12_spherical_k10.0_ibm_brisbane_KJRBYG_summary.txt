@@ -1,0 +1,34 @@
+================================================================================
+CUSTOM CURVATURE EXPERIMENT - COMPREHENSIVE SUMMARY
+================================================================================
+
+EXPERIMENT PARAMETERS:
+----------------------------------------
+Number of qubits: 12
+Geometry: spherical
+Curvature: 10.0
+Device: ibm_brisbane
+Timesteps: 4
+Topology: triangulated
+Einstein solver enabled: False
+Page curve enabled: False
+
+KEY METRICS:
+----------------------------------------
+Max Angle Deficit: 0.000000
+Min Edge Length: 0.000000
+Max Edge Length: 0.000000
+Edges at Floor: 0
+
+DYNAMIC EVIDENCE SUMMARY:
+----------------------------------------
+Gromov Delta Range: [17.185, 17.185]
+Mean Distance Range: [12.585, 12.585]
+Total Triangle Violations: 0
+
+
+================================================================================
+EXPERIMENT COMPLETED SUCCESSFULLY
+================================================================================
+Results saved to: C:\Users\manav\Desktop\Experiments\QM1\src\experiments\..\..\experiment_logs\custom_curvature_experiment\instance_20250730_224708
+Timestamp: 2025-07-30 22:49:22

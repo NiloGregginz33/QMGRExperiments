@@ -1,0 +1,222 @@
+[
+  {
+    "experiment_id": 1,
+    "config": {
+      "name": "hardware_optimized_6q_ibm_brisbane",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 8.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 6.0,
+      "gamma": 4.0,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 0.10262155532836914,
+    "stdout": "",
+    "stderr": "  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 2933\n    print(f\"ENGINEERING QUANTUM GEOMETRY: Targeting entropy pattern {target_entropies}\")\nIndentationError: unexpected indent\n"
+  },
+  {
+    "experiment_id": 2,
+    "config": {
+      "name": "param_sweep_w4.0_k5.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 5.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 4.0,
+      "gamma": 2.8,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 0.08560061454772949,
+    "stdout": "",
+    "stderr": "  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 2933\n    print(f\"ENGINEERING QUANTUM GEOMETRY: Targeting entropy pattern {target_entropies}\")\nIndentationError: unexpected indent\n"
+  },
+  {
+    "experiment_id": 3,
+    "config": {
+      "name": "param_sweep_w4.0_k8.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 8.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 4.0,
+      "gamma": 2.8,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 0.0931241512298584,
+    "stdout": "",
+    "stderr": "  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 2933\n    print(f\"ENGINEERING QUANTUM GEOMETRY: Targeting entropy pattern {target_entropies}\")\nIndentationError: unexpected indent\n"
+  },
+  {
+    "experiment_id": 4,
+    "config": {
+      "name": "param_sweep_w4.0_k12.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 12.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 4.0,
+      "gamma": 2.8,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 0.08787131309509277,
+    "stdout": "",
+    "stderr": "  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 2933\n    print(f\"ENGINEERING QUANTUM GEOMETRY: Targeting entropy pattern {target_entropies}\")\nIndentationError: unexpected indent\n"
+  },
+  {
+    "experiment_id": 5,
+    "config": {
+      "name": "param_sweep_w6.0_k5.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 5.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 6.0,
+      "gamma": 4.199999999999999,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 0.08967900276184082,
+    "stdout": "",
+    "stderr": "  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 2933\n    print(f\"ENGINEERING QUANTUM GEOMETRY: Targeting entropy pattern {target_entropies}\")\nIndentationError: unexpected indent\n"
+  },
+  {
+    "experiment_id": 6,
+    "config": {
+      "name": "param_sweep_w6.0_k8.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 8.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 6.0,
+      "gamma": 4.199999999999999,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 0.0865333080291748,
+    "stdout": "",
+    "stderr": "  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 2933\n    print(f\"ENGINEERING QUANTUM GEOMETRY: Targeting entropy pattern {target_entropies}\")\nIndentationError: unexpected indent\n"
+  },
+  {
+    "experiment_id": 7,
+    "config": {
+      "name": "param_sweep_w6.0_k12.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 12.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 6.0,
+      "gamma": 4.199999999999999,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 0.10307121276855469,
+    "stdout": "",
+    "stderr": "  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 2933\n    print(f\"ENGINEERING QUANTUM GEOMETRY: Targeting entropy pattern {target_entropies}\")\nIndentationError: unexpected indent\n"
+  },
+  {
+    "experiment_id": 8,
+    "config": {
+      "name": "param_sweep_w8.0_k5.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 5.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 8.0,
+      "gamma": 5.6,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 0.08663105964660645,
+    "stdout": "",
+    "stderr": "  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 2933\n    print(f\"ENGINEERING QUANTUM GEOMETRY: Targeting entropy pattern {target_entropies}\")\nIndentationError: unexpected indent\n"
+  },
+  {
+    "experiment_id": 9,
+    "config": {
+      "name": "param_sweep_w8.0_k8.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 8.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 8.0,
+      "gamma": 5.6,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 0.08667802810668945,
+    "stdout": "",
+    "stderr": "  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 2933\n    print(f\"ENGINEERING QUANTUM GEOMETRY: Targeting entropy pattern {target_entropies}\")\nIndentationError: unexpected indent\n"
+  },
+  {
+    "experiment_id": 10,
+    "config": {
+      "name": "param_sweep_w8.0_k12.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 12.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 8.0,
+      "gamma": 5.6,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 0.09397768974304199,
+    "stdout": "",
+    "stderr": "  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 2933\n    print(f\"ENGINEERING QUANTUM GEOMETRY: Targeting entropy pattern {target_entropies}\")\nIndentationError: unexpected indent\n"
+  }
+]

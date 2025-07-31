@@ -1,0 +1,56 @@
+{
+  "success": true,
+  "target_entropies": [
+    0.1,
+    0.8,
+    1.5,
+    2.0,
+    2.2
+  ],
+  "achieved_entropies": [
+    0.914447062699117,
+    1.5428273109565585,
+    1.5428273109565585,
+    0.914447062699117,
+    4.164454454959387e-15
+  ],
+  "parameters": {
+    "entanglement_strength": 5.0,
+    "weight": 0.12311217762605978,
+    "gamma": 0.01,
+    "sigma": 0.01,
+    "init_angle": 0.0,
+    "timesteps": 3,
+    "asymmetry_strength": 0.7349363195084023
+  },
+  "loss": 1.7926300380378235,
+  "iterations": 19,
+  "optimization_result": {
+    "fun": 1.7926300380378235,
+    "jac": [
+      -0.017213452989915,
+      -1.2412293421842534e-05,
+      0.00020001778011765608,
+      0.00020001778011765608,
+      0.0,
+      0.06000000532907055,
+      1.9984014342837957e-07
+    ],
+    "nfev": 208,
+    "njev": 26,
+    "nit": 19,
+    "status": 0,
+    "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+    "x": [
+      5.0,
+      0.12311217762605978,
+      0.01,
+      0.01,
+      0.0,
+      3.0,
+      0.7349363195084023
+    ],
+    "success": true,
+    "hess_inv": "<7x7 LbfgsInvHessProduct with dtype=float64>"
+  }
+}

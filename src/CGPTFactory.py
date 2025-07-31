@@ -1826,9 +1826,9 @@ def dynamic_warp_circuit_no_measure(t_steps):
     subsystem_3 = partial_trace(state, [0, 1])  # Isolate Qubit 2
 
     # Compute entropies for each subsystem
-    entropy_1 = qiskit_qiskit_entropy(subsystem_1)
-    entropy_2 = qiskit_qiskit_entropy(subsystem_2)
-    entropy_3 = qiskit_qiskit_entropy(subsystem_3)
+    entropy_1 = qiskit_entropy(subsystem_1)
+    entropy_2 = qiskit_entropy(subsystem_2)
+    entropy_3 = qiskit_entropy(subsystem_3)
 
     print("\nSubsystem Entropies:")
     print(f"Qubit 0 Entropy: {entropy_1}")
@@ -2066,9 +2066,9 @@ def calculate_entropies(state):
     subsystem_1 = partial_trace(state, [0, 2])  # Isolate Qubit 1
     subsystem_2 = partial_trace(state, [0, 1])  # Isolate Qubit 2
 
-    entropy_0 = qiskit_qiskit_entropy(subsystem_0, base=2)
-    entropy_1 = qiskit_qiskit_entropy(subsystem_1, base=2)
-    entropy_2 = qiskit_qiskit_entropy(subsystem_2, base=2)
+    entropy_0 = qiskit_entropy(subsystem_0, base=2)
+    entropy_1 = qiskit_entropy(subsystem_1, base=2)
+    entropy_2 = qiskit_entropy(subsystem_2, base=2)
 
     return {"Qubit 0": entropy_0, "Qubit 1": entropy_1, "Qubit 2": entropy_2}
 
@@ -2267,8 +2267,8 @@ def analyze_holographic_subsystem_qiskit_entropy(statevector):
     """
     black_hole_state = partial_trace(statevector, [1])  # Trace out Radiation
     radiation_state = partial_trace(statevector, [0])  # Trace out Black Hole
-    bh_entropy = qiskit_qiskit_entropy(black_hole_state, base=2)
-    rad_entropy = qiskit_qiskit_entropy(radiation_state, base=2)
+    bh_entropy = qiskit_entropy(black_hole_state, base=2)
+    rad_entropy = qiskit_entropy(radiation_state, base=2)
     return {
         "black_hole_entropy": bh_entropy,
         "radiation_entropy": rad_entropy

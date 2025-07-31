@@ -1,0 +1,336 @@
+{
+  "experiment_type": "mutual_information_invariance",
+  "parameters": {
+    "num_qubits": 4,
+    "geometry": "spherical",
+    "curvature": 2.0,
+    "device": "simulator",
+    "shots": 100,
+    "num_coordinate_tests": 5
+  },
+  "coordinate_tests": {
+    "transformation_results": [
+      {
+        "transformation_name": "identity",
+        "transformation_description": "No transformation (baseline)",
+        "transformed_mi_matrix": [
+          [
+            0.0,
+            0.5603189784617852,
+            0.5541253037895493,
+            0.5643825308772263
+          ],
+          [
+            0.5603189784617852,
+            0.0,
+            0.562972747902299,
+            0.5614962663093437
+          ],
+          [
+            0.5541253037895493,
+            0.562972747902299,
+            0.0,
+            0.5525332242916163
+          ],
+          [
+            0.5643825308772263,
+            0.5614962663093437,
+            0.5525332242916163,
+            0.0
+          ]
+        ],
+        "distances": {
+          "euclidean": 0.0,
+          "cosine": 0.0,
+          "kl_divergence": 0.0,
+          "jensen_shannon": 0.0
+        },
+        "isomorphism_test": {
+          "is_isomorphic": true,
+          "num_nodes_1": 4,
+          "num_nodes_2": 4,
+          "num_edges_1": 6,
+          "num_edges_2": 6,
+          "density_1": 1.0,
+          "density_2": 1.0,
+          "avg_clustering_1": 1.0,
+          "avg_clustering_2": 1.0,
+          "avg_shortest_path_1": 1.0,
+          "avg_shortest_path_2": 1.0
+        },
+        "invariance_score": 1.0
+      },
+      {
+        "transformation_name": "permutation_1",
+        "transformation_description": "Random permutation [1 2 3 0]",
+        "transformed_mi_matrix": [
+          [
+            0.0,
+            0.562972747902299,
+            0.5614962663093437,
+            0.5603189784617852
+          ],
+          [
+            0.562972747902299,
+            0.0,
+            0.5525332242916163,
+            0.5541253037895493
+          ],
+          [
+            0.5614962663093437,
+            0.5525332242916163,
+            0.0,
+            0.5643825308772263
+          ],
+          [
+            0.5603189784617852,
+            0.5541253037895493,
+            0.5643825308772263,
+            0.0
+          ]
+        ],
+        "distances": {
+          "euclidean": 0.02762632249108273,
+          "cosine": 0.00010165073186030327,
+          "kl_divergence": 0.00010180534248200711,
+          "jensen_shannon": 6.362817053809583e-05
+        },
+        "isomorphism_test": {
+          "is_isomorphic": true,
+          "num_nodes_1": 4,
+          "num_nodes_2": 4,
+          "num_edges_1": 6,
+          "num_edges_2": 6,
+          "density_1": 1.0,
+          "density_2": 1.0,
+          "avg_clustering_1": 1.0,
+          "avg_clustering_2": 1.0,
+          "avg_shortest_path_1": 1.0,
+          "avg_shortest_path_2": 1.0
+        },
+        "invariance_score": 0.9998983492681397
+      },
+      {
+        "transformation_name": "permutation_2",
+        "transformation_description": "Random permutation [1 3 2 0]",
+        "transformed_mi_matrix": [
+          [
+            0.0,
+            0.5614962663093437,
+            0.562972747902299,
+            0.5603189784617852
+          ],
+          [
+            0.5614962663093437,
+            0.0,
+            0.5525332242916163,
+            0.5643825308772263
+          ],
+          [
+            0.562972747902299,
+            0.5525332242916163,
+            0.0,
+            0.5541253037895493
+          ],
+          [
+            0.5603189784617852,
+            0.5643825308772263,
+            0.5541253037895493,
+            0.0
+          ]
+        ],
+        "distances": {
+          "euclidean": 0.020785794463470973,
+          "cosine": 5.754367739430055e-05,
+          "kl_divergence": 5.766430226003202e-05,
+          "jensen_shannon": 3.604010679916829e-05
+        },
+        "isomorphism_test": {
+          "is_isomorphic": true,
+          "num_nodes_1": 4,
+          "num_nodes_2": 4,
+          "num_edges_1": 6,
+          "num_edges_2": 6,
+          "density_1": 1.0,
+          "density_2": 1.0,
+          "avg_clustering_1": 1.0,
+          "avg_clustering_2": 1.0,
+          "avg_shortest_path_1": 1.0,
+          "avg_shortest_path_2": 1.0
+        },
+        "invariance_score": 0.9999424563226057
+      },
+      {
+        "transformation_name": "permutation_3",
+        "transformation_description": "Random permutation [1 2 3 0]",
+        "transformed_mi_matrix": [
+          [
+            0.0,
+            0.562972747902299,
+            0.5614962663093437,
+            0.5603189784617852
+          ],
+          [
+            0.562972747902299,
+            0.0,
+            0.5525332242916163,
+            0.5541253037895493
+          ],
+          [
+            0.5614962663093437,
+            0.5525332242916163,
+            0.0,
+            0.5643825308772263
+          ],
+          [
+            0.5603189784617852,
+            0.5541253037895493,
+            0.5643825308772263,
+            0.0
+          ]
+        ],
+        "distances": {
+          "euclidean": 0.02762632249108273,
+          "cosine": 0.00010165073186030327,
+          "kl_divergence": 0.00010180534248200711,
+          "jensen_shannon": 6.362817053809583e-05
+        },
+        "isomorphism_test": {
+          "is_isomorphic": true,
+          "num_nodes_1": 4,
+          "num_nodes_2": 4,
+          "num_edges_1": 6,
+          "num_edges_2": 6,
+          "density_1": 1.0,
+          "density_2": 1.0,
+          "avg_clustering_1": 1.0,
+          "avg_clustering_2": 1.0,
+          "avg_shortest_path_1": 1.0,
+          "avg_shortest_path_2": 1.0
+        },
+        "invariance_score": 0.9998983492681397
+      },
+      {
+        "transformation_name": "permutation_4",
+        "transformation_description": "Random permutation [2 3 0 1]",
+        "transformed_mi_matrix": [
+          [
+            0.0,
+            0.5525332242916163,
+            0.5541253037895493,
+            0.562972747902299
+          ],
+          [
+            0.5525332242916163,
+            0.0,
+            0.5643825308772263,
+            0.5614962663093437
+          ],
+          [
+            0.5541253037895493,
+            0.5643825308772263,
+            0.0,
+            0.5603189784617852
+          ],
+          [
+            0.562972747902299,
+            0.5614962663093437,
+            0.5603189784617852,
+            0.0
+          ]
+        ],
+        "distances": {
+          "euclidean": 0.015824721929272256,
+          "cosine": 3.3353124930579625e-05,
+          "kl_divergence": 3.3514622044279806e-05,
+          "jensen_shannon": 2.094660563825595e-05
+        },
+        "isomorphism_test": {
+          "is_isomorphic": true,
+          "num_nodes_1": 4,
+          "num_nodes_2": 4,
+          "num_edges_1": 6,
+          "num_edges_2": 6,
+          "density_1": 1.0,
+          "density_2": 1.0,
+          "avg_clustering_1": 1.0,
+          "avg_clustering_2": 1.0,
+          "avg_shortest_path_1": 1.0,
+          "avg_shortest_path_2": 1.0
+        },
+        "invariance_score": 0.9999666468750694
+      }
+    ],
+    "num_transformations_tested": 5
+  },
+  "invariance_analysis": {
+    "invariance_scores": {
+      "mean": 0.9999411603467909,
+      "std": 3.9443438940666774e-05,
+      "min": 0.9998983492681397,
+      "max": 1.0,
+      "median": 0.9999424563226057
+    },
+    "euclidean_distances": {
+      "mean": 0.01837263227498174,
+      "std": 0.010209117305825756,
+      "max": 0.02762632249108273
+    },
+    "cosine_distances": {
+      "mean": 5.8839653209097344e-05,
+      "std": 3.9443438940666774e-05,
+      "max": 0.00010165073186030327
+    },
+    "kl_divergences": {
+      "mean": 5.895792185366521e-05,
+      "std": 3.94889210162808e-05,
+      "max": 0.00010180534248200711
+    },
+    "significance_test": {
+      "t_statistic": -4.336903917204229,
+      "p_value": 0.02261930160912046,
+      "significant_difference": "True"
+    }
+  },
+  "graph_isomorphism_tests": {},
+  "statistical_validation": {},
+  "plots": [
+    "experiment_logs\\mutual_information_invariance_experiment\\instance_20250730_182733\\mutual_information_invariance_analysis_20250730_182733.png"
+  ],
+  "circuit_results": {
+    "mutual_information_matrix": [
+      [
+        0.0,
+        0.5603189784617852,
+        0.5541253037895493,
+        0.5643825308772263
+      ],
+      [
+        0.5603189784617852,
+        0.0,
+        0.562972747902299,
+        0.5614962663093437
+      ],
+      [
+        0.5541253037895493,
+        0.562972747902299,
+        0.0,
+        0.5525332242916163
+      ],
+      [
+        0.5643825308772263,
+        0.5614962663093437,
+        0.5525332242916163,
+        0.0
+      ]
+    ],
+    "num_qubits": 4,
+    "geometry": "spherical",
+    "curvature": 2.0,
+    "device": "simulator",
+    "shots": 100,
+    "source_file": "experiment_logs/custom_curvature_experiment\\instance_20250730_141159\\results_n4_geomS_curv2_simulator_8M8QZE.json",
+    "timestep_used": 4
+  },
+  "timestamp": "2025-07-30T18:27:35.645065"
+}

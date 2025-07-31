@@ -1,0 +1,92 @@
+
+# Causal Asymmetry Analysis Summary Report
+
+## Analysis Overview
+- **Total experiments analyzed**: 28
+- **Experiments with evolution data**: 19
+- **Experiments with single timestep**: 9
+- **Minimum timesteps required**: 1
+
+## Key Findings
+
+### Temporal Asymmetry Analysis
+
+- **Mean temporal asymmetry ratio**: 0.0000
+- **Maximum temporal asymmetry**: 0.0000
+- **Experiments with significant asymmetry (>0.1)**: 0
+
+**Top 5 experiments by temporal asymmetry:**
+1. results_n7_geomH_curv4_ibm_brisbane_YNW0D5.json: 0.0000 (curvature=4.5, ibm_brisbane)
+2. results_n7_geomH_curv16_ibm_brisbane_XFBCA7.json: 0.0000 (curvature=16.0, ibm_brisbane)
+3. results_n11_geomS_curv20_ibm_brisbane_KTNW95.json: 0.0000 (curvature=20.0, ibm_brisbane)
+4. results_n3_geomS_curv4_simulator_DI2DQ6.json: 0.0000 (curvature=4.5, simulator)
+5. results_n3_geomS_curv5_simulator_SL8XA9.json: 0.0000 (curvature=5.0, simulator)
+
+### Spatial Asymmetry Analysis
+
+- **Mean spatial asymmetry score**: 0.6779
+- **Maximum spatial asymmetry**: 1.8002
+- **Experiments with significant spatial asymmetry (>0.1)**: 17
+
+**Top 5 experiments by spatial asymmetry:**
+1. results_n11_geomS_curv20_ibm_brisbane_KTNW95.json: 1.8002 (curvature=20.0, spherical)
+2. results_n9_geomS_curv10_ibm_brisbane_WGHPHF.json: 1.6469 (curvature=10.0, spherical)
+3. results_n7_geomH_curv16_ibm_brisbane_XFBCA7.json: 1.3186 (curvature=16.0, hyperbolic)
+4. results_n12_geomS_curv2_ibm_brisbane_SNDD23.json: 1.1722 (curvature=2.0, spherical)
+5. results_with_causal_asymmetry_20250731_024804.json: 1.1722 (curvature=2.0, spherical)
+
+### Connectivity Analysis
+
+- **Mean average connectivity**: 0.0720
+- **Mean clustering coefficient**: 1.0000
+- **Experiments with high connectivity (>0.5)**: 0
+- **Experiments with high clustering (>0.3)**: 19
+
+### Causal Violations Analysis
+
+- **Total causal violations across all experiments**: 20
+- **Mean violation rate**: 0.2895
+- **Experiments with violations**: 4
+
+**Experiments with causal violations:**
+- results_n3_geomS_curv4_simulator_DI2DQ6.json: 10 violations (rate=2.5000)
+- results_n3_geomS_curv5_simulator_SL8XA9.json: 6 violations (rate=1.5000)
+- results_n4_geomS_curv2_simulator_8M8QZE.json: 2 violations (rate=0.5000)
+- results_n6_geomS_curv1_simulator_W5Z4SI.json: 2 violations (rate=1.0000)
+
+### Device and Geometry Analysis
+
+**Device Statistics:**
+- ibm_brisbane: 14 experiments, mean asymmetry=0.0000
+- simulator: 14 experiments, mean asymmetry=0.0000
+
+**Geometry Statistics:**
+- hyperbolic: 2 experiments, mean asymmetry=0.0000
+- spherical: 26 experiments, mean asymmetry=0.0000
+
+## Conclusions
+
+### Emergent Time Structure Assessment
+
+❌ **NO EMERGENT TIME STRUCTURE DETECTED**
+- Low temporal asymmetry (mean ratio: 0.0000)
+- No significant directional effects
+- Consider increasing curvature or entanglement strength
+
+## Recommendations
+
+### For Stronger Quantum Spacetime Signatures:
+1. **Increase curvature values** (try 10.0-20.0)
+2. **Use more timesteps** (6-12 timesteps minimum)
+3. **Enhance entanglement strength** (weight=8.0, gamma=5.0)
+4. **Use larger qubit counts** (8-12 qubits)
+5. **Enable charge injection** for stronger perturbations
+6. **Run on real hardware** for quantum noise effects
+
+### Next Steps:
+1. Run experiments with enhanced parameters
+2. Analyze specific experiments with high asymmetry
+3. Investigate spatial-temporal correlations
+4. Validate with quantum coherence tests
+
+Generated: 2025-07-31 09:27:12

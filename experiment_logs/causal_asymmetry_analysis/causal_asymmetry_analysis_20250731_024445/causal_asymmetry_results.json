@@ -1,0 +1,60 @@
+{
+  "ctc_loops_detected": false,
+  "non_commuting_paths": false,
+  "time_reversal_violations": "False",
+  "causal_consistency_score": 0.20757575757575758,
+  "asymmetry_metrics": {
+    "spatial_asymmetry": 7.348673616582519e-05,
+    "temporal_asymmetry": 0.0011181095349414392,
+    "geometric_asymmetry": 2.4495578721941732e-05,
+    "total_asymmetry": 0.001216091849829206,
+    "geometry_factor": 0.3333333333333333
+  },
+  "detailed_analysis": {
+    "ctc_loops": {
+      "ctc_detected": false,
+      "num_ctc_candidates": 0,
+      "ctc_candidates": [],
+      "strongest_ctc": null
+    },
+    "path_integrals": {
+      "non_commuting_detected": false,
+      "commutator_violations": [],
+      "path_dependence": {
+        "path_dependent": false,
+        "path_differences": [
+          0.0,
+          1.9166167708542177e-20
+        ],
+        "max_difference": 1.9166167708542177e-20
+      },
+      "total_violations": 0
+    },
+    "time_reversal": {
+      "time_reversal_violated": "False",
+      "asymmetry_score": 0.0,
+      "entropy_production_analysis": {
+        "positive_steps": "0",
+        "negative_steps": "3",
+        "net_production": -5.194566097746653e-05
+      },
+      "forward_evolution": [
+        -4.0507603966539186e-05,
+        -1.0923252690319851e-05,
+        -5.148043206074947e-07
+      ],
+      "reverse_evolution": [
+        4.0507603966539186e-05,
+        1.0923252690319851e-05,
+        5.148043206074947e-07
+      ]
+    }
+  },
+  "error": "'overall_assessment'",
+  "overall_assessment": {
+    "total_violations": "0",
+    "causal_structure": "ERROR",
+    "quantum_gravity_evidence": false,
+    "confidence_level": 0.0
+  }
+}

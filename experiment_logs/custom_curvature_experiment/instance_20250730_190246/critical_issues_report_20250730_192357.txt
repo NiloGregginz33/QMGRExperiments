@@ -1,0 +1,87 @@
+================================================================================
+QUANTUM GEOMETRY CRITICAL ISSUES ANALYSIS REPORT
+================================================================================
+Instance Directory: experiment_logs\custom_curvature_experiment\instance_20250730_190246
+Analysis Date: 2025-07-30 19:23:57.908946
+
+🚨 CRITICAL ISSUES DETECTED:
+  🚧 3. Decoherence Sensitivity: High sensitivity to noise detected
+  🚧 5. Holographic Consistency: Weak bulk-boundary correspondence
+
+📊 CLASSICAL BENCHMARKS ANALYSIS:
+--------------------------------------------------
+classical_agreement_poor: False
+deviation_metrics:
+  spherical: {'wasserstein_distance': np.float64(0.1474954256120392), 'kl_divergence': np.float64(269.1427455799186), 'euclidean_distance': np.float64(3.157060103360322), 'correlation': np.float64(0.39474563034447985)}
+  euclidean: {'wasserstein_distance': np.float64(0.06340510118032365), 'kl_divergence': np.float64(292.69122433056094), 'euclidean_distance': np.float64(2.7141956124676314), 'correlation': np.float64(0.36456411754633866)}
+best_fit_geometry: euclidean
+expected_geometry: spherical
+
+💡 RECOMMENDATIONS:
+  1. Compare reconstructed geometry against classical curved space embeddings (spherical, hyperbolic)
+  2. Report deviation metrics for each classical geometry
+  3. Implement geometry-specific validation tests
+
+🔧 COMMAND LINE FLAGS:
+  --benchmark_against_classical_geometry true
+  --geometry_fit_metric wasserstein,kl,euclidean
+
+📊 DECOHERENCE SENSITIVITY ANALYSIS:
+--------------------------------------------------
+decoherence_sensitive: True
+shot_noise_analysis:
+  total_shots: 50000
+  count_variance_mean: 38.7677734375
+  count_variance_std: 35.58419524412313
+  relative_variance: 0.00387677734375
+mi_stability_analysis:
+hardware_sensitivity:
+  is_hardware: True
+  device_name: ibm_brisbane
+  insufficient_shots: False
+
+💡 RECOMMENDATIONS:
+  1. Repeat the experiment with different backend seeds and increased shots
+  2. Report standard deviation across MI and entropy metrics
+  3. Test on multiple backends to verify consistency
+
+🔧 COMMAND LINE FLAGS:
+  --verify_noise_robustness true
+  --shots 8192
+  --run_on_multiple_backends true
+
+📊 CAUSAL STRUCTURE ANALYSIS:
+--------------------------------------------------
+significant_causal_violations: False
+causal_violations:
+temporal_violations:
+  backward_influence_score: 0.00245390625
+  state_evolution_steps: 5
+lightcone_violations:
+
+💡 RECOMMENDATIONS:
+  1. Trace MI flow and identify feedback loops violating lightcone constraints
+  2. Suppress or tag non-causal paths
+  3. Implement causal ordering in quantum circuit design
+
+🔧 COMMAND LINE FLAGS:
+  --detect_and_flag_causal_loops true
+  --restrict_information_flow_direction forward
+  --filter_noncausal_edges true
+
+📊 HOLOGRAPHIC CONSISTENCY ANALYSIS:
+--------------------------------------------------
+holographic_consistency_weak: True
+holographic_analysis:
+  consistency_score: 0.0
+consistency_score: 0.0
+
+💡 RECOMMENDATIONS:
+  1. Refine Ryu-Takayanagi estimates using refined mutual information surfaces
+  2. Compare to exact subsystem entropy instead of approximated MI-only methods
+  3. Implement boundary entropy embedding in geometry reconstruction
+
+🔧 COMMAND LINE FLAGS:
+  --use_ryu_takayanagi_test true
+  --compare_MI_vs_subsystem_entropy true
+  --embed_boundary_entropy_in_geometry true

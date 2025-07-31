@@ -1,0 +1,22 @@
+Mutual Information Invariance Experiment Summary
+=======================================================
+
+Experiment Parameters:
+- Number of qubits: 4
+- Geometry: spherical
+- Curvature: 2.0
+- Device: simulator
+- Shots: 100
+- Coordinate tests: 5
+
+Results Summary:
+--------------------
+- Transformations tested: 5
+- Mean invariance score: 0.9999
+- Invariance score std: 0.0000
+- Invariance score range: [0.9999, 1.0000]
+- Significant difference from identity: Yes
+- p-value: 0.0226
+
+Plots generated: 1
+Timestamp: 20250730_182735

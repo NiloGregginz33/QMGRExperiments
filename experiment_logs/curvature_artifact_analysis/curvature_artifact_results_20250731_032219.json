@@ -1,0 +1,566 @@
+{
+  "analysis_results": {
+    "curvature_ee_pearson": {
+      "correlation": -0.14440046085705735,
+      "p_value": 0.08420980100729998
+    },
+    "curvature_qes_pearson": {
+      "correlation": NaN,
+      "p_value": NaN
+    },
+    "curvature_ee_spearman": {
+      "correlation": -0.1402514666850322,
+      "p_value": 0.09361150802531215
+    },
+    "curvature_ee_bootstrap_ci": [
+      NaN,
+      NaN
+    ],
+    "qubits_3_curvature_ee": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 9
+    },
+    "qubits_4_curvature_ee": {
+      "correlation": 0.3913118960624633,
+      "p_value": 0.29766910176653316,
+      "n": 9
+    },
+    "qubits_5_curvature_ee": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 12
+    },
+    "qubits_6_curvature_ee": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 4
+    },
+    "qubits_7_curvature_ee": {
+      "correlation": -0.12540100455123154,
+      "p_value": 0.2185690756339717,
+      "n": 98
+    },
+    "qubits_9_curvature_ee": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 2
+    },
+    "qubits_11_curvature_ee": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 2
+    },
+    "qubits_12_curvature_ee": {
+      "correlation": -1.0,
+      "p_value": 0.0,
+      "n": 5
+    },
+    "device_ibm_brisbane_curvature_ee": {
+      "correlation": -0.17139551568776917,
+      "p_value": 0.0865711074996995,
+      "n": 101
+    },
+    "device_simulator_curvature_ee": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 42
+    },
+    "range_0_2": {
+      "correlation": 0.29565619799454124,
+      "p_value": 0.13431898225480463,
+      "n": 27,
+      "mean_ee": 0.05310304378301063,
+      "std_ee": 0.27077345648074325
+    },
+    "range_2_5": {
+      "correlation": -0.40247170220324846,
+      "p_value": 0.01495302858089806,
+      "n": 36,
+      "mean_ee": 2.047971749845676,
+      "std_ee": 6.792353875485698
+    },
+    "range_5_10": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 20,
+      "mean_ee": 0.0,
+      "std_ee": 0.0
+    },
+    "range_10_20": {
+      "correlation": -0.14288258686981917,
+      "p_value": 0.2846305566113978,
+      "n": 58,
+      "mean_ee": 0.007694395134843591,
+      "std_ee": 0.05809140934762185
+    },
+    "quadratic_fit": {
+      "r_squared": 0.023632224842391802,
+      "coefficients": [
+        1.4839809985556176,
+        -0.2145086245715294,
+        0.0072379551438907785
+      ]
+    },
+    "group_7_hyperbolic_ibm_brisbane": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 75,
+      "variance": 0.0,
+      "curvatures": [
+        4.5,
+        16.0,
+        16.0,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        11.0,
+        11.0,
+        11.0,
+        11.0,
+        11.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        13.0,
+        13.0,
+        13.0,
+        13.0,
+        13.0,
+        13.0,
+        13.0,
+        14.0,
+        1.5,
+        1.5,
+        1.5,
+        1.5,
+        16.0,
+        16.0,
+        17.0,
+        17.0,
+        17.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.5,
+        2.5,
+        2.5,
+        2.5,
+        2.5,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        5.0,
+        5.0,
+        5.0,
+        5.0,
+        6.0,
+        7.0,
+        7.0,
+        7.0,
+        7.0,
+        8.0,
+        9.0,
+        9.0
+      ],
+      "ee_scores": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "group_11_spherical_ibm_brisbane": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 2,
+      "variance": 0.0,
+      "curvatures": [
+        20.0,
+        20.0
+      ],
+      "ee_scores": [
+        0,
+        0
+      ]
+    },
+    "group_3_spherical_simulator": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 2,
+      "variance": 0.0,
+      "curvatures": [
+        4.5,
+        5.0
+      ],
+      "ee_scores": [
+        0,
+        0
+      ]
+    },
+    "group_4_spherical_simulator": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 5,
+      "variance": 0.0,
+      "curvatures": [
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        10.0
+      ],
+      "ee_scores": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "group_6_spherical_simulator": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 3,
+      "variance": 0.0,
+      "curvatures": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "ee_scores": [
+        0,
+        0,
+        0
+      ]
+    },
+    "group_5_spherical_simulator": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 2,
+      "variance": 0.0,
+      "curvatures": [
+        1.0,
+        1.0
+      ],
+      "ee_scores": [
+        0,
+        0
+      ]
+    },
+    "group_4_spherical_ibm_brisbane": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 3,
+      "variance": 0.0442580671724614,
+      "curvatures": [
+        10.0,
+        10.0,
+        10.0
+      ],
+      "ee_scores": [
+        0,
+        0,
+        0.44627491782092826
+      ]
+    },
+    "group_12_spherical_ibm_brisbane": {
+      "correlation": -1.0,
+      "p_value": 0.0,
+      "n": 5,
+      "variance": 144.9511472390156,
+      "curvatures": [
+        10.0,
+        10.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      "ee_scores": [
+        0,
+        0,
+        24.575660998148113,
+        24.575660998148113,
+        24.575660998148113
+      ]
+    },
+    "group_3_hyperbolic_ibm_brisbane": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 6,
+      "variance": 0.0,
+      "curvatures": [
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0
+      ],
+      "ee_scores": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "group_5_hyperbolic_ibm_brisbane": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 4,
+      "variance": 0.0,
+      "curvatures": [
+        10.0,
+        10.0,
+        10.0,
+        3.0
+      ],
+      "ee_scores": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "group_5_hyperbolic_simulator": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 6,
+      "variance": 0.0,
+      "curvatures": [
+        1.0,
+        3.0,
+        3.0,
+        5.0,
+        5.0,
+        5.0
+      ],
+      "ee_scores": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "group_7_hyperbolic_simulator": {
+      "correlation": NaN,
+      "p_value": NaN,
+      "n": 21,
+      "variance": 0.0,
+      "curvatures": [
+        10.0,
+        10.0,
+        10.0,
+        10.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        12.0,
+        13.0,
+        13.0,
+        14.0,
+        2.5,
+        7.0,
+        8.0,
+        9.0,
+        9.0
+      ],
+      "ee_scores": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "reproducible_groups": [
+      [
+        12,
+        "spherical",
+        "ibm_brisbane",
+        -1.0,
+        0.0
+      ]
+    ],
+    "device_effects": {
+      "ibm_brisbane": {
+        "mean": 0.7485845553901639,
+        "std": 4.171503955875476,
+        "n": 101
+      },
+      "simulator": {
+        "mean": 0.0,
+        "std": 0.0,
+        "n": 42
+      },
+      "unknown": {
+        "mean": 0.0,
+        "std": 0.0,
+        "n": 1
+      }
+    },
+    "geometry_effects": {
+      "hyperbolic": {
+        "mean": 0.0,
+        "std": 0.0,
+        "n": 114
+      },
+      "spherical": {
+        "mean": 2.7002514319430913,
+        "std": 7.582842980929045,
+        "n": 28
+      },
+      "unknown": {
+        "mean": 0.0,
+        "std": 0.0,
+        "n": 1
+      },
+      "euclidean": {
+        "mean": 0.0,
+        "std": 0.0,
+        "n": 1
+      }
+    },
+    "curvature_group_comparison": {
+      "statistic": 2419.0,
+      "p_value": 0.09372056241036177
+    },
+    "synthetic_negative_effect": {
+      "correlation": -0.6448291854300311,
+      "p_value": 4.47934955754647e-13
+    },
+    "synthetic_no_effect": {
+      "correlation": 0.0890101487043217,
+      "p_value": 0.3785016338244729
+    }
+  },
+  "data_summary": {
+    "total_experiments": 144,
+    "curvature_range": [
+      0.0,
+      20.0
+    ],
+    "ee_score_range": [
+      0,
+      24.575660998148113
+    ]
+  },
+  "timestamp": "20250731_032219"
+}

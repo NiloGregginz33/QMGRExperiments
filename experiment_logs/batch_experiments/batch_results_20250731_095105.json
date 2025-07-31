@@ -1,0 +1,222 @@
+[
+  {
+    "experiment_id": 1,
+    "config": {
+      "name": "hardware_optimized_6q_ibm_brisbane",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 8.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 6.0,
+      "gamma": 4.0,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 10.536105632781982,
+    "stdout": "[INFO] Using IBM Quantum...\nNo suitable backends found. Using default: ibm_brisbane\n[ROCKET] Starting Custom Curvature Experiment\n   - Curvatures to test: 1\n   - Timesteps per curvature: 4\n   - Total operations: 4\n   - Device: ibm_brisbane\n   - Geometry: spherical\n   - Estimated runtime: 1.5-2.5 hours\n   - Started at: 09:50:22\n============================================================\nExperiment results will be saved to: C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\..\\..\\experiment_logs\\custom_curvature_experiment\\instance_20250731_095022\n",
+    "stderr": "\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]Traceback (most recent call last):\n  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 3214, in <module>\n    print(f\"\\U0001f3af ENTROPY ENGINEERING MODE: Sculpting quantum geometry through entropy targeting\")\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Python313\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\U0001f3af' in position 0: character maps to <undefined>\n\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]\n"
+  },
+  {
+    "experiment_id": 2,
+    "config": {
+      "name": "param_sweep_w4.0_k5.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 5.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 4.0,
+      "gamma": 2.8,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 10.867409467697144,
+    "stdout": "[INFO] Using IBM Quantum...\nNo suitable backends found. Using default: ibm_brisbane\n[ROCKET] Starting Custom Curvature Experiment\n   - Curvatures to test: 1\n   - Timesteps per curvature: 4\n   - Total operations: 4\n   - Device: ibm_brisbane\n   - Geometry: spherical\n   - Estimated runtime: 1.5-2.5 hours\n   - Started at: 09:50:22\n============================================================\nExperiment results will be saved to: C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\..\\..\\experiment_logs\\custom_curvature_experiment\\instance_20250731_095022\n",
+    "stderr": "\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]Traceback (most recent call last):\n  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 3214, in <module>\n    print(f\"\\U0001f3af ENTROPY ENGINEERING MODE: Sculpting quantum geometry through entropy targeting\")\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Python313\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\U0001f3af' in position 0: character maps to <undefined>\n\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]\n"
+  },
+  {
+    "experiment_id": 3,
+    "config": {
+      "name": "param_sweep_w4.0_k8.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 8.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 4.0,
+      "gamma": 2.8,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 10.015708684921265,
+    "stdout": "[INFO] Using IBM Quantum...\nNo suitable backends found. Using default: ibm_brisbane\n[ROCKET] Starting Custom Curvature Experiment\n   - Curvatures to test: 1\n   - Timesteps per curvature: 4\n   - Total operations: 4\n   - Device: ibm_brisbane\n   - Geometry: spherical\n   - Estimated runtime: 1.5-2.5 hours\n   - Started at: 09:50:32\n============================================================\nExperiment results will be saved to: C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\..\\..\\experiment_logs\\custom_curvature_experiment\\instance_20250731_095032\n",
+    "stderr": "\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]Traceback (most recent call last):\n  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 3214, in <module>\n    print(f\"\\U0001f3af ENTROPY ENGINEERING MODE: Sculpting quantum geometry through entropy targeting\")\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Python313\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\U0001f3af' in position 0: character maps to <undefined>\n\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]\n"
+  },
+  {
+    "experiment_id": 4,
+    "config": {
+      "name": "param_sweep_w4.0_k12.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 12.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 4.0,
+      "gamma": 2.8,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 10.005489349365234,
+    "stdout": "[INFO] Using IBM Quantum...\nNo suitable backends found. Using default: ibm_brisbane\n[ROCKET] Starting Custom Curvature Experiment\n   - Curvatures to test: 1\n   - Timesteps per curvature: 4\n   - Total operations: 4\n   - Device: ibm_brisbane\n   - Geometry: spherical\n   - Estimated runtime: 1.5-2.5 hours\n   - Started at: 09:50:32\n============================================================\nExperiment results will be saved to: C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\..\\..\\experiment_logs\\custom_curvature_experiment\\instance_20250731_095032\n",
+    "stderr": "\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]Traceback (most recent call last):\n  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 3214, in <module>\n    print(f\"\\U0001f3af ENTROPY ENGINEERING MODE: Sculpting quantum geometry through entropy targeting\")\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Python313\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\U0001f3af' in position 0: character maps to <undefined>\n\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]\n"
+  },
+  {
+    "experiment_id": 5,
+    "config": {
+      "name": "param_sweep_w6.0_k5.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 5.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 6.0,
+      "gamma": 4.199999999999999,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 10.510321378707886,
+    "stdout": "[INFO] Using IBM Quantum...\nNo suitable backends found. Using default: ibm_brisbane\n[ROCKET] Starting Custom Curvature Experiment\n   - Curvatures to test: 1\n   - Timesteps per curvature: 4\n   - Total operations: 4\n   - Device: ibm_brisbane\n   - Geometry: spherical\n   - Estimated runtime: 1.5-2.5 hours\n   - Started at: 09:50:42\n============================================================\nExperiment results will be saved to: C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\..\\..\\experiment_logs\\custom_curvature_experiment\\instance_20250731_095042\n",
+    "stderr": "\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]Traceback (most recent call last):\n  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 3214, in <module>\n    print(f\"\\U0001f3af ENTROPY ENGINEERING MODE: Sculpting quantum geometry through entropy targeting\")\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Python313\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\U0001f3af' in position 0: character maps to <undefined>\n\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]\n"
+  },
+  {
+    "experiment_id": 6,
+    "config": {
+      "name": "param_sweep_w6.0_k8.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 8.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 6.0,
+      "gamma": 4.199999999999999,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 10.413060665130615,
+    "stdout": "[INFO] Using IBM Quantum...\nNo suitable backends found. Using default: ibm_brisbane\n[ROCKET] Starting Custom Curvature Experiment\n   - Curvatures to test: 1\n   - Timesteps per curvature: 4\n   - Total operations: 4\n   - Device: ibm_brisbane\n   - Geometry: spherical\n   - Estimated runtime: 1.5-2.5 hours\n   - Started at: 09:50:43\n============================================================\nExperiment results will be saved to: C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\..\\..\\experiment_logs\\custom_curvature_experiment\\instance_20250731_095043\n",
+    "stderr": "\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]Traceback (most recent call last):\n  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 3214, in <module>\n    print(f\"\\U0001f3af ENTROPY ENGINEERING MODE: Sculpting quantum geometry through entropy targeting\")\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Python313\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\U0001f3af' in position 0: character maps to <undefined>\n\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]\n"
+  },
+  {
+    "experiment_id": 8,
+    "config": {
+      "name": "param_sweep_w8.0_k5.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 5.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 8.0,
+      "gamma": 5.6,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 10.61472773551941,
+    "stdout": "[INFO] Using IBM Quantum...\nNo suitable backends found. Using default: ibm_brisbane\n[ROCKET] Starting Custom Curvature Experiment\n   - Curvatures to test: 1\n   - Timesteps per curvature: 4\n   - Total operations: 4\n   - Device: ibm_brisbane\n   - Geometry: spherical\n   - Estimated runtime: 1.5-2.5 hours\n   - Started at: 09:50:53\n============================================================\nExperiment results will be saved to: C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\..\\..\\experiment_logs\\custom_curvature_experiment\\instance_20250731_095053\n",
+    "stderr": "\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]Traceback (most recent call last):\n  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 3214, in <module>\n    print(f\"\\U0001f3af ENTROPY ENGINEERING MODE: Sculpting quantum geometry through entropy targeting\")\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Python313\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\U0001f3af' in position 0: character maps to <undefined>\n\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]\n"
+  },
+  {
+    "experiment_id": 7,
+    "config": {
+      "name": "param_sweep_w6.0_k12.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 12.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 6.0,
+      "gamma": 4.199999999999999,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 11.017831563949585,
+    "stdout": "[INFO] Using IBM Quantum...\nNo suitable backends found. Using default: ibm_brisbane\n[ROCKET] Starting Custom Curvature Experiment\n   - Curvatures to test: 1\n   - Timesteps per curvature: 4\n   - Total operations: 4\n   - Device: ibm_brisbane\n   - Geometry: spherical\n   - Estimated runtime: 1.5-2.5 hours\n   - Started at: 09:50:53\n============================================================\nExperiment results will be saved to: C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\..\\..\\experiment_logs\\custom_curvature_experiment\\instance_20250731_095053\n",
+    "stderr": "\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]Traceback (most recent call last):\n  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 3214, in <module>\n    print(f\"\\U0001f3af ENTROPY ENGINEERING MODE: Sculpting quantum geometry through entropy targeting\")\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Python313\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\U0001f3af' in position 0: character maps to <undefined>\n\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]\n"
+  },
+  {
+    "experiment_id": 9,
+    "config": {
+      "name": "param_sweep_w8.0_k8.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 8.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 8.0,
+      "gamma": 5.6,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 10.215054035186768,
+    "stdout": "[INFO] Using IBM Quantum...\nNo suitable backends found. Using default: ibm_brisbane\n[ROCKET] Starting Custom Curvature Experiment\n   - Curvatures to test: 1\n   - Timesteps per curvature: 4\n   - Total operations: 4\n   - Device: ibm_brisbane\n   - Geometry: spherical\n   - Estimated runtime: 1.5-2.5 hours\n   - Started at: 09:51:04\n============================================================\nExperiment results will be saved to: C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\..\\..\\experiment_logs\\custom_curvature_experiment\\instance_20250731_095104\n",
+    "stderr": "\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]Traceback (most recent call last):\n  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 3214, in <module>\n    print(f\"\\U0001f3af ENTROPY ENGINEERING MODE: Sculpting quantum geometry through entropy targeting\")\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Python313\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\U0001f3af' in position 0: character maps to <undefined>\n\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]\n"
+  },
+  {
+    "experiment_id": 10,
+    "config": {
+      "name": "param_sweep_w8.0_k12.0",
+      "num_qubits": 6,
+      "geometry": "spherical",
+      "curvature": 12.0,
+      "device": "ibm_brisbane",
+      "shots": 4096,
+      "timesteps": 4,
+      "weight": 8.0,
+      "gamma": 5.6,
+      "init_angle": 1.0,
+      "enhanced_entanglement": true,
+      "page_curve": true,
+      "compute_entropies": true
+    },
+    "status": "failed",
+    "runtime": 10.579834938049316,
+    "stdout": "[INFO] Using IBM Quantum...\nNo suitable backends found. Using default: ibm_brisbane\n[ROCKET] Starting Custom Curvature Experiment\n   - Curvatures to test: 1\n   - Timesteps per curvature: 4\n   - Total operations: 4\n   - Device: ibm_brisbane\n   - Geometry: spherical\n   - Estimated runtime: 1.5-2.5 hours\n   - Started at: 09:51:04\n============================================================\nExperiment results will be saved to: C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\..\\..\\experiment_logs\\custom_curvature_experiment\\instance_20250731_095104\n",
+    "stderr": "\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]Traceback (most recent call last):\n  File \"C:\\Users\\manav\\Desktop\\Experiments\\QM1\\src\\experiments\\custom_curvature_experiment.py\", line 3214, in <module>\n    print(f\"\\U0001f3af ENTROPY ENGINEERING MODE: Sculpting quantum geometry through entropy targeting\")\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Python313\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\U0001f3af' in position 0: character maps to <undefined>\n\nOverall Progress:   0%|          | 0/4 [00:00<?, ?op/s]\n"
+  }
+]

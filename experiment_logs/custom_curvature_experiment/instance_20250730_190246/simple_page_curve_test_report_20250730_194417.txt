@@ -1,0 +1,41 @@
+================================================================================
+SIMPLE PAGE CURVE TEST REPORT
+================================================================================
+Instance Directory: experiment_logs\custom_curvature_experiment\instance_20250730_190246
+Test Date: 2025-07-30 19:44:17.605623
+
+📋 TEST SUMMARY:
+  Page Curve Detected: ❌ NO
+  Number of Qubits: 9
+  Total Measurements: 10000
+
+📊 PAGE CURVE ANALYSIS:
+  Peak Detected: No
+  Symmetry Score: 0.000
+  Saturation Score: 0.000
+  Entropy Range: [0.999+0.000j, 7.976+0.000j]
+
+🔧 PAGE CURVE FIT:
+  R-squared: 0.976
+  Parameters: [0.37678812466529316, 0.8512953260236181, -0.2861651821058831]
+
+📈 SUBSYSTEM ENTROPY DETAILS:
+  Size 1: 0.999+0.000j ± 0.001
+  Size 2: 1.998+0.000j ± 0.001
+  Size 3: 2.997+0.000j ± 0.001
+  Size 4: 3.996+0.000j ± 0.001
+  Size 5: 4.994+0.000j ± 0.001
+  Size 6: 5.991+0.000j ± 0.001
+  Size 7: 6.986+0.000j ± 0.002
+  Size 8: 7.976+0.000j ± 0.001
+
+🔬 INTERPRETATION:
+  ❌ Page curve behavior not clearly detected
+  ❌ May indicate classical or mixed behavior
+  ❌ Consider increasing system size or measurement precision
+
+  This could be due to:
+  - Insufficient system size
+  - Measurement noise
+  - Classical geometry dominance
+  - Need for more sophisticated entanglement measures

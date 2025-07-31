@@ -1,0 +1,56 @@
+{
+  "experiment_file": "experiment_logs/custom_curvature_experiment/instance_20250731_102349/results_n4_geomH_curv8_ibm_brisbane_KJ2JCT.json",
+  "timestamp": "20250731_104106",
+  "falsification_tests": {
+    "random_circuit": {
+      "description": "Random circuit with no geometric structure",
+      "expected_result": "No geometric evolution, no causal asymmetry",
+      "passes_test": true,
+      "temporal_asymmetry": 0.010737047349500544
+    },
+    "decoy_geometries": {
+      "description": "Different geometries should show different patterns",
+      "expected_result": "High variance in temporal asymmetry across geometries",
+      "passes_test": false,
+      "variance": 0.003959842676902748,
+      "geometry_results": {
+        "euclidean": {
+          "temporal_asymmetry": 0.002185313238533719
+        },
+        "spherical": {
+          "temporal_asymmetry": 0.14693800385192377
+        },
+        "hyperbolic": {
+          "temporal_asymmetry": 0.11051274177391149
+        },
+        "flat": {
+          "temporal_asymmetry": 0.009076680598431015
+        }
+      }
+    },
+    "noise_injection": {
+      "description": "Systematic noise should not create geometric structure",
+      "expected_result": "Low temporal asymmetry even with high noise",
+      "passes_test": false,
+      "max_noise_asymmetry": 0.3191388768162915
+    },
+    "entanglement_validation": {
+      "description": "Verify genuine quantum correlations vs classical noise",
+      "expected_result": "Quantum signatures present, classical noise absent",
+      "passes_test": false,
+      "quantum_correlations": 0.0
+    },
+    "causal_robustness": {
+      "description": "Causal asymmetry should be robust and correlate with curvature",
+      "expected_result": "Stable under entanglement variation, correlated with curvature",
+      "passes_test": true,
+      "ent_robustness": true,
+      "curv_robustness": true
+    }
+  },
+  "overall_assessment": {
+    "tests_passed": 2,
+    "total_tests": 5,
+    "success_rate": 40.0
+  }
+}

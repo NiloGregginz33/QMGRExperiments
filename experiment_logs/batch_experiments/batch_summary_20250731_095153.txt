@@ -1,0 +1,15 @@
+BATCH QUANTUM SPACETIME EXPERIMENT SUMMARY
+==================================================
+
+Timestamp: 2025-07-31 09:51:53
+Total experiments: 10
+Successful: 0
+Failed: 10
+Timed out: 0
+Crashed: 0
+Success rate: 0.0%
+
+Backend Performance:
+  ibm_brisbane: 0/10 (0.0%)
+
+Best performing configurations:

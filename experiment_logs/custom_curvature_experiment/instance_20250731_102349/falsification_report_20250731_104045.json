@@ -1,0 +1,15 @@
+{
+  "experiment_file": "experiment_logs/custom_curvature_experiment/instance_20250731_102349/results_n4_geomH_curv8_ibm_brisbane_KJ2JCT.json",
+  "timestamp": "20250731_104045",
+  "falsification_tests": {
+    "random_circuit": {
+      "description": "Random circuit with no geometric structure",
+      "expected_result": "No geometric evolution, no causal asymmetry",
+      "actual_result": {
+        "temporal_asymmetry": 0.005955858531626739,
+        "geometric_signature": -0.42694265440630275,
+        "causal_violations": 0,
+        "quantum_correlations": 0,
+        "classical_noise": 0.42694265440630275
+      },
+      "passes_test": 

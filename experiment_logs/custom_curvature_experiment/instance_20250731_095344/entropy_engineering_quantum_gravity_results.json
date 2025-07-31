@@ -1,0 +1,58 @@
+{
+  "success": true,
+  "target_entropies": [
+    0.1,
+    0.4,
+    0.9,
+    1.5,
+    2.0,
+    2.3
+  ],
+  "achieved_entropies": [
+    0.6373225826666163,
+    0.9986278725768186,
+    1.1224441879633145,
+    0.9986278725768186,
+    0.6373225826666161,
+    2.5627412030519317e-15
+  ],
+  "parameters": {
+    "entanglement_strength": 0.35620906451669704,
+    "weight": 0.1,
+    "gamma": 0.01,
+    "sigma": 0.01,
+    "init_angle": 0.0,
+    "timesteps": 3,
+    "asymmetry_strength": 0.1
+  },
+  "loss": 1.4406068586923126,
+  "iterations": 15,
+  "optimization_result": {
+    "fun": 1.4406068586923126,
+    "jac": [
+      -3.042011089074109e-06,
+      0.08302194491811647,
+      0.00019999557565716344,
+      0.00019999557565716344,
+      0.0,
+      0.06000000532907055,
+      0.004290190427396174
+    ],
+    "nfev": 160,
+    "njev": 20,
+    "nit": 15,
+    "status": 0,
+    "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+    "x": [
+      0.35620906451669704,
+      0.1,
+      0.01,
+      0.01,
+      0.0,
+      3.0,
+      0.1
+    ],
+    "success": true,
+    "hess_inv": "<7x7 LbfgsInvHessProduct with dtype=float64>"
+  }
+}

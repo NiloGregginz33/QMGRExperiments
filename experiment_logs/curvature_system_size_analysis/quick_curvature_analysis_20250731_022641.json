@@ -1,0 +1,72 @@
+{
+  "results": [
+    {
+      "file_path": "experiment_logs/custom_curvature_experiment/instance_20250730_230624/results_n4_geomS_curv10_ibm_brisbane_OJWM4J.json",
+      "num_qubits": 4,
+      "curvature": 10.0,
+      "geometry": "spherical",
+      "extraordinary_evidence_score": 0.44627491782092826,
+      "conditions_met": 1,
+      "quantum_spacetime_score": 0,
+      "features_detected": 0,
+      "page_curve_detected": false,
+      "entanglement_curvature_r2": 0.6153846153846153,
+      "causal_violations": 0,
+      "power_law_r2": 0.7762986798660907,
+      "reproducibility_score": 0.9645659324150309,
+      "time_asymmetry": 0.0,
+      "asymmetry_measure": 0.0,
+      "rt_geometry_consistent": false
+    },
+    {
+      "file_path": "experiment_logs/custom_curvature_experiment/instance_20250731_005039/results_n7_geomS_curv2_ibm_brisbane_5PVWS5.json",
+      "num_qubits": 7,
+      "curvature": 1.5,
+      "geometry": "spherical",
+      "extraordinary_evidence_score": 1.433782182141287,
+      "conditions_met": 1,
+      "quantum_spacetime_score": 0,
+      "features_detected": 0,
+      "page_curve_detected": false,
+      "entanglement_curvature_r2": 0.06169080845852755,
+      "causal_violations": 0,
+      "power_law_r2": 0.7102151073169152,
+      "reproducibility_score": 7.2911163743696505,
+      "time_asymmetry": 0.0,
+      "asymmetry_measure": 0.0,
+      "rt_geometry_consistent": false
+    },
+    {
+      "file_path": "experiment_logs/custom_curvature_experiment/instance_20250731_012542/results_n12_geomS_curv2_ibm_brisbane_SNDD23.json",
+      "num_qubits": 12,
+      "curvature": 2.0,
+      "geometry": "spherical",
+      "extraordinary_evidence_score": 24.575660998148113,
+      "conditions_met": 1,
+      "quantum_spacetime_score": 0,
+      "features_detected": 0,
+      "page_curve_detected": true,
+      "entanglement_curvature_r2": 0.05137367774603873,
+      "causal_violations": 0,
+      "power_law_r2": 0.6971386564236896,
+      "reproducibility_score": 144.95211176469408,
+      "time_asymmetry": 0.0,
+      "asymmetry_measure": 0.0,
+      "rt_geometry_consistent": false
+    }
+  ],
+  "timestamp": "20250731_022641",
+  "summary": {
+    "total_experiments": 3,
+    "curvature_range": [
+      1.5,
+      10.0
+    ],
+    "qubit_range": [
+      4,
+      12
+    ],
+    "best_qes_score": 0,
+    "best_ee_score": 24.575660998148113
+  }
+}

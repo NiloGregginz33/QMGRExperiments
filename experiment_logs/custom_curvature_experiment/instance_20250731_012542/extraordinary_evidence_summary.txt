@@ -1,0 +1,50 @@
+# Extraordinary Evidence Validation Summary
+
+## Experiment Details
+- Number of qubits: 12
+- Geometry: spherical
+- Curvature: 2.0
+- Device: ibm_brisbane
+
+## Condition Results
+
+### 1. Lorentzian Metric Consistency
+- Condition met: False
+- Score: 0.197
+- Lorentzian signature: False
+- Statistical significance: 1.000
+
+### 2. Page Curve Behavior
+- Condition met: False
+- Score: 1.495
+- Page curve detected: True
+- Best fit: page_curve
+
+### 3. Entanglement-Curvature Correlations
+- Condition met: False
+- Score: 0.231
+- Strong correlation: False
+- Max R²: 0.051
+
+### 4. Causal Violations
+- Condition met: False
+- Score: 0.000
+- Violations found: 0
+- Statistical significance: 1.000
+
+### 5. Cross-System Consistency
+- Condition met: False
+- Score: 0.579
+- Power law R²: 0.697
+- Fractal dimension: 1.000
+
+### 6. Reproducibility Under Diverse Conditions
+- Condition met: True
+- Score: 144.952
+- Overall robustness: 144.952
+
+## Overall Assessment
+**Extraordinary Evidence Score: 24.576 (1/6)**
+**Evidence Level: INSUFFICIENT EVIDENCE - Claims not supported**
+
+Generated: 2025-07-31 02:09:03
