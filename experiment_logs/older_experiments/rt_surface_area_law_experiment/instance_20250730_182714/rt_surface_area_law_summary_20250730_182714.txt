@@ -1,0 +1,21 @@
+RT Surface Area Law Experiment Summary
+==================================================
+
+Experiment Parameters:
+- Number of qubits: 4
+- Geometry: spherical
+- Curvature: 2.0
+- Device: simulator
+- Shots: 100
+- Max region size: 2
+
+Results Summary:
+--------------------
+- Regions tested: 10
+- Area law R²: 0.9995
+- Area law p-value: 1.35e-14
+- Holographic support: Strong
+- Pure state fraction: 1.00
+
+Plots generated: 1
+Timestamp: 20250730_182714

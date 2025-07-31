@@ -1,0 +1,76 @@
+
+# Causal Asymmetry Analysis Summary Report
+
+## Analysis Overview
+- **Total experiments analyzed**: 1
+- **Experiments with evolution data**: 1
+- **Experiments with single timestep**: 0
+- **Minimum timesteps required**: 3
+
+## Key Findings
+
+### Temporal Asymmetry Analysis
+
+- **Mean temporal asymmetry ratio**: 0.0000
+- **Maximum temporal asymmetry**: 0.0000
+- **Experiments with significant asymmetry (>0.1)**: 0
+
+**Top 5 experiments by temporal asymmetry:**
+1. results_n8_geomH_curv15_ibm_brisbane_8PTKXX.json: 0.0000 (curvature=15.0, ibm_brisbane)
+
+### Spatial Asymmetry Analysis
+
+- **Mean spatial asymmetry score**: 0.0000
+- **Maximum spatial asymmetry**: 0.0000
+- **Experiments with significant spatial asymmetry (>0.1)**: 0
+
+**Top 5 experiments by spatial asymmetry:**
+1. results_n8_geomH_curv15_ibm_brisbane_8PTKXX.json: 0.0000 (curvature=15.0, hyperbolic)
+
+### Connectivity Analysis
+
+- **Mean average connectivity**: 0.0875
+- **Mean clustering coefficient**: 1.0000
+- **Experiments with high connectivity (>0.5)**: 0
+- **Experiments with high clustering (>0.3)**: 1
+
+### Causal Violations Analysis
+
+- **Total causal violations across all experiments**: 0
+- **Mean violation rate**: 0.0000
+- **Experiments with violations**: 0
+
+### Device and Geometry Analysis
+
+**Device Statistics:**
+- ibm_brisbane: 1 experiments, mean asymmetry=0.0000
+
+**Geometry Statistics:**
+- hyperbolic: 1 experiments, mean asymmetry=0.0000
+
+## Conclusions
+
+### Emergent Time Structure Assessment
+
+❌ **NO EMERGENT TIME STRUCTURE DETECTED**
+- Low temporal asymmetry (mean ratio: 0.0000)
+- No significant directional effects
+- Consider increasing curvature or entanglement strength
+
+## Recommendations
+
+### For Stronger Quantum Spacetime Signatures:
+1. **Increase curvature values** (try 10.0-20.0)
+2. **Use more timesteps** (6-12 timesteps minimum)
+3. **Enhance entanglement strength** (weight=8.0, gamma=5.0)
+4. **Use larger qubit counts** (8-12 qubits)
+5. **Enable charge injection** for stronger perturbations
+6. **Run on real hardware** for quantum noise effects
+
+### Next Steps:
+1. Run experiments with enhanced parameters
+2. Analyze specific experiments with high asymmetry
+3. Investigate spatial-temporal correlations
+4. Validate with quantum coherence tests
+
+Generated: 2025-07-31 10:11:26

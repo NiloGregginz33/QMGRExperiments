@@ -1,0 +1,64 @@
+# Quantum Emergent Spacetime Enhanced Analysis Summary
+
+## Experiment Details
+- Number of qubits: 11
+- Geometry: spherical
+- Curvature: 20.0
+- Device: ibm_brisbane
+- Timesteps: 4
+
+## 1. Causal Structure Analysis
+- Average bulk-boundary correlation: 0.0048
+- Causal horizon density: 0.1091
+- Boundary size: 3
+- Number of causal horizons: 6
+
+## 2. Charge Injection and Teleportation Analysis
+- Successful charge injections: 3
+- Average entanglement response: 0.0000
+- Successful teleportation states: 6
+- Average entropy targeting error: 0.0000
+- Asymmetry measure: 0.0000
+- Reversal measure: 0.0000
+- Significant asymmetry: False
+- Significant reversal: False
+- Total time asymmetry: 0.0000
+- Max time asymmetry: 0.0000
+- Significant time asymmetry: False
+
+## 3. RT Geometry Analysis
+- Linear R²: 0.4883
+- Quadratic R²: 0.5659
+- Logarithmic R²: 0.5895
+- Best fit: logarithmic
+- Enhanced area law consistent: False
+- Original entropy slope: 0.0006
+- Original R-squared: 0.5075
+- Original area law consistent: False
+- Page curve consistent: True
+- First half slope: 0.0024
+- Second half slope: -0.0001
+
+## 4. Spacetime Reconstruction
+- 3D MDS stress: 0.8598
+- 2D MDS stress: 2.7782
+- Lorentzian signature: False
+- Positive eigenvalues: 3
+- Negative eigenvalues: 0
+- Causal violations: 0
+- Violation ratio: 0.0000
+
+## 5. Enhanced Quantum Structure Validation
+- Enhanced quantum score: 0.17 (1/6)
+- classical_geometry_test: FAIL
+- noise_test: PASS
+- randomized_mi_test: FAIL
+- entropy_curvature_test: FAIL
+- causal_violation_test: FAIL
+- lorentzian_metric_test: FAIL
+
+## Overall Assessment
+**Quantum Emergent Spacetime Score: 0.27 (3/11)**
+**Limited evidence for quantum emergent spacetime**
+
+Generated: 2025-07-30 21:46:09
