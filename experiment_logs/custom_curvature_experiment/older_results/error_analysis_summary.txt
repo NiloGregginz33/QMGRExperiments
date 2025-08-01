@@ -1,0 +1,70 @@
+
+# Custom Curvature Experiment Error Analysis Report
+
+## Experiment Parameters
+- Number of qubits: 7
+- Geometry: hyperbolic
+- Curvature: 5.0
+- Device: ibm_brisbane
+- Shots: 2000
+- Timesteps: 8
+
+## Error Analysis Parameters
+- Bootstrap samples: 1000
+- Confidence level: 95%
+- Z-score: 1.960
+
+## Mutual Information Analysis
+
+- Mean MI across timesteps: 0.100000 ± 0.000000
+- Average MI error: 0.000000
+- MI range: [0.100000, 0.100000]
+- Coefficient of variation: 0.000
+
+## Entropy Analysis
+- Mean entropy across timesteps: 0.254750 ± 0.254970
+- Average entropy error: 0.249842
+- Entropy range: [0.000000, 0.529000]
+- Coefficient of variation: 1.001
+
+### Physical Constraint Enforcement
+- **Physical constraint applied**: Entropy ≥ 0 (theoretical requirement)
+- **Truncation events**: None required (all confidence intervals naturally ≥ 0)
+- **Methodology**: Percentile-based bootstrap confidence intervals
+- **Status**: All measurements respect physical constraints without truncation
+
+## Statistical Significance Tests
+
+### Mutual Information Stability
+
+- Linear trend test: slope = 0.000000 ± 0.000000
+- R² = 0.000, p-value = 1.000
+- Trend significance: Not significant (α = 0.05)
+
+## Error Sources and Recommendations
+
+### Primary Error Sources:
+1. **Shot Noise**: Standard error ∝ 1/√N where N = 2000 shots
+2. **Bootstrap Sampling**: 1000 bootstrap samples for error estimation
+3. **Quantum Decoherence**: Hardware-specific errors from ibm_brisbane
+4. **Statistical Fluctuations**: Natural variation in quantum measurements
+5. **Physical Constraint Violations**: Statistical artifacts from finite sampling
+
+### Statistical Methodology Improvements:
+1. **Percentile-based Confidence Intervals**: More robust than normal approximation
+2. **Physical Constraint Enforcement**: Entropy ≥ 0 enforced at bootstrap level
+3. **Truncation Handling**: Proper documentation of statistical artifacts
+4. **Asymmetric Error Bars**: Respect physical constraints while maintaining statistical rigor
+
+### Recommendations:
+1. **Increase Shot Count**: More shots reduce shot noise (current: 2000)
+2. **Multiple Runs**: Consider averaging over multiple experiment runs
+3. **Error Mitigation**: Apply quantum error correction techniques
+4. **Calibration**: Regular device calibration for consistent results
+5. **Physical Constraints**: Always enforce theoretical bounds in error analysis
+
+## Conclusion
+This error analysis provides confidence intervals and uncertainty estimates for all key measurements
+in the custom curvature experiment. The improved bootstrap methodology with physical constraint enforcement
+ensures robust error estimation that respects theoretical bounds while maintaining statistical rigor.
+All confidence intervals now properly respect the physical constraint that entropy ≥ 0.
