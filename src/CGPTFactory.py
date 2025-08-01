@@ -12467,19 +12467,8 @@ def run_torus_ctc(N, phase_profile, backend_name=None, shots=4096):
 
         # transpile and run
         t_qc = transpile(sub_qc, backend=backend, optimization_level=1)
-        with Session(backend=backend) as session:
-            sampler = Sampler()
-            job = sampler.run([t_qc], shots=2048)
-            result = job.result()
-            print(result)
 
-        bitarray = result[0].data.c
-        counts = extract_counts_from_bitarray(bitarray)
-        # aggregate (weighting built into shots_i)
-        for outcome, c in counts.items():
-            total_counts[outcome] = total_counts.get(outcome, 0) + c
-
-    return total_counts
+        return t_qc
 
 def make_cluster(rows, cols):
     N = rows*cols
