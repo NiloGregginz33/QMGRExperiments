@@ -1,0 +1,34 @@
+CTC QUANTUM SPACETIME ANALYSIS SUMMARY
+==================================================
+
+EXPERIMENT PARAMETERS:
+- CTC Size: 3
+- Phase Profile: uniform
+- Phase Strength: 0.1
+- Backend: simulator
+- Shots: 100
+
+TEMPORAL PARADOX ANALYSIS:
+- Paradox Score: 1.690
+- Causality Violations: 5
+- Temporal Coherence: -0.690
+
+ENTANGLEMENT STRUCTURE:
+- Von Neumann Entropy: 1.622
+- Entanglement Patterns: 
+
+QUANTUM COHERENCE:
+- Coherence Measure: 0.806
+- Superposition Strength: 0.167
+- System Entropy: 1.622
+
+SPACETIME GEOMETRY:
+- Geometry Signature: flat_spacetime
+- Phase Variance: 0.000000
+- Causal Patterns: time_reversal, time_reversal, causal_loop
+
+QUANTUM SPACETIME SIGNATURES:
+==============================
+[SIGNATURE] Temporal Paradox Detected
+[SIGNATURE] Strong Entanglement Structure
+[SIGNATURE] Quantum Coherence Preserved

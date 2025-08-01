@@ -517,10 +517,10 @@ p.add_argument("--fast", action="store_true", help="Fast mode: skip expensive co
 p.add_argument("--strong_curvature", action="store_true", default=True, help="Apply stronger curvature effects for cleaner negative-curvature signals")
 p.add_argument("--charge_injection", action="store_true", default=True, help="Enable charge injection for stronger bulk-boundary coupling")
 p.add_argument("--charge_strength", type=float, default=2.5, help="Strength of charge injection (default: 2.5)")
-p.add_argument("--charge_location", type=int, default=3, help="Location for charge injection (default: 3)")
+p.add_argument("--charge_location", type=int, default=None, help="Location for charge injection (default: middle qubit)")
 p.add_argument("--spin_injection", action="store_true", default=True, help="Enable spin injection for magnetic bulk-boundary coupling")
 p.add_argument("--spin_strength", type=float, default=2.0, help="Strength of spin injection (default: 2.0)")
-p.add_argument("--spin_location", type=int, default=3, help="Location for spin injection (default: 3)")
+p.add_argument("--spin_location", type=int, default=None, help="Location for spin injection (default: middle qubit)")
 p.add_argument("--edge_floor", type=float, default=0.001, help="Minimum edge length floor for Lorentzian solver (default: 0.001)")
 p.add_argument("--compute_entropies", action="store_true", default=True, help="Enable boundary entropy computation for RT relation testing (S(A) proportional to Area_RT(A))")
 p.add_argument("--hyperbolic_triangulation", action="store_true", default=True, help="Use proper hyperbolic triangulation circuit with RZZ gates and Trotterized evolution")
@@ -529,7 +529,7 @@ p.add_argument("--dt", type=float, default=0.05, help="Time step size for Trotte
 p.add_argument("--analyze_curvature", action="store_true", default=True, help="Enable entanglement-to-curvature analysis using MDS embedding")
 p.add_argument("--einstein_solver", action="store_true", default=True, help="Enable Einstein solver to compute emergent Einstein tensor and entropy second derivative")
 p.add_argument("--page_curve", action="store_true", default=True, help="Enable Page curve computation for black hole evaporation simulation")
-p.add_argument("--radiation_ordering", type=str, default="0,1,2,3,4", help="Comma-separated qubit indices for radiation sequence (e.g., '0,1,2,3')")
+p.add_argument("--radiation_ordering", type=str, default=None, help="Comma-separated qubit indices for radiation sequence (e.g., '0,1,2,3'). If not specified, uses all qubits in order.")
 p.add_argument("--page_curve_timesteps", type=int, default=15, help="Number of evaporation steps for Page curve computation")
 
 # Shadow tomography arguments
@@ -4383,6 +4383,29 @@ if __name__ == "__main__":
             
             print(f"  Analyzing bulk excitation at qubit {bulk_point_location}...")
             
+            # Handle dynamic qubit locations for any number of qubits
+            num_qubits = final_circuit.num_qubits
+            
+            # Set default charge location to middle qubit if not specified
+            charge_location = args.charge_location
+            if charge_location is None:
+                charge_location = num_qubits // 2
+            elif charge_location >= num_qubits:
+                charge_location = num_qubits - 1  # Use last qubit if out of range
+            
+            # Set default spin location to middle qubit if not specified
+            spin_location = args.spin_location
+            if spin_location is None:
+                spin_location = num_qubits // 2
+            elif spin_location >= num_qubits:
+                spin_location = num_qubits - 1  # Use last qubit if out of range
+            
+            # Ensure bulk point location is valid
+            if bulk_point_location >= num_qubits:
+                bulk_point_location = num_qubits - 1  # Use last qubit if out of range
+            
+            print(f"  Using {num_qubits} qubits - Charge location: {charge_location}, Spin location: {spin_location}, Bulk point: {bulk_point_location}")
+            
             # Run without excitation (ground state)
             print("  Running ground state (no excitation)...")
             ground_state_result = run_mi_with_excitation(
@@ -4393,10 +4416,10 @@ if __name__ == "__main__":
                 device_name=args.device,
                 charge_injection=args.charge_injection,
                 charge_strength=args.charge_strength,
-                charge_location=args.charge_location,
+                charge_location=charge_location,
                 spin_injection=args.spin_injection,
                 spin_strength=args.spin_strength,
-                spin_location=args.spin_location
+                spin_location=spin_location
             )
             
             # Run with excitation
@@ -4409,10 +4432,10 @@ if __name__ == "__main__":
                 device_name=args.device,
                 charge_injection=args.charge_injection,
                 charge_strength=args.charge_strength,
-                charge_location=args.charge_location,
+                charge_location=charge_location,
                 spin_injection=args.spin_injection,
                 spin_strength=args.spin_strength,
-                spin_location=args.spin_location
+                spin_location=spin_location
             )
             
             # Analyze the difference in mutual information
@@ -5106,11 +5129,15 @@ if __name__ == "__main__":
                 # Use the final circuit for Page curve analysis
                 final_circuit = circuits[-1]
                 
-                # Parse radiation ordering if provided
+                # Parse radiation ordering if provided, or use default for all qubits
                 radiation_ordering = None
                 if args.radiation_ordering:
                     radiation_ordering = [int(x.strip()) for x in args.radiation_ordering.split(',')]
                     print(f"  Using custom radiation ordering: {radiation_ordering}")
+                else:
+                    # Use all qubits in order if no custom ordering specified
+                    radiation_ordering = list(range(args.num_qubits))
+                    print(f"  Using default radiation ordering for {args.num_qubits} qubits: {radiation_ordering}")
                 
                 # Run Page curve simulation
                 page_curve_data = simulate_black_hole_evaporation(
