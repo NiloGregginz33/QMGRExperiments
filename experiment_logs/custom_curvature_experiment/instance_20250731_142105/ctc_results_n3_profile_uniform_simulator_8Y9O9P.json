@@ -1,0 +1,37 @@
+{
+  "ctc_size": 3,
+  "phase_profile": "uniform",
+  "phase_strength": 0.1,
+  "phase_profile_matrix": [
+    [
+      0.1,
+      0.1,
+      0.1
+    ],
+    [
+      0.1,
+      0.1,
+      0.1
+    ],
+    [
+      0.1,
+      0.1,
+      0.1
+    ]
+  ],
+  "backend": "simulator",
+  "shots": 100,
+  "counts": {
+    "010": 31,
+    "000": 53,
+    "110": 12,
+    "011": 1,
+    "101": 1,
+    "001": 2
+  },
+  "total_measurements": 100,
+  "unique_outcomes": 6,
+  "most_likely_outcome": "000",
+  "most_likely_count": 53,
+  "timestamp": 1753996872.1652524
+}
