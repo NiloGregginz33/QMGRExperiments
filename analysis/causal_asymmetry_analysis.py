@@ -140,7 +140,7 @@ def analyze_causal_asymmetry(mi_evolution: List[np.ndarray]) -> Dict:
         
         for i in range(n):
             for j in range(i+1, n):
-                forward.append(change_matrix[i, j])
+                    forward.append(change_matrix[i, j])
                 backward.append(change_matrix[j, i])
         
         forward_changes.extend(forward)
@@ -152,7 +152,7 @@ def analyze_causal_asymmetry(mi_evolution: List[np.ndarray]) -> Dict:
         backward_mean = np.mean(backward_changes)
         asymmetry_ratio = abs(forward_mean - backward_mean) / (abs(forward_mean) + abs(backward_mean) + 1e-10)
         
-        results['temporal_asymmetry'] = {
+            results['temporal_asymmetry'] = {
             'forward_mean': float(forward_mean),
             'backward_mean': float(backward_mean),
             'asymmetry_ratio': float(asymmetry_ratio),
@@ -552,10 +552,10 @@ def generate_visualizations(results: Dict, output_dir: str):
         plt.ylabel('Violation Rate')
         plt.title('Violation Rate vs Curvature')
         plt.grid(True, alpha=0.3)
-        
-        plt.tight_layout()
+    
+    plt.tight_layout()
         plt.savefig(f"{output_dir}/causal_violations_analysis.png", dpi=300, bbox_inches='tight')
-        plt.close()
+    plt.close()
         print(f"  ✅ Causal violations plot saved")
     
     print(f"  ✅ All visualizations saved to {output_dir}")
@@ -795,7 +795,7 @@ def generate_summary_report(results: Dict) -> str:
 - Further investigation recommended
 """
         else:
-            report += f"""
+        report += f"""
 ❌ **NO EMERGENT TIME STRUCTURE DETECTED**
 - Low temporal asymmetry (mean ratio: {mean_asymmetry:.4f})
 - No significant directional effects
