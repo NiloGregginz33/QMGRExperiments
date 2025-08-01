@@ -3947,14 +3947,17 @@ if __name__ == "__main__":
                                 print(f"[HARDWARE] Optimizing circuit for {args.device}...")
                                 circ_optimized = _apply_hardware_optimization(circ, args.device)
                                 print(f"[HARDWARE] Circuit optimized: depth {circ_optimized.depth()}")
-                                counts = run_circuit_with_mitigation(circ_optimized, args.shots, args.device, use_mitigation=False)
+                                from CGPTFactory import run
+                                counts = run(circ_optimized, backend=args.device, shots=args.shots)
                             else:
-                                counts = run_circuit_with_mitigation(circ, args.shots, args.device, use_mitigation=False)
+                                from CGPTFactory import run
+                                counts = run(circ, backend=args.device, shots=args.shots)
                     else:
                         # Use simulator with hardware-like noise
                         print(f"[HARDWARE] Using simulator with hardware-like noise: {args.device}")
                         # For simulator, use standard execution
-                        counts = run_circuit_with_mitigation(circ, args.shots, args.device, use_mitigation=False)
+                        from CGPTFactory import run
+                        counts = run(circ, backend=args.device, shots=args.shots)
                     
                     # Store the counts for this timestep
                     counts_per_timestep.append(counts)
