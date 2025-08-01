@@ -1,0 +1,85 @@
+
+# Comprehensive Page Curve Analysis Summary
+
+## Experiment Details
+- Number of qubits: Unknown
+- Circuit depth: Unknown
+- Device: Unknown
+
+## Analysis Results
+
+### 1. Geometric Locality Analysis
+- Distance-MI Correlation: 0.1608
+- Correlation P-value: 0.3487
+- Exponential Decay Rate: 0.0000
+- Fit Quality: 0.0000
+
+### 2. Graph Structure Analysis
+- Number of Nodes: 9
+- Number of Edges: 4
+- Graph Density: 0.1111
+- Average Degree: 0.89
+- Is Connected: False
+- Number of Components: 5
+- Clustering Coefficient: 0.0000
+- Average Shortest Path: inf
+- Diameter: inf
+
+### 3. Hierarchical Clustering Analysis
+- Number of Clusters: 3
+- Cluster Sizes: [np.int64(4), np.int64(3), np.int64(2)]
+- Cluster Qualities: ['0.0026', '0.0023', '0.0020']
+
+### 4. MDS Bulk Geometry Reconstruction
+- MDS Stress: 2.2212
+- Number of Components: 2
+- Geometric Area: 1.8770
+- Geometric Perimeter: 5.0736
+
+### 5. Ryu-Takayanagi Consistency Check
+- RT Consistent: False
+- Area Law Correlation: 0.0000
+- Area Law P-value: 1.0000
+- Page Curve Behavior: False
+
+### 6. Entanglement Spectrum Analysis
+- Spectrum Analyzed: False
+- Mean Entropy: 0.0000
+- Entropy Standard Deviation: 0.0000
+- Expected Random Entropy: 0.0000
+- Deviation from Random: 0.0000
+
+## Key Insights
+
+### Geometric Structure
+The mutual information matrix shows weak 
+geometric locality with a correlation of 0.161. 
+This suggests limited 
+spatial structure in the quantum state.
+
+### Graph Properties
+The reconstructed graph has a density of 0.111 and 
+is not connected. 
+The clustering coefficient of 0.000 indicates 
+weak local clustering.
+
+### Bulk Geometry
+The MDS reconstruction achieves a stress of 2.221, indicating 
+poor 
+geometric embedding quality.
+
+### Holographic Consistency
+The system does not show consistency with the 
+Ryu-Takayanagi conjecture, with an area law correlation of 0.000.
+
+### Entanglement Properties
+The entanglement spectrum is close to 
+random Haar state expectations.
+
+## Conclusion
+
+This comprehensive analysis reveals limited evidence for 
+emergent geometric structure in the quantum system, with weak 
+holographic properties.
+
+Generated: 2025-08-01 08:17:23
