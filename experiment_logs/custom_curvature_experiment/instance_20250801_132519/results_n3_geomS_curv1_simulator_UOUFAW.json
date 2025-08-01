@@ -1,0 +1,991 @@
+{
+  "spec": {
+    "num_qubits": 3,
+    "topology": "triangulated",
+    "custom_edges": "0-1:1.0000,0-2:1.0000,1-2:1.0000",
+    "alpha": 0.8,
+    "weight": 1.2481908420108714,
+    "gamma": 0.21732946009555712,
+    "sigma": 0.17568965407467607,
+    "init_angle": 0.634154377434454,
+    "init_angles": null,
+    "shots": 100,
+    "device": "simulator",
+    "geometry": "spherical",
+    "curvature": 1.0,
+    "timesteps": 3,
+    "dimension": 2,
+    "mass_hinge": null,
+    "mass_value": 0.0,
+    "solve_regge": false,
+    "lorentzian": true,
+    "excite": true,
+    "fast": true,
+    "fast_preset": "minimal",
+    "ctc_mode": true,
+    "ctc_type": "paradox",
+    "strong_curvature": true,
+    "charge_injection": true,
+    "charge_strength": 2.5,
+    "charge_location": null,
+    "spin_injection": true,
+    "spin_strength": 2.0,
+    "spin_location": null,
+    "edge_floor": 0.001,
+    "compute_entropies": true,
+    "hyperbolic_triangulation": true,
+    "trotter_steps": 8,
+    "dt": 0.05,
+    "analyze_curvature": true,
+    "einstein_solver": true,
+    "page_curve": true,
+    "radiation_ordering": null,
+    "page_curve_timesteps": 15,
+    "entropy_method": "hybrid",
+    "num_shadows": 100,
+    "shots_per_shadow": 1000,
+    "num_bases": 20,
+    "shots_per_basis": 1000,
+    "enhanced_entanglement": false,
+    "entanglement_strength": 1.1198776873825593,
+    "interpolate_geometry": false,
+    "smooth_charge_injection": false,
+    "min_qubits_for_continuum": 10,
+    "benchmark_against_classical_geometry": false,
+    "geometry_fit_metric": "wasserstein,kl,euclidean",
+    "verify_noise_robustness": false,
+    "run_on_multiple_backends": false,
+    "detect_and_flag_causal_loops": true,
+    "restrict_information_flow_direction": "bidirectional",
+    "filter_noncausal_edges": true,
+    "use_ryu_takayanagi_test": true,
+    "compare_MI_vs_subsystem_entropy": true,
+    "embed_boundary_entropy_in_geometry": true,
+    "entropy_engineering": true,
+    "target_entropy_pattern": "quantum_gravity",
+    "custom_target_entropies": null,
+    "entropy_optimization_iterations": 200,
+    "entropy_tolerance": 0.05,
+    "continue_on_engineering_failure": true,
+    "validate_engineered_geometry": true,
+    "enhance_bell_violations": true,
+    "bell_entanglement_strength": 4.0,
+    "teleportation_circuits": true,
+    "long_range_coupling": 3.0,
+    "holographic_optimization": true,
+    "rt_surface_encoding": true,
+    "conformal_symmetry": true,
+    "bulk_reconstruction": true,
+    "scalable_entanglement": true,
+    "parallel_execution": true,
+    "memory_optimization": true,
+    "circuit_compilation": "optimized",
+    "real_hardware": false,
+    "error_mitigation": true,
+    "zero_noise_extrapolation": true,
+    "zne_noise_factors": [
+      1.0,
+      2.0,
+      3.0
+    ],
+    "zne_extrapolation_method": "polynomial",
+    "hardware_calibration": true,
+    "noise_characterization": true,
+    "backend_name": "ibm_brisbane",
+    "quantum_mode": true,
+    "quantum_entanglement_strength": 5.0,
+    "quantum_circuit_depth": 12
+  },
+  "uid": "UOUFAW",
+  "counts_per_timestep": [
+    null
+  ],
+  "job_ids_per_timestep": [
+    null
+  ],
+  "entropy_per_timestep": [
+    null
+  ],
+  "mutual_information_per_timestep": [
+    {
+      "I_0,1": 0.5769167996482805,
+      "I_0,2": 0.7693942976613155,
+      "I_1,2": 0.733056894504995
+    }
+  ],
+  "boundary_entropies_per_timestep": [
+    {
+      "entropy_A": 8.949511572441335e-15,
+      "entropy_B": 7.367880958774292e-15,
+      "mi_AB": 7.367880958774294e-15,
+      "pure_state_check": true,
+      "entropy_difference": 1.5816306136670431e-15,
+      "multiple_regions": {
+        "size_1_region_0": {
+          "region": [
+            0
+          ],
+          "entropy": 0.6731555486548001,
+          "rt_area": 2,
+          "size": 1
+        },
+        "size_1_region_1": {
+          "region": [
+            1
+          ],
+          "entropy": 0.6549868470766405,
+          "rt_area": 2,
+          "size": 1
+        },
+        "size_1_region_2": {
+          "region": [
+            2
+          ],
+          "entropy": 0.7512255960831573,
+          "rt_area": 2,
+          "size": 1
+        },
+        "size_2_region_0": {
+          "region": [
+            0,
+            1
+          ],
+          "entropy": 0.7512255960831593,
+          "rt_area": 2,
+          "size": 2
+        },
+        "size_2_region_1": {
+          "region": [
+            0,
+            2
+          ],
+          "entropy": 0.654986847076642,
+          "rt_area": 2,
+          "size": 2
+        },
+        "size_2_region_2": {
+          "region": [
+            1,
+            2
+          ],
+          "entropy": 0.6731555486548023,
+          "rt_area": 2,
+          "size": 2
+        }
+      }
+    }
+  ],
+  "distance_matrix_per_timestep": [
+    [
+      [
+        0.0,
+        0.5500572175881134,
+        0.2621517001011866
+      ],
+      [
+        0.5500572175881134,
+        0.0,
+        0.3105319614105325
+      ],
+      [
+        0.2621517001011866,
+        0.3105319614105325,
+        0.0
+      ]
+    ]
+  ],
+  "edge_mi": {
+    "0,1": 0.5769167996482805,
+    "0,2": 0.7693942976613155,
+    "1,2": 0.733056894504995
+  },
+  "distance_matrix": [
+    [
+      0.0,
+      0.5500572175881134,
+      0.2621517001011866
+    ],
+    [
+      0.5500572175881134,
+      0.0,
+      0.3105319614105325
+    ],
+    [
+      0.2621517001011866,
+      0.3105319614105325,
+      0.0
+    ]
+  ],
+  "shortest_paths": {
+    "0": {
+      "0": 0,
+      "2": 0.2621517001011866,
+      "1": 0.5500572175881134
+    },
+    "1": {
+      "1": 0,
+      "2": 0.3105319614105325,
+      "0": 0.5500572175881134
+    },
+    "2": {
+      "2": 0,
+      "0": 0.2621517001011866,
+      "1": 0.3105319614105325
+    }
+  },
+  "gromov_delta": 0.2992187394487297,
+  "mean_distance": 0.24949797313329614,
+  "angle_sums": [
+    3.1638610245195236
+  ],
+  "mean_angle_sum": 3.1638610245195236,
+  "min_angle_sum": 3.1638610245195236,
+  "max_angle_sum": 3.1638610245195236,
+  "angle_sum_deviations": [
+    0.02226837092973044
+  ],
+  "triangle_inequality_violations": [],
+  "embedding_coords": null,
+  "edge_weight_variance": 0.0,
+  "event_nodes": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      2
+    ]
+  ],
+  "event_edges": [
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        1,
+        0
+      ],
+      "weight": 0.5500572175881134
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        2,
+        0
+      ],
+      "weight": 0.2621517001011866
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        0
+      ],
+      "to": [
+        2,
+        0
+      ],
+      "weight": 0.3105319614105325
+    },
+    {
+      "type": "temporal",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        0,
+        1
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        1,
+        0
+      ],
+      "to": [
+        1,
+        1
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        2,
+        0
+      ],
+      "to": [
+        2,
+        1
+      ],
+      "weight": 1.0
+    }
+  ],
+  "lorentzian_dissimilarity": [
+    [
+      0.0,
+      0.30256294262077715,
+      0.06872351386594248,
+      -1.0,
+      -0.6974370573792228,
+      -0.9312764861340576,
+      -4.0,
+      -3.697437057379223,
+      -3.9312764861340574
+    ],
+    [
+      0.30256294262077715,
+      0.0,
+      0.09643009905747246,
+      -0.6974370573792228,
+      -1.0,
+      -0.9035699009425275,
+      -3.697437057379223,
+      -4.0,
+      -3.9035699009425278
+    ],
+    [
+      0.06872351386594248,
+      0.09643009905747246,
+      0.0,
+      -0.9312764861340576,
+      -0.9035699009425275,
+      -1.0,
+      -3.9312764861340574,
+      -3.9035699009425278,
+      -4.0
+    ],
+    [
+      -1.0,
+      -0.6974370573792228,
+      -0.9312764861340576,
+      0.0,
+      0.0,
+      0.0,
+      -1.0,
+      -1.0,
+      -1.0
+    ],
+    [
+      -0.6974370573792228,
+      -1.0,
+      -0.9035699009425275,
+      0.0,
+      0.0,
+      0.0,
+      -1.0,
+      -1.0,
+      -1.0
+    ],
+    [
+      -0.9312764861340576,
+      -0.9035699009425275,
+      -1.0,
+      0.0,
+      0.0,
+      0.0,
+      -1.0,
+      -1.0,
+      -1.0
+    ],
+    [
+      -4.0,
+      -3.697437057379223,
+      -3.9312764861340574,
+      -1.0,
+      -1.0,
+      -1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      -3.697437057379223,
+      -4.0,
+      -3.9035699009425278,
+      -1.0,
+      -1.0,
+      -1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      -3.9312764861340574,
+      -3.9035699009425278,
+      -4.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "lorentzian_embedding": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "edge_length_evolution": [],
+  "angle_deficit_evolution": [],
+  "regge_action_evolution": [],
+  "gromov_delta_evolution": [],
+  "mass_hinge": null,
+  "mass_value": 0.0,
+  "matter": [
+    {
+      "(0, 1)": 0.0,
+      "(0, 2)": 0.0,
+      "(1, 2)": 0.0
+    },
+    {
+      "(0, 1)": 0.0,
+      "(0, 2)": 0.0,
+      "(1, 2)": 0.0
+    },
+    {
+      "(0, 1)": 0.0,
+      "(0, 2)": 0.0,
+      "(1, 2)": 0.0
+    }
+  ],
+  "stationary_solution": null,
+  "einstein_analysis_per_timestep": [
+    {
+      "ricci_tensor": [
+        [
+          0.23104088797939898,
+          0.0
+        ],
+        [
+          0.0,
+          0.23104088797939898
+        ]
+      ],
+      "metric_tensor": [
+        [
+          1.0462081775958798,
+          0.0231040887979399
+        ],
+        [
+          0.0231040887979399,
+          1.0462081775958798
+        ]
+      ],
+      "stress_energy_tensor": [
+        [
+          0.23104088797939898,
+          0.0046208177595879795
+        ],
+        [
+          0.0046208177595879795,
+          0.23104088797939898
+        ]
+      ],
+      "einstein_solution": {
+        "einstein_tensor": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "ricci_scalar": 0.46208177595879796,
+        "metric_tensor": [
+          [
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0
+          ]
+        ],
+        "lhs": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "rhs": [
+          [
+            0.23104088797939898,
+            0.0046208177595879795
+          ],
+          [
+            0.0046208177595879795,
+            0.23104088797939898
+          ]
+        ],
+        "equations_satisfied": false,
+        "residual": 0.3268064989411211,
+        "conservation_violation": 0.23104088797939898,
+        "gravitational_constant": 0.039788735772973836,
+        "cosmological_constant": 0.0
+      },
+      "entropy_first_derivative": 0.0,
+      "entropy_second_derivative": 0.0,
+      "entropy_curvature_correlation": 0.32674115224318906,
+      "emergent_gravitational_constant": 0.036771299378262214,
+      "average_mutual_information": 0.46208177595879796,
+      "ricci_scalar": 0.46208177595879796,
+      "analysis_summary": {
+        "einstein_equations_satisfied": false,
+        "residual_magnitude": 0.3268064989411211,
+        "conservation_violation": 0.23104088797939898,
+        "entropy_evolution_rate": 0.0,
+        "entropy_acceleration": 0.0,
+        "entanglement_curvature_coupling": 0.32674115224318906
+      }
+    }
+  ],
+  "bootstrap_analysis": {
+    "gromov_delta": {
+      "mean": 0.2992187394487297,
+      "lower_ci": 0.2992187394487297,
+      "upper_ci": 0.2992187394487297,
+      "all_values": [
+        0.2992187394487297
+      ],
+      "uncertainty": 0.0
+    },
+    "entropy": {
+      "mean": null,
+      "lower_ci": null,
+      "upper_ci": null,
+      "uncertainty": null
+    },
+    "distance_matrix": {
+      "mean": [
+        [
+          0.0,
+          0.5500572175881134,
+          0.2621517001011866
+        ],
+        [
+          0.5500572175881134,
+          0.0,
+          0.3105319614105325
+        ],
+        [
+          0.2621517001011866,
+          0.3105319614105325,
+          0.0
+        ]
+      ],
+      "lower_ci": [
+        [
+          0.0,
+          0.5500572175881134,
+          0.2621517001011866
+        ],
+        [
+          0.5500572175881134,
+          0.0,
+          0.3105319614105325
+        ],
+        [
+          0.2621517001011866,
+          0.3105319614105325,
+          0.0
+        ]
+      ],
+      "upper_ci": [
+        [
+          0.0,
+          0.5500572175881134,
+          0.2621517001011866
+        ],
+        [
+          0.5500572175881134,
+          0.0,
+          0.3105319614105325
+        ],
+        [
+          0.2621517001011866,
+          0.3105319614105325,
+          0.0
+        ]
+      ]
+    }
+  },
+  "topology_compatibility": {
+    "current_topology": "triangulated",
+    "explanation": "Triangulated topology is specifically designed for angle-sum curvature. Creates multiple triangles per vertex, enabling robust local curvature measurements. Each vertex has multiple incident triangles for well-defined angle sums.",
+    "supports_local_curvature": true
+  },
+  "rt_surface_analysis": {
+    "region_A": [
+      0
+    ],
+    "region_B": [
+      1,
+      2
+    ],
+    "bulk_point": 1,
+    "is_complementary": true,
+    "rt_area_AB": 0.8122089176893,
+    "rt_area_BA": 0.8122089176893,
+    "area_consistent": true,
+    "edges_consistent": true,
+    "area_difference": 0.0,
+    "rt_edges_AB": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ]
+    ],
+    "rt_edges_BA": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ]
+    ],
+    "edge_lengths": [
+      0.5500572175881134,
+      0.2621517001011866,
+      0.3105319614105325
+    ],
+    "all_edges": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        1,
+        2
+      ]
+    ]
+  },
+  "bulk_excitation_analysis": {
+    "ground_state_mi": [
+      [
+        0.0,
+        0.5769167996482814,
+        0.7693942976613155
+      ],
+      [
+        0.5769167996482814,
+        0.0,
+        0.7330568945049954
+      ],
+      [
+        0.7693942976613155,
+        0.7330568945049954,
+        0.0
+      ]
+    ],
+    "excited_state_mi": [
+      [
+        0.0,
+        0.7496208480949786,
+        0.9132140444189095
+      ],
+      [
+        0.7496208480949786,
+        0.0,
+        0.5468340895331809
+      ],
+      [
+        0.9132140444189095,
+        0.5468340895331809,
+        0.0
+      ]
+    ],
+    "mi_difference": [
+      [
+        0.0,
+        0.1727040484466973,
+        0.143819746757594
+      ],
+      [
+        0.1727040484466973,
+        0.0,
+        -0.18622280497181454
+      ],
+      [
+        0.143819746757594,
+        -0.18622280497181454,
+        0.0
+      ]
+    ],
+    "avg_mi_change": 0.1117214667058013,
+    "max_mi_change": 0.18622280497181454,
+    "mi_change_boundary_A": NaN,
+    "mi_change_boundary_B": -0.18622280497181454,
+    "bulk_point": 1,
+    "ground_state_counts": {
+      "110": 43,
+      "101": 14,
+      "000": 7,
+      "010": 17,
+      "100": 11,
+      "111": 4,
+      "011": 4
+    },
+    "excited_state_counts": {
+      "111": 9,
+      "010": 15,
+      "011": 32,
+      "001": 5,
+      "100": 5,
+      "101": 13,
+      "000": 17,
+      "110": 4
+    },
+    "boundary_entropies": {
+      "ground_state": {
+        "entropy_A": 8.949511572441335e-15,
+        "entropy_B": 7.367880958774292e-15,
+        "mi_AB": 7.367880958774294e-15
+      },
+      "excited_state": {
+        "entropy_A": 1.0571462715623022e-14,
+        "entropy_B": 6.887366983202056e-15,
+        "mi_AB": 6.887366983202056e-15
+      },
+      "rt_relation_test": {
+        "entropy_ratio": 0.8232718511100164,
+        "rt_area_ratio": 1.0,
+        "rt_deviation": 0.17672814888998356,
+        "excited_entropy_ratio": 0.6515055833308261,
+        "rt_relation_change": 0.17176626777919035
+      }
+    }
+  },
+  "page_curve_analysis": null,
+  "einstein_analysis": null,
+  "dynamic_evidence": {
+    "angle_sums_per_timestep": [
+      [
+        3.1638610245195236
+      ]
+    ],
+    "gromov_delta_per_timestep": [
+      0.2992187394487297
+    ],
+    "edge_mi_per_timestep": [
+      {
+        "0,1": 0.5769167996482805,
+        "0,2": 0.7693942976613155,
+        "1,2": 0.733056894504995
+      }
+    ],
+    "shortest_paths_per_timestep": [
+      {
+        "0": {
+          "0": 0,
+          "2": 0.2621517001011866,
+          "1": 0.5500572175881134
+        },
+        "1": {
+          "1": 0,
+          "2": 0.3105319614105325,
+          "0": 0.5500572175881134
+        },
+        "2": {
+          "2": 0,
+          "0": 0.2621517001011866,
+          "1": 0.3105319614105325
+        }
+      }
+    ],
+    "mean_distance_per_timestep": [
+      0.24949797313329614
+    ],
+    "triangle_violations_per_timestep": [
+      0
+    ],
+    "embedding_coords_per_timestep": [
+      [
+        [
+          -0.2506185631269767,
+          -0.04819669211200717
+        ],
+        [
+          0.270796543040949,
+          -0.02366675588237505
+        ],
+        [
+          -0.020177979913972324,
+          0.07186344799438221
+        ]
+      ]
+    ],
+    "regge_evolution_data": null,
+    "evolution_summary": {
+      "total_timesteps": 1,
+      "gromov_delta_range": [
+        0.2992187394487297,
+        0.2992187394487297
+      ],
+      "mean_distance_range": [
+        0.24949797313329614,
+        0.24949797313329614
+      ],
+      "total_triangle_violations": 0,
+      "hyperbolic_evolution": [
+        true
+      ],
+      "regge_corrected": false
+    }
+  },
+  "quantum_state_outputs": [
+    {
+      "timestep": 1,
+      "statevector": [
+        {
+          "real": -0.061357214916632444,
+          "imag": 0.25482222722773107
+        },
+        {
+          "real": 0.08249587907659418,
+          "imag": 0.08034349737838165
+        },
+        {
+          "real": -0.3680854139046926,
+          "imag": -0.05696180373869527
+        },
+        {
+          "real": 0.10737058441649293,
+          "imag": -0.25217109710193275
+        },
+        {
+          "real": -0.29693851070965643,
+          "imag": -0.03263736503765632
+        },
+        {
+          "real": 0.06851223332536115,
+          "imag": 0.30739267120406955
+        },
+        {
+          "real": 0.5471055901667743,
+          "imag": 0.36247403999416317
+        },
+        {
+          "real": -0.2652141648359557,
+          "imag": -0.12131647279467683
+        }
+      ],
+      "mutual_information_matrix": [
+        [
+          0.0,
+          0.5769167996482805,
+          0.7693942976613155
+        ],
+        [
+          0.5769167996482805,
+          0.0,
+          0.733056894504995
+        ],
+        [
+          0.7693942976613155,
+          0.733056894504995,
+          0.0
+        ]
+      ],
+      "circuit_depth": 92,
+      "num_gates": 166
+    }
+  ]
+}

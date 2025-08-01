@@ -1,98 +1,51 @@
 #!/usr/bin/env python3
 """
-Simple test script to verify CTC integration without importing the main file
+Simple test to isolate where CTC experiment hangs.
 """
 
 import sys
 import os
-import subprocess
+import time
+from datetime import datetime
 
-def test_ctc_help():
-    """Test if CTC arguments appear in help"""
-    print("=== Testing CTC Help Arguments ===")
-    
-    try:
-        result = subprocess.run([
-            sys.executable, 
-            "src/experiments/custom_curvature_experiment.py", 
-            "--help"
-        ], capture_output=True, text=True, timeout=30)
-        
-        if result.returncode == 0:
-            help_text = result.stdout
-            ctc_args = [
-                "--ctc_mode",
-                "--ctc_size", 
-                "--ctc_phase_profile",
-                "--ctc_phase_strength"
-            ]
-            
-            found_args = []
-            for arg in ctc_args:
-                if arg in help_text:
-                    found_args.append(arg)
-                    print(f"✓ Found CTC argument: {arg}")
-                else:
-                    print(f"✗ Missing CTC argument: {arg}")
-            
-            if len(found_args) >= 3:
-                print(f"✓ CTC arguments found: {len(found_args)}/4")
-                return True
-            else:
-                print(f"✗ Only {len(found_args)}/4 CTC arguments found")
-                return False
-        else:
-            print(f"✗ Help command failed: {result.stderr}")
-            return False
-            
-    except Exception as e:
-        print(f"✗ Help command failed: {e}")
-        return False
+print(f"[{datetime.now()}] Starting simple CTC test...")
 
-def test_minimal_ctc_run():
-    """Test a minimal CTC run"""
-    print("\n=== Testing Minimal CTC Run ===")
-    
-    try:
-        result = subprocess.run([
-            sys.executable,
-            "src/experiments/custom_curvature_experiment.py",
-            "--num_qubits", "3",
-            "--ctc_mode",
-            "--ctc_size", "2",
-            "--shots", "10",
-            "--fast"
-        ], capture_output=True, text=True, timeout=60)
-        
-        if result.returncode == 0:
-            output = result.stdout
-            if "CTC" in output or "ctc" in output.lower():
-                print("✓ CTC functionality detected in output")
-                return True
-            else:
-                print("✗ No CTC output detected")
-                print("Output preview:", output[:200])
-                return False
-        else:
-            print(f"✗ CTC run failed: {result.stderr}")
-            return False
-            
-    except Exception as e:
-        print(f"✗ CTC run failed: {e}")
-        return False
+# Test 1: Basic imports
+print(f"[{datetime.now()}] Test 1: Basic imports...")
+try:
+    import numpy as np
+    print(f"[{datetime.now()}] ✅ numpy imported")
+except Exception as e:
+    print(f"[{datetime.now()}] ❌ numpy failed: {e}")
 
-if __name__ == "__main__":
-    print("Testing CTC Integration...")
-    
-    help_ok = test_ctc_help()
-    if help_ok:
-        run_ok = test_minimal_ctc_run()
-        if run_ok:
-            print("\n=== CTC Integration Test PASSED ===")
-            sys.exit(0)
-        else:
-            print("\n=== CTC Run Test FAILED ===")
-            sys.exit(1)
-    else:
-        print("\n=== CTC Help Test FAILED ===")
-        sys.exit(1) 
+try:
+    import qiskit
+    print(f"[{datetime.now()}] ✅ qiskit imported")
+except Exception as e:
+    print(f"[{datetime.now()}] ❌ qiskit failed: {e}")
+
+# Test 2: Add src to path
+print(f"[{datetime.now()}] Test 2: Adding src to path...")
+sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+print(f"[{datetime.now()}] ✅ src added to path")
+
+# Test 3: Try importing specific modules
+print(f"[{datetime.now()}] Test 3: Importing specific modules...")
+
+try:
+    from experiments import custom_curvature_experiment
+    print(f"[{datetime.now()}] ✅ custom_curvature_experiment imported")
+except Exception as e:
+    print(f"[{datetime.now()}] ❌ custom_curvature_experiment failed: {e}")
+    print(f"[{datetime.now()}] This is likely where the hanging occurs!")
+
+# Test 4: If we get here, try importing specific functions
+print(f"[{datetime.now()}] Test 4: Importing specific functions...")
+
+try:
+    from experiments.custom_curvature_experiment import build_custom_circuit_layers
+    print(f"[{datetime.now()}] ✅ build_custom_circuit_layers imported")
+except Exception as e:
+    print(f"[{datetime.now()}] ❌ build_custom_circuit_layers failed: {e}")
+
+print(f"[{datetime.now()}] Simple test completed!") 
