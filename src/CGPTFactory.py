@@ -12858,22 +12858,24 @@ def extract_bitarray_from_primitive(prim_result):
     raise ValueError("No BitArray attribute found in the PrimitiveResult data")
 
 
-def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
+def run(qc, device="simulator", shots=2048):
     """
-    Run a circuit either on real backend, statevector simulator, or qasm simulator.
+    Run a circuit on the specified device.
     
     Parameters:
     - qc: QuantumCircuit
-    - backend: IBM backend object (required if sim=False and rs=False)
-    - rs: bool, if True return statevector
-    - sim: bool, if True run on AerSimulator for sampling
+    - device: str, device to run on ("simulator", "statevector", or IBM backend name)
     - shots: int, number of shots for sampling
     
     Returns:
-    - Statevector if rs=True
+    - Statevector if device="statevector"
     - dict with 'counts' and 'distribution' otherwise
     """
-    # base_run 
+    # Process device argument to determine execution mode
+    is_simulator = device == "simulator"
+    is_statevector = device == "statevector"
+    is_hardware = not (is_simulator or is_statevector)
+    
     # Display circuit
     try:
         print(qc.draw(fold=100))
@@ -12881,7 +12883,7 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
         print(f"Error drawing circuit: {e}")
 
     # Option 1: statevector simulation
-    if rs:
+    if is_statevector:
         qc_nmeas = qc.copy()
         qc_nmeas.remove_final_measurements()
         sv = Statevector(qc_nmeas)
@@ -12889,7 +12891,7 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
         return sv
 
     # Option 2: qasm simulation with AerSimulator
-    if sim:
+    if is_simulator:
         simulator = AerSimulator()
         qc_t = transpile(qc, simulator, optimization_level=3)
         job = simulator.run(qc_t, shots=shots)
@@ -12908,55 +12910,45 @@ def run(qc, backend=None, rs=False, sim=False, old_backend=False, shots=2048):
         print(f"Distribution on R (sim): |0> = {f0:.3f}, |1> = {f1:.3f}")
         return {'counts': counts, 'distribution': (f0, f1)}
     
-    if backend is None:
-        backend = get_best_backend(service)
-
-    if old_backend:
-        qc_t = transpile(qc, backend)
-        job = backend.run(qc_t)
-        result = job.result()
-        counts = result.get_counts()
-        return counts
-
     # Option 3: real backend via IBM Runtime Sampler
+    if is_hardware:
+        try:
+            # Get the backend by name
+            backend = service.backend(device)
+            print(f"Using backend: {backend.name}")
+            
+            qc_t = transpile(qc, backend, optimization_level=0)
+            sampler = Sampler(backend)
+            job = sampler.run([qc_t], shots=shots)
+            result = job.result()
+            print("Raw result:", result)
+        except Exception as e:
+            print(f"[ERROR] Failed to run on hardware backend {device}: {e}")
+            return None
 
-
-    qc_t = transpile(qc, backend, optimization_level=0)
-    sampler = Sampler(backend)
-    job = sampler.run([qc_t], shots=shots)
-    result = job.result()
-    print("Raw result:", result)
-
-    # Try to get counts directly from the result
+    # Try to get counts using the extract_bitarray_from_primitive function
     try:
-        # Method 1: Try to get quasi_dists and convert to counts
-        quasi_dists = result.quasi_dists[0]
-        print(f"Quasi distributions: {quasi_dists}")
+        # Import the function from the experiment file
+        import sys
+        import os
+        sys.path.append(os.path.join(os.path.dirname(__file__), 'experiments'))
+        from custom_curvature_experiment import extract_bitarray_from_primitive
         
-        # Convert quasi_dists to counts
-        counts = {}
-        total_shots = shots
-        for bitstring, probability in quasi_dists.items():
-            count = int(probability * total_shots)
-            if count > 0:
-                counts[bitstring] = count
-        
-        print("Converted counts:", counts)
-        
-        if not counts:
-            print("No counts found, trying alternative method...")
-            raise ValueError("No counts converted from quasi_dists")
+        # Use the robust extraction function
+        bitstrings = extract_bitarray_from_primitive(result)
+        if bitstrings is not None:
+            # Convert bitstrings to counts format
+            counts = {}
+            for bitstring in bitstrings:
+                counts[bitstring] = counts.get(bitstring, 0) + 1
+            print(f"Extracted {len(counts)} unique bitstrings from {len(bitstrings)} total")
+        else:
+            print("Failed to extract bitstrings from result")
+            return None
             
     except Exception as e:
-        print(f"[ERROR] Could not extract counts from quasi_dists: {e}")
-        
-        # Method 2: Try to get counts directly
-        try:
-            counts = result.counts[0]
-            print("Direct counts:", counts)
-        except Exception as e2:
-            print(f"[ERROR] Could not get direct counts: {e2}")
-            return None
+        print(f"[ERROR] Could not extract counts using extract_bitarray_from_primitive: {e}")
+        return None
 
     total = sum(counts.values())
     teleported = {'0': 0, '1': 0}

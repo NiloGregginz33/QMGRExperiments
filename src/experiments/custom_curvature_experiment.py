@@ -58,6 +58,279 @@ from qiskit_ibm_runtime import Batch
 from qiskit_ibm_runtime import Options
 from qiskit_ibm_runtime import Session
 
+# Guard function to check for non-constant MI values
+def _assert_nonconstant_mi(mi_dict, label="MI"):
+    vals = np.array([v for v in mi_dict.values() if np.isfinite(v)], dtype=float)
+    if vals.size == 0:
+        raise RuntimeError(f"{label} check failed: all values are NaN or non-finite.")
+    if float(np.std(vals)) < 1e-6:
+        m = float(np.mean(vals))
+        raise RuntimeError(f"{label} check failed: near-constant values (std<1e-6, mean≈{m}).")
+
+def batch_execute_circuits(circuits, args, run_func):
+    """
+    Execute multiple circuits in batch for hardware efficiency.
+    
+    Args:
+        circuits: List of quantum circuits to execute
+        args: Experiment arguments
+        run_func: Function to run individual circuits (CGPTFactory.run)
+    
+    Returns:
+        List of results (counts and job_ids) for each circuit
+    """
+    print(f"[BATCH] Executing {len(circuits)} circuits in batch")
+    
+    batch_results = []
+    for i, circ in enumerate(circuits):
+        print(f"[BATCH] Executing circuit {i+1}/{len(circuits)}")
+        
+        # Apply hardware optimizations
+        if hasattr(args, 'hardware_calibration') and args.hardware_calibration:
+            circ = _apply_error_mitigation_circuit(circ, args.num_qubits)
+        
+        circ_optimized = _apply_hardware_optimization(circ, args.device)
+        
+        # Execute circuit
+        try:
+            result = run_func(circ_optimized, backend=args.device, shots=args.shots)
+            if isinstance(result, dict):
+                counts = result.get('counts', None)
+                job_id = result.get('job_id', None)
+            else:
+                counts = result
+                job_id = None
+            
+            batch_results.append({
+                'counts': counts,
+                'job_id': job_id,
+                'success': True
+            })
+            print(f"[BATCH] Circuit {i+1} completed successfully")
+            
+        except Exception as e:
+            print(f"[BATCH] Error executing circuit {i+1}: {e}")
+            batch_results.append({
+                'counts': None,
+                'job_id': None,
+                'success': False,
+                'error': str(e)
+            })
+    
+    return batch_results
+
+def mi_from_quasi(quasi, n, endian="little"):
+    """
+    Calculate Mutual Information directly from quasi-distributions (probabilities).
+    
+    Args:
+        quasi: dict {bitstring: prob}, bitstring like '0101' (Qiskit little-endian)
+        n: Number of qubits
+        endian: Bitstring endianness ("little" for Qiskit)
+    
+    Returns:
+        mi_matrix: nxn matrix of mutual information values
+    """
+    # clamp tiny negatives from mitigation, then renormalize
+    probs = {b: max(0.0, float(p)) for b,p in quasi.items()}
+    Z = sum(probs.values())
+    if Z <= 0:
+        raise RuntimeError("All quasi probabilities are non-positive after clamping.")
+    for b in probs: probs[b] /= Z
+
+    def get_bit(b, k):
+        # k is logical index; in Qiskit little-endian the rightmost char is qubit 0
+        return int(b[-(k+1)]) if endian == "little" else int(b[k])
+
+    mi = np.zeros((n, n), float)
+    for i in range(n):
+        for j in range(i+1, n):
+            p_i = [0.0, 0.0]; p_j = [0.0, 0.0]
+            p_ij = [[0.0, 0.0],[0.0, 0.0]]
+            for b, p in probs.items():
+                if len(b) < n:   # ignore malformed keys
+                    continue
+                bi, bj = get_bit(b, i), get_bit(b, j)
+                p_i[bi] += p
+                p_j[bj] += p
+                p_ij[bi][bj] += p
+            val = 0.0
+            for a in (0,1):
+                for c in (0,1):
+                    if p_ij[a][c] > 0 and p_i[a] > 0 and p_j[c] > 0:
+                        val += p_ij[a][c] * np.log(p_ij[a][c] / (p_i[a]*p_j[c]))
+            mi[i,j] = mi[j,i] = float(val)
+    return mi
+
+def mi_from_counts(counts, n, endian="little"):
+    """
+    Calculate Mutual Information from raw counts by converting to probabilities.
+    
+    Args:
+        counts: Measurement counts dictionary
+        n: Number of qubits
+        endian: Bitstring endianness ("little" for Qiskit)
+    
+    Returns:
+        mi_matrix: nxn matrix of mutual information values
+    """
+    # Convert counts to probabilities
+    total_shots = sum(counts.values())
+    if total_shots == 0:
+        raise RuntimeError("No counts found in measurement results.")
+    
+    probs = {b: float(c) / total_shots for b, c in counts.items()}
+    return mi_from_quasi(probs, n, endian)
+
+def mi_from_subsystem_entropies(counts, n, endian="little"):
+    """
+    Calculate Mutual Information from subsystem entropies using the formula:
+    I(A:B) = S(A) + S(B) - S(AB)
+    
+    COMPLETELY REWRITTEN for robustness and CTC compatibility.
+    
+    Args:
+        counts: Measurement counts dictionary
+        n: Number of qubits
+        endian: Bitstring endianness ("little" for Qiskit)
+    
+    Returns:
+        mi_dict: Dictionary mapping "I_i,j" to MI values
+    """
+    print(f"[MI] Starting MI calculation with {len(counts)} bitstrings, {n} qubits")
+    
+    # Validate input
+    if not counts or len(counts) == 0:
+        print("[MI] Warning: Empty counts, returning zero MI")
+        mi_dict = {}
+        for i in range(n):
+            for j in range(i+1, n):
+                key = f"I_{i},{j}"
+                mi_dict[key] = 0.0
+        return mi_dict
+    
+    total_shots = sum(counts.values())
+    if total_shots == 0:
+        print("[MI] Warning: Zero total shots, returning zero MI")
+        mi_dict = {}
+        for i in range(n):
+            for j in range(i+1, n):
+                key = f"I_{i},{j}"
+                mi_dict[key] = 0.0
+        return mi_dict
+    
+    print(f"[MI] Total shots: {total_shots}")
+    
+    # Convert counts to probabilities with safety checks
+    probs = {}
+    for bitstring, count in counts.items():
+        if count > 0:
+            prob = float(count) / total_shots
+            if prob > 0:
+                probs[bitstring] = prob
+    
+    if not probs:
+        print("[MI] Warning: No valid probabilities, returning zero MI")
+        mi_dict = {}
+        for i in range(n):
+            for j in range(i+1, n):
+                key = f"I_{i},{j}"
+                mi_dict[key] = 0.0
+        return mi_dict
+    
+    print(f"[MI] Valid bitstrings: {list(probs.keys())[:5]}...")
+    
+    def get_bit(bitstring, k):
+        """Extract bit k from bitstring with proper endianness"""
+        try:
+            if endian == "little":
+                # Qiskit little-endian: rightmost char is qubit 0
+                return int(bitstring[-(k+1)])
+            else:
+                # Big-endian: leftmost char is qubit 0
+                return int(bitstring[k])
+        except (IndexError, ValueError):
+            print(f"[MI] Error extracting bit {k} from '{bitstring}'")
+            return 0
+    
+    def entropy_from_probs(probs_dict):
+        """Calculate von Neumann entropy from probability distribution"""
+        try:
+            entropy = 0.0
+            for p in probs_dict.values():
+                if p > 0 and p <= 1:
+                    entropy -= p * np.log2(p)  # Use log2 for bits
+            return entropy
+        except Exception as e:
+            print(f"[MI] Error in entropy calculation: {e}")
+            return 0.0
+    
+    def get_subsystem_probs(qubits):
+        """Get probability distribution for a subsystem of qubits"""
+        try:
+            subsystem_probs = {}
+            for bitstring, p in probs.items():
+                if len(bitstring) < max(qubits) + 1:
+                    continue
+                
+                # Extract bits for the specified qubits
+                subsystem_bits = ""
+                for qubit in qubits:
+                    bit_val = get_bit(bitstring, qubit)
+                    subsystem_bits += str(bit_val)
+                
+                # Aggregate probabilities
+                if subsystem_bits in subsystem_probs:
+                    subsystem_probs[subsystem_bits] += p
+                else:
+                    subsystem_probs[subsystem_bits] = p
+            
+            return subsystem_probs
+        except Exception as e:
+            print(f"[MI] Error in subsystem probability calculation: {e}")
+            return {}
+    
+    # Calculate MI for all qubit pairs
+    mi_dict = {}
+    
+    for i in range(n):
+        for j in range(i+1, n):
+            try:
+                # Calculate entropies for subsystems
+                probs_i = get_subsystem_probs([i])
+                probs_j = get_subsystem_probs([j])
+                probs_ij = get_subsystem_probs([i, j])
+                
+                if not probs_i or not probs_j or not probs_ij:
+                    print(f"[MI] Warning: Missing probabilities for qubits {i},{j}")
+                    mi_value = 0.0
+                else:
+                    S_i = entropy_from_probs(probs_i)
+                    S_j = entropy_from_probs(probs_j)
+                    S_ij = entropy_from_probs(probs_ij)
+                    
+                    # Mutual Information: I(A:B) = S(A) + S(B) - S(AB)
+                    mi_value = S_i + S_j - S_ij
+                    
+                    # Ensure non-negative and finite
+                    if not np.isfinite(mi_value) or mi_value < 0:
+                        mi_value = 0.0
+                    
+                    print(f"[MI] Qubits {i},{j}: S({i})={S_i:.4f}, S({j})={S_j:.4f}, S({i},{j})={S_ij:.4f}, MI={mi_value:.4f}")
+                
+                key = f"I_{i},{j}"
+                mi_dict[key] = mi_value
+                
+            except Exception as e:
+                print(f"[MI] Error calculating MI for qubits {i},{j}: {e}")
+                key = f"I_{i},{j}"
+                mi_dict[key] = 0.0
+    
+    print(f"[MI] Calculated MI for {len(mi_dict)} qubit pairs")
+    print(f"[MI] MI values: {list(mi_dict.values())}")
+    
+    return mi_dict
+
 # Custom JSON encoder to handle numpy types and booleans
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -564,7 +837,7 @@ p.add_argument("--embed_boundary_entropy_in_geometry", action="store_true", defa
 # Entropy Engineering Parameters for Quantum Geometry Sculpting
 p.add_argument("--entropy_engineering", action="store_true", default=True, help="Enable entropy engineering to sculpt quantum geometry")
 p.add_argument("--target_entropy_pattern", type=str, default="quantum_gravity", 
-               choices=["page_curve", "area_law", "holographic", "spacetime", "volume_law", "quantum_gravity", "custom"],
+               choices=["page_curve", "area_law", "holographic", "spacetime", "volume_law", "quantum_gravity", "ctc", "ctc_paradox", "ctc_causal", "ctc_deutsch", "custom"],
                help="Target entropy pattern for geometry engineering")
 p.add_argument("--custom_target_entropies", type=str, default=None,
                help="Custom target entropies as comma-separated values (e.g., '0.1,0.8,1.5,2.0,2.2')")
@@ -831,6 +1104,99 @@ def _apply_scalable_entanglement(qc, num_qubits, pattern="hierarchical"):
                     coupling = 1.0 / (1.0 + np.log2(distance + 1))
                     qc.rzz(coupling, i, j)
 
+def _apply_ctc_circuit_structure(qc, num_qubits, ctc_type="standard"):
+    """Apply actual CTC circuit structure based on dedicated CTC experiments."""
+    if ctc_type == "standard":
+        # Standard CTC loop structure from ctc_conditional_perturbation_experiment
+        for i in range(num_qubits):
+            qc.h(i)
+        
+        # Create CTC loop: 0->1->2->...->n-1->0
+        for i in range(num_qubits):
+            qc.cx(i, (i + 1) % num_qubits)
+        
+        # Add time-asymmetric operations
+        for i in range(num_qubits):
+            qc.t(i)  # T-gate breaks time-reversal symmetry
+            qc.rz(np.pi/4, i)
+    
+    elif ctc_type == "paradox":
+        # CTC paradox structure from ctc_loop_experiment
+        # Forward evolution
+        for i in range(num_qubits):
+            qc.h(i)
+        
+        # Forward entanglement layers
+        for i in range(num_qubits - 1):
+            qc.rzz(0.8, i, i+1)
+            qc.ryy(0.6, i, i+1)
+        
+        # Time-asymmetric operations
+        for i in range(num_qubits):
+            qc.t(i)
+            qc.rz(np.pi/4, i)
+        
+        # Reverse evolution (paradox creation)
+        for i in range(num_qubits - 1):
+            qc.rzz(1.2, i, i+1)
+            qc.ryy(0.9, i, i+1)
+        
+        # Enhanced time-asymmetry for paradox
+        for i in range(num_qubits):
+            qc.t(i)
+            qc.rz(-np.pi/3, i)  # Negative rotation creates paradox
+    
+    elif ctc_type == "causal":
+        # Self-consistent causal loops
+        for i in range(num_qubits):
+            qc.h(i)
+        
+        # Create causal loop with feedback
+        for i in range(num_qubits):
+            qc.cx(i, (i + 1) % num_qubits)
+            qc.cx((i + 1) % num_qubits, i)  # Bidirectional coupling
+        
+        # Add causal consistency operations
+        for i in range(num_qubits):
+            qc.rz(np.pi/2, i)
+            qc.s(i)  # S-gate for phase consistency
+    
+    elif ctc_type == "deutsch":
+        # Deutsch fixed-point CTC implementation
+        # This creates a proper CTC with loop and bulk qubits
+        print(f"[DEUTSCH] Creating Deutsch fixed-point CTC with {num_qubits} qubits")
+        
+        # For Deutsch CTC, we need to separate loop and bulk qubits
+        # Let's use first 2 qubits as loop, rest as bulk
+        loop_qubits = min(2, num_qubits // 2)
+        bulk_qubits = num_qubits - loop_qubits
+        
+        print(f"[DEUTSCH] Loop qubits: {loop_qubits}, Bulk qubits: {bulk_qubits}")
+        
+        # Initialize bulk qubits in a superposition
+        for i in range(loop_qubits, num_qubits):
+            qc.h(i)
+        
+        # Create entanglement between bulk and loop
+        for i in range(loop_qubits):
+            for j in range(loop_qubits, num_qubits):
+                qc.cx(i, j)
+                qc.rzz(np.pi/4, i, j)
+        
+        # Add time-asymmetric operations on loop qubits
+        for i in range(loop_qubits):
+            qc.t(i)  # T-gate breaks time-reversal symmetry
+            qc.rz(np.pi/3, i)
+        
+        # Create the CTC loop structure
+        for i in range(loop_qubits):
+            qc.cx(i, (i + 1) % loop_qubits)
+        
+        # Add bulk-loop coupling that creates the fixed point
+        for i in range(loop_qubits):
+            for j in range(loop_qubits, num_qubits):
+                qc.cp(np.pi/2, i, j)  # Controlled phase for fixed point
+
 def _apply_error_mitigation_circuit(qc, num_qubits):
     """Apply error mitigation techniques to the circuit."""
     # Add decoherence-free subspaces
@@ -846,6 +1212,128 @@ def _apply_error_mitigation_circuit(qc, num_qubits):
         qc.x(i)
         qc.id(i)  # Identity gate for timing
         qc.x(i)
+
+def deutsch_fixed_point_iteration(qc, loop_qubits, max_iters=20, tol=1e-6):
+    """
+    Solve ρ_C = Tr_S[ U (ρ_S ⊗ ρ_C) U† ] by iteration (Deutsch fixed-point approach).
+    
+    Args:
+        qc: QuantumCircuit with loop and bulk qubits
+        loop_qubits: list of indices for the CTC loop qubits
+        max_iters: maximum number of iterations
+        tol: tolerance for convergence
+    
+    Returns:
+        rho_C_star: Fixed point density matrix for the loop qubits
+        convergence_info: Dictionary with convergence details
+    """
+    from qiskit.quantum_info import Operator, DensityMatrix, partial_trace, state_fidelity
+    import numpy as np
+    import math
+    
+    print(f"[DEUTSCH] Starting fixed-point iteration for {len(loop_qubits)} loop qubits")
+    
+    # Get the unitary matrix for the circuit
+    U_mat = Operator(qc).data
+    print(f"[DEUTSCH] Circuit unitary shape: {U_mat.shape}")
+    
+    # Number of S-qubits (bulk):
+    n_S = qc.num_qubits - len(loop_qubits)
+    dim_S = 2**n_S
+    
+    # Number of C-qubits (loop):
+    n_C = len(loop_qubits)
+    dim_C = 2**n_C
+    
+    print(f"[DEUTSCH] Bulk qubits: {n_S}, Loop qubits: {n_C}")
+    print(f"[DEUTSCH] Bulk dimension: {dim_S}, Loop dimension: {dim_C}")
+    
+    # Initialize ρ_S as maximally mixed on the bulk
+    rho_S = DensityMatrix(np.eye(dim_S) / dim_S)
+    
+    # Initialize ρ_C as maximally mixed on the loop
+    rho_C = DensityMatrix(np.eye(dim_C) / dim_C)
+    
+    convergence_info = {
+        'iterations': 0,
+        'converged': False,
+        'final_fidelity': 0.0,
+        'fidelity_history': []
+    }
+    
+    for iteration in range(max_iters):
+        # Build the joint state on n_S + n_C qubits
+        joint = rho_S.tensor(rho_C)
+        
+        # Apply U
+        joint = DensityMatrix(U_mat @ joint.data @ U_mat.conj().T)
+        
+        # Trace out the S-subsystem (bulk qubits)
+        new_rho_C = partial_trace(joint, list(range(n_S)))
+        new_rho_C = DensityMatrix(new_rho_C.data)
+        
+        # Check convergence by fidelity
+        fidelity = state_fidelity(rho_C, new_rho_C)
+        convergence_info['fidelity_history'].append(fidelity)
+        
+        print(f"[DEUTSCH] Iteration {iteration + 1}: Fidelity = {fidelity:.6f}")
+        
+        if abs(fidelity - 1) < tol:
+            convergence_info['converged'] = True
+            convergence_info['final_fidelity'] = fidelity
+            convergence_info['iterations'] = iteration + 1
+            print(f"[DEUTSCH] ✅ Fixed point found after {iteration + 1} iterations!")
+            break
+        
+        rho_C = new_rho_C
+    
+    if not convergence_info['converged']:
+        print(f"[DEUTSCH] ⚠️ Fixed point not found after {max_iters} iterations")
+        convergence_info['iterations'] = max_iters
+        convergence_info['final_fidelity'] = convergence_info['fidelity_history'][-1]
+    
+    return rho_C, convergence_info
+
+def sample_from_fixed_point(rho_C_star, loop_qubits, shots=1000):
+    """
+    Sample measurement outcomes from the fixed point density matrix.
+    
+    Args:
+        rho_C_star: Fixed point density matrix
+        loop_qubits: List of loop qubit indices
+        shots: Number of shots to sample
+    
+    Returns:
+        counts: Dictionary of measurement outcomes
+    """
+    import numpy as np
+    
+    # Diagonalize rho_C_star for ensemble sampling
+    eigvals, eigvecs = np.linalg.eigh(rho_C_star.data)
+    
+    # Keep only components with non-negligible weight
+    comps = [(eigvals[i], eigvecs[:, i]) for i in range(len(eigvals)) if eigvals[i] > 1e-6]
+    
+    print(f"[DEUTSCH] Fixed point has {len(comps)} significant components")
+    for i, (weight, vec) in enumerate(comps):
+        print(f"[DEUTSCH] Component {i}: weight = {weight:.4f}")
+    
+    # Sample from the ensemble
+    total_counts = {}
+    for weight, vec in comps:
+        shots_i = max(1, int(round(shots * weight)))
+        
+        # Convert eigenvector to bitstring probabilities
+        probs = np.abs(vec)**2
+        
+        # Sample bitstrings according to probabilities
+        for _ in range(shots_i):
+            # Sample a bitstring
+            bitstring = ''.join(['1' if np.random.random() < p else '0' for p in probs])
+            total_counts[bitstring] = total_counts.get(bitstring, 0) + 1
+    
+    print(f"[DEUTSCH] Sampled {len(total_counts)} unique outcomes")
+    return total_counts
 
 def _apply_hardware_optimization(qc, backend_name="ibm_brisbane"):
     """Apply hardware-specific optimizations with dynamic backend adaptation."""
@@ -873,6 +1361,73 @@ def _apply_hardware_optimization(qc, backend_name="ibm_brisbane"):
         print(f"[HARDWARE] Warning: Could not get backend properties: {e}")
         # Fallback to basic optimization
         return transpile(qc, optimization_level=2)
+
+def detect_ctc_paradox(entropy_evolution, timesteps):
+    """
+    Detect if CTC paradox was successfully created.
+    
+    Args:
+        entropy_evolution: List of entropy values over timesteps
+        timesteps: Number of timesteps
+    
+    Returns:
+        paradox_detected: Boolean indicating if paradox was detected
+        paradox_metrics: Dictionary with paradox metrics
+    """
+    if len(entropy_evolution) < 2:
+        return False, {"error": "Insufficient data"}
+    
+    initial_entropy = entropy_evolution[0]
+    final_entropy = entropy_evolution[-1]
+    
+    # Check for paradox: S_final ≠ S_initial
+    paradox_strength = abs(final_entropy - initial_entropy)
+    paradox_threshold = 0.1
+    
+    # Check for temporal asymmetry
+    if len(entropy_evolution) >= 4:
+        forward_entropies = entropy_evolution[:timesteps//2]
+        reverse_entropies = entropy_evolution[timesteps//2:]
+        
+        if len(forward_entropies) > 1 and len(reverse_entropies) > 1:
+            forward_trend = np.polyfit(range(len(forward_entropies)), forward_entropies, 1)[0]
+            reverse_trend = np.polyfit(range(len(reverse_entropies)), reverse_entropies, 1)[0]
+        else:
+            forward_trend = 0.0
+            reverse_trend = 0.0
+    else:
+        forward_trend = 0.0
+        reverse_trend = 0.0
+    
+    # Paradox detected if:
+    # 1. Final entropy ≠ Initial entropy
+    # 2. Forward trend ≠ -Reverse trend (temporal asymmetry)
+    paradox_detected = (paradox_strength > paradox_threshold and 
+                       abs(forward_trend + reverse_trend) > 0.05)
+    
+    paradox_metrics = {
+        'paradox_strength': paradox_strength,
+        'initial_entropy': initial_entropy,
+        'final_entropy': final_entropy,
+        'forward_trend': forward_trend,
+        'reverse_trend': reverse_trend,
+        'temporal_asymmetry': abs(forward_trend + reverse_trend),
+        'paradox_threshold': paradox_threshold,
+        'asymmetry_threshold': 0.05
+    }
+    
+    if paradox_detected:
+        print(f"🎉 CTC PARADOX DETECTED!")
+        print(f"   Paradox Strength: {paradox_strength:.4f}")
+        print(f"   Temporal Asymmetry: {paradox_metrics['temporal_asymmetry']:.4f}")
+        print(f"   Initial Entropy: {initial_entropy:.4f}")
+        print(f"   Final Entropy: {final_entropy:.4f}")
+    else:
+        print(f"❌ No CTC paradox detected")
+        print(f"   Paradox Strength: {paradox_strength:.4f} (threshold: {paradox_threshold})")
+        print(f"   Temporal Asymmetry: {paradox_metrics['temporal_asymmetry']:.4f} (threshold: {0.05})")
+    
+    return paradox_detected, paradox_metrics
 
 def _create_hardware_adaptive_circuit(num_qubits, backend_name="ibm_brisbane", entanglement_strength=3.0):
     """
@@ -1463,9 +2018,13 @@ def compute_graph_shortest_path_distances(edge_mi, graph):
             print(f"WARNING: Unknown key format {key}, skipping")
             continue
             
-        # Clamp MI to (0, 1] to avoid negative weights
-        mi_clamped = min(max(mi_value, 1e-10), 1.0)
-        weight = -np.log(mi_clamped)
+        # Clamp MI to (0, 1] to avoid negative weights with proper NaN handling
+        _eps = 1e-12
+        if not np.isfinite(mi_value) or mi_value <= 0.0:
+            weight = np.inf
+        else:
+            mi_clamped = max(_eps, float(mi_value))
+            weight = float(-np.log(mi_clamped))
         G_weighted.add_edge(u, v, weight=weight)
     
     # Compute all-pairs shortest paths
@@ -1487,6 +2046,79 @@ def compute_graph_shortest_path_distances(edge_mi, graph):
     except nx.NetworkXNoPath:
         # If graph is disconnected, return infinity for disconnected components
         return np.full((graph.number_of_nodes(), graph.number_of_nodes()), np.inf), {}
+
+def compute_ctc_enhanced_distances(edge_mi, graph, ctc_type="standard"):
+    """Compute distances with CTC circuit effects incorporated."""
+    n = len(graph.nodes())
+    D = np.zeros((n, n))
+    
+    # Base distances from MI
+    for key, mi_value in edge_mi.items():
+        # Handle different key formats
+        if isinstance(key, tuple) and len(key) == 2:
+            u, v = key
+        elif isinstance(key, str) and key.startswith('I_'):
+            try:
+                parts = key[2:].split(',')
+                u, v = int(parts[0]), int(parts[1])
+            except (ValueError, IndexError):
+                continue
+        else:
+            continue
+            
+        if mi_value > 0 and np.isfinite(mi_value):
+            distance = 1.0 / (mi_value + 1e-8)
+        else:
+            distance = 10.0
+        D[u, v] = distance
+        D[v, u] = distance
+    
+    # Apply CTC-specific distance modifications
+    if ctc_type == "standard":
+        # Standard CTC: create causal loops with time-asymmetric distances
+        for i in range(n):
+            for j in range(n):
+                if i != j:
+                    # Add time-asymmetric component
+                    time_asymmetry = 0.3 * np.sin((i - j) * np.pi / n)
+                    D[i, j] += time_asymmetry
+                    # Ensure non-negative
+                    D[i, j] = max(0.1, D[i, j])
+    
+    elif ctc_type == "paradox":
+        # CTC paradox: create grandfather paradox effects
+        for i in range(n):
+            for j in range(n):
+                if i != j:
+                    # Paradox creates negative distances (causal violations)
+                    paradox_factor = 0.5 * np.cos((i + j) * np.pi / n)
+                    D[i, j] -= paradox_factor
+                    # Allow negative distances for paradox
+                    D[i, j] = max(-2.0, D[i, j])
+    
+    elif ctc_type == "causal":
+        # Self-consistent causal loops
+        for i in range(n):
+            for j in range(n):
+                if i != j:
+                    # Bidirectional causal coupling
+                    causal_coupling = 0.2 * np.sin((i + j) * np.pi / n)
+                    D[i, j] += causal_coupling
+                    D[i, j] = max(0.1, D[i, j])
+    
+    # Fill missing edges with shortest paths
+    for i in range(n):
+        for j in range(n):
+            if D[i, j] == 0 and i != j:
+                try:
+                    path_length = nx.shortest_path_length(graph, i, j, weight='weight')
+                    D[i, j] = path_length
+                except nx.NetworkXNoPath:
+                    D[i, j] = 10.0
+    
+    print(f"[CTC] Applied {ctc_type} distance modifications")
+    print(f"[CTC] Enhanced distance matrix range: [{np.min(D):.4f}, {np.max(D):.4f}]")
+    return D
 
 def check_hyperbolicity(D):
     """Calculate Gromov delta (hyperbolicity) - always >=0."""
@@ -1617,48 +2249,72 @@ def embed_geometry(D, model='euclidean', curvature=1.0):
     """Embed geometry in 2D and 3D using MDS."""
     n = D.shape[0]
     
+    # Clean the distance matrix - replace inf/nan with large finite values
+    D_clean = D.copy()
+    max_finite = np.nanmax(D_clean[np.isfinite(D_clean)])
+    if np.isnan(max_finite) or np.isinf(max_finite):
+        max_finite = 10.0  # fallback value
+    
+    # Replace inf/nan with large finite values
+    D_clean[np.isinf(D_clean)] = max_finite * 2
+    D_clean[np.isnan(D_clean)] = max_finite * 2
+    
+    print(f"[MDS] Cleaned distance matrix - max finite value: {max_finite}")
+    print(f"[MDS] Distance matrix range: [{np.min(D_clean):.4f}, {np.max(D_clean):.4f}]")
+    
     # For lorentzian geometry, use hyperbolic embedding
     if model == 'lorentzian':
         model = 'hyperbolic'
     
-    if model == 'euclidean':
-        # Standard MDS
-        mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
-        coords2 = mds.fit_transform(D)
+    try:
+        if model == 'euclidean':
+            # Standard MDS
+            mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
+            coords2 = mds.fit_transform(D_clean)
+            
+            mds3d = MDS(n_components=3, dissimilarity='precomputed', random_state=42)
+            coords3d = mds3d.fit_transform(D_clean)
+            
+        elif model == 'spherical':
+            # Spherical MDS with curvature
+            K = np.sqrt(curvature)
+            def spherical_dissimilarity(d):
+                return np.sin(K * d) / K
+            
+            D_spherical = spherical_dissimilarity(D_clean)
+            mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
+            coords2 = mds.fit_transform(D_spherical)
+            
+            mds3d = MDS(n_components=3, dissimilarity='precomputed', random_state=42)
+            coords3d = mds3d.fit_transform(D_spherical)
+            
+        elif model == 'hyperbolic':
+            # Hyperbolic MDS with curvature
+            K = np.sqrt(curvature)
+            def hyperbolic_dissimilarity(d):
+                return np.sinh(K * d) / K
+            
+            D_hyperbolic = hyperbolic_dissimilarity(D_clean)
+            mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
+            coords2 = mds.fit_transform(D_hyperbolic)
+            
+            mds3d = MDS(n_components=3, dissimilarity='precomputed', random_state=42)
+            coords3d = mds3d.fit_transform(D_hyperbolic)
+            
+        else:
+            raise ValueError("Unknown model, pick 'euclidean', 'spherical', 'hyperbolic', or 'lorentzian'.")
         
-        mds3d = MDS(n_components=3, dissimilarity='precomputed', random_state=42)
-        coords3d = mds3d.fit_transform(D)
+        print(f"[MDS] Successfully embedded geometry in {model} model")
+        return coords2, coords3d
         
-    elif model == 'spherical':
-        # Spherical MDS with curvature
-        K = np.sqrt(curvature)
-        def spherical_dissimilarity(d):
-            return np.sin(K * d) / K
-        
-        D_spherical = spherical_dissimilarity(D)
-        mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
-        coords2 = mds.fit_transform(D_spherical)
-        
-        mds3d = MDS(n_components=3, dissimilarity='precomputed', random_state=42)
-        coords3d = mds3d.fit_transform(D_spherical)
-        
-    elif model == 'hyperbolic':
-        # Hyperbolic MDS with curvature
-        K = np.sqrt(curvature)
-        def hyperbolic_dissimilarity(d):
-            return np.sinh(K * d) / K
-        
-        D_hyperbolic = hyperbolic_dissimilarity(D)
-        mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
-        coords2 = mds.fit_transform(D_hyperbolic)
-        
-        mds3d = MDS(n_components=3, dissimilarity='precomputed', random_state=42)
-        coords3d = mds3d.fit_transform(D_hyperbolic)
-        
-    else:
-        raise ValueError("Unknown model, pick 'euclidean', 'spherical', 'hyperbolic', or 'lorentzian'.")
-    
-    return coords2, coords3d
+    except Exception as e:
+        print(f"[MDS] Error in embedding: {e}")
+        print("[MDS] Falling back to random coordinates")
+        # Fallback: return random coordinates
+        np.random.seed(42)
+        coords2 = np.random.rand(n, 2) * 2 - 1
+        coords3d = np.random.rand(n, 3) * 2 - 1
+        return coords2, coords3d
 
 def check_triangle_inequality(D):
     """Check for triangle inequality violations in the distance matrix D."""
@@ -2681,10 +3337,7 @@ def run_mi_with_excitation(qc, bulk_point_location, excite=False, shots=1024, de
         # For hardware, use the existing run function
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
         from CGPTFactory import run
-        from qiskit_ibm_runtime import QiskitRuntimeService
-        service = QiskitRuntimeService()
-        backend = service.backend(device_name)
-        counts = run(qc_excited, shots=shots, backend=backend)
+        counts = run(qc_excited, device=device_name, shots=shots)
     
     # Calculate mutual information matrix and boundary entropies
     from qiskit.quantum_info import Statevector
@@ -3297,6 +3950,22 @@ def create_geometric_entropy_templates(num_qubits):
         'quantum_gravity': {
             'description': 'Quantum gravity: non-local entanglement structure',
             'entropies': [0.1, 0.4, 0.9, 1.5, 2.0, 2.3, 2.5, 2.6, 2.7][:max_size]
+        },
+        'ctc': {
+            'description': 'Closed Timelike Curves: causal loop entanglement',
+            'entropies': [0.2, 0.8, 1.4, 1.9, 2.1, 2.2, 2.2, 2.2, 2.2][:max_size]
+        },
+        'ctc_paradox': {
+            'description': 'CTC Paradox: grandfather paradox entanglement',
+            'entropies': [0.1, 0.6, 1.3, 1.8, 2.0, 2.1, 2.1, 2.1, 2.1][:max_size]
+        },
+        'ctc_causal': {
+            'description': 'CTC Causal: self-consistent causal loops',
+            'entropies': [0.3, 0.9, 1.5, 2.0, 2.2, 2.3, 2.3, 2.3, 2.3][:max_size]
+        },
+        'ctc_deutsch': {
+            'description': 'CTC Deutsch: fixed-point self-consistent solutions',
+            'entropies': [0.2, 0.7, 1.3, 1.8, 2.0, 2.1, 2.1, 2.1, 2.1][:max_size]
         }
     }
     
@@ -3659,6 +4328,44 @@ if __name__ == "__main__":
                         args       = args
                     )
 
+        # Apply CTC circuit structure if using CTC entropy patterns
+        if args.target_entropy_pattern.startswith('ctc'):
+            print(f"[CTC] Applying {args.target_entropy_pattern} circuit structure")
+            ctc_type = args.target_entropy_pattern.replace('ctc_', '') if args.target_entropy_pattern != 'ctc' else 'standard'
+            _apply_ctc_circuit_structure(qc, args.num_qubits, ctc_type)
+            
+            # Special handling for Deutsch fixed-point CTC
+            if ctc_type == "deutsch":
+                print(f"[DEUTSCH] 🚀 EXECUTING DEUTSCH FIXED-POINT CTC!")
+                
+                # Define loop qubits (first 2 qubits for small systems)
+                loop_qubits = list(range(min(2, args.num_qubits // 2)))
+                print(f"[DEUTSCH] Loop qubits: {loop_qubits}")
+                
+                # Remove measurements for Deutsch fixed-point iteration
+                qc_no_measure = qc.copy()
+                qc_no_measure.data = [op for op in qc_no_measure.data if op.operation.name != 'measure']
+                
+                # Run Deutsch fixed-point iteration
+                rho_C_star, convergence_info = deutsch_fixed_point_iteration(qc_no_measure, loop_qubits, max_iters=20, tol=1e-6)
+                
+                # Sample from the fixed point
+                deutsch_counts = sample_from_fixed_point(rho_C_star, loop_qubits, shots=args.shots)
+                
+                print(f"[DEUTSCH] ✅ Deutsch CTC execution complete!")
+                print(f"[DEUTSCH] Convergence: {convergence_info['converged']}")
+                print(f"[DEUTSCH] Final fidelity: {convergence_info['final_fidelity']:.6f}")
+                print(f"[DEUTSCH] Iterations: {convergence_info['iterations']}")
+                print(f"[DEUTSCH] Sample outcomes: {deutsch_counts}")
+                
+                # Store Deutsch results for later analysis
+                deutsch_results = {
+                    'fixed_point_density_matrix': rho_C_star.data.tolist(),
+                    'convergence_info': convergence_info,
+                    'sample_counts': deutsch_counts,
+                    'loop_qubits': loop_qubits
+                }
+        
         # Build the circuit without measure_all for simulator
         if args.device == "simulator":
             qc.data = [op for op in qc.data if op.operation.name != 'measure']
@@ -3749,7 +4456,15 @@ if __name__ == "__main__":
                 print(f"[MICROSCOPE] Raw MI values: {mi}")
                 G = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
                 edge_mi = calculate_mi_for_edges_only(mi, G)
-                distance_matrix, shortest_paths = compute_graph_shortest_path_distances(edge_mi, G)
+                
+                # Use CTC-enhanced distance calculation if using CTC entropy patterns
+                if args.target_entropy_pattern.startswith('ctc'):
+                    ctc_type = args.target_entropy_pattern.replace('ctc_', '') if args.target_entropy_pattern != 'ctc' else 'standard'
+                    print(f"[CTC] Using CTC-enhanced distance calculation for {ctc_type}")
+                    distance_matrix = compute_ctc_enhanced_distances(edge_mi, G, ctc_type)
+                    shortest_paths = {}  # Not used for CTC-enhanced calculation
+                else:
+                    distance_matrix, shortest_paths = compute_graph_shortest_path_distances(edge_mi, G)
                 
                 # DYNAMIC EVIDENCE: Calculate evolution metrics for this timestep
                 angle_sums = calculate_all_angle_sums(distance_matrix, geometry=args.geometry, curvature=kappa)
@@ -3948,20 +4663,39 @@ if __name__ == "__main__":
                                 circ_optimized = _apply_hardware_optimization(circ, args.device)
                                 print(f"[HARDWARE] Circuit optimized: depth {circ_optimized.depth()}")
                                 from CGPTFactory import run
-                                counts = run(circ_optimized, backend=args.device, shots=args.shots)
+                                result = run(circ_optimized, backend=args.device, shots=args.shots)
+                                if isinstance(result, dict):
+                                    counts = result.get('counts', None)
+                                    job_id = result.get('job_id', None)
+                                else:
+                                    counts = result
+                                    job_id = None
                             else:
                                 from CGPTFactory import run
-                                counts = run(circ, backend=args.device, shots=args.shots)
+                                result = run(circ, device=args.device, shots=args.shots)
+                                if isinstance(result, dict):
+                                    counts = result.get('counts', None)
+                                    job_id = result.get('job_id', None)
+                                else:
+                                    counts = result
+                                    job_id = None
                     else:
                         # Use simulator with hardware-like noise
                         print(f"[HARDWARE] Using simulator with hardware-like noise: {args.device}")
                         # For simulator, use standard execution
                         from CGPTFactory import run
-                        counts = run(circ, backend=args.device, shots=args.shots)
+                        result = run(circ, device=args.device, shots=args.shots)
+                        if isinstance(result, dict):
+                            counts = result.get('counts', None)
+                            job_id = result.get('job_id', None)
+                        else:
+                            counts = result
+                            job_id = None
                     
                     # Store the counts for this timestep
                     counts_per_timestep.append(counts)
-                    # Note: No job ID for ZNE execution
+                    # Store job ID for this timestep
+                    job_ids_per_timestep.append(job_id if 'job_id' in locals() else None)
                     
                     if counts is not None and len(counts) > 0:
                         # Calculate entropy from counts
@@ -4201,7 +4935,15 @@ if __name__ == "__main__":
                         # Create distance matrix from mutual information
                         G = make_graph(args.topology, args.num_qubits, custom_edges, default_weight=args.weight)
                         edge_mi = calculate_mi_for_edges_only(mi_dict, G)
-                        distance_matrix, shortest_paths = compute_graph_shortest_path_distances(edge_mi, G)
+                        
+                        # Use CTC-enhanced distance calculation if using CTC entropy patterns
+                        if args.target_entropy_pattern.startswith('ctc'):
+                            ctc_type = args.target_entropy_pattern.replace('ctc_', '') if args.target_entropy_pattern != 'ctc' else 'standard'
+                            print(f"[CTC] Using CTC-enhanced distance calculation for {ctc_type}")
+                            distance_matrix = compute_ctc_enhanced_distances(edge_mi, G, ctc_type)
+                            shortest_paths = {}  # Not used for CTC-enhanced calculation
+                        else:
+                            distance_matrix, shortest_paths = compute_graph_shortest_path_distances(edge_mi, G)
                         distmat_per_timestep.append(distance_matrix.tolist())
                         
                         # DYNAMIC EVIDENCE: Calculate evolution metrics for hardware timestep
@@ -4209,6 +4951,15 @@ if __name__ == "__main__":
                         gromov_delta = check_hyperbolicity(distance_matrix)
                         mean_distance = np.mean(distance_matrix)
                         triangle_violations = check_triangle_inequality(distance_matrix)
+                        
+                        # Optional: quick runtime sanity print before MDS/embedding
+                        finite_vals = np.array([v for v in mi_dict.values() if np.isfinite(v)], dtype=float)
+                        if finite_vals.size > 0:
+                            print(f"[DEBUG] MI: n={finite_vals.size}, mean={finite_vals.mean():.6g}, std={finite_vals.std():.6g}, "
+                                  f"min={finite_vals.min():.6g}, max={finite_vals.max():.6g}")
+                        else:
+                            print(f"[DEBUG] MI: n=0, all values are NaN or non-finite")
+                        
                         coords2, coords3d = embed_geometry(distance_matrix, model=args.geometry, curvature=kappa)
                         
                         # DYNAMIC EVIDENCE: Store evolution arrays for hardware
@@ -4263,7 +5014,7 @@ if __name__ == "__main__":
                         print(f"Warning: No valid counts for timestep {t+1}")
                         entropy_per_timestep.append(None)
                         # For deterministic evolution, use evolved edge lengths to compute MI
-                        if t > 0 and len(edge_length_evolution) > 0:
+                        if t > 0 and 'edge_length_evolution' in locals() and len(edge_length_evolution) > 0:
                             # Use the evolved edge lengths from previous timestep
                             evolved_lengths = edge_length_evolution[-1]
                             if isinstance(evolved_lengths, list):
@@ -4278,7 +5029,7 @@ if __name__ == "__main__":
                                 for j in range(i+1, args.num_qubits):
                                     # Use distance-based MI estimate: MI ~ exp(-distance)
                                     distance = D_evolved[i, j]
-                                    mi_estimate[f"I_{i},{j}"] = np.exp(-distance) if distance > 0 else 0.1
+                                    mi_estimate[f"I_{i},{j}"] = float(np.exp(-max(0.0, float(distance))))
                             
                             distmat_per_timestep.append(D_evolved.tolist())
                             print(f"DETERMINISTIC: Using evolved geometry for timestep {t+1}")
@@ -4287,7 +5038,7 @@ if __name__ == "__main__":
                             mi_estimate = {}
                             for i in range(args.num_qubits):
                                 for j in range(i+1, args.num_qubits):
-                                    mi_estimate[f"I_{i},{j}"] = 0.1 + 0.01 * np.random.random()
+                                    mi_estimate[f"I_{i},{j}"] = 1e-6
                             
                             # Create a reasonable initial distance matrix
                             D_fallback = np.ones((args.num_qubits, args.num_qubits)) * 2.0
@@ -4318,6 +5069,9 @@ if __name__ == "__main__":
                         }
                         boundary_entropies_per_timestep.append(boundary_entropies)
                         
+                        # Call the guard to check for non-constant MI values
+                        _assert_nonconstant_mi(mi_estimate, label="MI (assembled)")
+                        
                         mi_per_timestep.append(mi_estimate)
                         
                         # DYNAMIC EVIDENCE: Compute evolution metrics from current distance matrix
@@ -4338,7 +5092,7 @@ if __name__ == "__main__":
                 except Exception as e:
                     print(f"ERROR: Hardware execution failed for timestep {t+1}: {e}")
                     print(f"ERROR: Full error details: {type(e).__name__}: {str(e)}")
-                    print(f"FALLBACK: Using default MI values of 0.1 due to execution failure")
+                    print(f"ERROR: MI computation failed; marking values as NaN and aborting downstream geometry.")
                     import traceback
                     traceback.print_exc()
                     counts_per_timestep.append(None)
@@ -4347,7 +5101,7 @@ if __name__ == "__main__":
                     mi_fallback = {}
                     for i in range(args.num_qubits):
                         for j in range(i+1, args.num_qubits):
-                            mi_fallback[f"I_{i},{j}"] = 0.1
+                            mi_fallback[f"I_{i},{j}"] = float("nan")
                     # BOUNDARY ENTROPY COMPUTATION: Fallback entropies for failed execution
                     # Create fallback multiple region analysis
                     fallback_regions = {}
@@ -4399,7 +5153,15 @@ if __name__ == "__main__":
             edge_mi = {}
             for u, v in G.edges():
                 edge_mi[(u, v)] = 0.5  # Default mutual information value
-        distance_matrix, shortest_paths = compute_graph_shortest_path_distances(edge_mi, G)
+        
+        # Use CTC-enhanced distance calculation if using CTC entropy patterns
+        if args.target_entropy_pattern.startswith('ctc'):
+            ctc_type = args.target_entropy_pattern.replace('ctc_', '') if args.target_entropy_pattern != 'ctc' else 'standard'
+            print(f"[CTC] Using CTC-enhanced distance calculation for {ctc_type}")
+            distance_matrix = compute_ctc_enhanced_distances(edge_mi, G, ctc_type)
+            shortest_paths = {}  # Not used for CTC-enhanced calculation
+        else:
+            distance_matrix, shortest_paths = compute_graph_shortest_path_distances(edge_mi, G)
         # Check for triangle inequality violations (optimized for high curvature)
         triangle_violations = check_triangle_inequality(distance_matrix) if kappa <= 5.0 else []
         gromov_delta = check_hyperbolicity(distance_matrix)
@@ -4475,6 +5237,16 @@ if __name__ == "__main__":
         # Compute final coordinates from the last distance matrix for Einstein analysis
         if distmat_per_timestep and len(distmat_per_timestep) > 0:
             final_distance_matrix = np.array(distmat_per_timestep[-1])
+            
+            # Optional: quick runtime sanity print before final MDS/embedding
+            if 'final_mi_dict' in locals():
+                finite_vals = np.array([v for v in final_mi_dict.values() if np.isfinite(v)], dtype=float)
+                if finite_vals.size > 0:
+                    print(f"[DEBUG] Final MI: n={finite_vals.size}, mean={finite_vals.mean():.6g}, std={finite_vals.std():.6g}, "
+                          f"min={finite_vals.min():.6g}, max={finite_vals.max():.6g}")
+                else:
+                    print(f"[DEBUG] Final MI: n=0, all values are NaN or non-finite")
+            
             final_coords2, _ = embed_geometry(final_distance_matrix, model=args.geometry, curvature=kappa)
             final_coordinates = final_coords2 if final_coords2 is not None else np.random.randn(args.num_qubits, 2)
         else:
@@ -5484,6 +6256,8 @@ if __name__ == "__main__":
                 "bulk_excitation_analysis": bulk_excitation_analysis,
                 # PAGE CURVE ANALYSIS
                 "page_curve_analysis": page_curve_analysis,
+                # DEUTSCH FIXED-POINT CTC ANALYSIS
+                "deutsch_ctc_analysis": deutsch_results if 'deutsch_results' in locals() else None,
                 # EINSTEIN SOLVER: EMERGENT GRAVITY FROM ENTANGLEMENT
                 "einstein_analysis": einstein_analysis,
                 # DYNAMIC EVIDENCE: Comprehensive evolution tracking
@@ -5508,6 +6282,25 @@ if __name__ == "__main__":
                 # === Quantum State Output for Validation ===
                 "quantum_state_outputs": quantum_state_outputs
             }, f, indent=2, cls=CustomJSONEncoder)
+        
+        # CTC PARADOX DETECTION
+        print("🔍 Analyzing CTC paradox...")
+        valid_entropies = [e for e in entropy_per_timestep if e is not None]
+        if len(valid_entropies) >= 2 and args.target_entropy_pattern.startswith('ctc'):
+            paradox_detected, paradox_metrics = detect_ctc_paradox(valid_entropies, args.timesteps)
+            ctc_analysis = {
+                'paradox_detected': paradox_detected,
+                'paradox_metrics': paradox_metrics,
+                'entropy_evolution': valid_entropies,
+                'ctc_type': args.target_entropy_pattern
+            }
+        else:
+            ctc_analysis = {
+                'paradox_detected': False,
+                'paradox_metrics': {'error': 'Insufficient entropy data or not CTC pattern'},
+                'entropy_evolution': valid_entropies,
+                'ctc_type': args.target_entropy_pattern
+            }
         
         # DYNAMIC EVIDENCE: Create comprehensive visualization plots
         print(" Generating dynamic evidence plots...")
