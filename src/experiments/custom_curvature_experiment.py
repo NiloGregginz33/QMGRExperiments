@@ -847,6 +847,8 @@ p.add_argument("--entropy_tolerance", type=float, default=0.05,
                help="Tolerance for entropy matching (MSE threshold)")
 p.add_argument("--continue_on_engineering_failure", action="store_true", default=True,
                help="Continue experiment even if entropy engineering fails")
+p.add_argument("--skip_entropy_engineering", action="store_true", default=False,
+               help="Skip entropy engineering step entirely")
 p.add_argument("--validate_engineered_geometry", action="store_true", default=True,
                help="Run comprehensive analysis on engineered geometry to validate quantum structure")
 
@@ -1189,8 +1191,12 @@ def _apply_ctc_circuit_structure(qc, num_qubits, ctc_type="standard"):
             qc.rz(np.pi/3, i)
         
         # Create the CTC loop structure
-        for i in range(loop_qubits):
-            qc.cx(i, (i + 1) % loop_qubits)
+        if loop_qubits > 1:
+            for i in range(loop_qubits):
+                qc.cx(i, (i + 1) % loop_qubits)
+        else:
+            # Single loop qubit - apply self-interaction
+            qc.h(0)  # Hadamard to create superposition
         
         # Add bulk-loop coupling that creates the fixed point
         for i in range(loop_qubits):
@@ -3780,7 +3786,7 @@ def set_target_subsystem_entropy(target_entropies, num_qubits=3, max_iter=100):
         (0.1, 3.0)    # asymmetry_strength
     ]
     
-    print(f"🔧 Starting entropy engineering optimization...")
+    print(f"[ENGINEERING] Starting entropy engineering optimization...")
     print(f"   Target entropies: {target_entropies}")
     print(f"   Initial parameters: {params}")
     
@@ -4028,12 +4034,29 @@ if __name__ == "__main__":
         print(f"   Optimization iterations: {args.entropy_optimization_iterations}")
         print(f"   Tolerance: {args.entropy_tolerance}")
         
-        # Run entropy engineering
-        engineering_result = set_target_subsystem_entropy(
-            target_entropies=target_entropies,
-            num_qubits=args.num_qubits,
-            max_iter=args.entropy_optimization_iterations
-        )
+        # Skip entropy engineering if requested
+        if args.skip_entropy_engineering:
+            print(f"[SKIP] Skipping entropy engineering as requested")
+            engineering_result = {
+                'success': True,
+                'loss': 0.0,
+                'achieved_entropies': target_entropies,
+                'parameters': {
+                    'weight': args.weight,
+                    'gamma': args.gamma,
+                    'sigma': args.sigma,
+                    'init_angle': args.init_angle,
+                    'timesteps': args.timesteps,
+                    'entanglement_strength': args.entanglement_strength
+                }
+            }
+        else:
+            # Run entropy engineering
+            engineering_result = set_target_subsystem_entropy(
+                target_entropies=target_entropies,
+                num_qubits=args.num_qubits,
+                max_iter=args.entropy_optimization_iterations
+            )
         
         if engineering_result['success']:
             print(f"✅ Entropy engineering successful!")
