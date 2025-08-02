@@ -1,0 +1,58 @@
+SYSTEMATIC SEARCH FOR BEST INITIAL CONDITIONS REPORT
+====================================================
+Generated: 2025-08-01 21:13:53
+
+EXECUTIVE SUMMARY
+==================
+Total experiments: 18
+Success rate: 100.00%
+Non-trivial solutions: 16 (88.89%)
+Trivial solutions: 2 (11.11%)
+Average interesting score: 0.111-0.000j
+Average non-triviality score: 0.000
+CONCLUSION: EXCELLENT - Found many non-trivial fixed points
+
+DETAILED ANALYSIS BY STRATEGY
+============================
+
+BELL_LIKE:
+  Success rate: 100.00%
+  Non-trivial rate: 75.00%
+  Average interesting score: 0.094-0.000j
+  Average non-triviality score: 0.000
+
+RANDOM_PURE:
+  Success rate: 100.00%
+  Non-trivial rate: 100.00%
+  Average interesting score: 0.125+0.000j
+  Average non-triviality score: 0.000
+
+COHERENT_SUPERPOSITION:
+  Success rate: 100.00%
+  Non-trivial rate: 50.00%
+  Average interesting score: 0.063-0.000j
+  Average non-triviality score: 0.000
+
+THERMAL:
+  Success rate: 100.00%
+  Non-trivial rate: 100.00%
+  Average interesting score: 0.125-0.000j
+  Average non-triviality score: 0.000
+
+RANDOM_MIXED:
+  Success rate: 100.00%
+  Non-trivial rate: 100.00%
+  Average interesting score: 0.125+0.000j
+  Average non-triviality score: 0.000
+
+BEST INITIAL CONDITIONS FOUND
+=============================
+No good conditions found.
+
+[ANALYSIS] Visualization: systematic_search_results_20250801_211352.png
+
+RECOMMENDATIONS
+===============
+No specific recommendations - need to try different approaches.
+
+Overall, the systematic search provides clear guidance for future experiments!

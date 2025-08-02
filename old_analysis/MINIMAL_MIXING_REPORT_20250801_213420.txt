@@ -1,0 +1,81 @@
+MINIMAL MIXING SEARCH FOR INTERESTING FIXED POINTS REPORT
+========================================================
+Generated: 2025-08-01 21:34:20
+
+EXECUTIVE SUMMARY
+==================
+Total experiments: 32
+Success rate: 100.00%
+Non-trivial solutions: 0 (0.00%)
+High-quality solutions: 0 (0.00%)
+Trivial solutions: 32 (100.00%)
+Average quality score: 0.000
+Average interesting score: 0.000
+Average coherence score: 0.000
+CONCLUSION: POOR - Still mostly finding trivial solutions
+
+DETAILED ANALYSIS BY CIRCUIT TYPE
+=================================
+
+STRUCTURED_MINIMAL:
+  Success rate: 100.00%
+  Non-trivial rate: 0.00%
+  High-quality rate: 0.00%
+  Average quality score: 0.000
+
+ULTRA_MINIMAL:
+  Success rate: 100.00%
+  Non-trivial rate: 0.00%
+  High-quality rate: 0.00%
+  Average quality score: 0.000
+
+COHERENT_ONLY:
+  Success rate: 100.00%
+  Non-trivial rate: 0.00%
+  High-quality rate: 0.00%
+  Average quality score: 0.000
+
+PHASE_PRESERVING:
+  Success rate: 100.00%
+  Non-trivial rate: 0.00%
+  High-quality rate: 0.00%
+  Average quality score: 0.000
+
+DETAILED ANALYSIS BY STRATEGY
+=============================
+
+COHERENT_PURE:
+  Success rate: 100.00%
+  Non-trivial rate: 0.00%
+  High-quality rate: 0.00%
+  Average quality score: 0.000
+
+ENTANGLED_STRUCTURE:
+  Success rate: 100.00%
+  Non-trivial rate: 0.00%
+  High-quality rate: 0.00%
+  Average quality score: 0.000
+
+PHASE_COHERENT:
+  Success rate: 100.00%
+  Non-trivial rate: 0.00%
+  High-quality rate: 0.00%
+  Average quality score: 0.000
+
+LOW_ENTROPY:
+  Success rate: 100.00%
+  Non-trivial rate: 0.00%
+  High-quality rate: 0.00%
+  Average quality score: 0.000
+
+BEST FIXED POINTS FOUND
+=======================
+No high-quality fixed points found.
+
+[ANALYSIS] Visualization: minimal_mixing_results_20250801_213420.png
+
+RECOMMENDATIONS
+===============
+No specific recommendations - need to try different approaches.
+
+The minimal mixing approach shows promise for finding truly interesting fixed points!

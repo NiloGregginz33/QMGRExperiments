@@ -1,0 +1,108 @@
+LORENTZIAN + EXCITE FLAG SEARCH RESULTS
+==================================================
+
+Search Criteria:
+- Must have 'lorentzian' flag
+- Must have 'excite' flag
+- Must have 10+ qubits
+
+Total Matching Instances: 14
+
+Matching Instances:
+------------------------------
+1. instance_20250726_153536
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250726_153536
+   Qubits: 11
+   Files with flags:
+     - results_n11_geomS_curv20_ibm_brisbane_KTNW95.json
+     - results_n11_geomS_curv20_ibm_brisbane_NEGC3D.json
+
+2. instance_20250730_223752
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250730_223752
+   Qubits: 10
+   Files with flags:
+     - results_n10_geomS_curv10_ibm_brisbane_6EM17G.json
+
+3. instance_20250731_190955
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250731_190955
+   Qubits: 12
+   Files with flags:
+     - results_n12_geomS_curv12_ibm_brisbane_6BK68O.json
+     - results_n12_geomS_curv12_ibm_brisbane_MWBYQN.json
+
+4. instance_20250731_194831
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250731_194831
+   Qubits: 12
+   Files with flags:
+     - results_n12_geomH_curv10_ibm_brisbane_BAC21T.json
+     - results_n12_geomH_curv10_ibm_brisbane_JY0SLH.json
+
+5. instance_20250731_235102
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250731_235102
+   Qubits: 10
+   Files with flags:
+     - results_n10_geomS_curv12_ibm_brisbane_O3YT4M.json
+
+6. instance_20250731_235158
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250731_235158
+   Qubits: 10
+   Files with flags:
+     - results_n10_geomS_curv12_ibm_brisbane_JY86I0.json
+
+7. instance_20250731_235843
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250731_235843
+   Qubits: 10
+   Files with flags:
+     - results_n10_geomS_curv12_ibm_brisbane_7KLFY0.json
+     - results_n10_geomS_curv12_ibm_brisbane_HA540D.json
+
+8. instance_20250801_001046
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250801_001046
+   Qubits: 10
+   Files with flags:
+     - results_n10_geomS_curv12_ibm_brisbane_DKAHIC.json
+
+9. instance_20250801_002253
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250801_002253
+   Qubits: 10
+   Files with flags:
+     - results_n10_geomS_curv12_ibm_brisbane_U0TCNI.json
+
+10. instance_20250801_003710
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250801_003710
+   Qubits: 10
+   Files with flags:
+     - results_n10_geomS_curv12_ibm_brisbane_VMLTXX.json
+
+11. instance_20250801_004535
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250801_004535
+   Qubits: 10
+   Files with flags:
+     - results_n10_geomS_curv12_ibm_torino_XB7N6Q.json
+
+12. instance_20250801_004810
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250801_004810
+   Qubits: 10
+   Files with flags:
+     - results_n10_geomS_curv12_ibm_brisbane_H22RSA.json
+     - results_n10_geomS_curv12_ibm_brisbane_PYF6IQ.json
+
+13. instance_20250801_075511
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250801_075511
+   Qubits: 10
+   Files with flags:
+     - results_n10_geomS_curv12_ibm_brisbane_9R74W1.json
+     - results_n10_geomS_curv12_ibm_brisbane_N53W6S.json
+
+14. instance_20250801_151659
+   Path: experiment_logs\custom_curvature_experiment\older_results\instance_20250801_151659
+   Qubits: 10
+   Files with flags:
+     - results_n10_geomS_curv12_ibm_brisbane_KCZFCB.json
+     - results_n10_geomS_curv12_ibm_brisbane_YN20MK.json
+
+Qubit Distribution:
+--------------------
+10 qubits: 11 instances
+11 qubits: 1 instances
+12 qubits: 2 instances

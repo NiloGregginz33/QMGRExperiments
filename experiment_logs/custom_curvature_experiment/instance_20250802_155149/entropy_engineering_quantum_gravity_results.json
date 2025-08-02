@@ -1,0 +1,53 @@
+{
+  "success": true,
+  "target_entropies": [
+    0.1,
+    0.4,
+    0.9
+  ],
+  "achieved_entropies": [
+    0.04162020919266438,
+    0.04162020919266504,
+    6.406853007629834e-16
+  ],
+  "parameters": {
+    "entanglement_strength": 0.6849249049823103,
+    "weight": 0.6706119151388275,
+    "gamma": 0.20008872411115147,
+    "sigma": 0.08875935599076287,
+    "init_angle": 0.5122585787575684,
+    "timesteps": 1,
+    "asymmetry_strength": 0.31557353560963536
+  },
+  "loss": 0.34411449649993486,
+  "iterations": 5,
+  "optimization_result": {
+    "fun": 0.34411449649993486,
+    "jac": [
+      -0.014753187486369931,
+      -0.10049477865999923,
+      0.004001776689907243,
+      0.0017751911061587762,
+      0.010245126917531402,
+      0.025983759746314925,
+      0.006311473569322895
+    ],
+    "nfev": 56,
+    "njev": 7,
+    "nit": 5,
+    "status": 1,
+    "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+    "x": [
+      0.6849249049823103,
+      0.6706119151388275,
+      0.20008872411115147,
+      0.08875935599076287,
+      0.5122585787575684,
+      1.2991877490679358,
+      0.31557353560963536
+    ],
+    "success": false,
+    "hess_inv": "<7x7 LbfgsInvHessProduct with dtype=float64>"
+  },
+  "warning": "Used fallback parameters due to: STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+}

@@ -1,0 +1,2138 @@
+{
+  "experiment_info": {
+    "num_qubits": 6,
+    "num_trials": 40,
+    "timestamp": "2025-08-01T21:34:19.709353",
+    "experiment_type": "minimal_mixing_fixed_points"
+  },
+  "minimal_results": [
+    {
+      "trial": 1,
+      "circuit_type": "ultra_minimal",
+      "strategy": "coherent_pure",
+      "params": {
+        "alpha": 0.8,
+        "beta": 0.4,
+        "gamma": 0.2,
+        "seed": 9322
+      },
+      "circuit_info": {
+        "type": "ultra_minimal",
+        "loop_qubits": 1,
+        "bulk_qubits": 5,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999967,
+        "fidelity_history": [
+          0.49999999999999944,
+          0.9999999999999967
+        ],
+        "entropies": [
+          1.0000000000000004,
+          1.0000000000000013
+        ],
+        "purities": [
+          "(0.4999999999999988-7.169692715209932e-20j)",
+          "(0.49999999999999745-5.115546505094376e-18j)"
+        ],
+        "coherence_scores": [
+          4.8234957439362904e-18,
+          5.725242237146426e-18
+        ],
+        "initial_strategy": "coherent_pure",
+        "initial_params": {
+          "alpha": 0.8,
+          "beta": 0.4,
+          "gamma": 0.2,
+          "seed": 9322
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.0000000000000004,
+        "purity": "(0.4999999999999988-7.169692715209932e-20j)",
+        "eigenvalues": "[0.5-1.45706062e-20j 0.5+5.55111512e-17j]",
+        "max_eigenvalue": 0.49999999999999944,
+        "min_eigenvalue": 0.4999999999999992,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 2,
+      "circuit_type": "ultra_minimal",
+      "strategy": "coherent_pure",
+      "params": {
+        "alpha": 0.9,
+        "beta": 0.3,
+        "gamma": 0.1,
+        "seed": 4092
+      },
+      "circuit_info": {
+        "type": "ultra_minimal",
+        "loop_qubits": 1,
+        "bulk_qubits": 5,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999967,
+        "fidelity_history": [
+          0.49999999999999944,
+          0.9999999999999967
+        ],
+        "entropies": [
+          1.0000000000000004,
+          1.0000000000000013
+        ],
+        "purities": [
+          "(0.4999999999999988-7.169692715209932e-20j)",
+          "(0.49999999999999745-5.115546505094376e-18j)"
+        ],
+        "coherence_scores": [
+          4.8234957439362904e-18,
+          5.725242237146426e-18
+        ],
+        "initial_strategy": "coherent_pure",
+        "initial_params": {
+          "alpha": 0.9,
+          "beta": 0.3,
+          "gamma": 0.1,
+          "seed": 4092
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.0000000000000004,
+        "purity": "(0.4999999999999988-7.169692715209932e-20j)",
+        "eigenvalues": "[0.5-1.45706062e-20j 0.5+5.55111512e-17j]",
+        "max_eigenvalue": 0.49999999999999944,
+        "min_eigenvalue": 0.4999999999999992,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 3,
+      "circuit_type": "ultra_minimal",
+      "strategy": "low_entropy",
+      "params": {
+        "target_entropy": 0.3,
+        "seed": 7038
+      },
+      "circuit_info": {
+        "type": "ultra_minimal",
+        "loop_qubits": 1,
+        "bulk_qubits": 5,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999967,
+        "fidelity_history": [
+          0.8570714214271419,
+          0.9999999999999967
+        ],
+        "entropies": [
+          1.0000000000000004,
+          1.0000000000000013
+        ],
+        "purities": [
+          "(0.49999999999999883+8.408296638827626e-18j)",
+          "(0.49999999999999745+2.0922875192284553e-18j)"
+        ],
+        "coherence_scores": [
+          1.735497396536944e-17,
+          7.269241240104612e-18
+        ],
+        "initial_strategy": "low_entropy",
+        "initial_params": {
+          "target_entropy": 0.3,
+          "seed": 7038
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.0000000000000004,
+        "purity": "(0.49999999999999883+8.408296638827626e-18j)",
+        "eigenvalues": "[0.5+2.34744645e-18j 0.5+5.55111512e-17j]",
+        "max_eigenvalue": 0.49999999999999944,
+        "min_eigenvalue": 0.4999999999999993,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 4,
+      "circuit_type": "ultra_minimal",
+      "strategy": "low_entropy",
+      "params": {
+        "target_entropy": 0.7,
+        "seed": 5640
+      },
+      "circuit_info": {
+        "type": "ultra_minimal",
+        "loop_qubits": 1,
+        "bulk_qubits": 5,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999956,
+        "fidelity_history": [
+          0.9769696007084714,
+          0.9999999999999956
+        ],
+        "entropies": [
+          1.0000000000000009,
+          1.0000000000000013
+        ],
+        "purities": [
+          "(0.4999999999999982-1.7289324903326724e-17j)",
+          "(0.4999999999999969-1.4604367361670765e-17j)"
+        ],
+        "coherence_scores": [
+          7.894942506125206e-18,
+          6.971104397631614e-18
+        ],
+        "initial_strategy": "low_entropy",
+        "initial_params": {
+          "target_entropy": 0.7,
+          "seed": 5640
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.0000000000000009,
+        "purity": "(0.4999999999999982-1.7289324903326724e-17j)",
+        "eigenvalues": "[0.5-1.70513331e-18j 0.5+5.55111512e-17j]",
+        "max_eigenvalue": 0.4999999999999992,
+        "min_eigenvalue": 0.4999999999999989,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 5,
+      "circuit_type": "ultra_minimal",
+      "strategy": "phase_coherent",
+      "params": {
+        "structure_type": "gaussian",
+        "seed": 3192
+      },
+      "circuit_info": {
+        "type": "ultra_minimal",
+        "loop_qubits": 1,
+        "bulk_qubits": 5,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999944,
+        "fidelity_history": [
+          0.49999999999999867,
+          0.9999999999999944
+        ],
+        "entropies": [
+          1.0000000000000009,
+          1.0000000000000013
+        ],
+        "purities": [
+          "(0.499999999999998+2.541116343457397e-17j)",
+          "(0.4999999999999966+1.3186480185638493e-17j)"
+        ],
+        "coherence_scores": [
+          8.75687284132579e-18,
+          2.81334878085983e-18
+        ],
+        "initial_strategy": "phase_coherent",
+        "initial_params": {
+          "structure_type": "gaussian",
+          "seed": 3192
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.0000000000000009,
+        "purity": "(0.499999999999998+2.541116343457397e-17j)",
+        "eigenvalues": "[0.5+1.38963499e-17j 0.5+0.00000000e+00j]",
+        "max_eigenvalue": 0.4999999999999991,
+        "min_eigenvalue": 0.499999999999999,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 6,
+      "circuit_type": "ultra_minimal",
+      "strategy": "phase_coherent",
+      "params": {
+        "structure_type": "exponential",
+        "seed": 7860
+      },
+      "circuit_info": {
+        "type": "ultra_minimal",
+        "loop_qubits": 1,
+        "bulk_qubits": 5,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999951,
+        "fidelity_history": [
+          0.5000000094450748,
+          0.9999999999999951
+        ],
+        "entropies": [
+          1.0000000000000009,
+          1.0000000000000013
+        ],
+        "purities": [
+          "(0.49999999999999833-5.650292482447065e-18j)",
+          "(0.49999999999999706-3.323168978737091e-18j)"
+        ],
+        "coherence_scores": [
+          6.266773120213198e-18,
+          2.5045386222319975e-18
+        ],
+        "initial_strategy": "phase_coherent",
+        "initial_params": {
+          "structure_type": "exponential",
+          "seed": 7860
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.0000000000000009,
+        "purity": "(0.49999999999999833-5.650292482447065e-18j)",
+        "eigenvalues": "[0.5+1.42539058e-17j 0.5-1.90819582e-17j]",
+        "max_eigenvalue": 0.4999999999999992,
+        "min_eigenvalue": 0.499999999999999,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 7,
+      "circuit_type": "ultra_minimal",
+      "strategy": "entangled_structure",
+      "params": {
+        "alpha": 0.9,
+        "small_contrib": 0.05,
+        "seed": 6742
+      },
+      "circuit_info": {
+        "type": "ultra_minimal",
+        "loop_qubits": 1,
+        "bulk_qubits": 5,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999967,
+        "fidelity_history": [
+          0.49999999999999944,
+          0.9999999999999967
+        ],
+        "entropies": [
+          1.0000000000000004,
+          1.0000000000000013
+        ],
+        "purities": [
+          "(0.4999999999999988-7.169692715209932e-20j)",
+          "(0.49999999999999745-5.115546505094376e-18j)"
+        ],
+        "coherence_scores": [
+          4.8234957439362904e-18,
+          5.725242237146426e-18
+        ],
+        "initial_strategy": "entangled_structure",
+        "initial_params": {
+          "alpha": 0.9,
+          "small_contrib": 0.05,
+          "seed": 6742
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.0000000000000004,
+        "purity": "(0.4999999999999988-7.169692715209932e-20j)",
+        "eigenvalues": "[0.5-1.45706062e-20j 0.5+5.55111512e-17j]",
+        "max_eigenvalue": 0.49999999999999944,
+        "min_eigenvalue": 0.4999999999999992,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 8,
+      "circuit_type": "ultra_minimal",
+      "strategy": "entangled_structure",
+      "params": {
+        "alpha": 0.8,
+        "small_contrib": 0.1,
+        "seed": 8743
+      },
+      "circuit_info": {
+        "type": "ultra_minimal",
+        "loop_qubits": 1,
+        "bulk_qubits": 5,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999967,
+        "fidelity_history": [
+          0.49999999999999944,
+          0.9999999999999967
+        ],
+        "entropies": [
+          1.0000000000000004,
+          1.0000000000000013
+        ],
+        "purities": [
+          "(0.4999999999999988-7.169692715209932e-20j)",
+          "(0.49999999999999745-5.115546505094376e-18j)"
+        ],
+        "coherence_scores": [
+          4.8234957439362904e-18,
+          5.725242237146426e-18
+        ],
+        "initial_strategy": "entangled_structure",
+        "initial_params": {
+          "alpha": 0.8,
+          "small_contrib": 0.1,
+          "seed": 8743
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.0000000000000004,
+        "purity": "(0.4999999999999988-7.169692715209932e-20j)",
+        "eigenvalues": "[0.5-1.45706062e-20j 0.5+5.55111512e-17j]",
+        "max_eigenvalue": 0.49999999999999944,
+        "min_eigenvalue": 0.4999999999999992,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 9,
+      "circuit_type": "phase_preserving",
+      "strategy": "coherent_pure",
+      "params": {
+        "alpha": 0.8,
+        "beta": 0.4,
+        "gamma": 0.2,
+        "seed": 4414
+      },
+      "circuit_info": {
+        "type": "phase_preserving",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999947,
+        "fidelity_history": [
+          0.25000000366442,
+          0.9999999999999947
+        ],
+        "entropies": [
+          1.9999999999999984,
+          1.9999999999999982
+        ],
+        "purities": [
+          "(0.24999999999999886-1.7350634887820164e-18j)",
+          "(0.2499999999999986-7.915488403704347e-19j)"
+        ],
+        "coherence_scores": [
+          4.9833597165858365e-17,
+          2.22089513837504e-17
+        ],
+        "initial_strategy": "coherent_pure",
+        "initial_params": {
+          "alpha": 0.8,
+          "beta": 0.4,
+          "gamma": 0.2,
+          "seed": 4414
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999984,
+        "purity": "(0.24999999999999886-1.7350634887820164e-18j)",
+        "eigenvalues": "[0.25+1.82613015e-19j 0.25-4.16333634e-17j 0.25+1.38777878e-17j\n 0.25+0.00000000e+00j]",
+        "max_eigenvalue": 0.24999999999999947,
+        "min_eigenvalue": 0.2499999999999992,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 10,
+      "circuit_type": "phase_preserving",
+      "strategy": "coherent_pure",
+      "params": {
+        "alpha": 0.9,
+        "beta": 0.3,
+        "gamma": 0.1,
+        "seed": 6825
+      },
+      "circuit_info": {
+        "type": "phase_preserving",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.999999999999996,
+        "fidelity_history": [
+          0.2500000064163069,
+          0.999999999999996
+        ],
+        "entropies": [
+          1.9999999999999991,
+          1.999999999999999
+        ],
+        "purities": [
+          "(0.2499999999999991+8.526012146796321e-19j)",
+          "(0.24999999999999878-4.7835325836923684e-18j)"
+        ],
+        "coherence_scores": [
+          4.5128037999350994e-17,
+          2.5404463878333597e-17
+        ],
+        "initial_strategy": "coherent_pure",
+        "initial_params": {
+          "alpha": 0.9,
+          "beta": 0.3,
+          "gamma": 0.1,
+          "seed": 6825
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999991,
+        "purity": "(0.2499999999999991+8.526012146796321e-19j)",
+        "eigenvalues": "[0.25-4.16080284e-18j 0.25+2.77555756e-17j 0.25+0.00000000e+00j\n 0.25+1.73472348e-17j]",
+        "max_eigenvalue": 0.2499999999999996,
+        "min_eigenvalue": 0.24999999999999956,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 11,
+      "circuit_type": "phase_preserving",
+      "strategy": "low_entropy",
+      "params": {
+        "target_entropy": 0.3,
+        "seed": 6014
+      },
+      "circuit_info": {
+        "type": "phase_preserving",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999958,
+        "fidelity_history": [
+          0.5156035948861823,
+          0.9999999999999958
+        ],
+        "entropies": [
+          1.9999999999999991,
+          1.9999999999999984
+        ],
+        "purities": [
+          "(0.24999999999999903+2.733332494754442e-19j)",
+          "(0.24999999999999872-2.421705514884388e-18j)"
+        ],
+        "coherence_scores": [
+          4.500493060051593e-17,
+          1.8873925475500567e-17
+        ],
+        "initial_strategy": "low_entropy",
+        "initial_params": {
+          "target_entropy": 0.3,
+          "seed": 6014
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999991,
+        "purity": "(0.24999999999999903+2.733332494754442e-19j)",
+        "eigenvalues": "[0.25+3.48631303e-20j 0.25+0.00000000e+00j 0.25+1.64194432e-18j\n 0.25+6.93889390e-18j]",
+        "max_eigenvalue": 0.24999999999999964,
+        "min_eigenvalue": 0.24999999999999933,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 12,
+      "circuit_type": "phase_preserving",
+      "strategy": "low_entropy",
+      "params": {
+        "target_entropy": 0.7,
+        "seed": 1038
+      },
+      "circuit_info": {
+        "type": "phase_preserving",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999938,
+        "fidelity_history": [
+          0.6665611645272028,
+          0.9999999999999938
+        ],
+        "entropies": [
+          1.9999999999999987,
+          1.9999999999999982
+        ],
+        "purities": [
+          "(0.24999999999999875+2.2864152672647346e-18j)",
+          "(0.24999999999999845+2.736077663509241e-18j)"
+        ],
+        "coherence_scores": [
+          3.029444209009044e-17,
+          1.2971895864853733e-17
+        ],
+        "initial_strategy": "low_entropy",
+        "initial_params": {
+          "target_entropy": 0.7,
+          "seed": 1038
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999987,
+        "purity": "(0.24999999999999875+2.2864152672647346e-18j)",
+        "eigenvalues": "[0.25+5.22466072e-18j 0.25+2.77555756e-17j 0.25-6.32271711e-18j\n 0.25+0.00000000e+00j]",
+        "max_eigenvalue": 0.24999999999999944,
+        "min_eigenvalue": 0.24999999999999933,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 13,
+      "circuit_type": "phase_preserving",
+      "strategy": "phase_coherent",
+      "params": {
+        "structure_type": "gaussian",
+        "seed": 8246
+      },
+      "circuit_info": {
+        "type": "phase_preserving",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999958,
+        "fidelity_history": [
+          0.2500000024536366,
+          0.9999999999999958
+        ],
+        "entropies": [
+          1.9999999999999991,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.2499999999999991-5.486659593514449e-18j)",
+          "(0.24999999999999878-9.240323235155095e-18j)"
+        ],
+        "coherence_scores": [
+          3.189594418173625e-17,
+          2.844497313014091e-17
+        ],
+        "initial_strategy": "phase_coherent",
+        "initial_params": {
+          "structure_type": "gaussian",
+          "seed": 8246
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999991,
+        "purity": "(0.2499999999999991-5.486659593514449e-18j)",
+        "eigenvalues": "[0.25+9.83173684e-18j 0.25-1.38777878e-17j 0.25+0.00000000e+00j\n 0.25-2.77555756e-17j]",
+        "max_eigenvalue": 0.24999999999999958,
+        "min_eigenvalue": 0.2499999999999995,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 14,
+      "circuit_type": "phase_preserving",
+      "strategy": "phase_coherent",
+      "params": {
+        "structure_type": "exponential",
+        "seed": 9421
+      },
+      "circuit_info": {
+        "type": "phase_preserving",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999956,
+        "fidelity_history": [
+          0.250000007915892,
+          0.9999999999999956
+        ],
+        "entropies": [
+          1.999999999999999,
+          1.999999999999999
+        ],
+        "purities": [
+          "(0.249999999999999-4.541142599469149e-18j)",
+          "(0.24999999999999872-9.440895914393338e-18j)"
+        ],
+        "coherence_scores": [
+          3.306835552935742e-17,
+          2.5337091460701505e-17
+        ],
+        "initial_strategy": "phase_coherent",
+        "initial_params": {
+          "structure_type": "exponential",
+          "seed": 9421
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.999999999999999,
+        "purity": "(0.249999999999999-4.541142599469149e-18j)",
+        "eigenvalues": "[0.25+8.92973652e-18j 0.25+2.77555756e-17j 0.25+1.38777878e-17j\n 0.25+0.00000000e+00j]",
+        "max_eigenvalue": 0.2499999999999996,
+        "min_eigenvalue": 0.24999999999999944,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 15,
+      "circuit_type": "phase_preserving",
+      "strategy": "entangled_structure",
+      "params": {
+        "alpha": 0.9,
+        "small_contrib": 0.05,
+        "seed": 4702
+      },
+      "circuit_info": {
+        "type": "phase_preserving",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999953,
+        "fidelity_history": [
+          0.2500000011700575,
+          0.9999999999999953
+        ],
+        "entropies": [
+          1.9999999999999987,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.24999999999999903-1.1998022293127841e-17j)",
+          "(0.24999999999999872-1.3814548336139007e-17j)"
+        ],
+        "coherence_scores": [
+          3.4191580144105745e-17,
+          2.217748077620505e-17
+        ],
+        "initial_strategy": "entangled_structure",
+        "initial_params": {
+          "alpha": 0.9,
+          "small_contrib": 0.05,
+          "seed": 4702
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999987,
+        "purity": "(0.24999999999999903-1.1998022293127841e-17j)",
+        "eigenvalues": "[0.25-7.14339994e-18j 0.25+0.00000000e+00j 0.25-4.62223187e-33j\n 0.25+6.54816181e-33j]",
+        "max_eigenvalue": 0.24999999999999958,
+        "min_eigenvalue": 0.2499999999999994,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 16,
+      "circuit_type": "phase_preserving",
+      "strategy": "entangled_structure",
+      "params": {
+        "alpha": 0.8,
+        "small_contrib": 0.1,
+        "seed": 7728
+      },
+      "circuit_info": {
+        "type": "phase_preserving",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999949,
+        "fidelity_history": [
+          0.2500000037972082,
+          0.9999999999999949
+        ],
+        "entropies": [
+          1.9999999999999987,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.2499999999999989+3.0822711146623913e-18j)",
+          "(0.2499999999999986+4.209620432150795e-18j)"
+        ],
+        "coherence_scores": [
+          2.8118899973160945e-17,
+          2.2132636774221653e-17
+        ],
+        "initial_strategy": "entangled_structure",
+        "initial_params": {
+          "alpha": 0.8,
+          "small_contrib": 0.1,
+          "seed": 7728
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999987,
+        "purity": "(0.2499999999999989+3.0822711146623913e-18j)",
+        "eigenvalues": "[0.25+9.05547481e-20j 0.25-1.38777878e-17j 0.25-4.16333634e-17j\n 0.25+1.38777878e-17j]",
+        "max_eigenvalue": 0.2499999999999996,
+        "min_eigenvalue": 0.2499999999999994,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 17,
+      "circuit_type": "coherent_only",
+      "strategy": "coherent_pure",
+      "params": {
+        "alpha": 0.8,
+        "beta": 0.4,
+        "gamma": 0.2,
+        "seed": 1233
+      },
+      "circuit_info": {
+        "type": "coherent_only",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999958,
+        "fidelity_history": [
+          0.2500000036644202,
+          0.9999999999999958
+        ],
+        "entropies": [
+          1.999999999999999,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.249999999999999-6.736045036375672e-19j)",
+          "(0.24999999999999872+1.7477101855835424e-18j)"
+        ],
+        "coherence_scores": [
+          3.514862908394068e-17,
+          1.8351510793786732e-17
+        ],
+        "initial_strategy": "coherent_pure",
+        "initial_params": {
+          "alpha": 0.8,
+          "beta": 0.4,
+          "gamma": 0.2,
+          "seed": 1233
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.999999999999999,
+        "purity": "(0.249999999999999-6.736045036375672e-19j)",
+        "eigenvalues": "[0.25+1.15977266e-19j 0.25+2.77555756e-17j 0.25-1.61591112e-17j\n 0.25+0.00000000e+00j]",
+        "max_eigenvalue": 0.24999999999999958,
+        "min_eigenvalue": 0.24999999999999942,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 18,
+      "circuit_type": "coherent_only",
+      "strategy": "coherent_pure",
+      "params": {
+        "alpha": 0.9,
+        "beta": 0.3,
+        "gamma": 0.1,
+        "seed": 7563
+      },
+      "circuit_info": {
+        "type": "coherent_only",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.999999999999996,
+        "fidelity_history": [
+          0.25000000641630676,
+          0.999999999999996
+        ],
+        "entropies": [
+          1.9999999999999991,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.24999999999999925+1.111396636356748e-18j)",
+          "(0.24999999999999892+4.82320074638378e-18j)"
+        ],
+        "coherence_scores": [
+          4.8784832061768766e-17,
+          1.8106027995320678e-17
+        ],
+        "initial_strategy": "coherent_pure",
+        "initial_params": {
+          "alpha": 0.9,
+          "beta": 0.3,
+          "gamma": 0.1,
+          "seed": 7563
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999991,
+        "purity": "(0.24999999999999925+1.111396636356748e-18j)",
+        "eigenvalues": "[0.25+3.80810294e-18j 0.25+3.46944695e-18j 0.25+1.38777878e-17j\n 0.25+1.56125113e-17j]",
+        "max_eigenvalue": 0.24999999999999975,
+        "min_eigenvalue": 0.24999999999999956,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 19,
+      "circuit_type": "coherent_only",
+      "strategy": "low_entropy",
+      "params": {
+        "target_entropy": 0.3,
+        "seed": 9706
+      },
+      "circuit_info": {
+        "type": "coherent_only",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999967,
+        "fidelity_history": [
+          0.5156035948861826,
+          0.9999999999999967
+        ],
+        "entropies": [
+          1.9999999999999993,
+          1.999999999999999
+        ],
+        "purities": [
+          "(0.24999999999999933+1.5516259869675717e-18j)",
+          "(0.24999999999999895-1.6759443310031718e-18j)"
+        ],
+        "coherence_scores": [
+          2.9717357071485573e-17,
+          1.4452288159549553e-17
+        ],
+        "initial_strategy": "low_entropy",
+        "initial_params": {
+          "target_entropy": 0.3,
+          "seed": 9706
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999993,
+        "purity": "(0.24999999999999933+1.5516259869675717e-18j)",
+        "eigenvalues": "[0.25+2.65191987e-18j 0.25-2.77555756e-17j 0.25-1.38777878e-17j\n 0.25+1.62630326e-19j]",
+        "max_eigenvalue": 0.24999999999999978,
+        "min_eigenvalue": 0.24999999999999958,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 20,
+      "circuit_type": "coherent_only",
+      "strategy": "low_entropy",
+      "params": {
+        "target_entropy": 0.7,
+        "seed": 2227
+      },
+      "circuit_info": {
+        "type": "coherent_only",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999951,
+        "fidelity_history": [
+          0.6665611645272033,
+          0.9999999999999951
+        ],
+        "entropies": [
+          1.999999999999999,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.249999999999999-1.3117316556035637e-18j)",
+          "(0.24999999999999872+2.377281222524258e-18j)"
+        ],
+        "coherence_scores": [
+          2.898088268252794e-17,
+          1.6787690721001867e-17
+        ],
+        "initial_strategy": "low_entropy",
+        "initial_params": {
+          "target_entropy": 0.7,
+          "seed": 2227
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.999999999999999,
+        "purity": "(0.249999999999999-1.3117316556035637e-18j)",
+        "eigenvalues": "[0.25-1.73085687e-18j 0.25-1.21430643e-17j 0.25+0.00000000e+00j\n 0.25+0.00000000e+00j]",
+        "max_eigenvalue": 0.2499999999999996,
+        "min_eigenvalue": 0.24999999999999947,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 21,
+      "circuit_type": "coherent_only",
+      "strategy": "phase_coherent",
+      "params": {
+        "structure_type": "gaussian",
+        "seed": 353
+      },
+      "circuit_info": {
+        "type": "coherent_only",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999958,
+        "fidelity_history": [
+          0.25000000245363674,
+          0.9999999999999958
+        ],
+        "entropies": [
+          1.9999999999999991,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.24999999999999922+2.3333371942104514e-18j)",
+          "(0.2499999999999989+6.278957625528057e-18j)"
+        ],
+        "coherence_scores": [
+          2.997066697616497e-17,
+          2.0510038607443148e-17
+        ],
+        "initial_strategy": "phase_coherent",
+        "initial_params": {
+          "structure_type": "gaussian",
+          "seed": 353
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999991,
+        "purity": "(0.24999999999999922+2.3333371942104514e-18j)",
+        "eigenvalues": "[0.25+9.51243859e-18j 0.25+0.00000000e+00j 0.25+0.00000000e+00j\n 0.25-4.16333634e-17j]",
+        "max_eigenvalue": 0.2499999999999997,
+        "min_eigenvalue": 0.24999999999999956,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 22,
+      "circuit_type": "coherent_only",
+      "strategy": "phase_coherent",
+      "params": {
+        "structure_type": "exponential",
+        "seed": 9049
+      },
+      "circuit_info": {
+        "type": "coherent_only",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999969,
+        "fidelity_history": [
+          0.250000007915892,
+          0.9999999999999969
+        ],
+        "entropies": [
+          1.9999999999999991,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.24999999999999922+2.710264968735371e-18j)",
+          "(0.2499999999999989+8.119444325908811e-18j)"
+        ],
+        "coherence_scores": [
+          4.3934352224226577e-17,
+          2.9875774972010606e-17
+        ],
+        "initial_strategy": "phase_coherent",
+        "initial_params": {
+          "structure_type": "exponential",
+          "seed": 9049
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999991,
+        "purity": "(0.24999999999999922+2.710264968735371e-18j)",
+        "eigenvalues": "[0.25+9.25006602e-18j 0.25+6.93889390e-18j 0.25+2.77555756e-17j\n 0.25-7.15573434e-18j]",
+        "max_eigenvalue": 0.24999999999999972,
+        "min_eigenvalue": 0.24999999999999953,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 23,
+      "circuit_type": "coherent_only",
+      "strategy": "entangled_structure",
+      "params": {
+        "alpha": 0.9,
+        "small_contrib": 0.05,
+        "seed": 7072
+      },
+      "circuit_info": {
+        "type": "coherent_only",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999969,
+        "fidelity_history": [
+          0.25000000117005783,
+          0.9999999999999969
+        ],
+        "entropies": [
+          1.9999999999999993,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.2499999999999995+2.2496669747231498e-18j)",
+          "(0.24999999999999906+2.6531764499849257e-18j)"
+        ],
+        "coherence_scores": [
+          1.9342888284698155e-17,
+          1.5604919642772085e-17
+        ],
+        "initial_strategy": "entangled_structure",
+        "initial_params": {
+          "alpha": 0.9,
+          "small_contrib": 0.05,
+          "seed": 7072
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999993,
+        "purity": "(0.2499999999999995+2.2496669747231498e-18j)",
+        "eigenvalues": "[0.25-3.51268277e-18j 0.25-1.38777878e-17j 0.25+1.38777878e-17j\n 0.25+0.00000000e+00j]",
+        "max_eigenvalue": 0.24999999999999983,
+        "min_eigenvalue": 0.24999999999999967,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 24,
+      "circuit_type": "coherent_only",
+      "strategy": "entangled_structure",
+      "params": {
+        "alpha": 0.8,
+        "small_contrib": 0.1,
+        "seed": 1801
+      },
+      "circuit_info": {
+        "type": "coherent_only",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.999999999999996,
+        "fidelity_history": [
+          0.2500000037972082,
+          0.999999999999996
+        ],
+        "entropies": [
+          1.9999999999999991,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.24999999999999906-1.6617267513129214e-17j)",
+          "(0.2499999999999988-9.672927399638872e-18j)"
+        ],
+        "coherence_scores": [
+          2.2784895012258557e-17,
+          1.9995726362560554e-17
+        ],
+        "initial_strategy": "entangled_structure",
+        "initial_params": {
+          "alpha": 0.8,
+          "small_contrib": 0.1,
+          "seed": 1801
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999991,
+        "purity": "(0.24999999999999906-1.6617267513129214e-17j)",
+        "eigenvalues": "[0.25-1.68971537e-17j 0.25-1.38777878e-17j 0.25+2.77555756e-17j\n 0.25+0.00000000e+00j]",
+        "max_eigenvalue": 0.24999999999999964,
+        "min_eigenvalue": 0.24999999999999944,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 25,
+      "circuit_type": "structured_minimal",
+      "strategy": "coherent_pure",
+      "params": {
+        "alpha": 0.8,
+        "beta": 0.4,
+        "gamma": 0.2,
+        "seed": 5604
+      },
+      "circuit_info": {
+        "type": "structured_minimal",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999967,
+        "fidelity_history": [
+          0.2500000036644202,
+          0.9999999999999967
+        ],
+        "entropies": [
+          1.9999999999999993,
+          1.999999999999999
+        ],
+        "purities": [
+          "(0.24999999999999944-1.0611853684318964e-17j)",
+          "(0.2499999999999989-7.174284632825807e-18j)"
+        ],
+        "coherence_scores": [
+          0.0,
+          0.0
+        ],
+        "initial_strategy": "coherent_pure",
+        "initial_params": {
+          "alpha": 0.8,
+          "beta": 0.4,
+          "gamma": 0.2,
+          "seed": 5604
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999993,
+        "purity": "(0.24999999999999944-1.0611853684318964e-17j)",
+        "eigenvalues": "[0.25-3.03863180e-18j 0.25-8.41611337e-18j 0.25-7.30465684e-18j\n 0.25-2.46430535e-18j]",
+        "max_eigenvalue": 0.24999999999999978,
+        "min_eigenvalue": 0.24999999999999967,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 26,
+      "circuit_type": "structured_minimal",
+      "strategy": "coherent_pure",
+      "params": {
+        "alpha": 0.9,
+        "beta": 0.3,
+        "gamma": 0.1,
+        "seed": 330
+      },
+      "circuit_info": {
+        "type": "structured_minimal",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999969,
+        "fidelity_history": [
+          0.250000006416307,
+          0.9999999999999969
+        ],
+        "entropies": [
+          1.9999999999999996,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.24999999999999956+1.3132499712377877e-18j)",
+          "(0.24999999999999903+9.39207837339708e-20j)"
+        ],
+        "coherence_scores": [
+          0.0,
+          0.0
+        ],
+        "initial_strategy": "coherent_pure",
+        "initial_params": {
+          "alpha": 0.9,
+          "beta": 0.3,
+          "gamma": 0.1,
+          "seed": 330
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999996,
+        "purity": "(0.24999999999999956+1.3132499712377877e-18j)",
+        "eigenvalues": "[0.25+5.66127410e-19j 0.25+1.52664942e-18j 0.25+1.46984652e-18j\n 0.25-9.36123407e-19j]",
+        "max_eigenvalue": 0.24999999999999983,
+        "min_eigenvalue": 0.24999999999999972,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 27,
+      "circuit_type": "structured_minimal",
+      "strategy": "low_entropy",
+      "params": {
+        "target_entropy": 0.3,
+        "seed": 1593
+      },
+      "circuit_info": {
+        "type": "structured_minimal",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999969,
+        "fidelity_history": [
+          0.5156035948861826,
+          0.9999999999999969
+        ],
+        "entropies": [
+          1.9999999999999996,
+          1.999999999999999
+        ],
+        "purities": [
+          "(0.2499999999999995-2.890899880948537e-18j)",
+          "(0.249999999999999+1.0147713885844994e-18j)"
+        ],
+        "coherence_scores": [
+          0.0,
+          0.0
+        ],
+        "initial_strategy": "low_entropy",
+        "initial_params": {
+          "target_entropy": 0.3,
+          "seed": 1593
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999996,
+        "purity": "(0.2499999999999995-2.890899880948537e-18j)",
+        "eigenvalues": "[0.25-5.45543128e-19j 0.25-2.07401700e-18j 0.25-1.54119998e-18j\n 0.25-1.62103965e-18j]",
+        "max_eigenvalue": 0.2499999999999998,
+        "min_eigenvalue": 0.24999999999999972,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 28,
+      "circuit_type": "structured_minimal",
+      "strategy": "low_entropy",
+      "params": {
+        "target_entropy": 0.7,
+        "seed": 823
+      },
+      "circuit_info": {
+        "type": "structured_minimal",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999969,
+        "fidelity_history": [
+          0.6665611645272038,
+          0.9999999999999969
+        ],
+        "entropies": [
+          1.9999999999999996,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.2499999999999995+3.76806601179832e-19j)",
+          "(0.249999999999999-1.4352962374858036e-18j)"
+        ],
+        "coherence_scores": [
+          0.0,
+          0.0
+        ],
+        "initial_strategy": "low_entropy",
+        "initial_params": {
+          "target_entropy": 0.7,
+          "seed": 823
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999996,
+        "purity": "(0.2499999999999995+3.76806601179832e-19j)",
+        "eigenvalues": "[0.25+2.01280871e-18j 0.25-4.38366758e-19j 0.25-1.11987387e-18j\n 0.25+2.99045116e-19j]",
+        "max_eigenvalue": 0.24999999999999978,
+        "min_eigenvalue": 0.24999999999999972,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 29,
+      "circuit_type": "structured_minimal",
+      "strategy": "phase_coherent",
+      "params": {
+        "structure_type": "gaussian",
+        "seed": 5672
+      },
+      "circuit_info": {
+        "type": "structured_minimal",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999976,
+        "fidelity_history": [
+          0.25000000245363707,
+          0.9999999999999976
+        ],
+        "entropies": [
+          1.9999999999999996,
+          1.9999999999999991
+        ],
+        "purities": [
+          "(0.24999999999999972-3.4685404674599005e-18j)",
+          "(0.24999999999999922-8.052044694397944e-18j)"
+        ],
+        "coherence_scores": [
+          0.0,
+          0.0
+        ],
+        "initial_strategy": "phase_coherent",
+        "initial_params": {
+          "structure_type": "gaussian",
+          "seed": 5672
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999996,
+        "purity": "(0.24999999999999972-3.4685404674599005e-18j)",
+        "eigenvalues": "[0.25-3.58513187e-18j 0.25-6.38490842e-18j 0.25+2.64139284e-18j\n 0.25+3.91566515e-19j]",
+        "max_eigenvalue": 0.2499999999999999,
+        "min_eigenvalue": 0.24999999999999983,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 30,
+      "circuit_type": "structured_minimal",
+      "strategy": "phase_coherent",
+      "params": {
+        "structure_type": "exponential",
+        "seed": 8711
+      },
+      "circuit_info": {
+        "type": "structured_minimal",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999969,
+        "fidelity_history": [
+          0.2500000079158921,
+          0.9999999999999969
+        ],
+        "entropies": [
+          1.9999999999999996,
+          1.999999999999999
+        ],
+        "purities": [
+          "(0.2499999999999995+7.50552347231065e-20j)",
+          "(0.249999999999999+6.255874430289689e-18j)"
+        ],
+        "coherence_scores": [
+          0.0,
+          0.0
+        ],
+        "initial_strategy": "phase_coherent",
+        "initial_params": {
+          "structure_type": "exponential",
+          "seed": 8711
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999996,
+        "purity": "(0.2499999999999995+7.50552347231065e-20j)",
+        "eigenvalues": "[0.25-9.51269050e-19j 0.25+4.73817735e-18j 0.25+1.96708691e-19j\n 0.25-3.83350652e-18j]",
+        "max_eigenvalue": 0.2499999999999998,
+        "min_eigenvalue": 0.24999999999999972,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 31,
+      "circuit_type": "structured_minimal",
+      "strategy": "entangled_structure",
+      "params": {
+        "alpha": 0.9,
+        "small_contrib": 0.05,
+        "seed": 5833
+      },
+      "circuit_info": {
+        "type": "structured_minimal",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999969,
+        "fidelity_history": [
+          0.2500000011700577,
+          0.9999999999999969
+        ],
+        "entropies": [
+          1.9999999999999993,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.2499999999999995-1.0738620778894098e-18j)",
+          "(0.249999999999999+2.0332808179212255e-18j)"
+        ],
+        "coherence_scores": [
+          0.0,
+          0.0
+        ],
+        "initial_strategy": "entangled_structure",
+        "initial_params": {
+          "alpha": 0.9,
+          "small_contrib": 0.05,
+          "seed": 5833
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999993,
+        "purity": "(0.2499999999999995-1.0738620778894098e-18j)",
+        "eigenvalues": "[0.25+1.22726268e-18j 0.25+7.58970287e-20j 0.25-2.34090338e-18j\n 0.25-1.10998048e-18j]",
+        "max_eigenvalue": 0.2499999999999998,
+        "min_eigenvalue": 0.24999999999999972,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    },
+    {
+      "trial": 32,
+      "circuit_type": "structured_minimal",
+      "strategy": "entangled_structure",
+      "params": {
+        "alpha": 0.8,
+        "small_contrib": 0.1,
+        "seed": 8366
+      },
+      "circuit_info": {
+        "type": "structured_minimal",
+        "loop_qubits": 2,
+        "bulk_qubits": 4,
+        "total_qubits": 6,
+        "mixing_level": "ultra_minimal"
+      },
+      "convergence_info": {
+        "iterations": 2,
+        "converged": true,
+        "final_fidelity": 0.9999999999999967,
+        "fidelity_history": [
+          0.25000000379720844,
+          0.9999999999999967
+        ],
+        "entropies": [
+          1.9999999999999993,
+          1.9999999999999987
+        ],
+        "purities": [
+          "(0.24999999999999944+2.712724428503882e-18j)",
+          "(0.24999999999999895+6.411529729249145e-19j)"
+        ],
+        "coherence_scores": [
+          0.0,
+          0.0
+        ],
+        "initial_strategy": "entangled_structure",
+        "initial_params": {
+          "alpha": 0.8,
+          "small_contrib": 0.1,
+          "seed": 8366
+        }
+      },
+      "final_analysis": {
+        "iteration": 2,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 1.9999999999999993,
+        "purity": "(0.24999999999999944+2.712724428503882e-18j)",
+        "eigenvalues": "[0.25+1.00027569e-18j 0.25-4.83535110e-19j 0.25+9.74338220e-19j\n 0.25+3.93437006e-18j]",
+        "max_eigenvalue": 0.24999999999999978,
+        "min_eigenvalue": 0.2499999999999997,
+        "interesting_score": 0.0,
+        "non_triviality_score": 0.0,
+        "coherence_score": 0.0,
+        "structure_score": 0.0,
+        "quality_score": 0.0
+      },
+      "success": true,
+      "is_trivial": true,
+      "interesting_score": 0.0,
+      "non_triviality_score": 0.0,
+      "coherence_score": 0.0,
+      "structure_score": 0.0,
+      "quality_score": 0.0
+    }
+  ]
+}

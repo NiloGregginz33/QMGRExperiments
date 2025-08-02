@@ -1,0 +1,83 @@
+TOP 20 MOST COMPREHENSIVE INSTANCES
+==================================================
+
+ 1. older_results/instance_20250730_190246
+     Score:   99 | Files:  17 | Analysis:  5 | Plots:  3
+     JSON:  8 | TXT:  6
+
+ 2. older_results/instance_20250801_075511
+     Score:   70 | Files:  10 | Analysis:  3 | Plots:  4
+     JSON:  4 | TXT:  2
+
+ 3. older_results/instance_20250801_081414
+     Score:   70 | Files:  10 | Analysis:  3 | Plots:  4
+     JSON:  4 | TXT:  2
+
+ 4. older_results/instance_20250731_012542
+     Score:   53 | Files:   9 | Analysis:  3 | Plots:  1
+     JSON:  5 | TXT:  3
+
+ 5. older_results/instance_20250731_190955
+     Score:   51 | Files:   8 | Analysis:  3 | Plots:  1
+     JSON:  4 | TXT:  3
+
+ 6. older_results/instance_20250731_194831
+     Score:   47 | Files:   6 | Analysis:  3 | Plots:  1
+     JSON:  3 | TXT:  2
+
+ 7. older_results/instance_20250724_165949
+     Score:   38 | Files:   9 | Analysis:  0 | Plots:  4
+     JSON:  1 | TXT:  1
+
+ 8. older_results/instance_20250724_202928
+     Score:   32 | Files:   6 | Analysis:  1 | Plots:  2
+     JSON:  2 | TXT:  2
+
+ 9. older_results/instance_20250731_235810
+     Score:   24 | Files:  12 | Analysis:  0 | Plots:  0
+     JSON: 11 | TXT:  1
+
+10. older_results/instance_20250801_083752
+     Score:   24 | Files:  12 | Analysis:  0 | Plots:  0
+     JSON: 11 | TXT:  1
+
+11. older_results/instance_20250801_083822
+     Score:   24 | Files:  12 | Analysis:  0 | Plots:  0
+     JSON: 11 | TXT:  1
+
+12. older_results/instance_20250801_183748
+     Score:   24 | Files:  12 | Analysis:  0 | Plots:  0
+     JSON: 11 | TXT:  1
+
+13. older_results/instance_20250801_184018
+     Score:   24 | Files:  12 | Analysis:  0 | Plots:  0
+     JSON: 11 | TXT:  1
+
+14. older_results/instance_20250801_184400
+     Score:   20 | Files:  10 | Analysis:  0 | Plots:  0
+     JSON: 10 | TXT:  0
+
+15. older_results/instance_20250726_185317
+     Score:   18 | Files:   4 | Analysis:  0 | Plots:  2
+     JSON:  1 | TXT:  1
+
+16. older_results/instance_20250731_142105
+     Score:   18 | Files:   4 | Analysis:  1 | Plots:  0
+     JSON:  3 | TXT:  0
+
+17. older_results/instance_20250730_141159
+     Score:   13 | Files:   4 | Analysis:  0 | Plots:  1
+     JSON:  2 | TXT:  1
+
+18. older_results/instance_20250731_092806
+     Score:    8 | Files:   4 | Analysis:  0 | Plots:  0
+     JSON:  3 | TXT:  1
+
+19. older_results/instance_20250731_093254
+     Score:    8 | Files:   4 | Analysis:  0 | Plots:  0
+     JSON:  3 | TXT:  1
+
+20. older_results/instance_20250731_093612
+     Score:    8 | Files:   4 | Analysis:  0 | Plots:  0
+     JSON:  3 | TXT:  1
+

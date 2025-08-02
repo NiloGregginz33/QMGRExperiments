@@ -1,0 +1,133 @@
+{
+  "condition_1_lorentzian_metric": {
+    "condition_met": "False",
+    "overall_score": 0.0,
+    "lorentzian_signature": "False",
+    "positive_eigenvalues": 11,
+    "negative_eigenvalues": 1,
+    "null_directions": 0,
+    "chi2_statistic": 0.0,
+    "p_value": 1.0,
+    "signature_consistency": 0.0,
+    "null_consistency": 0.0,
+    "statistical_significance": 0.0,
+    "eigenvalues": [
+      2.0,
+      -10.0,
+      1.9999999999999996,
+      1.9999999999999996,
+      2.0,
+      2.0000000000000004,
+      2.0000000000000013,
+      1.9999999999999996,
+      2.0000000000000018,
+      1.9999999999999998,
+      1.9999999999999998,
+      1.9999999999999996
+    ]
+  },
+  "condition_2_page_curve": {
+    "condition_met": false,
+    "overall_score": 0.2,
+    "page_curve_detected": false,
+    "best_fit": "area_law",
+    "page_curve_r2": -1.8650924666405229,
+    "area_law_r2": 1.0,
+    "volume_law_r2": 1.0,
+    "peak_at_middle": "False",
+    "non_linearity": 2.7824305994774946e-16,
+    "statistical_significance": 1.0,
+    "fits": {
+      "area_law": 1.0,
+      "volume_law": 1.0,
+      "page_curve": -1.8650924666405229
+    }
+  },
+  "condition_3_entanglement_curvature": {
+    "condition_met": "False",
+    "overall_score": 0.5392051557465092,
+    "strong_correlation": "False",
+    "pearson_correlation": -0.30912457578234415,
+    "pearson_r2": 0.09555800335261423,
+    "pearson_p_value": 0.0001632944731389469,
+    "spearman_correlation": -0.48167270309915683,
+    "spearman_r2": 0.2320085929108485,
+    "spearman_p_value": 9.84255777422472e-10,
+    "max_r2": 0.2320085929108485,
+    "statistically_significant": "True"
+  },
+  "condition_4_causal_violations": {
+    "condition_met": false,
+    "overall_score": 0.0,
+    "causal_violations": [],
+    "non_local_correlations": [],
+    "violation_ratio": 0.0,
+    "total_pairs": 66,
+    "chi2_statistic": 0.0,
+    "p_value": 1.0,
+    "statistically_significant": false
+  },
+  "condition_5_cross_system_consistency": {
+    "condition_met": "False",
+    "overall_score": 0.5926380745464314,
+    "power_law_r2": 0.48159518636607834,
+    "power_law_slope": -0.6355544453994583,
+    "p_value": 0.0122948306397644,
+    "coefficient_of_variation": 1.8090680674665816,
+    "fractal_dimension": 1.9730227038863681,
+    "statistically_significant": "True"
+  },
+  "condition_6_reproducibility": {
+    "condition_met": "True",
+    "overall_score": 1.0079823242872585,
+    "robustness_tests": {
+      "curvature_sensitivity": {
+        "robustness_score": 0.9386613543151813,
+        "variation_coefficient": 0.06133864568481872,
+        "mi_variations": [
+          0.08708333333333333,
+          0.09166666666666666,
+          0.10083333333333333
+        ]
+      },
+      "geometry_sensitivity": {
+        "robustness_score": 0.8367006838144548,
+        "variation_coefficient": 0.1632993161855451,
+        "mi_variations": [
+          0.09166666666666666,
+          0.10999999999999999,
+          0.07333333333333333
+        ]
+      },
+      "noise_robustness": {
+        "robustness_score": 1.287490047339844,
+        "degradation": -0.28749004733984396,
+        "mi_variations": [
+          0.09166666666666666,
+          0.0939974096526861,
+          0.0763254371099662,
+          0.11801992100615236
+        ]
+      },
+      "depth_sensitivity": {
+        "robustness_score": 0.9690772116795542,
+        "variation_coefficient": 0.03092278832044583,
+        "mi_variations": [
+          0.089375,
+          0.09166666666666666,
+          0.09625
+        ]
+      }
+    },
+    "curvature_robustness": 0.9386613543151813,
+    "geometry_robustness": 0.8367006838144548,
+    "noise_robustness": 1.287490047339844,
+    "depth_robustness": 0.9690772116795542
+  },
+  "overall_assessment": {
+    "extraordinary_evidence_score": 0.3899709257633665,
+    "conditions_met": 1,
+    "total_conditions": 6,
+    "extraordinary_evidence_level": "INSUFFICIENT EVIDENCE - Claims not supported"
+  }
+}

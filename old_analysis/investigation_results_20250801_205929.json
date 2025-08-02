@@ -1,0 +1,1143 @@
+{
+  "experiment_info": {
+    "num_qubits": 4,
+    "timestamp": "2025-08-01T20:59:28.376112",
+    "investigation_type": "perfect_results_analysis"
+  },
+  "investigation_results": [
+    {
+      "perturbation_type": "circuit_noise",
+      "perturbation_magnitude": 0.0,
+      "perturbation_info": {
+        "type": "circuit_noise",
+        "magnitude": 0.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 1.0471975511965976,
+        "loop_rotation_1": 1.0471975511965976
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-5.08088743e-19j  3.85185989e-34+7.86272471e-19j\n  -3.59272995e-19-2.32390149e-18j  1.02285888e-18+8.67361738e-19j]\n [ 3.85185989e-34+1.21269018e-18j  2.50000000e-01+3.91884304e-19j\n   1.15698616e-18-3.26113087e-20j -4.86137113e-19+6.86924533e-18j]\n [-3.59272995e-19-1.74866803e-18j  1.15698616e-18+3.26113087e-20j\n   2.50000000e-01+4.75477434e-19j -9.94225856e-19-1.44509905e-18j]\n [ 9.34506450e-19+1.26864118e-19j  7.73108929e-19+2.99553589e-19j\n  -1.59475427e-19-4.18992402e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999996
+        ],
+        "purities": [
+          "(0.2499999999999996+1.7963649767914756e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999996,
+          "purity": "(0.2499999999999996+1.7963649767914756e-19j)",
+          "eigenvalues": "[0.25-5.08088743e-19j 0.25-2.77555756e-17j 0.25-4.33680869e-18j\n 0.25-1.38777878e-17j]",
+          "max_eigenvalue": 0.2500000000000001,
+          "min_eigenvalue": 0.24999999999999975,
+          "condition_number": 1.0,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "circuit_noise",
+      "perturbation_magnitude": 0.5,
+      "perturbation_info": {
+        "type": "circuit_noise",
+        "magnitude": 0.5,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 0.8066997021687414,
+        "loop_rotation_1": 1.2647068886755253
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-5.50092801e-19j -1.25063535e-18-9.26012670e-19j\n   4.72550969e-19+8.43131429e-19j -7.35373896e-21-3.48852985e-19j]\n [-1.25063535e-18+4.34303373e-18j  2.50000000e-01+1.12815216e-18j\n   3.58397105e-18+1.91879443e-18j  1.04651750e-18-2.10417524e-18j]\n [ 4.72550969e-19+1.60101951e-18j  3.58397105e-18-1.48547022e-18j\n   2.50000000e-01-6.94827941e-19j -6.76668814e-19-1.09688449e-18j]\n [-5.24443577e-19+1.10306363e-18j  1.34172854e-18+1.14624478e-18j\n  -4.58177233e-19+1.04533409e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999996
+        ],
+        "purities": [
+          "(0.24999999999999967-5.838429224860567e-20j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999996,
+          "purity": "(0.24999999999999967-5.838429224860567e-20j)",
+          "eigenvalues": "[0.25-5.50092801e-19j 0.25-5.55111512e-17j 0.25+5.55111512e-17j\n 0.25-2.77555756e-17j]",
+          "max_eigenvalue": 0.2499999999999999,
+          "min_eigenvalue": 0.2499999999999998,
+          "condition_number": 1.0000000000000002,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "circuit_noise",
+      "perturbation_magnitude": 1.0,
+      "perturbation_info": {
+        "type": "circuit_noise",
+        "magnitude": 1.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 1.431271619630691,
+        "loop_rotation_1": 1.263012711477964
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999991,
+        "fidelity_history": [
+          0.9999999999999991
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-6.75055952e-19j -6.74915841e-19+7.48548212e-19j\n  -3.87476919e-19-1.91343724e-18j  2.87865735e-18-4.12077915e-19j]\n [-6.74915841e-19+1.77773961e-18j  2.50000000e-01+1.43915578e-20j\n  -1.69132780e-18+9.70370639e-20j  8.56736492e-19-1.11903219e-18j]\n [-3.87476919e-19+7.80760149e-19j -1.69132780e-18-5.65531259e-19j\n   2.50000000e-01-4.92048836e-20j  5.69297570e-19-9.89414459e-19j]\n [ 2.00291972e-18+9.05313216e-19j  7.00285106e-19-2.43385692e-18j\n   4.95491691e-19-1.31095201e-18j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999993
+        ],
+        "purities": [
+          "(0.24999999999999956-3.5493463886819203e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999993,
+          "purity": "(0.24999999999999956-3.5493463886819203e-19j)",
+          "eigenvalues": "[0.25-6.75055952e-19j 0.25+6.93889390e-18j 0.25+1.73472348e-18j\n 0.25+2.77555756e-17j]",
+          "max_eigenvalue": 0.24999999999999975,
+          "min_eigenvalue": 0.24999999999999958,
+          "condition_number": 1.0000000000000002,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "circuit_noise",
+      "perturbation_magnitude": 2.0,
+      "perturbation_info": {
+        "type": "circuit_noise",
+        "magnitude": 2.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 2.1797851839420357,
+        "loop_rotation_1": 0.14180309602354602
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-2.53680570e-19j  7.77992704e-20-9.33735549e-19j\n   4.53382156e-19+1.97448139e-19j  1.70687063e-18-1.51036558e-20j]\n [ 7.77992704e-20-6.70575939e-19j  2.50000000e-01-3.53522629e-19j\n  -4.61831654e-19+1.64912434e-19j -1.35253773e-20+3.35680419e-19j]\n [ 4.53382156e-19+1.12114553e-18j -4.61831654e-19-8.45301482e-19j\n   2.50000000e-01+1.06814450e-19j  4.45726062e-20+2.78682424e-19j]\n [-4.63160904e-19+6.38191202e-19j  8.41091674e-19-2.69570231e-19j\n   5.50262983e-19-5.84814403e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999996
+        ],
+        "purities": [
+          "(0.2499999999999996-2.501943744500868e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999996,
+          "purity": "(0.2499999999999996-2.501943744500868e-19j)",
+          "eigenvalues": "[0.25-2.53680570e-19j 0.25+0.00000000e+00j 0.25-8.67361738e-18j\n 0.25-2.77555756e-17j]",
+          "max_eigenvalue": 0.24999999999999983,
+          "min_eigenvalue": 0.24999999999999972,
+          "condition_number": 1.0000000000000004,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "circuit_noise",
+      "perturbation_magnitude": 5.0,
+      "perturbation_info": {
+        "type": "circuit_noise",
+        "magnitude": 5.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 1.945659793585073,
+        "loop_rotation_1": 3.1141137525749043
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-7.23814542e-21j  2.89727113e-19-1.91255048e-18j\n   9.42917173e-20-1.35970848e-18j -2.18525763e-18+8.42530719e-19j]\n [ 2.89727113e-19-1.03139662e-18j  2.50000000e-01+1.31196080e-19j\n  -2.14540861e-18-3.60242165e-19j -4.77417514e-19-2.81856155e-19j]\n [ 9.42917173e-20-1.96872591e-18j -2.14540861e-18-6.42393161e-20j\n   2.50000000e-01-1.21996692e-19j -7.15662987e-19+5.85964356e-18j]\n [ 5.96097261e-19-2.13921303e-19j -6.60779567e-19-2.54899684e-19j\n  -8.94206774e-20-3.35608144e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999996
+        ],
+        "purities": [
+          "(0.24999999999999956+9.806214112640252e-22j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999996,
+          "purity": "(0.24999999999999956+9.806214112640252e-22j)",
+          "eigenvalues": "[0.25-7.23814542e-21j 0.25+1.38777878e-17j 0.25+8.32667268e-17j\n 0.25+0.00000000e+00j]",
+          "max_eigenvalue": 0.24999999999999983,
+          "min_eigenvalue": 0.24999999999999978,
+          "condition_number": 1.0000000000000004,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "circuit_noise",
+      "perturbation_magnitude": 10.0,
+      "perturbation_info": {
+        "type": "circuit_noise",
+        "magnitude": 10.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": -4.254511428044328,
+        "loop_rotation_1": 4.833731014170956
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999991,
+        "fidelity_history": [
+          0.9999999999999991
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01+8.51347592e-19j  1.15641188e-18+2.38686167e-18j\n   4.41693042e-20+4.03090351e-19j -1.30054350e-19-7.14829592e-19j]\n [ 1.15641188e-18-1.32403450e-18j  2.50000000e-01-2.58328731e-19j\n   8.28626039e-19+4.44988687e-19j  6.49769067e-19-3.38391996e-18j]\n [ 4.41693042e-20+2.00085519e-18j  8.28626039e-19-5.03209573e-19j\n   2.50000000e-01+2.00107845e-19j  2.72881717e-20-3.45620314e-18j]\n [ 8.79176412e-19+6.59386262e-19j  1.12228407e-18-1.16326552e-18j\n   3.35758859e-19-4.08253626e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999996
+        ],
+        "purities": [
+          "(0.2499999999999996+3.965633532396044e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999996,
+          "purity": "(0.2499999999999996+3.965633532396044e-19j)",
+          "eigenvalues": "[0.25+8.51347592e-19j 0.25-1.38777878e-17j 0.25-2.77555756e-17j\n 0.25+0.00000000e+00j]",
+          "max_eigenvalue": 0.2499999999999998,
+          "min_eigenvalue": 0.24999999999999972,
+          "condition_number": 1.0000000000000004,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "initial_state",
+      "perturbation_magnitude": 0.0,
+      "perturbation_info": {
+        "type": "initial_state",
+        "magnitude": 0.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "bulk_rotation_2": 0.0,
+        "bulk_rotation_3": 0.0
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-5.08088743e-19j  3.85185989e-34+7.86272471e-19j\n  -3.59272995e-19-2.32390149e-18j  1.02285888e-18+8.67361738e-19j]\n [ 3.85185989e-34+1.21269018e-18j  2.50000000e-01+3.91884304e-19j\n   1.15698616e-18-3.26113087e-20j -4.86137113e-19+6.86924533e-18j]\n [-3.59272995e-19-1.74866803e-18j  1.15698616e-18+3.26113087e-20j\n   2.50000000e-01+4.75477434e-19j -9.94225856e-19-1.44509905e-18j]\n [ 9.34506450e-19+1.26864118e-19j  7.73108929e-19+2.99553589e-19j\n  -1.59475427e-19-4.18992402e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999996
+        ],
+        "purities": [
+          "(0.2499999999999996+1.7963649767914756e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999996,
+          "purity": "(0.2499999999999996+1.7963649767914756e-19j)",
+          "eigenvalues": "[0.25-5.08088743e-19j 0.25-2.77555756e-17j 0.25-4.33680869e-18j\n 0.25-1.38777878e-17j]",
+          "max_eigenvalue": 0.2500000000000001,
+          "min_eigenvalue": 0.24999999999999975,
+          "condition_number": 1.0,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "initial_state",
+      "perturbation_magnitude": 0.5,
+      "perturbation_info": {
+        "type": "initial_state",
+        "magnitude": 0.5,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "bulk_rotation_2": 0.1784725699507896,
+        "bulk_rotation_3": -0.4269650478539358
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999998,
+        "fidelity_history": [
+          0.9999999999999998
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-9.61034576e-20j -4.59405221e-19+2.65082467e-19j\n  -2.74166182e-18-7.21261353e-19j -1.07137418e-18+1.94556125e-18j]\n [-4.59405221e-19-1.61823157e-19j  2.50000000e-01+5.32407478e-19j\n   5.07157425e-19+2.50009577e-18j -4.24995510e-19+2.53811778e-18j]\n [-2.74166182e-18+2.60174173e-18j  5.07157425e-19-7.12088613e-19j\n   2.50000000e-01-8.36975601e-19j -9.86396591e-19-5.12653428e-19j]\n [ 1.13932274e-18-2.40672482e-18j -3.21011107e-19-1.13639943e-18j\n  -1.59313007e-18+4.18539453e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          2.0
+        ],
+        "purities": [
+          "(0.2499999999999998-2.003357902550123e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 2.0,
+          "purity": "(0.2499999999999998-2.003357902550123e-19j)",
+          "eigenvalues": "[0.25-9.61034576e-20j 0.25-3.46944695e-18j 0.25+0.00000000e+00j\n 0.25-2.77555756e-17j]",
+          "max_eigenvalue": 0.24999999999999994,
+          "min_eigenvalue": 0.24999999999999983,
+          "condition_number": 1.0000000000000002,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "initial_state",
+      "perturbation_magnitude": 1.0,
+      "perturbation_info": {
+        "type": "initial_state",
+        "magnitude": 1.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "bulk_rotation_2": -0.07808793383824852,
+        "bulk_rotation_3": -0.659103403971404
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999996,
+        "fidelity_history": [
+          0.9999999999999996
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-3.42659024e-19j  3.48263437e-19-7.48532629e-19j\n   2.13657588e-20-1.42535696e-18j  1.07476104e-18-1.58115610e-18j]\n [ 3.48263437e-19+2.56541719e-19j  2.50000000e-01+3.11917589e-19j\n   3.51416402e-18-4.42085588e-19j -2.59554535e-18-7.60385107e-18j]\n [ 2.13657588e-20-4.04280429e-18j  3.51416402e-18+5.55097850e-19j\n   2.50000000e-01+1.06917115e-18j  1.78368651e-18+7.34439161e-19j]\n [ 1.44597594e-18+2.57071813e-18j -1.82855589e-18+2.33161717e-19j\n   1.25937004e-18+1.80734258e-18j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          2.0
+        ],
+        "purities": [
+          "(0.24999999999999978+5.192148595764997e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 2.0,
+          "purity": "(0.24999999999999978+5.192148595764997e-19j)",
+          "eigenvalues": "[0.25-3.42659024e-19j 0.25-8.67361738e-18j 0.25+0.00000000e+00j\n 0.25+0.00000000e+00j]",
+          "max_eigenvalue": 0.24999999999999994,
+          "min_eigenvalue": 0.24999999999999983,
+          "condition_number": 1.0000000000000004,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "initial_state",
+      "perturbation_magnitude": 2.0,
+      "perturbation_info": {
+        "type": "initial_state",
+        "magnitude": 2.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "bulk_rotation_2": -0.728951353063074,
+        "bulk_rotation_3": -0.642423890522551
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999987,
+        "fidelity_history": [
+          0.9999999999999987
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-8.39270943e-20j -2.67113064e-19-2.26111474e-18j\n  -4.69403705e-18-1.82830787e-18j  1.21337123e-19-4.19752635e-18j]\n [-2.67113064e-19-1.59280824e-18j  2.50000000e-01+1.88248945e-19j\n  -4.46137263e-19+1.38045175e-18j  1.50535961e-18+1.03969961e-18j]\n [-4.69403705e-18-9.64608764e-19j -4.46137263e-19-7.11554116e-19j\n   2.50000000e-01+4.50365935e-19j -2.15733172e-18-1.79780270e-18j]\n [-3.97969290e-19-7.26102768e-20j -7.83750873e-20+1.35036988e-18j\n  -1.17555812e-18-3.08556438e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999998
+        ],
+        "purities": [
+          "(0.2499999999999996+2.7734389303961766e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999998,
+          "purity": "(0.2499999999999996+2.7734389303961766e-19j)",
+          "eigenvalues": "[0.25-8.39270943e-20j 0.25-1.38777878e-17j 0.25+2.77555756e-17j\n 0.25+1.38777878e-17j]",
+          "max_eigenvalue": 0.24999999999999986,
+          "min_eigenvalue": 0.24999999999999975,
+          "condition_number": 1.0000000000000004,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "initial_state",
+      "perturbation_magnitude": 5.0,
+      "perturbation_info": {
+        "type": "initial_state",
+        "magnitude": 5.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "bulk_rotation_2": 1.335945756085263,
+        "bulk_rotation_3": 4.311219854387075
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999998,
+        "fidelity_history": [
+          0.9999999999999998
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01+1.43889788e-19j  1.14476488e-18-7.61037068e-19j\n  -5.70698294e-19-1.19137590e-18j -2.16262107e-18+5.61398635e-19j]\n [ 1.14476488e-18+1.55271224e-18j  2.50000000e-01-8.02093870e-19j\n  -6.05568641e-19+1.84661792e-18j  9.84089472e-18-8.36414159e-19j]\n [-5.70698294e-19-1.95857851e-18j -6.05568641e-19+2.05052094e-18j\n   2.50000000e-01-4.66711549e-19j  1.35304035e-18+8.40229437e-19j]\n [-2.61703140e-18+6.25525863e-19j  1.08485900e-18-1.77109244e-18j\n   5.49533789e-19-1.30669724e-18j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          2.0
+        ],
+        "purities": [
+          "(0.24999999999999983-5.624578155195174e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 2.0,
+          "purity": "(0.24999999999999983-5.624578155195174e-19j)",
+          "eigenvalues": "[0.25+1.43889788e-19j 0.25+1.38777878e-17j 0.25-1.38777878e-17j\n 0.25-2.77555756e-17j]",
+          "max_eigenvalue": 0.24999999999999994,
+          "min_eigenvalue": 0.24999999999999986,
+          "condition_number": 1.0000000000000004,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "initial_state",
+      "perturbation_magnitude": 10.0,
+      "perturbation_info": {
+        "type": "initial_state",
+        "magnitude": 10.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "bulk_rotation_2": 6.704110655721467,
+        "bulk_rotation_3": 9.829083314678407
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01+7.54359240e-19j -3.16227932e-18+2.28567902e-18j\n   3.03739148e-18-3.26578255e-18j -1.81776691e-18+1.24248040e-18j]\n [-3.16227932e-18+3.59154203e-19j  2.50000000e-01+1.07251329e-19j\n  -2.07443938e-18+3.08140859e-18j -2.17667862e-18-2.89388253e-18j]\n [ 3.03739148e-18-6.20181229e-18j -2.07443938e-18-1.24705787e-18j\n   2.50000000e-01+6.48176246e-19j  2.23767762e-19+1.60563044e-18j]\n [-2.14699876e-18-2.06622329e-18j -1.46055918e-18-8.14718690e-19j\n   9.78994190e-19+4.62095499e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999996
+        ],
+        "purities": [
+          "(0.2499999999999996+7.54893407977793e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999996,
+          "purity": "(0.2499999999999996+7.54893407977793e-19j)",
+          "eigenvalues": "[0.25+7.54359240e-19j 0.25+6.93889390e-18j 0.25+1.38777878e-17j\n 0.25+1.73472348e-17j]",
+          "max_eigenvalue": 0.24999999999999983,
+          "min_eigenvalue": 0.24999999999999975,
+          "condition_number": 1.0000000000000002,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "coupling_variation",
+      "perturbation_magnitude": 0.0,
+      "perturbation_info": {
+        "type": "coupling_variation",
+        "magnitude": 0.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "coupling_phase_0_2": 0.7853981633974483,
+        "coupling_phase_0_3": 0.7853981633974483,
+        "coupling_phase_1_2": 0.7853981633974483,
+        "coupling_phase_1_3": 0.7853981633974483,
+        "fixed_point_phase_0_2": 1.5707963267948966,
+        "fixed_point_phase_0_3": 1.5707963267948966,
+        "fixed_point_phase_1_2": 1.5707963267948966,
+        "fixed_point_phase_1_3": 1.5707963267948966
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-5.08088743e-19j  3.85185989e-34+7.86272471e-19j\n  -3.59272995e-19-2.32390149e-18j  1.02285888e-18+8.67361738e-19j]\n [ 3.85185989e-34+1.21269018e-18j  2.50000000e-01+3.91884304e-19j\n   1.15698616e-18-3.26113087e-20j -4.86137113e-19+6.86924533e-18j]\n [-3.59272995e-19-1.74866803e-18j  1.15698616e-18+3.26113087e-20j\n   2.50000000e-01+4.75477434e-19j -9.94225856e-19-1.44509905e-18j]\n [ 9.34506450e-19+1.26864118e-19j  7.73108929e-19+2.99553589e-19j\n  -1.59475427e-19-4.18992402e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999996
+        ],
+        "purities": [
+          "(0.2499999999999996+1.7963649767914756e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999996,
+          "purity": "(0.2499999999999996+1.7963649767914756e-19j)",
+          "eigenvalues": "[0.25-5.08088743e-19j 0.25-2.77555756e-17j 0.25-4.33680869e-18j\n 0.25-1.38777878e-17j]",
+          "max_eigenvalue": 0.2500000000000001,
+          "min_eigenvalue": 0.24999999999999975,
+          "condition_number": 1.0,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "coupling_variation",
+      "perturbation_magnitude": 0.5,
+      "perturbation_info": {
+        "type": "coupling_variation",
+        "magnitude": 0.5,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "coupling_phase_0_2": 0.0024237430931237647,
+        "coupling_phase_0_3": 0.9927300217967305,
+        "coupling_phase_1_2": 0.7344489939349995,
+        "coupling_phase_1_3": 0.5251223632612233,
+        "fixed_point_phase_0_2": 1.6009509786389153,
+        "fixed_point_phase_0_3": 1.2360662568488336,
+        "fixed_point_phase_1_2": 1.641268411142322,
+        "fixed_point_phase_1_3": 1.5767619994395834
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-2.85779629e-19j -9.46510468e-20+9.73449439e-19j\n   2.33863306e-18-1.25202875e-18j -8.99372919e-19-1.04223330e-18j]\n [-9.46510468e-20-1.02019814e-18j  2.50000000e-01-4.69983086e-19j\n  -1.87461166e-18+5.68744076e-19j -3.37746447e-19-5.36140192e-18j]\n [ 2.33863306e-18+2.94976198e-18j -1.87461166e-18-1.64132308e-18j\n   2.50000000e-01-4.55980042e-19j -5.39906547e-19+1.60149128e-18j]\n [-1.05450434e-19+1.72964143e-18j  8.60182096e-19-8.18260433e-19j\n  -7.15365435e-19-9.15863615e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          2.0
+        ],
+        "purities": [
+          "(0.24999999999999983-6.05871378383912e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 2.0,
+          "purity": "(0.24999999999999983-6.05871378383912e-19j)",
+          "eigenvalues": "[0.25-2.85779629e-19j 0.25+4.85722573e-17j 0.25+2.94902991e-17j\n 0.25-2.77555756e-17j]",
+          "max_eigenvalue": 0.2500000000000002,
+          "min_eigenvalue": 0.2499999999999999,
+          "condition_number": 1.0000000000000002,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "coupling_variation",
+      "perturbation_magnitude": 1.0,
+      "perturbation_info": {
+        "type": "coupling_variation",
+        "magnitude": 1.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "coupling_phase_0_2": 0.82770747049451,
+        "coupling_phase_0_3": -0.805086915079037,
+        "coupling_phase_1_2": 1.3182797326341813,
+        "coupling_phase_1_3": -0.4218178829301309,
+        "fixed_point_phase_0_2": 2.013647297489311,
+        "fixed_point_phase_0_3": 3.107567416498795,
+        "fixed_point_phase_1_2": 3.0012085474246075,
+        "fixed_point_phase_1_3": 1.3843348363125347
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999998,
+        "fidelity_history": [
+          0.9999999999999998
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01+7.44638623e-19j -2.68719784e-19+2.28960062e-19j\n   5.06334922e-18-2.93834124e-18j  6.64284312e-19-6.57332958e-19j]\n [-2.68719784e-19+3.63425166e-19j  2.50000000e-01-6.19105621e-19j\n  -2.52602429e-19+4.26816366e-19j  3.25344724e-18+1.61340608e-18j]\n [ 5.06334922e-18-5.24040209e-18j -2.52602429e-19-3.24359028e-18j\n   2.50000000e-01-7.91506603e-19j -3.82624567e-18-5.66922788e-19j]\n [-2.57075731e-18+6.90754892e-19j -1.46263237e-18+9.97109913e-19j\n  -1.08992440e-18+1.81951119e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          2.0
+        ],
+        "purities": [
+          "(0.24999999999999994-3.3298680089051145e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 2.0,
+          "purity": "(0.24999999999999994-3.3298680089051145e-19j)",
+          "eigenvalues": "[0.25+7.44638623e-19j 0.25+2.77555756e-17j 0.25+1.38777878e-17j\n 0.25-1.38777878e-17j]",
+          "max_eigenvalue": 0.25,
+          "min_eigenvalue": 0.2499999999999999,
+          "condition_number": 1.0000000000000002,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "coupling_variation",
+      "perturbation_magnitude": 2.0,
+      "perturbation_info": {
+        "type": "coupling_variation",
+        "magnitude": 2.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "coupling_phase_0_2": -0.29050435325486834,
+        "coupling_phase_0_3": 0.635830896636206,
+        "coupling_phase_1_2": 4.233591752652478,
+        "coupling_phase_1_3": 2.774500429847677,
+        "fixed_point_phase_0_2": 2.155050946078453,
+        "fixed_point_phase_0_3": 1.5644389329904416,
+        "fixed_point_phase_1_2": 1.9861404047794518,
+        "fixed_point_phase_1_3": -0.9875639600826225
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999996,
+        "fidelity_history": [
+          0.9999999999999996
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-5.16020745e-19j -1.00732777e-18-1.59848776e-18j\n   7.36244035e-19+1.39606089e-18j  1.58231194e-18+6.54029990e-19j]\n [-1.00732777e-18+2.57458074e-19j  2.50000000e-01-8.94124403e-19j\n   7.53385102e-19+6.02253837e-19j  2.15422964e-18+1.19327075e-18j]\n [ 7.36244035e-19+2.42103401e-19j  7.53385102e-19-1.27725092e-20j\n   2.50000000e-01+2.33468580e-19j  2.29157789e-18+2.54079286e-19j]\n [ 2.64036585e-18-3.88436069e-20j -3.54487610e-19-1.98640213e-19j\n   1.92832009e-18+4.24415897e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999996
+        ],
+        "purities": [
+          "(0.24999999999999956-5.883382836368144e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999996,
+          "purity": "(0.24999999999999956-5.883382836368144e-19j)",
+          "eigenvalues": "[0.25-5.16020745e-19j 0.25+3.46944695e-18j 0.25+0.00000000e+00j\n 0.25+5.55111512e-17j]",
+          "max_eigenvalue": 0.24999999999999986,
+          "min_eigenvalue": 0.24999999999999972,
+          "condition_number": 1.0000000000000002,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "coupling_variation",
+      "perturbation_magnitude": 5.0,
+      "perturbation_info": {
+        "type": "coupling_variation",
+        "magnitude": 5.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "coupling_phase_0_2": 0.6599339306899505,
+        "coupling_phase_0_3": 2.0870989339335937,
+        "coupling_phase_1_2": -4.898859115971696,
+        "coupling_phase_1_3": -0.6805520829256848,
+        "fixed_point_phase_0_2": 1.2206853648683356,
+        "fixed_point_phase_0_3": -2.4738826535889515,
+        "fixed_point_phase_1_2": 3.1857358246889698,
+        "fixed_point_phase_1_3": -3.07922267776172
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999991,
+        "fidelity_history": [
+          0.9999999999999991
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01+4.64780771e-19j  9.13872003e-19+2.61527725e-18j\n   2.27376551e-18+3.70431883e-18j -1.06552584e-18-4.44832386e-19j]\n [ 9.13872003e-19+2.18217971e-18j  2.50000000e-01+3.25379250e-19j\n   5.16956075e-19+6.89752565e-19j  2.10847199e-18-3.10062669e-18j]\n [ 2.27376551e-18+4.45026691e-18j  5.16956075e-19-4.54843263e-19j\n   2.50000000e-01+8.65568924e-19j  7.15579321e-19-1.66216384e-19j]\n [-2.12362427e-18+2.74753638e-18j  1.21071145e-19-7.66889776e-19j\n  -7.02028463e-19-1.20934461e-18j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999996
+        ],
+        "purities": [
+          "(0.24999999999999978+8.278644725847026e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999996,
+          "purity": "(0.24999999999999978+8.278644725847026e-19j)",
+          "eigenvalues": "[0.25+4.64780771e-19j 0.25-2.77555756e-17j 0.25+0.00000000e+00j\n 0.25+1.38777878e-17j]",
+          "max_eigenvalue": 0.24999999999999994,
+          "min_eigenvalue": 0.24999999999999983,
+          "condition_number": 1.0,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    },
+    {
+      "perturbation_type": "coupling_variation",
+      "perturbation_magnitude": 10.0,
+      "perturbation_info": {
+        "type": "coupling_variation",
+        "magnitude": 10.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "coupling_phase_0_2": 1.1551344331723057,
+        "coupling_phase_0_3": -9.4557543824925,
+        "coupling_phase_1_2": -1.5524309945072607,
+        "coupling_phase_1_3": 2.8769431058515553,
+        "fixed_point_phase_0_2": -4.17671518981774,
+        "fixed_point_phase_0_3": -1.9332651877264486,
+        "fixed_point_phase_1_2": -9.503297394727783,
+        "fixed_point_phase_1_3": -3.238849146345168
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "density_matrices": [
+          "[[ 2.50000000e-01-1.12601317e-19j -2.07692875e-18+1.93514836e-18j\n  -5.93696084e-20-3.23799997e-19j  3.18677108e-18+1.42165326e-18j]\n [-2.07692875e-18+2.94557653e-18j  2.50000000e-01+1.02769978e-18j\n   1.66132557e-18-1.33665092e-18j  1.15301105e-18-4.21419195e-18j]\n [-5.93696084e-20+7.91485911e-18j  1.66132557e-18-1.11977515e-18j\n   2.50000000e-01+6.77646161e-19j  4.32132093e-19-8.75659553e-19j]\n [-2.49419518e-18-1.85159037e-18j -9.73434682e-19+9.59288887e-19j\n   1.02195328e-18+5.41965502e-19j  2.50000000e-01+0.00000000e+00j]]"
+        ],
+        "entropies": [
+          1.9999999999999996
+        ],
+        "purities": [
+          "(0.24999999999999964+7.963723131739411e-19j)"
+        ],
+        "numerical_issues": []
+      },
+      "final_analysis": {
+        "iteration": 1,
+        "is_trivial": true,
+        "is_maximally_mixed": true,
+        "is_pure": false,
+        "entropy": 2.0,
+        "purity": "(0.25+0j)",
+        "eigenvalues": "[0.25+0.j 0.25+0.j 0.25+0.j 0.25+0.j]",
+        "max_eigenvalue": 0.25,
+        "min_eigenvalue": 0.25,
+        "condition_number": 1.0,
+        "numerical_issues": []
+      },
+      "iteration_analyses": [
+        {
+          "iteration": 1,
+          "is_trivial": true,
+          "is_maximally_mixed": true,
+          "is_pure": false,
+          "entropy": 1.9999999999999996,
+          "purity": "(0.24999999999999964+7.963723131739411e-19j)",
+          "eigenvalues": "[0.25-1.12601317e-19j 0.25+1.38777878e-17j 0.25+1.56488212e-17j\n 0.25+2.68882139e-17j]",
+          "max_eigenvalue": 0.24999999999999983,
+          "min_eigenvalue": 0.24999999999999978,
+          "condition_number": 1.0000000000000002,
+          "numerical_issues": []
+        }
+      ],
+      "success": true,
+      "is_trivial": true,
+      "numerical_issues": false
+    }
+  ]
+}

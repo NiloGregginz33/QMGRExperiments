@@ -1,0 +1,66 @@
+IMPROVED DEUTSCH CTC EXPERIMENT REPORT
+=======================================
+Generated: 2025-08-01 21:02:58
+
+EXECUTIVE SUMMARY
+==================
+Total experiments: 12
+Success rate: 100.00%
+Non-trivial solutions: 2 (16.67%)
+Trivial solutions: 10 (83.33%)
+Average interesting score: 0.021-0.000j
+CONCLUSION: PARTIAL SUCCESS - Found some non-trivial fixed points
+
+DETAILED ANALYSIS BY CIRCUIT TYPE
+==================================
+
+QUANTUM_WALK:
+  Success rate: 100.00%
+  Non-trivial rate: 50.00%
+  Average interesting score: 0.063-0.000j
+
+TOPOLOGICAL:
+  Success rate: 100.00%
+  Non-trivial rate: 0.00%
+  Average interesting score: 0.000
+
+ENTANGLED:
+  Success rate: 100.00%
+  Non-trivial rate: 0.00%
+  Average interesting score: 0.000
+
+DETAILED ANALYSIS BY INITIAL STRATEGY
+=====================================
+
+COHERENT:
+  Success rate: 100.00%
+  Non-trivial rate: 0.00%
+  Average interesting score: 0.000
+
+RANDOM_PURE:
+  Success rate: 100.00%
+  Non-trivial rate: 33.33%
+  Average interesting score: 0.042+0.000j
+
+BELL_LIKE:
+  Success rate: 100.00%
+  Non-trivial rate: 0.00%
+  Average interesting score: 0.000
+
+RANDOM_MIXED:
+  Success rate: 100.00%
+  Non-trivial rate: 33.33%
+  Average interesting score: 0.042-0.000j
+
+BEST RESULTS
+============
+No non-trivial results found.
+
+[ANALYSIS] Visualization: improved_deutsch_results_20250801_210258.png
+
+CONCLUSIONS
+===========
+[PARTIAL] We found some non-trivial fixed points.
+Further improvements may be needed.
+
+Overall, the improved Deutsch CTC implementation shows promise!

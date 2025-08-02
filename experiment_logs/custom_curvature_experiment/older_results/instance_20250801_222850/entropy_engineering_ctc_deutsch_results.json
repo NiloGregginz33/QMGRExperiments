@@ -1,0 +1,53 @@
+{
+  "success": true,
+  "target_entropies": [
+    0.2,
+    0.7,
+    1.3
+  ],
+  "achieved_entropies": [
+    0.5956599136513735,
+    0.5956599136513735,
+    6.406853007629834e-16
+  ],
+  "parameters": {
+    "entanglement_strength": 0.5831081218179169,
+    "weight": 0.6711246294043413,
+    "gamma": 0.16404273587378793,
+    "sigma": 0.17563273775597443,
+    "init_angle": 2.3053843926634574,
+    "timesteps": 3,
+    "asymmetry_strength": 0.6958896272188524
+  },
+  "loss": 0.7959376302095628,
+  "iterations": 0,
+  "optimization_result": {
+    "fun": 0.7959376302095628,
+    "jac": [
+      0.20019134027599456,
+      0.285350330818149,
+      -0.009005152184237515,
+      0.0035126568339209326,
+      -0.019790880166167524,
+      0.06000000532907055,
+      0.013917800175688352
+    ],
+    "nfev": 128,
+    "njev": 16,
+    "nit": 0,
+    "status": 2,
+    "message": "ABNORMAL_TERMINATION_IN_LNSRCH",
+    "x": [
+      0.5831081218179169,
+      0.6711246294043413,
+      0.16404273587378793,
+      0.17563273775597443,
+      2.3053843926634574,
+      3.0,
+      0.6958896272188524
+    ],
+    "success": false,
+    "hess_inv": "<7x7 LbfgsInvHessProduct with dtype=float64>"
+  },
+  "warning": "Used fallback parameters due to: ABNORMAL_TERMINATION_IN_LNSRCH"
+}

@@ -1,0 +1,53 @@
+{
+  "success": true,
+  "target_entropies": [
+    0.1,
+    0.4,
+    0.9
+  ],
+  "achieved_entropies": [
+    0.6341162479079803,
+    0.6341162479079802,
+    3.2034265038149176e-16
+  ],
+  "parameters": {
+    "entanglement_strength": 1.048648165082431,
+    "weight": 1.2380616896037808,
+    "gamma": 0.3850586878254032,
+    "sigma": 0.4976255127881789,
+    "init_angle": 1.1116207055708442,
+    "timesteps": 3,
+    "asymmetry_strength": 0.677222589996056
+  },
+  "loss": 0.5205904488869126,
+  "iterations": 0,
+  "optimization_result": {
+    "fun": 0.5205904488869126,
+    "jac": [
+      0.19554622484645393,
+      0.02505122791111359,
+      0.02209028516827803,
+      0.009952516593879057,
+      0.10965801666737869,
+      0.06000000532907055,
+      0.013544454378843378
+    ],
+    "nfev": 128,
+    "njev": 16,
+    "nit": 0,
+    "status": 2,
+    "message": "ABNORMAL: ",
+    "x": [
+      1.048648165082431,
+      1.2380616896037808,
+      0.3850586878254032,
+      0.4976255127881789,
+      1.1116207055708442,
+      3.0,
+      0.677222589996056
+    ],
+    "success": false,
+    "hess_inv": "<7x7 LbfgsInvHessProduct with dtype=float64>"
+  },
+  "warning": "Used fallback parameters due to: ABNORMAL: "
+}
