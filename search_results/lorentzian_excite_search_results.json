@@ -1,0 +1,510 @@
+{
+  "search_criteria": {
+    "lorentzian_flag": true,
+    "excite_flag": true,
+    "min_qubits": 10
+  },
+  "total_matching_instances": 14,
+  "matching_instances": [
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536",
+      "instance_name": "instance_20250726_153536",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\advanced_analysis_results.json",
+          "file_name": "advanced_analysis_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\analysis_results.json",
+          "file_name": "analysis_results.json",
+          "qubit_count": null,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\comprehensive_analysis_results.json",
+          "file_name": "comprehensive_analysis_results.json",
+          "qubit_count": null,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\corrected_analysis_results.json",
+          "file_name": "corrected_analysis_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\enhanced_analysis_results.json",
+          "file_name": "enhanced_analysis_results.json",
+          "qubit_count": null,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\error_analysis_results.json",
+          "file_name": "error_analysis_results.json",
+          "qubit_count": null,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\final_validation_results.json",
+          "file_name": "final_validation_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\mi_distance_correlation_summary.json",
+          "file_name": "mi_distance_correlation_summary.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\quantum_emergent_spacetime_results.json",
+          "file_name": "quantum_emergent_spacetime_results.json",
+          "qubit_count": null,
+          "has_lorentzian": true,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\quantum_validation_results_curvature.json",
+          "file_name": "quantum_validation_results_curvature.json",
+          "qubit_count": null,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\results_n11_geomS_curv20_ibm_brisbane_KTNW95.json",
+          "file_name": "results_n11_geomS_curv20_ibm_brisbane_KTNW95.json",
+          "qubit_count": 11,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\results_n11_geomS_curv20_ibm_brisbane_NEGC3D.json",
+          "file_name": "results_n11_geomS_curv20_ibm_brisbane_NEGC3D.json",
+          "qubit_count": 11,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250726_153536\\statistical_significance_results.json",
+          "file_name": "statistical_significance_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        }
+      ],
+      "qubit_count": 11,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250730_223752",
+      "instance_name": "instance_20250730_223752",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250730_223752\\results_n10_geomS_curv10_ibm_brisbane_6EM17G.json",
+          "file_name": "results_n10_geomS_curv10_ibm_brisbane_6EM17G.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 10,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_190955",
+      "instance_name": "instance_20250731_190955",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_190955\\extraordinary_evidence_results.json",
+          "file_name": "extraordinary_evidence_results.json",
+          "qubit_count": null,
+          "has_lorentzian": true,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_190955\\quantum_emergent_spacetime_results.json",
+          "file_name": "quantum_emergent_spacetime_results.json",
+          "qubit_count": null,
+          "has_lorentzian": true,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_190955\\results_n12_geomS_curv12_ibm_brisbane_6BK68O.json",
+          "file_name": "results_n12_geomS_curv12_ibm_brisbane_6BK68O.json",
+          "qubit_count": 12,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_190955\\results_n12_geomS_curv12_ibm_brisbane_MWBYQN.json",
+          "file_name": "results_n12_geomS_curv12_ibm_brisbane_MWBYQN.json",
+          "qubit_count": 12,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 12,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_194831",
+      "instance_name": "instance_20250731_194831",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_194831\\quantum_emergent_spacetime_results.json",
+          "file_name": "quantum_emergent_spacetime_results.json",
+          "qubit_count": null,
+          "has_lorentzian": true,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_194831\\results_n12_geomH_curv10_ibm_brisbane_BAC21T.json",
+          "file_name": "results_n12_geomH_curv10_ibm_brisbane_BAC21T.json",
+          "qubit_count": 12,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_194831\\results_n12_geomH_curv10_ibm_brisbane_JY0SLH.json",
+          "file_name": "results_n12_geomH_curv10_ibm_brisbane_JY0SLH.json",
+          "qubit_count": 12,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 12,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_235102",
+      "instance_name": "instance_20250731_235102",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_235102\\entropy_engineering_quantum_gravity_results.json",
+          "file_name": "entropy_engineering_quantum_gravity_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_235102\\results_n10_geomS_curv12_ibm_brisbane_O3YT4M.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_O3YT4M.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 10,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_235158",
+      "instance_name": "instance_20250731_235158",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_235158\\entropy_engineering_quantum_gravity_results.json",
+          "file_name": "entropy_engineering_quantum_gravity_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_235158\\results_n10_geomS_curv12_ibm_brisbane_JY86I0.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_JY86I0.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 10,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_235843",
+      "instance_name": "instance_20250731_235843",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_235843\\results_n10_geomS_curv12_ibm_brisbane_7KLFY0.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_7KLFY0.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250731_235843\\results_n10_geomS_curv12_ibm_brisbane_HA540D.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_HA540D.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 10,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_001046",
+      "instance_name": "instance_20250801_001046",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_001046\\results_n10_geomS_curv12_ibm_brisbane_DKAHIC.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_DKAHIC.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 10,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_002253",
+      "instance_name": "instance_20250801_002253",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_002253\\entropy_engineering_quantum_gravity_results.json",
+          "file_name": "entropy_engineering_quantum_gravity_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_002253\\results_n10_geomS_curv12_ibm_brisbane_U0TCNI.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_U0TCNI.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 10,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_003710",
+      "instance_name": "instance_20250801_003710",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_003710\\entropy_engineering_quantum_gravity_results.json",
+          "file_name": "entropy_engineering_quantum_gravity_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_003710\\results_n10_geomS_curv12_ibm_brisbane_VMLTXX.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_VMLTXX.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 10,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_004535",
+      "instance_name": "instance_20250801_004535",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_004535\\entropy_engineering_quantum_gravity_results.json",
+          "file_name": "entropy_engineering_quantum_gravity_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_004535\\results_n10_geomS_curv12_ibm_torino_XB7N6Q.json",
+          "file_name": "results_n10_geomS_curv12_ibm_torino_XB7N6Q.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 10,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_004810",
+      "instance_name": "instance_20250801_004810",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_004810\\entropy_engineering_quantum_gravity_results.json",
+          "file_name": "entropy_engineering_quantum_gravity_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_004810\\results_n10_geomS_curv12_ibm_brisbane_H22RSA.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_H22RSA.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_004810\\results_n10_geomS_curv12_ibm_brisbane_PYF6IQ.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_PYF6IQ.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 10,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_075511",
+      "instance_name": "instance_20250801_075511",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_075511\\comprehensive_analysis_results.json",
+          "file_name": "comprehensive_analysis_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_075511\\entropy_engineering_quantum_gravity_results.json",
+          "file_name": "entropy_engineering_quantum_gravity_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_075511\\results_n10_geomS_curv12_ibm_brisbane_9R74W1.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_9R74W1.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_075511\\results_n10_geomS_curv12_ibm_brisbane_N53W6S.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_N53W6S.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 10,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    },
+    {
+      "instance_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_151659",
+      "instance_name": "instance_20250801_151659",
+      "matching_files": [
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_151659\\entropy_engineering_quantum_gravity_results.json",
+          "file_name": "entropy_engineering_quantum_gravity_results.json",
+          "qubit_count": null,
+          "has_lorentzian": false,
+          "has_excite": false,
+          "meets_criteria": false
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_151659\\results_n10_geomS_curv12_ibm_brisbane_KCZFCB.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_KCZFCB.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        },
+        {
+          "file_path": "experiment_logs\\custom_curvature_experiment\\older_results\\instance_20250801_151659\\results_n10_geomS_curv12_ibm_brisbane_YN20MK.json",
+          "file_name": "results_n10_geomS_curv12_ibm_brisbane_YN20MK.json",
+          "qubit_count": 10,
+          "has_lorentzian": true,
+          "has_excite": true,
+          "meets_criteria": true
+        }
+      ],
+      "qubit_count": 10,
+      "has_lorentzian": true,
+      "has_excite": true,
+      "meets_criteria": true
+    }
+  ],
+  "summary": {
+    "qubit_distribution": {
+      "11": 1,
+      "10": 11,
+      "12": 2
+    },
+    "flag_combinations": {}
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "experiment_info": {
+    "num_qubits": 6,
+    "num_trials": 40,
+    "min_iters": 10,
+    "timestamp": "2025-08-01T21:48:21.657706",
+    "experiment_type": "aggressive_non_trivial_search"
+  },
+  "aggressive_results": []
+}

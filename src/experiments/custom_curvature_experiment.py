@@ -692,6 +692,90 @@ def analyze_einstein_entanglement_relation(mi_matrix, coordinates, entropy_per_t
     }
 
 # Helper functions for extracting results from Sampler primitive
+def find_cgpt_mi_file_for_timestep(target_timestep):
+    """Find CGPTFactory MI file for a specific timestep."""
+    import glob
+    import os
+    from datetime import datetime
+    
+    # Look for CGPTFactory MI files for the specific timestep
+    mi_files = glob.glob(f"cgpt_mi_values_t{target_timestep:03d}_*.json")
+    
+    if not mi_files:
+        # Fallback: look for any MI file and check its timestep
+        all_mi_files = glob.glob("cgpt_mi_values_*.json")
+        for file in all_mi_files:
+            try:
+                with open(file, 'r') as f:
+                    mi_data = json.load(f)
+                if mi_data.get('timestep', 0) == target_timestep:
+                    return mi_data
+            except:
+                continue
+        return None
+    
+    # Sort by timestamp (newest first) and return the latest for this timestep
+    mi_files.sort(reverse=True)
+    latest_file = mi_files[0]
+    
+    try:
+        with open(latest_file, 'r') as f:
+            mi_data = json.load(f)
+        return mi_data
+    except Exception as e:
+        print(f"[WARNING] Could not read MI file {latest_file}: {e}")
+        return None
+
+def find_latest_cgpt_mi_file():
+    """Find the latest CGPTFactory MI file (fallback for backward compatibility)."""
+    import glob
+    import os
+    from datetime import datetime
+    
+    # Look for CGPTFactory MI files
+    mi_files = glob.glob("cgpt_mi_values_*.json")
+    
+    if not mi_files:
+        return None
+    
+    # Sort by timestamp (newest first)
+    mi_files.sort(reverse=True)
+    latest_file = mi_files[0]
+    
+    try:
+        with open(latest_file, 'r') as f:
+            mi_data = json.load(f)
+        return mi_data
+    except Exception as e:
+        print(f"[WARNING] Could not read MI file {latest_file}: {e}")
+        return None
+
+def extract_mi_from_cgpt_output(output_text):
+    """Extract MI values from CGPTFactory output automatically."""
+    import re
+    
+    # Look for the pattern: Mutual information: {'I_0,1': np.float64(value), ...}
+    mi_pattern = r"Mutual information: \{([^}]+)\}"
+    match = re.search(mi_pattern, output_text)
+    
+    if not match:
+        return None
+    
+    mi_str = match.group(1)
+    # Parse the MI dictionary
+    mi_dict = {}
+    
+    # Extract individual MI values
+    mi_items = re.findall(r"'([^']+)': np\.float64\(([^)]+)\)", mi_str)
+    for key, value in mi_items:
+        try:
+            mi_dict[key] = float(value)
+        except ValueError:
+            print(f"Warning: Could not parse MI value {value} for key {key}")
+            mi_dict[key] = None
+    
+    return mi_dict
+
 def extract_bitarray_from_primitive(result):
     """Extract bitarray from Sampler primitive result"""
     try:
@@ -789,6 +873,13 @@ p.add_argument("--excite", action="store_true", default=True, help="Enable bulk 
 p.add_argument("--fast", action="store_true", help="Fast mode: skip expensive computations (geometric embedding, Lorentzian MDS, Regge evolution)")
 p.add_argument("--fast_preset", type=str, default="balanced", choices=["minimal", "balanced", "comprehensive", "research", "fast", "ultra_fast", "entropy_ultra_fast"], help="Fast mode preset configuration")
 p.add_argument("--ctc_mode", action="store_true", help="Enable Closed Timelike Curve mode (works with any geometry)")
+p.add_argument("--ctc_perturbation", type=str, default=None, 
+               choices=["bit_flip", "phase_flip", "rotation", "entanglement_break", "controlled_perturbation", "temporal_shift", "amplitude_damping", "decoherence"],
+               help="Apply perturbation to CTC to test recovery")
+p.add_argument("--ctc_perturbation_strength", type=float, default=1.0,
+               help="Strength of CTC perturbation (0.1 to 2.0)")
+p.add_argument("--test_ctc_recovery", action="store_true", default=False,
+               help="Test CTC recovery by comparing perturbed and unperturbed circuits")
 p.add_argument("--strong_curvature", action="store_true", default=True, help="Apply stronger curvature effects for cleaner negative-curvature signals")
 p.add_argument("--charge_injection", action="store_true", default=True, help="Enable charge injection for stronger bulk-boundary coupling")
 p.add_argument("--charge_strength", type=float, default=2.5, help="Strength of charge injection (default: 2.5)")
@@ -1106,7 +1197,7 @@ def _apply_scalable_entanglement(qc, num_qubits, pattern="hierarchical"):
                     coupling = 1.0 / (1.0 + np.log2(distance + 1))
                     qc.rzz(coupling, i, j)
 
-def _apply_ctc_circuit_structure(qc, num_qubits, ctc_type="standard"):
+def _apply_ctc_circuit_structure(qc, num_qubits, ctc_type="standard", perturbation=None, perturbation_strength=1.0):
     """Apply actual CTC circuit structure based on dedicated CTC experiments."""
     if ctc_type == "standard":
         # Standard CTC loop structure from ctc_conditional_perturbation_experiment
@@ -1121,6 +1212,10 @@ def _apply_ctc_circuit_structure(qc, num_qubits, ctc_type="standard"):
         for i in range(num_qubits):
             qc.t(i)  # T-gate breaks time-reversal symmetry
             qc.rz(np.pi/4, i)
+        
+        # Apply perturbation if specified
+        if perturbation:
+            _apply_ctc_perturbation(qc, num_qubits, perturbation, perturbation_strength)
     
     elif ctc_type == "paradox":
         # CTC paradox structure from ctc_loop_experiment
@@ -1137,6 +1232,10 @@ def _apply_ctc_circuit_structure(qc, num_qubits, ctc_type="standard"):
         for i in range(num_qubits):
             qc.t(i)
             qc.rz(np.pi/4, i)
+        
+        # Apply perturbation during forward evolution
+        if perturbation:
+            _apply_ctc_perturbation(qc, num_qubits, perturbation, perturbation_strength)
         
         # Reverse evolution (paradox creation)
         for i in range(num_qubits - 1):
@@ -1162,6 +1261,10 @@ def _apply_ctc_circuit_structure(qc, num_qubits, ctc_type="standard"):
         for i in range(num_qubits):
             qc.rz(np.pi/2, i)
             qc.s(i)  # S-gate for phase consistency
+        
+        # Apply perturbation to test causal consistency
+        if perturbation:
+            _apply_ctc_perturbation(qc, num_qubits, perturbation, perturbation_strength)
     
     elif ctc_type == "deutsch":
         # Deutsch fixed-point CTC implementation
@@ -1190,6 +1293,10 @@ def _apply_ctc_circuit_structure(qc, num_qubits, ctc_type="standard"):
             qc.t(i)  # T-gate breaks time-reversal symmetry
             qc.rz(np.pi/3, i)
         
+        # Apply perturbation to loop qubits
+        if perturbation:
+            _apply_ctc_perturbation(qc, loop_qubits, perturbation, perturbation_strength)
+        
         # Create the CTC loop structure
         if loop_qubits > 1:
             for i in range(loop_qubits):
@@ -1202,6 +1309,207 @@ def _apply_ctc_circuit_structure(qc, num_qubits, ctc_type="standard"):
         for i in range(loop_qubits):
             for j in range(loop_qubits, num_qubits):
                 qc.cp(np.pi/2, i, j)  # Controlled phase for fixed point
+
+def _apply_ctc_perturbation(qc, num_qubits, perturbation_type, strength=1.0):
+    """Apply various types of perturbations to test CTC robustness."""
+    print(f"[CTC PERTURBATION] Applying {perturbation_type} perturbation with strength {strength}")
+    
+    if perturbation_type == "bit_flip":
+        # Bit flip perturbation: X gate on random qubit
+        target_qubit = 0  # Perturb first qubit
+        qc.x(target_qubit)
+        print(f"[CTC PERTURBATION] Applied X gate to qubit {target_qubit}")
+    
+    elif perturbation_type == "phase_flip":
+        # Phase flip perturbation: Z gate on random qubit
+        target_qubit = 0  # Perturb first qubit
+        qc.z(target_qubit)
+        print(f"[CTC PERTURBATION] Applied Z gate to qubit {target_qubit}")
+    
+    elif perturbation_type == "rotation":
+        # Rotation perturbation: RX gate with random angle
+        target_qubit = 0  # Perturb first qubit
+        angle = strength * np.pi / 4
+        qc.rx(angle, target_qubit)
+        print(f"[CTC PERTURBATION] Applied RX({angle:.3f}) to qubit {target_qubit}")
+    
+    elif perturbation_type == "entanglement_break":
+        # Break entanglement: apply H gate to disrupt correlations
+        target_qubit = 0  # Perturb first qubit
+        qc.h(target_qubit)
+        print(f"[CTC PERTURBATION] Applied H gate to qubit {target_qubit} to break entanglement")
+    
+    elif perturbation_type == "controlled_perturbation":
+        # Controlled perturbation: CX gate to create conditional disturbance
+        control_qubit = 0
+        target_qubit = 1
+        qc.cx(control_qubit, target_qubit)
+        print(f"[CTC PERTURBATION] Applied CX({control_qubit}, {target_qubit}) controlled perturbation")
+    
+    elif perturbation_type == "temporal_shift":
+        # Temporal shift: apply T gate to shift phase in time
+        target_qubit = 0
+        qc.t(target_qubit)
+        print(f"[CTC PERTURBATION] Applied T gate to qubit {target_qubit} for temporal shift")
+    
+    elif perturbation_type == "amplitude_damping":
+        # Simulate amplitude damping: apply RY gate
+        target_qubit = 0
+        angle = strength * np.pi / 6
+        qc.ry(angle, target_qubit)
+        print(f"[CTC PERTURBATION] Applied RY({angle:.3f}) to qubit {target_qubit} for amplitude damping")
+    
+    elif perturbation_type == "decoherence":
+        # Simulate decoherence: apply random rotation
+        target_qubit = 0
+        qc.rx(strength * np.pi / 8, target_qubit)
+        qc.ry(strength * np.pi / 8, target_qubit)
+        qc.rz(strength * np.pi / 8, target_qubit)
+        print(f"[CTC PERTURBATION] Applied decoherence simulation to qubit {target_qubit}")
+    
+    else:
+        print(f"[CTC PERTURBATION] Unknown perturbation type: {perturbation_type}")
+
+def test_ctc_recovery(qc_original, qc_perturbed, num_qubits, device="simulator", shots=1024):
+    """
+    Test CTC recovery by comparing original and perturbed circuits.
+    
+    Args:
+        qc_original: Original CTC circuit without perturbation
+        qc_perturbed: CTC circuit with perturbation
+        num_qubits: Number of qubits
+        device: Device to run on
+        shots: Number of shots
+    
+    Returns:
+        recovery_metrics: Dictionary with recovery analysis
+    """
+    print(f"[CTC RECOVERY] Testing CTC recovery with {num_qubits} qubits on {device}")
+    
+    try:
+        # Run both circuits
+        from CGPTFactory import run
+        
+        # Run original circuit
+        print(f"[CTC RECOVERY] Running original CTC circuit...")
+        result_original = run(qc_original, device=device, shots=shots)
+        counts_original = extract_bitarray_from_primitive(result_original)
+        
+        # Run perturbed circuit
+        print(f"[CTC RECOVERY] Running perturbed CTC circuit...")
+        result_perturbed = run(qc_perturbed, device=device, shots=shots)
+        counts_perturbed = extract_bitarray_from_primitive(result_perturbed)
+        
+        # Convert bitstrings to counts format
+        if counts_original:
+            orig_counts = {}
+            for bitstring in counts_original:
+                orig_counts[bitstring] = orig_counts.get(bitstring, 0) + 1
+        else:
+            orig_counts = {}
+        
+        if counts_perturbed:
+            pert_counts = {}
+            for bitstring in counts_perturbed:
+                pert_counts[bitstring] = pert_counts.get(bitstring, 0) + 1
+        else:
+            pert_counts = {}
+        
+        # Calculate recovery metrics
+        recovery_metrics = _calculate_recovery_metrics(orig_counts, pert_counts, num_qubits)
+        
+        print(f"[CTC RECOVERY] Recovery analysis complete!")
+        print(f"   - Fidelity: {recovery_metrics['fidelity']:.4f}")
+        print(f"   - Entropy difference: {recovery_metrics['entropy_difference']:.4f}")
+        print(f"   - MI correlation: {recovery_metrics['mi_correlation']:.4f}")
+        print(f"   - Recovery score: {recovery_metrics['recovery_score']:.4f}")
+        
+        return recovery_metrics
+        
+    except Exception as e:
+        print(f"[CTC RECOVERY] Error during recovery testing: {e}")
+        return {
+            'fidelity': 0.0,
+            'entropy_difference': 1.0,
+            'mi_correlation': 0.0,
+            'recovery_score': 0.0,
+            'error': str(e)
+        }
+
+def _calculate_recovery_metrics(counts_original, counts_perturbed, num_qubits):
+    """Calculate recovery metrics between original and perturbed results."""
+    
+    # Calculate fidelities
+    fidelity = _calculate_fidelity(counts_original, counts_perturbed)
+    
+    # Calculate entropy differences
+    entropy_orig = calculate_entropy(counts_original) if counts_original else 0.0
+    entropy_pert = calculate_entropy(counts_perturbed) if counts_perturbed else 0.0
+    entropy_difference = abs(entropy_orig - entropy_pert)
+    
+    # Calculate MI correlations
+    mi_orig = mi_from_subsystem_entropies(counts_original, num_qubits) if counts_original else {}
+    mi_pert = mi_from_subsystem_entropies(counts_perturbed, num_qubits) if counts_perturbed else {}
+    
+    mi_correlation = _calculate_mi_correlation(mi_orig, mi_pert)
+    
+    # Calculate overall recovery score (0-1, higher is better recovery)
+    recovery_score = (fidelity + (1.0 - entropy_difference) + mi_correlation) / 3.0
+    
+    return {
+        'fidelity': fidelity,
+        'entropy_difference': entropy_difference,
+        'mi_correlation': mi_correlation,
+        'recovery_score': recovery_score,
+        'entropy_original': entropy_orig,
+        'entropy_perturbed': entropy_pert,
+        'mi_original': mi_orig,
+        'mi_perturbed': mi_pert
+    }
+
+def _calculate_fidelity(counts1, counts2):
+    """Calculate fidelity between two count distributions."""
+    if not counts1 or not counts2:
+        return 0.0
+    
+    # Normalize to probabilities
+    total1 = sum(counts1.values())
+    total2 = sum(counts2.values())
+    
+    if total1 == 0 or total2 == 0:
+        return 0.0
+    
+    # Calculate Bhattacharyya coefficient (fidelity)
+    fidelity = 0.0
+    all_bitstrings = set(counts1.keys()) | set(counts2.keys())
+    
+    for bitstring in all_bitstrings:
+        p1 = counts1.get(bitstring, 0) / total1
+        p2 = counts2.get(bitstring, 0) / total2
+        fidelity += np.sqrt(p1 * p2)
+    
+    return fidelity
+
+def _calculate_mi_correlation(mi1, mi2):
+    """Calculate correlation between two MI dictionaries."""
+    if not mi1 or not mi2:
+        return 0.0
+    
+    # Get common keys
+    common_keys = set(mi1.keys()) & set(mi2.keys())
+    if not common_keys:
+        return 0.0
+    
+    # Extract values for common keys
+    values1 = [mi1[key] for key in common_keys]
+    values2 = [mi2[key] for key in common_keys]
+    
+    # Calculate correlation
+    if len(values1) > 1:
+        correlation = np.corrcoef(values1, values2)[0, 1]
+        return correlation if not np.isnan(correlation) else 0.0
+    else:
+        return 0.0
 
 def _apply_error_mitigation_circuit(qc, num_qubits):
     """Apply error mitigation techniques to the circuit."""
@@ -4355,7 +4663,45 @@ if __name__ == "__main__":
         if args.target_entropy_pattern.startswith('ctc'):
             print(f"[CTC] Applying {args.target_entropy_pattern} circuit structure")
             ctc_type = args.target_entropy_pattern.replace('ctc_', '') if args.target_entropy_pattern != 'ctc' else 'standard'
-            _apply_ctc_circuit_structure(qc, args.num_qubits, ctc_type)
+            
+            # Create both original and perturbed circuits if testing recovery
+            if args.test_ctc_recovery and args.ctc_perturbation:
+                print(f"[CTC RECOVERY] Creating original and perturbed CTC circuits for recovery testing")
+                
+                # Create original circuit (no perturbation)
+                qc_original = qc.copy()
+                _apply_ctc_circuit_structure(qc_original, args.num_qubits, ctc_type)
+                
+                # Create perturbed circuit
+                qc_perturbed = qc.copy()
+                _apply_ctc_circuit_structure(qc_perturbed, args.num_qubits, ctc_type, 
+                                           args.ctc_perturbation, args.ctc_perturbation_strength)
+                
+                # Test recovery
+                recovery_metrics = test_ctc_recovery(qc_original, qc_perturbed, args.num_qubits, 
+                                                   args.device, args.shots)
+                
+                # Store recovery results
+                ctc_recovery_results = {
+                    'perturbation_type': args.ctc_perturbation,
+                    'perturbation_strength': args.ctc_perturbation_strength,
+                    'ctc_type': ctc_type,
+                    'recovery_metrics': recovery_metrics,
+                    'device': args.device,
+                    'shots': args.shots
+                }
+                
+                print(f"[CTC RECOVERY] Recovery testing complete!")
+                print(f"   - Recovery Score: {recovery_metrics['recovery_score']:.4f}")
+                print(f"   - Fidelity: {recovery_metrics['fidelity']:.4f}")
+                print(f"   - MI Correlation: {recovery_metrics['mi_correlation']:.4f}")
+                
+                # Use perturbed circuit for main experiment
+                qc = qc_perturbed
+            else:
+                # Standard CTC application (with optional perturbation)
+                _apply_ctc_circuit_structure(qc, args.num_qubits, ctc_type, 
+                                           args.ctc_perturbation, args.ctc_perturbation_strength)
             
             # Special handling for Deutsch fixed-point CTC
             if ctc_type == "deutsch":
@@ -4398,6 +4744,13 @@ if __name__ == "__main__":
         mi_per_timestep = []
         distmat_per_timestep = []
         counts_per_timestep = []  # Store counts from all timesteps
+        
+        # Global variable to store working MI from CGPTFactory
+        working_mi_dict = None
+        
+        # Set up global timestep tracking for CGPTFactory
+        import sys
+        sys.modules['__main__'].current_timestep = 0
         entropy_per_timestep = []  # Store entropy from all timesteps
         job_ids_per_timestep = []  # Store job IDs from all timesteps
         # BOUNDARY ENTROPY TRACKING: Store boundary entropies for RT relation testing
@@ -4421,6 +4774,10 @@ if __name__ == "__main__":
         for t, circ in enumerate(circuits):
             # Update overall progress
             overall_pbar.update(1)
+            
+            # Set current timestep for CGPTFactory
+            sys.modules['__main__'].current_timestep = t
+            print(f"[TIMESTEP] Processing timestep {t+1}/{len(circuits)}")
             
             # For simulator, use statevector
             if args.device == "simulator":
@@ -4671,14 +5028,28 @@ if __name__ == "__main__":
                                 result = cgpt_run(circ, backend=cgpt_backend, shots=args.shots)
                                 if isinstance(result, dict) and 'counts' in result:
                                     counts = result['counts']
+                                    print(f"[DEBUG] CGPTFactory result keys: {list(result.keys())}")
+                                    mi_dict = result['mutual_information']
+                                    print(f"[DEBUG] mi_dict from CGPTFactory: {mi_dict}")
+                                    
+                                    # Store the working MI for later use
+                                    if mi_dict is not None and len(mi_dict) > 0:
+                                        working_mi_dict = {k: float(v) for k, v in mi_dict.items()}
+                                        print(f"[DEBUG] Stored working MI: {working_mi_dict}")
+                                    else:
+                                        # Try to extract MI from CGPTFactory output if not in result
+                                        print("[DEBUG] Attempting to extract MI from CGPTFactory output...")
+                                        # This will be handled by the automatic extraction function
+                                    
                                     print(f"[ZNE] CGPTFactory run successful, got {len(counts)} count entries")
                                 else:
                                     print(f"[ZNE] CGPTFactory returned unexpected format: {type(result)}")
-                                    counts = run_circuit_with_mitigation(circ, args.shots, args.device, use_mitigation=False)
+                                    # Use CGPTFactory run instead of mitigation
+                                    counts, dist, mi_dict = cgpt_run(circ, backend=cgpt_backend, shots=args.shots)
                             except Exception as e:
                                 print(f"[ZNE] Error with CGPTFactory run: {e}")
-                                print("[ZNE] Using fallback execution")
-                                counts = run_circuit_with_mitigation(circ, args.shots, args.device, use_mitigation=False)
+                                print("[ZNE] Using CGPTFactory fallback execution")
+                                counts = cgpt_run(circ, backend=cgpt_backend, shots=args.shots)
                         else:
                             # Standard execution with hardware optimization for real backends
                             if args.device != "simulator":
@@ -4794,11 +5165,20 @@ if __name__ == "__main__":
                                 mi_matrix[i, j] = mi_value
                                 mi_matrix[j, i] = mi_value
                         
-                        # Convert to dictionary format for compatibility
-                        mi_dict = {}
-                        for i in range(n):
-                            for j in range(i+1, n):
-                                mi_dict[f"I_{i},{j}"] = mi_matrix[i, j]
+                        # Use working MI from CGPTFactory if available, otherwise use manual calculation
+                        if working_mi_dict is not None and len(working_mi_dict) > 0:
+                            # Use the working MI from CGPTFactory
+                            mi_dict = working_mi_dict.copy()
+                            print(f"[DEBUG] Using working MI from CGPTFactory: {mi_dict}")
+                        elif 'mi_dict' not in locals() or mi_dict is None or len(mi_dict) == 0:
+                            # Convert to dictionary format for compatibility
+                            mi_dict = {}
+                            for i in range(n):
+                                for j in range(i+1, n):
+                                    mi_dict[f"I_{i},{j}"] = mi_matrix[i, j]
+                            print(f"[DEBUG] Using manual MI calculation: {mi_dict}")
+                        else:
+                            print(f"[DEBUG] Using existing MI: {mi_dict}")
                         
                         # === QUANTUM STATE OUTPUT FOR VALIDATION (HARDWARE) ===
                         # For hardware, we can only extract MI matrix from counts, not full statevector
@@ -6210,6 +6590,58 @@ if __name__ == "__main__":
             matter_out = [{str(h): v for h, v in mt.items()} for mt in matter_per_timestep]
         else:
             matter_out = {str(h): v for h, v in matter.items()}
+        
+            # AUTOMATIC MI EXTRACTION: Use working MI from CGPTFactory if available
+    if working_mi_dict is not None and len(working_mi_dict) > 0:
+        print(f"[AUTO-MI] Using working MI from CGPTFactory: {working_mi_dict}")
+        # Update the MI per timestep with working values
+        if len(mi_per_timestep) > 0:
+            mi_per_timestep[0] = working_mi_dict.copy()
+            print(f"[AUTO-MI] Updated first timestep MI with working values")
+        else:
+            mi_per_timestep.append(working_mi_dict.copy())
+            print(f"[AUTO-MI] Added working MI as first timestep")
+    else:
+        # Try to find MI files for each timestep
+        print("[AUTO-MI] No working MI found from CGPTFactory, checking for auto-saved MI files per timestep...")
+        
+        # Read MI files for each timestep
+        for timestep_idx in range(len(mi_per_timestep)):
+            timestep_mi_data = find_cgpt_mi_file_for_timestep(timestep_idx)
+            
+            if timestep_mi_data is not None and 'mutual_information' in timestep_mi_data:
+                timestep_mi_dict = timestep_mi_data['mutual_information']
+                print(f"[AUTO-MI] Found MI for timestep {timestep_idx}: {timestep_mi_dict}")
+                
+                # Update the MI for this specific timestep
+                if timestep_idx < len(mi_per_timestep):
+                    mi_per_timestep[timestep_idx] = timestep_mi_dict.copy()
+                    print(f"[AUTO-MI] Updated timestep {timestep_idx} MI with auto-saved values")
+                else:
+                    mi_per_timestep.append(timestep_mi_dict.copy())
+                    print(f"[AUTO-MI] Added auto-saved MI for timestep {timestep_idx}")
+            else:
+                print(f"[AUTO-MI] No auto-saved MI file found for timestep {timestep_idx}")
+        
+        # Fallback: try to find latest MI file if no per-timestep files found
+        if all(mi is None or len(mi) == 0 for mi in mi_per_timestep):
+            print("[AUTO-MI] No per-timestep MI files found, trying latest MI file...")
+            latest_mi_data = find_latest_cgpt_mi_file()
+            
+            if latest_mi_data is not None and 'mutual_information' in latest_mi_data:
+                auto_mi_dict = latest_mi_data['mutual_information']
+                print(f"[AUTO-MI] Found fallback MI from CGPTFactory: {auto_mi_dict}")
+                
+                # Update the MI per timestep with auto-saved values
+                if len(mi_per_timestep) > 0:
+                    mi_per_timestep[0] = auto_mi_dict.copy()
+                    print(f"[AUTO-MI] Updated first timestep MI with fallback values")
+                else:
+                    mi_per_timestep.append(auto_mi_dict.copy())
+                    print(f"[AUTO-MI] Added fallback MI as first timestep")
+            else:
+                print("[AUTO-MI] No auto-saved MI file found from CGPTFactory")
+        
         with open(output_path, 'w') as f:
             json.dump({
                 "spec": {**vars(args), "curvature": kappa, "custom_edges": custom_edges, "timesteps": args.timesteps},
@@ -6281,6 +6713,8 @@ if __name__ == "__main__":
                 "page_curve_analysis": page_curve_analysis,
                 # DEUTSCH FIXED-POINT CTC ANALYSIS
                 "deutsch_ctc_analysis": deutsch_results if 'deutsch_results' in locals() else None,
+                # CTC RECOVERY TESTING RESULTS
+                "ctc_recovery_analysis": ctc_recovery_results if 'ctc_recovery_results' in locals() else None,
                 # EINSTEIN SOLVER: EMERGENT GRAVITY FROM ENTANGLEMENT
                 "einstein_analysis": einstein_analysis,
                 # DYNAMIC EVIDENCE: Comprehensive evolution tracking

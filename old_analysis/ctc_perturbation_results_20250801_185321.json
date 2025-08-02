@@ -1,0 +1,600 @@
+{
+  "experiment_info": {
+    "num_qubits": 4,
+    "device": "simulator",
+    "shots": 512,
+    "timestamp": "2025-08-01T18:53:20.654194"
+  },
+  "perturbation_results": [
+    {
+      "perturbation_type": "none",
+      "perturbation_magnitude": 0.0,
+      "perturbation_info": {
+        "type": "none",
+        "magnitude": 0.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 1.0471975511965976,
+        "loop_rotation_1": 1.0471975511965976
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "01": 124,
+        "10": 118,
+        "00": 127,
+        "11": 143
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "none",
+      "perturbation_magnitude": 0.05,
+      "perturbation_info": {
+        "type": "none",
+        "magnitude": 0.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 1.0471975511965976,
+        "loop_rotation_1": 1.0471975511965976
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "00": 150,
+        "10": 125,
+        "11": 131,
+        "01": 106
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "none",
+      "perturbation_magnitude": 0.1,
+      "perturbation_info": {
+        "type": "none",
+        "magnitude": 0.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 1.0471975511965976,
+        "loop_rotation_1": 1.0471975511965976
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "11": 128,
+        "00": 121,
+        "10": 137,
+        "01": 126
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "none",
+      "perturbation_magnitude": 0.15,
+      "perturbation_info": {
+        "type": "none",
+        "magnitude": 0.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 1.0471975511965976,
+        "loop_rotation_1": 1.0471975511965976
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "01": 129,
+        "10": 122,
+        "00": 137,
+        "11": 124
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "none",
+      "perturbation_magnitude": 0.2,
+      "perturbation_info": {
+        "type": "none",
+        "magnitude": 0.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 1.0471975511965976,
+        "loop_rotation_1": 1.0471975511965976
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "10": 133,
+        "01": 127,
+        "00": 134,
+        "11": 118
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "circuit_noise",
+      "perturbation_magnitude": 0.0,
+      "perturbation_info": {
+        "type": "circuit_noise",
+        "magnitude": 0.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 1.0471975511965976,
+        "loop_rotation_1": 1.0471975511965976
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "11": 133,
+        "01": 131,
+        "00": 122,
+        "10": 126
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "circuit_noise",
+      "perturbation_magnitude": 0.05,
+      "perturbation_info": {
+        "type": "circuit_noise",
+        "magnitude": 0.05,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 1.060645049777774,
+        "loop_rotation_1": 1.044319239067104
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999987,
+        "fidelity_history": [
+          0.9999999999999987
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "11": 138,
+        "01": 112,
+        "00": 126,
+        "10": 136
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "circuit_noise",
+      "perturbation_magnitude": 0.1,
+      "perturbation_info": {
+        "type": "circuit_noise",
+        "magnitude": 0.1,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 0.9950037685492936,
+        "loop_rotation_1": 1.0347429809867699
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999987,
+        "fidelity_history": [
+          0.9999999999999987
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "01": 132,
+        "00": 140,
+        "10": 123,
+        "11": 117
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "circuit_noise",
+      "perturbation_magnitude": 0.15,
+      "perturbation_info": {
+        "type": "circuit_noise",
+        "magnitude": 0.15,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 1.114575446670728,
+        "loop_rotation_1": 0.9349131439453838
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "11": 129,
+        "00": 141,
+        "01": 132,
+        "10": 110
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "circuit_noise",
+      "perturbation_magnitude": 0.2,
+      "perturbation_info": {
+        "type": "circuit_noise",
+        "magnitude": 0.2,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "loop_rotation_0": 1.1669268962668842,
+        "loop_rotation_1": 1.1461240733456357
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999991,
+        "fidelity_history": [
+          0.9999999999999991
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "10": 140,
+        "00": 139,
+        "11": 117,
+        "01": 116
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "initial_state",
+      "perturbation_magnitude": 0.0,
+      "perturbation_info": {
+        "type": "initial_state",
+        "magnitude": 0.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "bulk_rotation_2": 0.0,
+        "bulk_rotation_3": 0.0
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "11": 122,
+        "01": 155,
+        "00": 124,
+        "10": 111
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "initial_state",
+      "perturbation_magnitude": 0.05,
+      "perturbation_info": {
+        "type": "initial_state",
+        "magnitude": 0.05,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "bulk_rotation_2": -0.026687930424007078,
+        "bulk_rotation_3": 0.003994615300783158
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "10": 117,
+        "01": 136,
+        "11": 142,
+        "00": 117
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "initial_state",
+      "perturbation_magnitude": 0.1,
+      "perturbation_info": {
+        "type": "initial_state",
+        "magnitude": 0.1,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "bulk_rotation_2": -0.11828754461410519,
+        "bulk_rotation_3": -0.07792876297966231
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999998,
+        "fidelity_history": [
+          0.9999999999999998
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "11": 131,
+        "00": 138,
+        "01": 144,
+        "10": 99
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "initial_state",
+      "perturbation_magnitude": 0.15,
+      "perturbation_info": {
+        "type": "initial_state",
+        "magnitude": 0.15,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "bulk_rotation_2": 0.016276817710592122,
+        "bulk_rotation_3": -0.0876788936788931
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 1.0,
+        "fidelity_history": [
+          1.0
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "10": 129,
+        "11": 145,
+        "01": 117,
+        "00": 121
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "initial_state",
+      "perturbation_magnitude": 0.2,
+      "perturbation_info": {
+        "type": "initial_state",
+        "magnitude": 0.2,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "bulk_rotation_2": 0.1990475653349869,
+        "bulk_rotation_3": -0.08583425764801915
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999996,
+        "fidelity_history": [
+          0.9999999999999996
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "10": 144,
+        "11": 130,
+        "01": 135,
+        "00": 103
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "coupling_variation",
+      "perturbation_magnitude": 0.0,
+      "perturbation_info": {
+        "type": "coupling_variation",
+        "magnitude": 0.0,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "coupling_phase_0_2": 0.7853981633974483,
+        "coupling_phase_0_3": 0.7853981633974483,
+        "coupling_phase_1_2": 0.7853981633974483,
+        "coupling_phase_1_3": 0.7853981633974483,
+        "fixed_point_phase_0_2": 1.5707963267948966,
+        "fixed_point_phase_0_3": 1.5707963267948966,
+        "fixed_point_phase_1_2": 1.5707963267948966,
+        "fixed_point_phase_1_3": 1.5707963267948966
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999993,
+        "fidelity_history": [
+          0.9999999999999993
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "00": 132,
+        "10": 126,
+        "01": 124,
+        "11": 130
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "coupling_variation",
+      "perturbation_magnitude": 0.05,
+      "perturbation_info": {
+        "type": "coupling_variation",
+        "magnitude": 0.05,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "coupling_phase_0_2": 0.7007420478327225,
+        "coupling_phase_0_3": 0.7774817508983768,
+        "coupling_phase_1_2": 0.7456764036271525,
+        "coupling_phase_1_3": 0.7560658824898812,
+        "fixed_point_phase_0_2": 1.5642603269026674,
+        "fixed_point_phase_0_3": 1.5740726925893518,
+        "fixed_point_phase_1_2": 1.504803140266012,
+        "fixed_point_phase_1_3": 1.6759344225587756
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999996,
+        "fidelity_history": [
+          0.9999999999999996
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "01": 111,
+        "11": 141,
+        "10": 133,
+        "00": 127
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "coupling_variation",
+      "perturbation_magnitude": 0.1,
+      "perturbation_info": {
+        "type": "coupling_variation",
+        "magnitude": 0.1,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "coupling_phase_0_2": 0.869215822646812,
+        "coupling_phase_0_3": 0.8543209333532101,
+        "coupling_phase_1_2": 0.7708766728253313,
+        "coupling_phase_1_3": 0.7593611218190746,
+        "fixed_point_phase_0_2": 1.5805116618256703,
+        "fixed_point_phase_0_3": 1.5829810899232604,
+        "fixed_point_phase_1_2": 1.4731047284450238,
+        "fixed_point_phase_1_3": 1.5167054616045157
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 1.0,
+        "fidelity_history": [
+          1.0
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "00": 115,
+        "11": 122,
+        "01": 136,
+        "10": 139
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "coupling_variation",
+      "perturbation_magnitude": 0.15,
+      "perturbation_info": {
+        "type": "coupling_variation",
+        "magnitude": 0.15,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "coupling_phase_0_2": 0.7741624306504177,
+        "coupling_phase_0_3": 0.8369080380850843,
+        "coupling_phase_1_2": 0.7551096518352527,
+        "coupling_phase_1_3": 0.766588778537767,
+        "fixed_point_phase_0_2": 1.5196565720265818,
+        "fixed_point_phase_0_3": 1.4757399996775193,
+        "fixed_point_phase_1_2": 1.6177741669679833,
+        "fixed_point_phase_1_3": 1.4581880908352667
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 0.9999999999999996,
+        "fidelity_history": [
+          0.9999999999999996
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "10": 123,
+        "00": 130,
+        "11": 136,
+        "01": 123
+      },
+      "success": true
+    },
+    {
+      "perturbation_type": "coupling_variation",
+      "perturbation_magnitude": 0.2,
+      "perturbation_info": {
+        "type": "coupling_variation",
+        "magnitude": 0.2,
+        "loop_qubits": 2,
+        "bulk_qubits": 2,
+        "coupling_phase_0_2": 0.7780769153084901,
+        "coupling_phase_0_3": 0.65940676973587,
+        "coupling_phase_1_2": 0.9797150691192746,
+        "coupling_phase_1_3": 0.7161806648034492,
+        "fixed_point_phase_0_2": 1.4407857724081161,
+        "fixed_point_phase_0_3": 1.5340605248333874,
+        "fixed_point_phase_1_2": 1.6911729498362325,
+        "fixed_point_phase_1_3": 1.5238174617681293
+      },
+      "convergence_info": {
+        "iterations": 1,
+        "converged": true,
+        "final_fidelity": 1.0,
+        "fidelity_history": [
+          1.0
+        ],
+        "perturbation_effects": []
+      },
+      "counts": {
+        "10": 123,
+        "00": 121,
+        "01": 142,
+        "11": 126
+      },
+      "success": true
+    }
+  ]
+}
