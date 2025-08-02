@@ -1,0 +1,4897 @@
+{
+  "spec": {
+    "num_qubits": 8,
+    "topology": "triangulated",
+    "custom_edges": "0-1:1.0000,0-2:0.6697,0-3:1.0000,0-4:1.0000,0-5:0.5482,0-6:0.5482,0-7:1.0000,1-2:1.0000,1-3:0.2499,1-4:1.0000,1-5:0.2576,1-6:0.2547,1-7:1.0000,2-3:0.0500,2-4:0.0500,2-5:0.1323,2-6:0.0500,2-7:1.0000,3-4:0.0500,3-5:0.0500,3-6:1.0000,3-7:0.5588,4-5:0.9305,4-6:0.0500,4-7:0.1550,5-6:0.9855,5-7:0.0500,6-7:1.0000",
+    "alpha": 0.8,
+    "weight": 0.8449320889933839,
+    "gamma": 0.10989089958673293,
+    "sigma": 0.4693948550885605,
+    "init_angle": 2.983561218586072,
+    "init_angles": null,
+    "shots": 4096,
+    "device": "ibm_brisbane",
+    "geometry": "spherical",
+    "curvature": 15.0,
+    "timesteps": 3,
+    "dimension": 2,
+    "mass_hinge": null,
+    "mass_value": 0.0,
+    "solve_regge": false,
+    "lorentzian": true,
+    "excite": true,
+    "fast": true,
+    "fast_preset": "ultra_fast",
+    "ctc_mode": false,
+    "ctc_perturbation": null,
+    "ctc_perturbation_strength": 1.0,
+    "test_ctc_recovery": false,
+    "strong_curvature": true,
+    "charge_injection": true,
+    "charge_strength": 2.5,
+    "charge_location": null,
+    "spin_injection": true,
+    "spin_strength": 2.0,
+    "spin_location": null,
+    "edge_floor": 0.001,
+    "compute_entropies": true,
+    "hyperbolic_triangulation": true,
+    "trotter_steps": 8,
+    "dt": 0.05,
+    "analyze_curvature": true,
+    "einstein_solver": true,
+    "page_curve": true,
+    "radiation_ordering": null,
+    "page_curve_timesteps": 15,
+    "entropy_method": "hybrid",
+    "num_shadows": 100,
+    "shots_per_shadow": 1000,
+    "num_bases": 20,
+    "shots_per_basis": 1000,
+    "enhanced_entanglement": false,
+    "entanglement_strength": 0.5523937733617925,
+    "interpolate_geometry": false,
+    "smooth_charge_injection": false,
+    "min_qubits_for_continuum": 10,
+    "benchmark_against_classical_geometry": true,
+    "geometry_fit_metric": "wasserstein,kl,euclidean",
+    "verify_noise_robustness": true,
+    "run_on_multiple_backends": false,
+    "detect_and_flag_causal_loops": true,
+    "restrict_information_flow_direction": "bidirectional",
+    "filter_noncausal_edges": true,
+    "use_ryu_takayanagi_test": true,
+    "compare_MI_vs_subsystem_entropy": true,
+    "embed_boundary_entropy_in_geometry": true,
+    "entropy_engineering": true,
+    "target_entropy_pattern": "quantum_gravity",
+    "custom_target_entropies": null,
+    "entropy_optimization_iterations": 200,
+    "entropy_tolerance": 0.05,
+    "continue_on_engineering_failure": true,
+    "skip_entropy_engineering": false,
+    "validate_engineered_geometry": true,
+    "enhance_bell_violations": true,
+    "bell_entanglement_strength": 4.0,
+    "teleportation_circuits": true,
+    "long_range_coupling": 3.0,
+    "holographic_optimization": true,
+    "rt_surface_encoding": true,
+    "conformal_symmetry": true,
+    "bulk_reconstruction": true,
+    "scalable_entanglement": true,
+    "parallel_execution": true,
+    "memory_optimization": true,
+    "circuit_compilation": "optimized",
+    "real_hardware": true,
+    "error_mitigation": true,
+    "zero_noise_extrapolation": true,
+    "zne_noise_factors": [
+      1.0,
+      2.0,
+      3.0
+    ],
+    "zne_extrapolation_method": "polynomial",
+    "hardware_calibration": true,
+    "noise_characterization": true,
+    "backend_name": "ibm_brisbane",
+    "quantum_mode": true,
+    "quantum_entanglement_strength": 5.0,
+    "quantum_circuit_depth": 12
+  },
+  "uid": "B1OOCJ",
+  "counts_per_timestep": [
+    null,
+    null,
+    null
+  ],
+  "job_ids_per_timestep": [],
+  "entropy_per_timestep": [
+    null,
+    null,
+    null
+  ],
+  "mutual_information_per_timestep": [
+    {
+      "I_0,1": NaN,
+      "I_0,2": NaN,
+      "I_0,3": NaN,
+      "I_0,4": NaN,
+      "I_0,5": NaN,
+      "I_0,6": NaN,
+      "I_0,7": NaN,
+      "I_1,2": NaN,
+      "I_1,3": NaN,
+      "I_1,4": NaN,
+      "I_1,5": NaN,
+      "I_1,6": NaN,
+      "I_1,7": NaN,
+      "I_2,3": NaN,
+      "I_2,4": NaN,
+      "I_2,5": NaN,
+      "I_2,6": NaN,
+      "I_2,7": NaN,
+      "I_3,4": NaN,
+      "I_3,5": NaN,
+      "I_3,6": NaN,
+      "I_3,7": NaN,
+      "I_4,5": NaN,
+      "I_4,6": NaN,
+      "I_4,7": NaN,
+      "I_5,6": NaN,
+      "I_5,7": NaN,
+      "I_6,7": NaN
+    },
+    {
+      "I_0,1": NaN,
+      "I_0,2": NaN,
+      "I_0,3": NaN,
+      "I_0,4": NaN,
+      "I_0,5": NaN,
+      "I_0,6": NaN,
+      "I_0,7": NaN,
+      "I_1,2": NaN,
+      "I_1,3": NaN,
+      "I_1,4": NaN,
+      "I_1,5": NaN,
+      "I_1,6": NaN,
+      "I_1,7": NaN,
+      "I_2,3": NaN,
+      "I_2,4": NaN,
+      "I_2,5": NaN,
+      "I_2,6": NaN,
+      "I_2,7": NaN,
+      "I_3,4": NaN,
+      "I_3,5": NaN,
+      "I_3,6": NaN,
+      "I_3,7": NaN,
+      "I_4,5": NaN,
+      "I_4,6": NaN,
+      "I_4,7": NaN,
+      "I_5,6": NaN,
+      "I_5,7": NaN,
+      "I_6,7": NaN
+    },
+    {
+      "I_0,1": NaN,
+      "I_0,2": NaN,
+      "I_0,3": NaN,
+      "I_0,4": NaN,
+      "I_0,5": NaN,
+      "I_0,6": NaN,
+      "I_0,7": NaN,
+      "I_1,2": NaN,
+      "I_1,3": NaN,
+      "I_1,4": NaN,
+      "I_1,5": NaN,
+      "I_1,6": NaN,
+      "I_1,7": NaN,
+      "I_2,3": NaN,
+      "I_2,4": NaN,
+      "I_2,5": NaN,
+      "I_2,6": NaN,
+      "I_2,7": NaN,
+      "I_3,4": NaN,
+      "I_3,5": NaN,
+      "I_3,6": NaN,
+      "I_3,7": NaN,
+      "I_4,5": NaN,
+      "I_4,6": NaN,
+      "I_4,7": NaN,
+      "I_5,6": NaN,
+      "I_5,7": NaN,
+      "I_6,7": NaN
+    }
+  ],
+  "boundary_entropies_per_timestep": [
+    {
+      "entropy_A": 0.3,
+      "entropy_B": 0.4,
+      "mi_AB": 0.1,
+      "pure_state_check": false,
+      "entropy_difference": 0.1,
+      "multiple_regions": {
+        "size_1_region_0": {
+          "region": [
+            0
+          ],
+          "entropy": 0.25,
+          "rt_area": 7,
+          "size": 1
+        },
+        "size_1_region_1": {
+          "region": [
+            0
+          ],
+          "entropy": 0.25,
+          "rt_area": 7,
+          "size": 1
+        },
+        "size_2_region_0": {
+          "region": [
+            0,
+            1
+          ],
+          "entropy": 0.30000000000000004,
+          "rt_area": 12,
+          "size": 2
+        },
+        "size_2_region_1": {
+          "region": [
+            0,
+            1
+          ],
+          "entropy": 0.30000000000000004,
+          "rt_area": 12,
+          "size": 2
+        },
+        "size_3_region_0": {
+          "region": [
+            0,
+            1,
+            2
+          ],
+          "entropy": 0.35000000000000003,
+          "rt_area": 15,
+          "size": 3
+        },
+        "size_3_region_1": {
+          "region": [
+            0,
+            1,
+            2
+          ],
+          "entropy": 0.35000000000000003,
+          "rt_area": 15,
+          "size": 3
+        },
+        "size_4_region_0": {
+          "region": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "entropy": 0.4,
+          "rt_area": 16,
+          "size": 4
+        },
+        "size_4_region_1": {
+          "region": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "entropy": 0.4,
+          "rt_area": 16,
+          "size": 4
+        },
+        "size_5_region_0": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "entropy": 0.45,
+          "rt_area": 15,
+          "size": 5
+        },
+        "size_5_region_1": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "entropy": 0.45,
+          "rt_area": 15,
+          "size": 5
+        },
+        "size_6_region_0": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "entropy": 0.5,
+          "rt_area": 12,
+          "size": 6
+        },
+        "size_6_region_1": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "entropy": 0.5,
+          "rt_area": 12,
+          "size": 6
+        },
+        "size_7_region_0": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "entropy": 0.55,
+          "rt_area": 7,
+          "size": 7
+        },
+        "size_7_region_1": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "entropy": 0.55,
+          "rt_area": 7,
+          "size": 7
+        }
+      }
+    },
+    {
+      "entropy_A": 0.3,
+      "entropy_B": 0.4,
+      "mi_AB": 0.1,
+      "pure_state_check": false,
+      "entropy_difference": 0.1,
+      "multiple_regions": {
+        "size_1_region_0": {
+          "region": [
+            0
+          ],
+          "entropy": 0.25,
+          "rt_area": 7,
+          "size": 1
+        },
+        "size_1_region_1": {
+          "region": [
+            0
+          ],
+          "entropy": 0.25,
+          "rt_area": 7,
+          "size": 1
+        },
+        "size_2_region_0": {
+          "region": [
+            0,
+            1
+          ],
+          "entropy": 0.30000000000000004,
+          "rt_area": 12,
+          "size": 2
+        },
+        "size_2_region_1": {
+          "region": [
+            0,
+            1
+          ],
+          "entropy": 0.30000000000000004,
+          "rt_area": 12,
+          "size": 2
+        },
+        "size_3_region_0": {
+          "region": [
+            0,
+            1,
+            2
+          ],
+          "entropy": 0.35000000000000003,
+          "rt_area": 15,
+          "size": 3
+        },
+        "size_3_region_1": {
+          "region": [
+            0,
+            1,
+            2
+          ],
+          "entropy": 0.35000000000000003,
+          "rt_area": 15,
+          "size": 3
+        },
+        "size_4_region_0": {
+          "region": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "entropy": 0.4,
+          "rt_area": 16,
+          "size": 4
+        },
+        "size_4_region_1": {
+          "region": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "entropy": 0.4,
+          "rt_area": 16,
+          "size": 4
+        },
+        "size_5_region_0": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "entropy": 0.45,
+          "rt_area": 15,
+          "size": 5
+        },
+        "size_5_region_1": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "entropy": 0.45,
+          "rt_area": 15,
+          "size": 5
+        },
+        "size_6_region_0": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "entropy": 0.5,
+          "rt_area": 12,
+          "size": 6
+        },
+        "size_6_region_1": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "entropy": 0.5,
+          "rt_area": 12,
+          "size": 6
+        },
+        "size_7_region_0": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "entropy": 0.55,
+          "rt_area": 7,
+          "size": 7
+        },
+        "size_7_region_1": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "entropy": 0.55,
+          "rt_area": 7,
+          "size": 7
+        }
+      }
+    },
+    {
+      "entropy_A": 0.3,
+      "entropy_B": 0.4,
+      "mi_AB": 0.1,
+      "pure_state_check": false,
+      "entropy_difference": 0.1,
+      "multiple_regions": {
+        "size_1_region_0": {
+          "region": [
+            0
+          ],
+          "entropy": 0.25,
+          "rt_area": 7,
+          "size": 1
+        },
+        "size_1_region_1": {
+          "region": [
+            0
+          ],
+          "entropy": 0.25,
+          "rt_area": 7,
+          "size": 1
+        },
+        "size_2_region_0": {
+          "region": [
+            0,
+            1
+          ],
+          "entropy": 0.30000000000000004,
+          "rt_area": 12,
+          "size": 2
+        },
+        "size_2_region_1": {
+          "region": [
+            0,
+            1
+          ],
+          "entropy": 0.30000000000000004,
+          "rt_area": 12,
+          "size": 2
+        },
+        "size_3_region_0": {
+          "region": [
+            0,
+            1,
+            2
+          ],
+          "entropy": 0.35000000000000003,
+          "rt_area": 15,
+          "size": 3
+        },
+        "size_3_region_1": {
+          "region": [
+            0,
+            1,
+            2
+          ],
+          "entropy": 0.35000000000000003,
+          "rt_area": 15,
+          "size": 3
+        },
+        "size_4_region_0": {
+          "region": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "entropy": 0.4,
+          "rt_area": 16,
+          "size": 4
+        },
+        "size_4_region_1": {
+          "region": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "entropy": 0.4,
+          "rt_area": 16,
+          "size": 4
+        },
+        "size_5_region_0": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "entropy": 0.45,
+          "rt_area": 15,
+          "size": 5
+        },
+        "size_5_region_1": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "entropy": 0.45,
+          "rt_area": 15,
+          "size": 5
+        },
+        "size_6_region_0": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "entropy": 0.5,
+          "rt_area": 12,
+          "size": 6
+        },
+        "size_6_region_1": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "entropy": 0.5,
+          "rt_area": 12,
+          "size": 6
+        },
+        "size_7_region_0": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "entropy": 0.55,
+          "rt_area": 7,
+          "size": 7
+        },
+        "size_7_region_1": {
+          "region": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "entropy": 0.55,
+          "rt_area": 7,
+          "size": 7
+        }
+      }
+    }
+  ],
+  "distance_matrix_per_timestep": [
+    [
+      [
+        0.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        0.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        0.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        0.0
+      ]
+    ],
+    [
+      [
+        0.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        0.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        0.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        0.0
+      ]
+    ],
+    [
+      [
+        0.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        0.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        0.0,
+        2.0
+      ],
+      [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        0.0
+      ]
+    ]
+  ],
+  "edge_mi": {
+    "0,1": NaN,
+    "0,7": NaN,
+    "0,2": NaN,
+    "0,6": NaN,
+    "0,3": NaN,
+    "0,5": NaN,
+    "1,2": NaN,
+    "1,4": NaN,
+    "1,6": NaN,
+    "2,3": NaN,
+    "2,4": NaN,
+    "2,5": NaN,
+    "2,7": NaN,
+    "3,4": NaN,
+    "3,6": NaN,
+    "4,5": NaN,
+    "4,6": NaN,
+    "4,7": NaN,
+    "5,6": NaN,
+    "6,7": NaN
+  },
+  "distance_matrix": [
+    [
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0
+    ]
+  ],
+  "shortest_paths": {
+    "0": {
+      "0": 0,
+      "1": Infinity,
+      "2": Infinity,
+      "3": Infinity,
+      "4": Infinity,
+      "5": Infinity,
+      "6": Infinity,
+      "7": Infinity
+    },
+    "1": {
+      "1": 0,
+      "0": Infinity,
+      "2": Infinity,
+      "3": Infinity,
+      "4": Infinity,
+      "5": Infinity,
+      "6": Infinity,
+      "7": Infinity
+    },
+    "2": {
+      "2": 0,
+      "0": Infinity,
+      "1": Infinity,
+      "3": Infinity,
+      "4": Infinity,
+      "5": Infinity,
+      "6": Infinity,
+      "7": Infinity
+    },
+    "3": {
+      "3": 0,
+      "0": Infinity,
+      "1": Infinity,
+      "2": Infinity,
+      "4": Infinity,
+      "5": Infinity,
+      "6": Infinity,
+      "7": Infinity
+    },
+    "4": {
+      "4": 0,
+      "0": Infinity,
+      "1": Infinity,
+      "2": Infinity,
+      "3": Infinity,
+      "5": Infinity,
+      "6": Infinity,
+      "7": Infinity
+    },
+    "5": {
+      "5": 0,
+      "0": Infinity,
+      "1": Infinity,
+      "2": Infinity,
+      "3": Infinity,
+      "4": Infinity,
+      "6": Infinity,
+      "7": Infinity
+    },
+    "6": {
+      "6": 0,
+      "0": Infinity,
+      "1": Infinity,
+      "2": Infinity,
+      "3": Infinity,
+      "4": Infinity,
+      "5": Infinity,
+      "7": Infinity
+    },
+    "7": {
+      "7": 0,
+      "0": Infinity,
+      "1": Infinity,
+      "2": Infinity,
+      "3": Infinity,
+      "4": Infinity,
+      "5": Infinity,
+      "6": Infinity
+    }
+  },
+  "gromov_delta": 0.0,
+  "mean_distance": 0.0,
+  "angle_sums": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "mean_angle_sum": 0.0,
+  "min_angle_sum": 0.0,
+  "max_angle_sum": 0.0,
+  "angle_sum_deviations": [
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793,
+    -3.141592653589793
+  ],
+  "triangle_inequality_violations": [],
+  "embedding_coords": null,
+  "edge_weight_variance": 0.16839452336734695,
+  "event_nodes": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      3,
+      0
+    ],
+    [
+      4,
+      0
+    ],
+    [
+      5,
+      0
+    ],
+    [
+      6,
+      0
+    ],
+    [
+      7,
+      0
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      3,
+      1
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      5,
+      1
+    ],
+    [
+      6,
+      1
+    ],
+    [
+      7,
+      1
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      5,
+      2
+    ],
+    [
+      6,
+      2
+    ],
+    [
+      7,
+      2
+    ]
+  ],
+  "event_edges": [
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        1,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        2,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        3,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        4,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        5,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        6,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        7,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        0
+      ],
+      "to": [
+        2,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        0
+      ],
+      "to": [
+        3,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        0
+      ],
+      "to": [
+        4,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        0
+      ],
+      "to": [
+        5,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        0
+      ],
+      "to": [
+        6,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        0
+      ],
+      "to": [
+        7,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        0
+      ],
+      "to": [
+        3,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        0
+      ],
+      "to": [
+        4,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        0
+      ],
+      "to": [
+        5,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        0
+      ],
+      "to": [
+        6,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        0
+      ],
+      "to": [
+        7,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        3,
+        0
+      ],
+      "to": [
+        4,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        3,
+        0
+      ],
+      "to": [
+        5,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        3,
+        0
+      ],
+      "to": [
+        6,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        3,
+        0
+      ],
+      "to": [
+        7,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        4,
+        0
+      ],
+      "to": [
+        5,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        4,
+        0
+      ],
+      "to": [
+        6,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        4,
+        0
+      ],
+      "to": [
+        7,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        5,
+        0
+      ],
+      "to": [
+        6,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        5,
+        0
+      ],
+      "to": [
+        7,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        6,
+        0
+      ],
+      "to": [
+        7,
+        0
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "temporal",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        0,
+        1
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        1,
+        0
+      ],
+      "to": [
+        1,
+        1
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        2,
+        0
+      ],
+      "to": [
+        2,
+        1
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        3,
+        0
+      ],
+      "to": [
+        3,
+        1
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        4,
+        0
+      ],
+      "to": [
+        4,
+        1
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        5,
+        0
+      ],
+      "to": [
+        5,
+        1
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        6,
+        0
+      ],
+      "to": [
+        6,
+        1
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        7,
+        0
+      ],
+      "to": [
+        7,
+        1
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        1
+      ],
+      "to": [
+        1,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        1
+      ],
+      "to": [
+        2,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        1
+      ],
+      "to": [
+        3,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        1
+      ],
+      "to": [
+        4,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        1
+      ],
+      "to": [
+        5,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        1
+      ],
+      "to": [
+        6,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        1
+      ],
+      "to": [
+        7,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        1
+      ],
+      "to": [
+        2,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        1
+      ],
+      "to": [
+        3,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        1
+      ],
+      "to": [
+        4,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        1
+      ],
+      "to": [
+        5,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        1
+      ],
+      "to": [
+        6,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        1
+      ],
+      "to": [
+        7,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        1
+      ],
+      "to": [
+        3,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        1
+      ],
+      "to": [
+        4,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        1
+      ],
+      "to": [
+        5,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        1
+      ],
+      "to": [
+        6,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        1
+      ],
+      "to": [
+        7,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        3,
+        1
+      ],
+      "to": [
+        4,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        3,
+        1
+      ],
+      "to": [
+        5,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        3,
+        1
+      ],
+      "to": [
+        6,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        3,
+        1
+      ],
+      "to": [
+        7,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        4,
+        1
+      ],
+      "to": [
+        5,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        4,
+        1
+      ],
+      "to": [
+        6,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        4,
+        1
+      ],
+      "to": [
+        7,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        5,
+        1
+      ],
+      "to": [
+        6,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        5,
+        1
+      ],
+      "to": [
+        7,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        6,
+        1
+      ],
+      "to": [
+        7,
+        1
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "temporal",
+      "from": [
+        0,
+        1
+      ],
+      "to": [
+        0,
+        2
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        1,
+        1
+      ],
+      "to": [
+        1,
+        2
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        2,
+        1
+      ],
+      "to": [
+        2,
+        2
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        3,
+        1
+      ],
+      "to": [
+        3,
+        2
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        4,
+        1
+      ],
+      "to": [
+        4,
+        2
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        5,
+        1
+      ],
+      "to": [
+        5,
+        2
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        6,
+        1
+      ],
+      "to": [
+        6,
+        2
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "temporal",
+      "from": [
+        7,
+        1
+      ],
+      "to": [
+        7,
+        2
+      ],
+      "weight": 1.0
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        2
+      ],
+      "to": [
+        1,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        2
+      ],
+      "to": [
+        2,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        2
+      ],
+      "to": [
+        3,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        2
+      ],
+      "to": [
+        4,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        2
+      ],
+      "to": [
+        5,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        2
+      ],
+      "to": [
+        6,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        0,
+        2
+      ],
+      "to": [
+        7,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        2
+      ],
+      "to": [
+        2,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        2
+      ],
+      "to": [
+        3,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        2
+      ],
+      "to": [
+        4,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        2
+      ],
+      "to": [
+        5,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        2
+      ],
+      "to": [
+        6,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        1,
+        2
+      ],
+      "to": [
+        7,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        2
+      ],
+      "to": [
+        3,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        2
+      ],
+      "to": [
+        4,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        2
+      ],
+      "to": [
+        5,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        2
+      ],
+      "to": [
+        6,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        2,
+        2
+      ],
+      "to": [
+        7,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        3,
+        2
+      ],
+      "to": [
+        4,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        3,
+        2
+      ],
+      "to": [
+        5,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        3,
+        2
+      ],
+      "to": [
+        6,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        3,
+        2
+      ],
+      "to": [
+        7,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        4,
+        2
+      ],
+      "to": [
+        5,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        4,
+        2
+      ],
+      "to": [
+        6,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        4,
+        2
+      ],
+      "to": [
+        7,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        5,
+        2
+      ],
+      "to": [
+        6,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        5,
+        2
+      ],
+      "to": [
+        7,
+        2
+      ],
+      "weight": Infinity
+    },
+    {
+      "type": "spatial",
+      "from": [
+        6,
+        2
+      ],
+      "to": [
+        7,
+        2
+      ],
+      "weight": Infinity
+    }
+  ],
+  "lorentzian_dissimilarity": [
+    [
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0
+    ],
+    [
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0
+    ],
+    [
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0,
+      Infinity
+    ],
+    [
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -4.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      -1.0,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      Infinity,
+      0.0
+    ]
+  ],
+  "lorentzian_embedding": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "edge_length_evolution": [],
+  "angle_deficit_evolution": [],
+  "regge_action_evolution": [],
+  "gromov_delta_evolution": [],
+  "mass_hinge": null,
+  "mass_value": 0.0,
+  "matter": [
+    {
+      "(3, 4)": 0.0,
+      "(3, 7)": 0.0,
+      "(4, 6)": 0.0,
+      "(5, 7)": 0.0,
+      "(0, 2)": 0.0,
+      "(0, 5)": 0.0,
+      "(1, 6)": 0.0,
+      "(2, 5)": 0.0,
+      "(1, 3)": 0.0,
+      "(4, 5)": 0.0,
+      "(5, 6)": 0.0,
+      "(3, 6)": 0.0,
+      "(0, 1)": 0.0,
+      "(0, 7)": 0.0,
+      "(2, 4)": 0.0,
+      "(1, 2)": 0.0,
+      "(0, 4)": 0.0,
+      "(2, 7)": 0.0,
+      "(1, 5)": 0.0,
+      "(6, 7)": 0.0,
+      "(4, 7)": 0.0,
+      "(3, 5)": 0.0,
+      "(0, 3)": 0.0,
+      "(1, 4)": 0.0,
+      "(0, 6)": 0.0,
+      "(2, 3)": 0.0,
+      "(1, 7)": 0.0,
+      "(2, 6)": 0.0
+    },
+    {
+      "(3, 4)": 0.0,
+      "(3, 7)": 0.0,
+      "(4, 6)": 0.0,
+      "(5, 7)": 0.0,
+      "(0, 2)": 0.0,
+      "(0, 5)": 0.0,
+      "(1, 6)": 0.0,
+      "(2, 5)": 0.0,
+      "(1, 3)": 0.0,
+      "(4, 5)": 0.0,
+      "(5, 6)": 0.0,
+      "(3, 6)": 0.0,
+      "(0, 1)": 0.0,
+      "(0, 7)": 0.0,
+      "(2, 4)": 0.0,
+      "(1, 2)": 0.0,
+      "(0, 4)": 0.0,
+      "(2, 7)": 0.0,
+      "(1, 5)": 0.0,
+      "(6, 7)": 0.0,
+      "(4, 7)": 0.0,
+      "(3, 5)": 0.0,
+      "(0, 3)": 0.0,
+      "(1, 4)": 0.0,
+      "(0, 6)": 0.0,
+      "(2, 3)": 0.0,
+      "(1, 7)": 0.0,
+      "(2, 6)": 0.0
+    },
+    {
+      "(3, 4)": 0.0,
+      "(3, 7)": 0.0,
+      "(4, 6)": 0.0,
+      "(5, 7)": 0.0,
+      "(0, 2)": 0.0,
+      "(0, 5)": 0.0,
+      "(1, 6)": 0.0,
+      "(2, 5)": 0.0,
+      "(1, 3)": 0.0,
+      "(4, 5)": 0.0,
+      "(5, 6)": 0.0,
+      "(3, 6)": 0.0,
+      "(0, 1)": 0.0,
+      "(0, 7)": 0.0,
+      "(2, 4)": 0.0,
+      "(1, 2)": 0.0,
+      "(0, 4)": 0.0,
+      "(2, 7)": 0.0,
+      "(1, 5)": 0.0,
+      "(6, 7)": 0.0,
+      "(4, 7)": 0.0,
+      "(3, 5)": 0.0,
+      "(0, 3)": 0.0,
+      "(1, 4)": 0.0,
+      "(0, 6)": 0.0,
+      "(2, 3)": 0.0,
+      "(1, 7)": 0.0,
+      "(2, 6)": 0.0
+    }
+  ],
+  "stationary_solution": null,
+  "einstein_analysis_per_timestep": [],
+  "bootstrap_analysis": {
+    "gromov_delta": {
+      "mean": 1.0,
+      "lower_ci": 1.0,
+      "upper_ci": 1.0,
+      "all_values": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "uncertainty": 0.0
+    },
+    "entropy": {
+      "mean": null,
+      "lower_ci": null,
+      "upper_ci": null,
+      "uncertainty": null
+    },
+    "distance_matrix": {
+      "mean": [
+        [
+          0.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          0.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          0.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0
+        ]
+      ],
+      "lower_ci": [
+        [
+          0.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          0.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          0.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0
+        ]
+      ],
+      "upper_ci": [
+        [
+          0.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          0.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          0.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          2.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0,
+          2.0
+        ],
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          0.0
+        ]
+      ]
+    }
+  },
+  "topology_compatibility": {
+    "current_topology": "triangulated",
+    "explanation": "Triangulated topology is specifically designed for angle-sum curvature. Creates multiple triangles per vertex, enabling robust local curvature measurements. Each vertex has multiple incident triangles for well-defined angle sums.",
+    "supports_local_curvature": true
+  },
+  "rt_surface_analysis": {
+    "region_A": [
+      0,
+      1
+    ],
+    "region_B": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "bulk_point": 2,
+    "is_complementary": true,
+    "rt_area_AB": 24.0,
+    "rt_area_BA": 24.0,
+    "area_consistent": true,
+    "edges_consistent": true,
+    "area_difference": 0.0,
+    "rt_edges_AB": [
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        5
+      ],
+      [
+        0,
+        6
+      ],
+      [
+        0,
+        7
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        1,
+        6
+      ],
+      [
+        1,
+        7
+      ]
+    ],
+    "rt_edges_BA": [
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        5
+      ],
+      [
+        0,
+        6
+      ],
+      [
+        0,
+        7
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        1,
+        6
+      ],
+      [
+        1,
+        7
+      ]
+    ],
+    "edge_lengths": [
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0
+    ],
+    "all_edges": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        5
+      ],
+      [
+        0,
+        6
+      ],
+      [
+        0,
+        7
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        1,
+        6
+      ],
+      [
+        1,
+        7
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        2,
+        7
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        5
+      ],
+      [
+        3,
+        6
+      ],
+      [
+        3,
+        7
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        4,
+        7
+      ],
+      [
+        5,
+        6
+      ],
+      [
+        5,
+        7
+      ],
+      [
+        6,
+        7
+      ]
+    ]
+  },
+  "bulk_excitation_analysis": {
+    "ground_state_mi": [
+      [
+        0.0,
+        1.7748723627094212,
+        0.0020257575235054226,
+        0.0018162966265902192,
+        0.0013605229431583599,
+        0.0013339469689235273,
+        0.0020257575235049785,
+        0.0018162966265904412
+      ],
+      [
+        1.7748723627094212,
+        0.0,
+        0.001816296626589775,
+        0.0027375724543103885,
+        0.0013339469689230832,
+        0.0025297191790973894,
+        0.001816296626589553,
+        0.0027375724543099444
+      ],
+      [
+        0.0020257575235054226,
+        0.001816296626589775,
+        0.0,
+        1.7748723627094216,
+        0.0020257575235052006,
+        0.0018162966265902192,
+        0.0013605229431576937,
+        0.0013339469689233052
+      ],
+      [
+        0.0018162966265902192,
+        0.0027375724543103885,
+        1.7748723627094216,
+        0.0,
+        0.0018162966265899971,
+        0.0027375724543103885,
+        0.0013339469689230832,
+        0.0025297191790978335
+      ],
+      [
+        0.0013605229431583599,
+        0.0013339469689230832,
+        0.0020257575235052006,
+        0.0018162966265899971,
+        0.0,
+        1.7748723627094223,
+        0.0020257575235047565,
+        0.001816296626589775
+      ],
+      [
+        0.0013339469689235273,
+        0.0025297191790973894,
+        0.0018162966265902192,
+        0.0027375724543103885,
+        1.7748723627094223,
+        0.0,
+        0.001816296626589553,
+        0.0027375724543108326
+      ],
+      [
+        0.0020257575235049785,
+        0.001816296626589553,
+        0.0013605229431576937,
+        0.0013339469689230832,
+        0.0020257575235047565,
+        0.001816296626589553,
+        0.0,
+        1.7748723627094232
+      ],
+      [
+        0.0018162966265904412,
+        0.0027375724543099444,
+        0.0013339469689233052,
+        0.0025297191790978335,
+        0.001816296626589775,
+        0.0027375724543108326,
+        1.7748723627094232,
+        0.0
+      ]
+    ],
+    "excited_state_mi": [
+      [
+        0.0,
+        1.774872362709419,
+        0.00303675868581621,
+        0.0008310599125669338,
+        0.0008738597236721546,
+        0.0026921736455034484,
+        0.0020257575235056446,
+        0.0018162966265906633
+      ],
+      [
+        1.774872362709419,
+        0.0,
+        0.0037572376729342327,
+        0.0010976345066886495,
+        0.0009651215262300727,
+        0.0036208204650440834,
+        0.0018162966265902192,
+        0.0027375724543110547
+      ],
+      [
+        0.00303675868581621,
+        0.0037572376729342327,
+        0.0,
+        0.09984736417287743,
+        0.09495596178891841,
+        0.41260857750619717,
+        0.004253760041347476,
+        0.0049357079590426345
+      ],
+      [
+        0.0008310599125669338,
+        0.0010976345066886495,
+        0.09984736417287743,
+        0.0,
+        1.1519698472242668,
+        0.04537509730513012,
+        0.0010320048994874043,
+        0.0014329354457185417
+      ],
+      [
+        0.0008738597236721546,
+        0.0009651215262300727,
+        0.09495596178891841,
+        1.1519698472242668,
+        0.0,
+        0.06937824828539574,
+        0.0008782388959349685,
+        0.0008674481953352409
+      ],
+      [
+        0.0026921736455034484,
+        0.0036208204650440834,
+        0.41260857750619717,
+        0.04537509730513012,
+        0.06937824828539574,
+        0.0,
+        0.0024481256017470088,
+        0.003115502808515247
+      ],
+      [
+        0.0020257575235056446,
+        0.0018162966265902192,
+        0.004253760041347476,
+        0.0010320048994874043,
+        0.0008782388959349685,
+        0.0024481256017470088,
+        0.0,
+        1.7748723627094214
+      ],
+      [
+        0.0018162966265906633,
+        0.0027375724543110547,
+        0.0049357079590426345,
+        0.0014329354457185417,
+        0.0008674481953352409,
+        0.003115502808515247,
+        1.7748723627094214,
+        0.0
+      ]
+    ],
+    "mi_difference": [
+      [
+        0.0,
+        -2.220446049250313e-15,
+        0.0010110011623107873,
+        -0.0009852367140232854,
+        -0.0004866632194862053,
+        0.0013582266765799211,
+        6.661338147750939e-16,
+        2.220446049250313e-16
+      ],
+      [
+        -2.220446049250313e-15,
+        0.0,
+        0.0019409410463444576,
+        -0.001639937947621739,
+        -0.00036882544269301043,
+        0.001091101285946694,
+        6.661338147750939e-16,
+        1.1102230246251565e-15
+      ],
+      [
+        0.0010110011623107873,
+        0.0019409410463444576,
+        0.0,
+        -1.6750249985365442,
+        0.09293020426541321,
+        0.41079228087960695,
+        0.0028932370981897826,
+        0.0036017609901193293
+      ],
+      [
+        -0.0009852367140232854,
+        -0.001639937947621739,
+        -1.6750249985365442,
+        0.0,
+        1.1501535505976768,
+        0.04263752485081973,
+        -0.0003019420694356789,
+        -0.0010967837333792918
+      ],
+      [
+        -0.0004866632194862053,
+        -0.00036882544269301043,
+        0.09293020426541321,
+        1.1501535505976768,
+        0.0,
+        -1.7054941144240265,
+        -0.001147518627569788,
+        -0.0009488484312545342
+      ],
+      [
+        0.0013582266765799211,
+        0.001091101285946694,
+        0.41079228087960695,
+        0.04263752485081973,
+        -1.7054941144240265,
+        0.0,
+        0.0006318289751574557,
+        0.00037793035420441434
+      ],
+      [
+        6.661338147750939e-16,
+        6.661338147750939e-16,
+        0.0028932370981897826,
+        -0.0003019420694356789,
+        -0.001147518627569788,
+        0.0006318289751574557,
+        0.0,
+        -1.7763568394002505e-15
+      ],
+      [
+        2.220446049250313e-16,
+        1.1102230246251565e-15,
+        0.0036017609901193293,
+        -0.0010967837333792918,
+        -0.0009488484312545342,
+        0.00037793035420441434,
+        -1.7763568394002505e-15,
+        0.0
+      ]
+    ],
+    "avg_mi_change": 0.15927857679151283,
+    "max_mi_change": 1.7054941144240265,
+    "mi_change_boundary_A": -2.220446049250313e-15,
+    "mi_change_boundary_B": -0.11199972585406828,
+    "bulk_point": 2,
+    "ground_state_counts": {
+      "00111101": 17,
+      "10000001": 11,
+      "01011001": 17,
+      "01100010": 5,
+      "11100000": 14,
+      "10101001": 17,
+      "00011100": 18,
+      "10010101": 23,
+      "11010001": 13,
+      "10101011": 15,
+      "10111110": 14,
+      "00011010": 15,
+      "11010110": 16,
+      "01111100": 28,
+      "10101000": 11,
+      "00010110": 17,
+      "11111010": 18,
+      "01010010": 14,
+      "01001110": 12,
+      "11011101": 17,
+      "00101011": 17,
+      "11000100": 17,
+      "10110111": 22,
+      "00011101": 10,
+      "11110101": 26,
+      "11000000": 20,
+      "00011001": 19,
+      "00100110": 12,
+      "01000011": 16,
+      "00001100": 14,
+      "00110001": 12,
+      "00000010": 14,
+      "01010011": 20,
+      "11100101": 22,
+      "10110011": 13,
+      "10110110": 18,
+      "10000100": 15,
+      "01111000": 14,
+      "11110000": 17,
+      "10100011": 13,
+      "11000101": 16,
+      "01100000": 13,
+      "00010101": 26,
+      "01110110": 18,
+      "10001100": 17,
+      "00010010": 17,
+      "10001010": 20,
+      "10000101": 21,
+      "00000000": 18,
+      "10001000": 14,
+      "00111110": 18,
+      "00001010": 16,
+      "10011000": 16,
+      "11010010": 25,
+      "00000001": 7,
+      "01110010": 14,
+      "01111001": 12,
+      "01110101": 20,
+      "01101010": 20,
+      "10100001": 20,
+      "11011010": 19,
+      "01101000": 14,
+      "10010000": 19,
+      "10011111": 27,
+      "11100110": 18,
+      "01110100": 13,
+      "01111101": 24,
+      "10001111": 22,
+      "00101100": 15,
+      "00011000": 9,
+      "00111111": 23,
+      "10010011": 15,
+      "01111011": 18,
+      "10010110": 16,
+      "01000111": 25,
+      "10101110": 19,
+      "01110011": 12,
+      "11001101": 13,
+      "01001111": 15,
+      "00001000": 10,
+      "00101000": 14,
+      "10110001": 20,
+      "01111010": 15,
+      "01101001": 6,
+      "01100001": 12,
+      "01100110": 19,
+      "10100101": 25,
+      "10010100": 17,
+      "10001110": 12,
+      "00000111": 22,
+      "00100010": 13,
+      "01010110": 21,
+      "10100000": 23,
+      "01011011": 18,
+      "10010111": 19,
+      "01100101": 19,
+      "11100100": 9,
+      "01000101": 21,
+      "11111011": 21,
+      "11011000": 13,
+      "11111100": 10,
+      "01010111": 17,
+      "00101001": 9,
+      "00010011": 15,
+      "00001011": 27,
+      "01111111": 18,
+      "10101010": 24,
+      "11111101": 19,
+      "10101100": 13,
+      "01011110": 13,
+      "00111100": 19,
+      "10011001": 9,
+      "11011100": 16,
+      "11001010": 9,
+      "00110100": 22,
+      "00011110": 17,
+      "01101111": 15,
+      "01001010": 19,
+      "11000011": 10,
+      "11100111": 17,
+      "00100101": 18,
+      "11001011": 13,
+      "11010111": 11,
+      "11101000": 16,
+      "11111111": 14,
+      "10000010": 21,
+      "00110111": 17,
+      "01010101": 16,
+      "10110100": 10,
+      "10111111": 16,
+      "01100011": 16,
+      "01000000": 13,
+      "00100111": 14,
+      "01011010": 22,
+      "11101011": 17,
+      "01011111": 17,
+      "10100110": 15,
+      "10001101": 19,
+      "01011101": 16,
+      "10111001": 13,
+      "01100100": 17,
+      "11100001": 17,
+      "01100111": 15,
+      "00001101": 18,
+      "10111101": 17,
+      "11010101": 16,
+      "01001000": 21,
+      "01110000": 19,
+      "00000100": 15,
+      "00001001": 16,
+      "11000110": 14,
+      "11100011": 14,
+      "11001000": 19,
+      "01111110": 22,
+      "01000100": 20,
+      "01000010": 10,
+      "10101111": 15,
+      "10011100": 15,
+      "11110010": 10,
+      "10111000": 17,
+      "11101010": 11,
+      "11101110": 16,
+      "00011111": 22,
+      "01110111": 29,
+      "01000001": 13,
+      "00000110": 20,
+      "10101101": 16,
+      "01110001": 21,
+      "10110000": 10,
+      "00010100": 18,
+      "11010000": 14,
+      "10010010": 18,
+      "00110010": 10,
+      "00010111": 24,
+      "01101100": 11,
+      "11011011": 17,
+      "10000111": 13,
+      "01101011": 10,
+      "11000111": 12,
+      "10111100": 19,
+      "01001101": 21,
+      "11011001": 19,
+      "00011011": 10,
+      "10100100": 14,
+      "00111001": 21,
+      "10111011": 12,
+      "11011110": 15,
+      "10000110": 13,
+      "00100000": 12,
+      "00101111": 24,
+      "10001011": 15,
+      "00111011": 19,
+      "00100011": 14,
+      "10111010": 20,
+      "11110110": 15,
+      "01101101": 16,
+      "11110111": 17,
+      "11001110": 13,
+      "10110101": 18,
+      "10001001": 8,
+      "00111000": 16,
+      "01001011": 17,
+      "01101110": 18,
+      "01010001": 15,
+      "00110000": 13,
+      "01011100": 18,
+      "10110010": 19,
+      "00100001": 13,
+      "11101001": 19,
+      "10011010": 11,
+      "11001100": 9,
+      "11111110": 14,
+      "11101111": 18,
+      "10011011": 20,
+      "11010011": 14,
+      "00101110": 14,
+      "10100111": 15,
+      "00000011": 13,
+      "11110100": 18,
+      "01011000": 16,
+      "11111001": 12,
+      "00101010": 17,
+      "00001110": 15,
+      "00110101": 13,
+      "00111010": 10,
+      "00001111": 16,
+      "00010000": 24,
+      "11110001": 24,
+      "01000110": 12,
+      "00101101": 18,
+      "00110011": 17,
+      "11111000": 18,
+      "01001001": 14,
+      "10100010": 11,
+      "01010100": 18,
+      "00110110": 16,
+      "01001100": 19,
+      "10011110": 16,
+      "11101100": 11,
+      "10010001": 18,
+      "11000010": 9,
+      "10011101": 15,
+      "11001111": 13,
+      "11010100": 11,
+      "11000001": 17,
+      "11001001": 13,
+      "11100010": 17,
+      "10000000": 12,
+      "10000011": 13,
+      "11011111": 10,
+      "01010000": 8,
+      "11110011": 12,
+      "00100100": 12,
+      "00010001": 9,
+      "00000101": 8,
+      "11101101": 13
+    },
+    "excited_state_counts": {
+      "00010101": 16,
+      "10000110": 18,
+      "00001111": 17,
+      "00000001": 20,
+      "10110101": 18,
+      "11110001": 11,
+      "11100100": 18,
+      "00001000": 17,
+      "01001001": 18,
+      "01000110": 27,
+      "10000000": 30,
+      "10110011": 15,
+      "01011011": 21,
+      "00000000": 14,
+      "11000100": 17,
+      "11001001": 13,
+      "01101101": 18,
+      "00101000": 20,
+      "00010010": 17,
+      "10111111": 16,
+      "00011100": 22,
+      "10010000": 20,
+      "01110011": 15,
+      "01010010": 14,
+      "00010100": 16,
+      "01001010": 22,
+      "11111010": 14,
+      "01111001": 13,
+      "00011101": 14,
+      "10100011": 17,
+      "01011001": 19,
+      "11101001": 16,
+      "10100110": 9,
+      "00100010": 18,
+      "11110010": 19,
+      "10111001": 10,
+      "11101101": 10,
+      "00101111": 21,
+      "01010001": 16,
+      "00110001": 11,
+      "00001100": 14,
+      "01110100": 21,
+      "01100100": 15,
+      "11110101": 20,
+      "11000000": 31,
+      "01000111": 21,
+      "00010001": 20,
+      "00100110": 18,
+      "10001111": 11,
+      "10101000": 19,
+      "11000011": 28,
+      "11000111": 14,
+      "10011011": 17,
+      "11011010": 26,
+      "00001001": 25,
+      "01001110": 12,
+      "01100001": 23,
+      "11110111": 11,
+      "00111000": 11,
+      "01111000": 20,
+      "11010101": 17,
+      "00110000": 12,
+      "10110000": 12,
+      "01111100": 12,
+      "10010110": 16,
+      "11001100": 16,
+      "10010010": 18,
+      "01000101": 17,
+      "01101010": 10,
+      "01011101": 18,
+      "10011010": 16,
+      "00111100": 21,
+      "01111010": 17,
+      "11001000": 15,
+      "01001100": 15,
+      "01011010": 18,
+      "00100111": 13,
+      "00101100": 15,
+      "10101100": 19,
+      "00010111": 24,
+      "10001110": 13,
+      "10010011": 17,
+      "01101011": 22,
+      "11110011": 10,
+      "01000011": 15,
+      "00000110": 23,
+      "01100010": 17,
+      "00010011": 14,
+      "01010100": 10,
+      "00001010": 13,
+      "00101101": 15,
+      "11101111": 16,
+      "01001011": 28,
+      "00111111": 15,
+      "11100000": 16,
+      "11011110": 18,
+      "11000001": 24,
+      "01000010": 20,
+      "10011100": 19,
+      "01111011": 15,
+      "00101110": 16,
+      "01010111": 12,
+      "01101000": 12,
+      "11011000": 16,
+      "01010000": 16,
+      "01100011": 19,
+      "01011110": 25,
+      "01110001": 19,
+      "01100101": 20,
+      "01000001": 19,
+      "01010011": 14,
+      "11111111": 14,
+      "10011110": 16,
+      "01010101": 12,
+      "11101100": 18,
+      "01100111": 15,
+      "00011001": 16,
+      "11101000": 11,
+      "10011101": 17,
+      "10010101": 16,
+      "10000100": 15,
+      "11001111": 18,
+      "11011101": 19,
+      "10101110": 12,
+      "00011110": 11,
+      "00111101": 19,
+      "01001000": 23,
+      "01101110": 16,
+      "00011111": 14,
+      "10110100": 8,
+      "10011001": 22,
+      "00111001": 16,
+      "00111110": 9,
+      "11101110": 18,
+      "00000111": 21,
+      "01011100": 13,
+      "00001110": 18,
+      "01001111": 21,
+      "10111110": 15,
+      "01110000": 16,
+      "11111000": 15,
+      "11100010": 15,
+      "01110010": 18,
+      "11010010": 17,
+      "01100110": 14,
+      "11101011": 26,
+      "11010000": 14,
+      "11111110": 19,
+      "10100101": 14,
+      "10001101": 9,
+      "00000011": 10,
+      "11000110": 21,
+      "11010001": 16,
+      "00110100": 15,
+      "00000010": 19,
+      "11011011": 22,
+      "10101010": 12,
+      "00011011": 20,
+      "00100000": 22,
+      "11001101": 21,
+      "10000011": 15,
+      "01000100": 20,
+      "10111100": 14,
+      "11000101": 14,
+      "11100011": 8,
+      "00110110": 13,
+      "00101001": 11,
+      "00111011": 12,
+      "10010001": 17,
+      "00110010": 16,
+      "10110110": 9,
+      "10001100": 18,
+      "10101111": 15,
+      "11100110": 18,
+      "00001011": 19,
+      "10111101": 16,
+      "11001010": 17,
+      "11001110": 23,
+      "01100000": 17,
+      "01101111": 15,
+      "10100010": 13,
+      "01001101": 17,
+      "11111011": 14,
+      "10000010": 22,
+      "10111011": 16,
+      "01101100": 20,
+      "11101010": 15,
+      "01010110": 17,
+      "01110111": 16,
+      "11111100": 18,
+      "00100011": 19,
+      "01101001": 18,
+      "00110011": 11,
+      "10101011": 11,
+      "01011000": 13,
+      "00101010": 15,
+      "10100000": 24,
+      "11010011": 20,
+      "01111110": 12,
+      "01111101": 6,
+      "10011111": 17,
+      "10101001": 11,
+      "00101011": 14,
+      "11000010": 16,
+      "00000101": 15,
+      "00111010": 20,
+      "11100111": 16,
+      "10110111": 17,
+      "10011000": 15,
+      "01000000": 17,
+      "10100111": 14,
+      "10100100": 13,
+      "10001010": 16,
+      "10111010": 15,
+      "01110110": 11,
+      "11001011": 16,
+      "10010111": 18,
+      "00000100": 11,
+      "11011100": 16,
+      "01011111": 18,
+      "10001000": 19,
+      "10001011": 18,
+      "00110111": 13,
+      "01110101": 7,
+      "00001101": 18,
+      "11111101": 13,
+      "11110000": 12,
+      "10110001": 13,
+      "11100101": 13,
+      "10000101": 10,
+      "00011010": 10,
+      "10111000": 20,
+      "00100101": 8,
+      "01111111": 15,
+      "00010000": 15,
+      "10100001": 15,
+      "11010110": 14,
+      "10101101": 12,
+      "11110110": 12,
+      "10001001": 16,
+      "10010100": 17,
+      "00100001": 13,
+      "10110010": 11,
+      "00100100": 6,
+      "11010111": 19,
+      "11110100": 13,
+      "11011001": 14,
+      "11011111": 9,
+      "00110101": 10,
+      "11100001": 10,
+      "11111001": 11,
+      "00010110": 10,
+      "00011000": 12,
+      "10000111": 14,
+      "11010100": 12,
+      "10000001": 11
+    },
+    "boundary_entropies": {
+      "ground_state": {
+        "entropy_A": 1.1399605756690399,
+        "entropy_B": 2.0768517395993245,
+        "mi_AB": 2.236320778403542
+      },
+      "excited_state": {
+        "entropy_A": 0.8111027143433264,
+        "entropy_B": 1.7350665840631883,
+        "mi_AB": 1.5656777615416888
+      },
+      "rt_relation_test": {
+        "entropy_ratio": 1.821862776596836,
+        "rt_area_ratio": 1.0,
+        "rt_deviation": 0.821862776596836,
+        "excited_entropy_ratio": 2.139145330647683,
+        "rt_relation_change": 0.31728255405084704
+      }
+    }
+  },
+  "page_curve_analysis": null,
+  "deutsch_ctc_analysis": null,
+  "ctc_recovery_analysis": null,
+  "einstein_analysis": null,
+  "dynamic_evidence": {
+    "angle_sums_per_timestep": [
+      [
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793
+      ],
+      [
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793
+      ],
+      [
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793,
+        3.141592653589793
+      ]
+    ],
+    "gromov_delta_per_timestep": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "edge_mi_per_timestep": [
+      {},
+      {},
+      {}
+    ],
+    "shortest_paths_per_timestep": [
+      {},
+      {},
+      {}
+    ],
+    "mean_distance_per_timestep": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "triangle_violations_per_timestep": [
+      0,
+      0,
+      0
+    ],
+    "embedding_coords_per_timestep": [
+      null,
+      null,
+      null
+    ],
+    "regge_evolution_data": null,
+    "evolution_summary": {
+      "total_timesteps": 3,
+      "gromov_delta_range": [
+        0.5,
+        0.5
+      ],
+      "mean_distance_range": [
+        2.0,
+        2.0
+      ],
+      "total_triangle_violations": 0,
+      "hyperbolic_evolution": [
+        false,
+        false,
+        false
+      ],
+      "regge_corrected": false
+    }
+  },
+  "quantum_state_outputs": []
+}
