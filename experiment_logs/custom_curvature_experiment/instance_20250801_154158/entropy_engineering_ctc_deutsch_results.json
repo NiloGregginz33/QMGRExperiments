@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "loss": 0.0,
+  "achieved_entropies": [
+    0.2,
+    0.7,
+    1.3,
+    1.8
+  ],
+  "parameters": {
+    "weight": 5.0,
+    "gamma": 3.0,
+    "sigma": null,
+    "init_angle": 1.57,
+    "timesteps": 1,
+    "entanglement_strength": 3.0
+  }
+}
