@@ -6930,6 +6930,29 @@ if __name__ == "__main__":
     experiment_end_time = time.time()
     total_duration = experiment_end_time - experiment_start_time
     
+    # Clean up temporary MI files created by CGPTFactory
+    try:
+        import glob
+        import os
+        
+        # Find all CGPTFactory MI files
+        mi_files = glob.glob("cgpt_mi_values_*.json")
+        
+        if mi_files:
+            print(f"[CLEANUP] Removing {len(mi_files)} temporary MI files...")
+            for mi_file in mi_files:
+                try:
+                    os.remove(mi_file)
+                    print(f"[CLEANUP] Removed: {mi_file}")
+                except Exception as e:
+                    print(f"[CLEANUP] Warning: Could not remove {mi_file}: {e}")
+            print(f"[CLEANUP] Cleanup complete - removed {len(mi_files)} temporary MI files")
+        else:
+            print("[CLEANUP] No temporary MI files found to clean up")
+            
+    except Exception as e:
+        print(f"[CLEANUP] Warning: Error during cleanup: {e}")
+    
     print("=" * 60)
     print(f"Experiment Completed Successfully!")
     print(f"   - Total runtime: {total_duration:.1f}s ({total_duration/3600:.1f}h)")
