@@ -1,0 +1,10 @@
+{
+  "experiment_info": {
+    "num_qubits": 6,
+    "num_trials": 40,
+    "min_iters": 5,
+    "timestamp": "2025-08-01T21:45:54.220025",
+    "experiment_type": "enhanced_non_trivial_search"
+  },
+  "enhanced_results": []
+}

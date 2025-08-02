@@ -12825,38 +12825,95 @@ def mutual_information(statevec, A_indices, B_indices):
 
 def extract_bitarray_from_primitive(prim_result):
     """
-    Given a PrimitiveResult (from a SamplerPubResult) where prim_result[0].data contains
-    one or more BitArray attributes, this function finds the first BitArray and returns
-    its attribute name and value, without requiring bitstring module.
+    Robust extraction of bitstrings from modern Qiskit Runtime Sampler results.
+    Handles both SamplerV1 and SamplerV2 formats.
     """
-    # Access the first SamplerPubResult
-    sampler_result = prim_result[0]
-    data = sampler_result.data
-
-    # Debug: Print the data structure
-    print(f"Data type: {type(data)}")
-    print(f"Data attributes: {dir(data)}")
-    print(f"Data vars: {vars(data)}")
-
-    # Inspect all attributes in the data object
-    for attr, val in vars(data).items():
-        print(f"Attribute {attr}: {type(val)} = {val}")
-        # Detect by class name 'BitArray'
-        if val.__class__.__name__ == 'BitArray':
-            return attr, val
-
-    # Try alternative access methods
-    if hasattr(data, 'quasi_dists'):
-        print("Found quasi_dists attribute")
-        return 'quasi_dists', data.quasi_dists
+    try:
+        # For SamplerV2, the result has a different structure
+        if hasattr(prim_result, 'quasi_dists'):
+            # Old Sampler format
+            quasi_dists = prim_result.quasi_dists
+            if quasi_dists and len(quasi_dists) > 0:
+                shots = prim_result.metadata[0].get('shots', 1024)
+                bitstrings = []
+                for bitstring, prob in quasi_dists[0].items():
+                    count = int(prob * shots)
+                    for _ in range(count):
+                        bitstrings.append(bitstring)
+                return bitstrings
+        elif hasattr(prim_result, '_pub_results'):
+            # SamplerV2 format
+            pub_result = prim_result._pub_results[0]
+            if hasattr(pub_result, 'data'):
+                data = pub_result.data
+                if hasattr(data, 'meas'):
+                    meas = data.meas
+                    # Try plural first
+                    if hasattr(meas, 'get_bitstrings'):
+                        print('[extract_bitarray_from_primitive] Using meas.get_bitstrings()')
+                        return meas.get_bitstrings()
+                    # Try singular
+                    elif hasattr(meas, 'get_bitstring'):
+                        print('[extract_bitarray_from_primitive] Using meas.get_bitstring()')
+                        return meas.get_bitstring()
+                    else:
+                        print(f"[extract_bitarray_from_primitive] data.meas has no get_bitstrings or get_bitstring. Attributes: {dir(meas)}")
+                elif hasattr(data, 'get_bitstrings'):
+                    print('[extract_bitarray_from_primitive] Using data.get_bitstrings()')
+                    return data.get_bitstrings()
+                elif hasattr(data, 'quasi_dists'):
+                    # Alternative SamplerV2 format
+                    quasi_dists = data.quasi_dists
+                    if quasi_dists and len(quasi_dists) > 0:
+                        shots = prim_result.metadata[0].get('shots', 1024)
+                        bitstrings = []
+                        for bitstring, prob in quasi_dists[0].items():
+                            count = int(prob * shots)
+                            for _ in range(count):
+                                bitstrings.append(bitstring)
+                        return bitstrings
+                print(f"[extract_bitarray_from_primitive] pub_result.data attributes: {dir(pub_result.data)}")
+        print(f"[extract_bitarray_from_primitive] Could not extract bitstrings from result. Type: {type(prim_result)} Dir: {dir(prim_result)}")
+        if hasattr(prim_result, '_pub_results'):
+            print(f"[extract_bitarray_from_primitive] Pub result attributes: {dir(prim_result._pub_results[0])}")
+            if hasattr(prim_result._pub_results[0], 'data'):
+                print(f"[extract_bitarray_from_primitive] Data attributes: {dir(prim_result._pub_results[0].data)}")
+        return None
+    except Exception as e:
+        print(f"[extract_bitarray_from_primitive] Error extracting bitarray: {e}")
+        import traceback
+        traceback.print_exc()
+        print(f"[extract_bitarray_from_primitive] result type: {type(prim_result)} dir: {dir(prim_result)}")
+        return None
     
-    if hasattr(data, 'counts'):
-        print("Found counts attribute")
-        return 'counts', data.counts
-
-    # If no BitArray is found, raise an error
-    raise ValueError("No BitArray attribute found in the PrimitiveResult data")
-
+# Add this after the imports in CGPTFactory.py
+def mi_from_counts(counts, n, endian="little"):
+    import numpy as np
+    total_shots = sum(counts.values())
+    if total_shots == 0:
+        return {}
+    probs = {b: float(c) / total_shots for b, c in counts.items()}
+    mi_dict = {}
+    for i in range(n):
+        for j in range(i+1, n):
+            # Marginalize over all other qubits
+            p_ij = {}
+            for bitstring, p in probs.items():
+                key = (bitstring[-(i+1)] if endian == "little" else bitstring[i],
+                       bitstring[-(j+1)] if endian == "little" else bitstring[j])
+                p_ij[key] = p_ij.get(key, 0) + p
+            # Compute MI for this pair
+            p_i = {}
+            p_j = {}
+            for (bi, bj), p in p_ij.items():
+                p_i[bi] = p_i.get(bi, 0) + p
+                p_j[bj] = p_j.get(bj, 0) + p
+            mi = 0.0
+            for (bi, bj), p in p_ij.items():
+                if p > 0:
+                    mi += p * np.log2(p / (p_i[bi] * p_j[bj]))
+            mi_dict[f"I_{i},{j}"] = mi
+    return mi_dict
 
 def run(qc, device="simulator", shots=2048):
     """
@@ -12897,7 +12954,47 @@ def run(qc, device="simulator", shots=2048):
         job = simulator.run(qc_t, shots=shots)
         result = job.result()
         counts = result.get_counts()
+        mutual_information = mi_from_counts(counts, qc.num_qubits)
         print("Simulation counts:", counts)
+        print("Mutual information:", mutual_information)
+        
+        # Auto-save MI values to file for experiment to read
+        try:
+            import json
+            import os
+            from datetime import datetime
+            
+            # Create a unique filename with timestamp and optional timestep
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            
+            # Try to get timestep from global variable or use default
+            try:
+                import sys
+                timestep = getattr(sys.modules.get('__main__'), 'current_timestep', 0)
+            except:
+                timestep = 0
+                
+            mi_filename = f"cgpt_mi_values_t{timestep:03d}_{timestamp}.json"
+            
+            # Save MI values to JSON file
+            mi_data = {
+                "timestamp": timestamp,
+                "timestep": timestep,
+                "num_qubits": qc.num_qubits,
+                "shots": shots,
+                "device": device,
+                "mutual_information": {k: float(v) for k, v in mutual_information.items()},
+                "counts": counts
+            }
+            
+            with open(mi_filename, 'w') as f:
+                json.dump(mi_data, f, indent=2)
+            
+            print(f"[AUTO-SAVE] MI values for timestep {timestep} saved to: {mi_filename}")
+            
+        except Exception as e:
+            print(f"[WARNING] Could not auto-save MI values: {e}")
+
 
         # Marginal on last bit
         total = sum(counts.values())
@@ -12908,7 +13005,7 @@ def run(qc, device="simulator", shots=2048):
         f0 = teleported['0'] / total
         f1 = teleported['1'] / total
         print(f"Distribution on R (sim): |0> = {f0:.3f}, |1> = {f1:.3f}")
-        return {'counts': counts, 'distribution': (f0, f1)}
+        return {'counts': counts, 'distribution': (f0, f1), 'mutual_information': mutual_information}
     
     # Option 3: real backend via IBM Runtime Sampler
     if is_hardware:
@@ -12922,19 +13019,14 @@ def run(qc, device="simulator", shots=2048):
             job = sampler.run([qc_t], shots=shots)
             result = job.result()
             print("Raw result:", result)
+            print(f"Job ID: {job.job_id()}")
         except Exception as e:
             print(f"[ERROR] Failed to run on hardware backend {device}: {e}")
             return None
 
-    # Try to get counts using the extract_bitarray_from_primitive function
+    # Try to get counts using the robust extract_bitarray_from_primitive function
     try:
-        # Import the function from the experiment file
-        import sys
-        import os
-        sys.path.append(os.path.join(os.path.dirname(__file__), 'experiments'))
-        from custom_curvature_experiment import extract_bitarray_from_primitive
-        
-        # Use the robust extraction function
+        # Use the local robust extraction function
         bitstrings = extract_bitarray_from_primitive(result)
         if bitstrings is not None:
             # Convert bitstrings to counts format
@@ -12951,6 +13043,45 @@ def run(qc, device="simulator", shots=2048):
         return None
 
     total = sum(counts.values())
+    mutual_information = mi_from_counts(counts, qc.num_qubits)
+    print("Mutual information:", mutual_information)
+    
+    # Auto-save MI values to file for experiment to read
+    try:
+        import json
+        import os
+        from datetime import datetime
+        
+        # Create a unique filename with timestamp and optional timestep
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        # Try to get timestep from global variable or use default
+        try:
+            import sys
+            timestep = getattr(sys.modules.get('__main__'), 'current_timestep', 0)
+        except:
+            timestep = 0
+            
+        mi_filename = f"cgpt_mi_values_t{timestep:03d}_{timestamp}.json"
+        
+        # Save MI values to JSON file
+        mi_data = {
+            "timestamp": timestamp,
+            "timestep": timestep,
+            "num_qubits": qc.num_qubits,
+            "shots": shots,
+            "device": device,
+            "mutual_information": {k: float(v) for k, v in mutual_information.items()},
+            "counts": counts
+        }
+        
+        with open(mi_filename, 'w') as f:
+            json.dump(mi_data, f, indent=2)
+        
+        print(f"[AUTO-SAVE] MI values for timestep {timestep} saved to: {mi_filename}")
+        
+    except Exception as e:
+        print(f"[WARNING] Could not auto-save MI values: {e}")
     teleported = {'0': 0, '1': 0}
     for outcome, cnt in counts.items():
         last_bit = outcome[-1]
@@ -12960,7 +13091,8 @@ def run(qc, device="simulator", shots=2048):
     dist = (f0, f1)
     print(f"Distribution on R (hw): |0> = {f0:.3f}, |1> = {f1:.3f}")
 
-    return counts
+    # Return both counts and job ID
+    return {'counts': counts, 'job_id': job.job_id(), 'mutual_information': mutual_information}
 
 def compute_triangle_angles(D, i, j, k):
     """Given a symmetric distance matrix D, return the three interior angles of triangle (i,j,k)."""

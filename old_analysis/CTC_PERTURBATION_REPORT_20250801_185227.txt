@@ -1,0 +1,66 @@
+CTC PERTURBATION STABILITY REPORT
+==================================
+Generated: 2025-08-01 18:52:27
+
+EXECUTIVE SUMMARY
+==================
+Total experiments: 20
+Success rate: 100.00%
+Average fidelity: 1.000000
+Average iterations: 1.0
+Robustness threshold: None
+Stability score: 1.00
+
+DETAILED ANALYSIS BY PERTURBATION TYPE
+=====================================
+
+NONE:
+  Success rate: 100.00%
+  Average fidelity: 1.000000
+  Average iterations: 1.0
+
+CIRCUIT_NOISE:
+  Success rate: 100.00%
+  Average fidelity: 1.000000
+  Average iterations: 1.0
+
+INITIAL_STATE:
+  Success rate: 100.00%
+  Average fidelity: 1.000000
+  Average iterations: 1.0
+
+COUPLING_VARIATION:
+  Success rate: 100.00%
+  Average fidelity: 1.000000
+  Average iterations: 1.0
+
+DETAILED ANALYSIS BY MAGNITUDE
+=============================
+
+Magnitude 0.0:
+  Success rate: 100.00%
+  Average fidelity: 1.000000
+  Average iterations: 1.0
+
+Magnitude 0.1:
+  Success rate: 100.00%
+  Average fidelity: 1.000000
+  Average iterations: 1.0
+
+Magnitude 0.2:
+  Success rate: 100.00%
+  Average fidelity: 1.000000
+  Average iterations: 1.0
+
+Magnitude 0.05:
+  Success rate: 100.00%
+  Average fidelity: 1.000000
+  Average iterations: 1.0
+
+Magnitude 0.15:
+  Success rate: 100.00%
+  Average fidelity: 1.000000
+  Average iterations: 1.0
+
+STABILITY CONCLUSIONS
+=====================

@@ -30,7 +30,7 @@ def find_experiment_data():
         list: List of data file paths
     """
     # Look for custom curvature experiment data
-    base_path = Path("../experiment_logs/custom_curvature_experiment")
+    base_path = Path("experiment_logs/custom_curvature_experiment")
     
     if not base_path.exists():
         print(f"Error: Experiment data directory not found: {base_path}")
