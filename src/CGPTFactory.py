@@ -6,6 +6,7 @@ from collections import Counter
 from qiskit_ibm_runtime import QiskitRuntimeService, Session, Estimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
 from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
+from qiskit_ibm_runtime.fake_provider import FakeBrisbane
 import numpy as np
 from math import acos
 import matplotlib.pyplot as plt
@@ -12947,13 +12948,21 @@ def run(qc, device="simulator", shots=2048):
         print("Statevector:", sv)
         return sv
 
-    # Option 2: qasm simulation with AerSimulator
+    # Option 2: qasm simulation with FakeBrisbane
     if is_simulator:
-        simulator = AerSimulator()
+        simulator = FakeBrisbane()
         qc_t = transpile(qc, simulator, optimization_level=3)
         job = simulator.run(qc_t, shots=shots)
         result = job.result()
-        counts = result.get_counts()
+        print(f"[CGPTFactory] Result type: {type(result)}")
+        print(f"[CGPTFactory] Result dir: {dir(result)}")
+        try:
+            counts = result.get_counts()  # Use the proper method
+            print(f"[CGPTFactory] Counts extracted successfully: {counts}")
+            print(f"[CGPTFactory] Counts type: {type(counts)}")
+        except Exception as e:
+            print(f"[CGPTFactory] Error getting counts: {e}")
+            counts = {}
         mutual_information = mi_from_counts(counts, qc.num_qubits)
         print("Simulation counts:", counts)
         print("Mutual information:", mutual_information)

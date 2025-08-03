@@ -1,0 +1,39 @@
+================================================================================
+CUSTOM CURVATURE EXPERIMENT - COMPREHENSIVE SUMMARY
+================================================================================
+
+EXPERIMENT PARAMETERS:
+----------------------------------------
+Number of qubits: 4
+Geometry: spherical
+Curvature: 4.5
+Device: simulator
+Timesteps: 2
+Topology: triangulated
+Einstein solver enabled: True
+Page curve enabled: True
+Emergent geometry teleportation enabled: False
+Page curve timesteps: 15
+
+KEY METRICS:
+----------------------------------------
+Max Angle Deficit: 0.000000
+Min Edge Length: 0.000000
+Max Edge Length: 0.000000
+Edges at Floor: 0
+
+DYNAMIC EVIDENCE SUMMARY:
+----------------------------------------
+Gromov Delta Range: [2.011, 3.689]
+Mean Distance Range: [1.776, 3.233]
+Total Triangle Violations: 0
+
+EINSTEIN SOLVER TIME EVOLUTION:
+----------------------------------------
+Ricci Scalar Range: [0.016295, 0.094436]
+Emergent Gravitational Constant Range: [0.001297, 0.007515]
+Entropy-Curvature Correlation Range: [0.011522, 0.066776]
+
+EMERGENT GRAVITY SIGNATURES:
+Strong Gravitational Constant: NO
+Stable Entropy-Curvature Correlation: YES
