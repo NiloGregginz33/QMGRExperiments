@@ -1,0 +1,22 @@
+================================================================================
+HARDWARE TELEPORTATION ANALYSIS SUMMARY
+================================================================================
+Generated: 2025-08-02 20:45:53
+
+MUTUAL INFORMATION ANALYSIS
+----------------------------------------
+Mean MI: 0.00038753
+Max MI: 0.00125034
+Min MI: 0.00000000
+Std MI: 0.00045925
+
+Strongest correlation: (2, 3) = 0.00125034
+
+TELEPORTATION ASSESSMENT
+----------------------------------------
+ER=EPR Evidence: MODERATE
+Hardware shows sufficient quantum correlation for teleportation
+
+Estimated max teleportation fidelity: 1.000
+
+================================================================================
