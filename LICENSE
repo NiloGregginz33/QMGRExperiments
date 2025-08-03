@@ -73,11 +73,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
-1. PEER REVIEW USAGE:
-   - Reviewers may examine, test, and evaluate the code for scientific validation
-   - Results may be discussed in peer review contexts
-   - Citation of the methodology is permitted in peer-reviewed publications
    
 @software{qmgr_experiments_2025,
   author = {Matrix Solutions LLC},
@@ -100,12 +95,12 @@ The original quantum simulation methods are subject to patent applications
 filed by Matrix Solutions LLC. Contributors retain copyright to their 
 specific contributions under the Apache 2.0 license.
 
-2. ACADEMIC RESEARCH:
+1. ACADEMIC RESEARCH:
    - Use for non-commercial academic research is permitted
    - Educational purposes at accredited institutions are allowed
    - Scientific collaboration with proper attribution is permitted
 
-3. RESTRICTIONS:
+2. RESTRICTIONS:
    - Commercial use is strictly prohibited without written permission
    - Redistribution, modification, or derivative works are not permitted
    - Reverse engineering or decompilation is prohibited
@@ -114,7 +109,7 @@ specific contributions under the Apache 2.0 license.
 GENERAL TERMS FOR ALL SOFTWARE:
 
 1. OWNERSHIP:
-   - All rights, title, and interest in the Software remain with Matrix Solutions LLC
+   - All rights, title, and interest in the Software remain with Matrix Solutions LLC and Manav Naik
    - No ownership rights are transferred under this license
 
 2. CONFIDENTIALITY:
