@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "target_entropies": [
+    0.1,
+    0.4,
+    0.9,
+    1.5,
+    2.0,
+    2.3,
+    2.5,
+    2.6
+  ],
+  "achieved_entropies": [
+    0.42697818589083364,
+    1.2611320694286838,
+    1.6964229613467723,
+    1.8938153284757333,
+    2.1934355986755274,
+    2.774402986024223,
+    2.7859624759658383,
+    2.8488086548703406
+  ],
+  "parameters": {
+    "entanglement_strength": 0.7431247699602398,
+    "weight": 0.5614981821051666,
+    "gamma": 0.1075049006623281,
+    "sigma": 0.4170556851971612,
+    "init_angle": 2.4793542792769663,
+    "timesteps": 3,
+    "asymmetry_strength": 0.7266550894774166
+  },
+  "loss": 0.0,
+  "iterations": 0,
+  "optimization_result": null,
+  "message": "Skipped for large system"
+}
