@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-08-03T15:15:34.270578",
+  "experiment_type": "superposition_gravity",
+  "device": "ibm_brisbane",
+  "num_qubits": 4,
+  "shots": 100,
+  "success": false,
+  "results": null,
+  "error_info": {
+    "has_error": true,
+    "error_message": "'duplicate qubit arguments'",
+    "extraction_failed": true,
+    "exception_type": "CircuitError"
+  }
+}

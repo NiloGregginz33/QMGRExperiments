@@ -12823,31 +12823,84 @@ def mutual_information(statevec, A_indices, B_indices):
     SAB = qiskit_entropy(rhoAB)
     return SA + SB - SAB
 
-
-def extract_bitarray_from_primitive(prim_result):
-    """
-    Robust extraction of bitstrings from modern Qiskit Runtime Sampler results.
-    Handles both SamplerV1 and SamplerV2 formats.
-    """
+def extract_bitarray_from_primitive(result):
+    """Extract bitarray from Sampler primitive result"""
     try:
         # For SamplerV2, the result has a different structure
-        if hasattr(prim_result, 'quasi_dists'):
+        if hasattr(result, 'quasi_dists'):
             # Old Sampler format
-            quasi_dists = prim_result.quasi_dists
+            quasi_dists = result.quasi_dists
             if quasi_dists and len(quasi_dists) > 0:
-                shots = prim_result.metadata[0].get('shots', 1024)
+                shots = result.metadata[0].get('shots', 1024)
                 bitstrings = []
                 for bitstring, prob in quasi_dists[0].items():
                     count = int(prob * shots)
                     for _ in range(count):
                         bitstrings.append(bitstring)
                 return bitstrings
-        elif hasattr(prim_result, '_pub_results'):
+        elif hasattr(result, '_pub_results'):
             # SamplerV2 format
-            pub_result = prim_result._pub_results[0]
+            pub_result = result._pub_results[0]
             if hasattr(pub_result, 'data'):
                 data = pub_result.data
-                if hasattr(data, 'meas'):
+                # Check for BitArray format (new SamplerV2) - data.c is the BitArray
+                if hasattr(data, 'c'):
+                    bitarray = data.c
+                    print(f'[extract_bitarray_from_primitive] Found BitArray: {bitarray}')
+                    print(f'[extract_bitarray_from_primitive] BitArray type: {type(bitarray)}')
+                    print(f'[extract_bitarray_from_primitive] BitArray attributes: {dir(bitarray)}')
+                    
+                    # Try to convert BitArray to bitstrings
+                    try:
+                        # Method 1: Use get_bitstrings() method (available on BitArray)
+                        if hasattr(bitarray, 'get_bitstrings'):
+                            print('[extract_bitarray_from_primitive] Using bitarray.get_bitstrings()')
+                            bitstrings = bitarray.get_bitstrings()
+                            print(f'[extract_bitarray_from_primitive] Got {len(bitstrings)} bitstrings')
+                            return bitstrings
+                        # Method 2: Use get_counts() method (convert to counts then to bitstrings)
+                        elif hasattr(bitarray, 'get_counts'):
+                            print('[extract_bitarray_from_primitive] Using bitarray.get_counts()')
+                            counts = bitarray.get_counts()
+                            print(f'[extract_bitarray_from_primitive] Got counts: {counts}')
+                            # Convert counts to bitstrings
+                            bitstrings = []
+                            for bitstring, count in counts.items():
+                                for _ in range(count):
+                                    bitstrings.append(bitstring)
+                            print(f'[extract_bitarray_from_primitive] Generated {len(bitstrings)} bitstrings from counts')
+                            return bitstrings
+                        # Method 3: Try to get the raw data as numpy array
+                        elif hasattr(bitarray, 'numpy'):
+                            print('[extract_bitarray_from_primitive] Using bitarray.numpy()')
+                            numpy_array = bitarray.numpy()
+                            print(f'[extract_bitarray_from_primitive] Numpy array shape: {numpy_array.shape}')
+                            # Convert to list of bitstrings
+                            bitstrings = []
+                            for i in range(numpy_array.shape[0]):
+                                bitstring = ''.join(str(int(bit)) for bit in numpy_array[i])
+                                bitstrings.append(bitstring)
+                            print(f'[extract_bitarray_from_primitive] Generated {len(bitstrings)} bitstrings')
+                            return bitstrings
+                        # Method 4: Try to get as list
+                        elif hasattr(bitarray, 'tolist'):
+                            print('[extract_bitarray_from_primitive] Using bitarray.tolist()')
+                            return bitarray.tolist()
+                        # Method 5: Try direct iteration using num_shots
+                        else:
+                            print('[extract_bitarray_from_primitive] Converting BitArray directly using num_shots')
+                            bitstrings = []
+                            for i in range(bitarray.num_shots):
+                                bitstring = ''.join(str(int(bit)) for bit in bitarray[i])
+                                bitstrings.append(bitstring)
+                            print(f'[extract_bitarray_from_primitive] Generated {len(bitstrings)} bitstrings')
+                            return bitstrings
+                    except Exception as e:
+                        print(f'[extract_bitarray_from_primitive] Error extracting from BitArray: {e}')
+                        import traceback
+                        traceback.print_exc()
+                        return None
+                elif hasattr(data, 'meas'):
                     meas = data.meas
                     # Try plural first
                     if hasattr(meas, 'get_bitstrings'):
@@ -12866,7 +12919,7 @@ def extract_bitarray_from_primitive(prim_result):
                     # Alternative SamplerV2 format
                     quasi_dists = data.quasi_dists
                     if quasi_dists and len(quasi_dists) > 0:
-                        shots = prim_result.metadata[0].get('shots', 1024)
+                        shots = result.metadata[0].get('shots', 1024)
                         bitstrings = []
                         for bitstring, prob in quasi_dists[0].items():
                             count = int(prob * shots)
@@ -12874,19 +12927,18 @@ def extract_bitarray_from_primitive(prim_result):
                                 bitstrings.append(bitstring)
                         return bitstrings
                 print(f"[extract_bitarray_from_primitive] pub_result.data attributes: {dir(pub_result.data)}")
-        print(f"[extract_bitarray_from_primitive] Could not extract bitstrings from result. Type: {type(prim_result)} Dir: {dir(prim_result)}")
-        if hasattr(prim_result, '_pub_results'):
-            print(f"[extract_bitarray_from_primitive] Pub result attributes: {dir(prim_result._pub_results[0])}")
-            if hasattr(prim_result._pub_results[0], 'data'):
-                print(f"[extract_bitarray_from_primitive] Data attributes: {dir(prim_result._pub_results[0].data)}")
+        print(f"[extract_bitarray_from_primitive] Could not extract bitstrings from result. Type: {type(result)} Dir: {dir(result)}")
+        if hasattr(result, '_pub_results'):
+            print(f"[extract_bitarray_from_primitive] Pub result attributes: {dir(result._pub_results[0])}")
+            if hasattr(result._pub_results[0], 'data'):
+                print(f"[extract_bitarray_from_primitive] Data attributes: {dir(result._pub_results[0].data)}")
         return None
     except Exception as e:
         print(f"[extract_bitarray_from_primitive] Error extracting bitarray: {e}")
         import traceback
         traceback.print_exc()
-        print(f"[extract_bitarray_from_primitive] result type: {type(prim_result)} dir: {dir(prim_result)}")
+        print(f"[extract_bitarray_from_primitive] result type: {type(result)} dir: {dir(result)}")
         return None
-    
 # Add this after the imports in CGPTFactory.py
 def mi_from_counts(counts, n, endian="little"):
     import numpy as np
