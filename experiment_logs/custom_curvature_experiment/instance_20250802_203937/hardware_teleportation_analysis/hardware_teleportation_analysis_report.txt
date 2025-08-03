@@ -1,0 +1,21 @@
+================================================================================
+HARDWARE TELEPORTATION ANALYSIS REPORT
+================================================================================
+Generated: 2025-08-02 20:45:15
+
+MUTUAL INFORMATION ANALYSIS
+----------------------------------------
+No MI data available
+
+TELEPORTATION ANALYSIS
+----------------------------------------
+No teleportation data available
+
+GEOMETRY EVOLUTION ANALYSIS
+----------------------------------------
+No geometry evolution data available
+
+KEY INSIGHTS
+----------------------------------------
+
+================================================================================
