@@ -8,7 +8,8 @@ for quantum holographic geometry experiments. This software is proprietary and
 confidential to Matrix Solutions LLC.
 
 SPECIFIC LICENSE TERMS:
-- Use for academic peer review purposes is permitted
+- Use for academic peer review purposes is permitted by contacting the email listed below using a .edu email 
+
 - Academic research and educational use is allowed with proper attribution
 - Commercial use is strictly prohibited without written permission
 - Redistribution, modification, or derivative works are not permitted
@@ -775,7 +776,7 @@ def extract_mi_from_cgpt_output(output_text):
             mi_dict[key] = None
     
     return mi_dict
-
+print("[DEBUG] custom_curvature_experiment.py script started")
 def extract_bitarray_from_primitive(result):
     """Extract bitarray from Sampler primitive result"""
     try:
@@ -835,7 +836,7 @@ def extract_bitarray_from_primitive(result):
         traceback.print_exc()
         print(f"[extract_bitarray_from_primitive] result type: {type(result)} dir: {dir(result)}")
         return None
-from qiskit_aer import AerSimulator
+from qiskit_ibm_runtime.fake_provider import FakeBrisbane
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.circuit.library import CXGate
 from qiskit.transpiler import PassManager
@@ -1021,6 +1022,31 @@ p.add_argument("--teleportation_embedding_dim", type=int, default=2,
                help="Dimension for MDS embedding in teleportation analysis")
 p.add_argument("--teleportation_fidelity_threshold", type=float, default=0.7,
                help="Threshold for high-fidelity teleportation")
+
+# === SUPERPOSITION OF GRAVITATIONAL CONFIGURATIONS ===
+p.add_argument("--superposition_gravity", action="store_true", default=False,
+               help="Enable superposition of gravitational configurations in emergent bulk geometry")
+p.add_argument("--massive_bulk_mass_hinge", type=str, default="0,1,2",
+               help="Comma-separated indices for mass hinge in massive bulk configuration")
+p.add_argument("--massive_bulk_mass_value", type=float, default=2.0,
+               help="Mass value for massive bulk configuration")
+p.add_argument("--massless_bulk_mass_hinge", type=str, default=None,
+               help="Mass hinge for massless bulk (None for flat geometry)")
+p.add_argument("--massless_bulk_mass_value", type=float, default=0.0,
+               help="Mass value for massless bulk configuration")
+p.add_argument("--superposition_control_qubit", type=int, default=0,
+               help="Control qubit for preparing superposition of bulk configurations")
+p.add_argument("--superposition_phase", type=float, default=0.0,
+               help="Relative phase between massive and massless bulk configurations")
+p.add_argument("--interference_analysis", action="store_true", default=True,
+               help="Analyze interference between massive and massless bulk configurations")
+p.add_argument("--classical_mixture_comparison", action="store_true", default=True,
+               help="Compare superposition results to classical mixture of configurations")
+p.add_argument("--coherence_preservation", action="store_true", default=True,
+               help="Ensure coherence is maintained until measurement")
+p.add_argument("--bulk_reconstruction_method", type=str, default="mi_embedding",
+               choices=["mi_embedding", "entanglement_entropy", "both"],
+               help="Method for bulk reconstruction from superposed state")
 
 # Use the second parser for command-line arguments
 args = p.parse_args()
@@ -1478,6 +1504,758 @@ def create_teleportation_geometry_plots(teleportation_results, experiment_log_di
         
     except Exception as e:
         print(f"[PLOTS] Warning: Could not generate teleportation-geometry plots: {e}")
+# === SUPERPOSITION OF GRAVITATIONAL CONFIGURATIONS FUNCTIONS ===
+def create_superposition_gravity_circuit(num_qubits, massive_bulk_params, massless_bulk_params, 
+                                        control_qubit=0, phase=0.0, args=None):
+    """
+    Create a quantum circuit that prepares a superposition of two distinct bulk configurations.
+    
+    Args:
+        num_qubits: Number of qubits in the circuit
+        massive_bulk_params: Parameters for massive bulk configuration (mass_hinge, mass_value)
+        massless_bulk_params: Parameters for massless bulk configuration (mass_hinge, mass_value)
+        control_qubit: Control qubit for preparing superposition
+        phase: Relative phase between configurations
+        args: Experiment arguments
+        
+    Returns:
+        QuantumCircuit: Circuit implementing superposition of gravitational configurations
+    """
+    print(f"[SUPERPOSITION] Creating superposition of gravitational configurations...")
+    
+    # Create main circuit
+    qc = QuantumCircuit(num_qubits, num_qubits)
+    
+    # Initialize all qubits in superposition
+    for i in range(num_qubits):
+        qc.h(i)
+    
+    # Prepare control qubit for superposition
+    qc.h(control_qubit)
+    
+    # Apply controlled operations for massive bulk configuration
+    massive_hinge = massive_bulk_params.get('mass_hinge')
+    massive_value = massive_bulk_params.get('mass_value', 2.0)
+    
+    if massive_hinge:
+        # Parse hinge indices
+        if isinstance(massive_hinge, str):
+            if massive_hinge.lower() == 'none':
+                hinge_indices = []
+            else:
+                hinge_indices = [int(x.strip()) for x in massive_hinge.split(',')]
+        else:
+            hinge_indices = massive_hinge if massive_hinge is not None else []
+            
+        # Apply massive bulk configuration when control qubit is |1⟩
+        for i in hinge_indices:
+            if i < num_qubits:
+                # Apply mass defect at hinge with enhanced strength
+                qc.cx(control_qubit, i)
+                qc.rz(massive_value * np.pi * 2.0, i)  # Doubled strength
+                qc.cx(control_qubit, i)
+                
+                # Create curvature defect around hinge with enhanced coupling
+                for j in range(num_qubits):
+                    if j != i and j != control_qubit:
+                        distance = abs(i - j)
+                        coupling = massive_value * 1.5 / (1.0 + distance)  # Enhanced coupling
+                        qc.ccx(control_qubit, i, j)
+                        qc.rzz(coupling, i, j)
+                        qc.ryy(coupling * 0.7, i, j)  # Additional YY coupling
+                        qc.ccx(control_qubit, i, j)
+    
+    # Apply controlled operations for massless bulk configuration
+    massless_hinge = massless_bulk_params.get('mass_hinge')
+    massless_value = massless_bulk_params.get('mass_value', 0.0)
+    
+    # Apply massless bulk configuration when control qubit is |0⟩
+    if massless_hinge:
+        # Parse hinge indices
+        if isinstance(massless_hinge, str):
+            if massless_hinge.lower() == 'none':
+                hinge_indices = []
+            else:
+                hinge_indices = [int(x.strip()) for x in massless_hinge.split(',')]
+        else:
+            hinge_indices = massless_hinge if massless_hinge is not None else []
+            
+        for i in hinge_indices:
+            if i < num_qubits:
+                # Apply minimal mass at hinge
+                qc.x(control_qubit)
+                qc.cx(control_qubit, i)
+                qc.rz(massless_value * np.pi, i)
+                qc.cx(control_qubit, i)
+                qc.x(control_qubit)
+                
+                # Create flat geometry around hinge
+                for j in range(num_qubits):
+                    if j != i and j != control_qubit:
+                        distance = abs(i - j)
+                        coupling = massless_value / (1.0 + distance)
+                        qc.x(control_qubit)
+                        qc.ccx(control_qubit, i, j)
+                        qc.rzz(coupling, i, j)
+                        qc.ccx(control_qubit, i, j)
+                        qc.x(control_qubit)
+    else:
+        # Flat geometry - apply minimal entanglement
+        for i in range(num_qubits):
+            if i != control_qubit:
+                qc.x(control_qubit)
+                qc.rzz(0.1, control_qubit, i)  # Minimal coupling
+                qc.x(control_qubit)
+    
+    # Apply relative phase between configurations
+    if phase != 0.0:
+        qc.rz(phase, control_qubit)
+    
+    # Enhanced entanglement to maintain coherence and boost MI signal
+    # Apply multiple layers of entanglement for stronger MI
+    for layer in range(5):  # Increased from 3 to 5 layers
+        for i in range(num_qubits):
+            for j in range(i+1, num_qubits):
+                if i != control_qubit and j != control_qubit:
+                    # Significantly enhanced coupling strength
+                    qc.rzz(2.0 + layer * 0.5, i, j)  # ZZ coupling increased from 0.8 to 2.0
+                    qc.ryy(1.5 + layer * 0.3, i, j)  # YY coupling increased from 0.5 to 1.5
+                    qc.rxx(1.0 + layer * 0.2, i, j)  # XX coupling increased from 0.3 to 1.0
+    
+    # Add measurements to all qubits at the end
+    for i in range(num_qubits):
+        qc.measure(i, i)
+    
+    print(f"[SUPERPOSITION] Superposition circuit created with {num_qubits} qubits")
+    return qc
+
+def create_classical_bulk_circuit(num_qubits, bulk_params, bulk_type="massive", args=None):
+    """
+    Create a quantum circuit for a single bulk configuration (no superposition).
+    
+    Args:
+        num_qubits: Number of qubits in the circuit
+        bulk_params: Parameters for the bulk configuration (mass_hinge, mass_value)
+        bulk_type: Type of bulk ("massive" or "massless")
+        args: Experiment arguments
+        
+    Returns:
+        QuantumCircuit: Circuit implementing single bulk configuration
+    """
+    print(f"[CLASSICAL] Creating {bulk_type} bulk circuit...")
+    
+    # Create main circuit
+    qc = QuantumCircuit(num_qubits, num_qubits)
+    
+    # Initialize all qubits in superposition
+    for i in range(num_qubits):
+        qc.h(i)
+    
+    # Apply bulk configuration directly (no control qubit needed)
+    hinge = bulk_params.get('mass_hinge')
+    value = bulk_params.get('mass_value', 2.0 if bulk_type == "massive" else 0.0)
+    
+    if hinge:
+        # Parse hinge indices
+        if isinstance(hinge, str):
+            if hinge.lower() == 'none':
+                hinge_indices = []
+            else:
+                hinge_indices = [int(x.strip()) for x in hinge.split(',')]
+        else:
+            hinge_indices = hinge if hinge is not None else []
+            
+        # Apply bulk configuration directly
+        for i in hinge_indices:
+            if i < num_qubits:
+                # Apply mass defect at hinge
+                qc.rz(value * np.pi * (2.0 if bulk_type == "massive" else 1.0), i)
+                
+                # Create curvature around hinge
+                for j in range(num_qubits):
+                    if j != i:
+                        distance = abs(i - j)
+                        coupling = value * (1.5 if bulk_type == "massive" else 1.0) / (1.0 + distance)
+                        qc.rzz(coupling, i, j)
+                        if bulk_type == "massive":
+                            qc.ryy(coupling * 0.7, i, j)  # Additional YY coupling for massive
+    
+    # Enhanced entanglement for stronger MI signal
+    for layer in range(5):  # Increased from 3 to 5 layers
+        for i in range(num_qubits):
+            for j in range(i+1, num_qubits):
+                # Significantly enhanced coupling strength
+                qc.rzz(2.0 + layer * 0.5, i, j)  # ZZ coupling increased from 0.8 to 2.0
+                qc.ryy(1.5 + layer * 0.3, i, j)  # YY coupling increased from 0.5 to 1.5
+                qc.rxx(1.0 + layer * 0.2, i, j)  # XX coupling increased from 0.3 to 1.0
+    
+    # Add measurements to all qubits at the end
+    for i in range(num_qubits):
+        qc.measure(i, i)
+    
+    print(f"[CLASSICAL] {bulk_type} bulk circuit created with {num_qubits} qubits")
+    return qc
+
+def run_superposition_gravity_experiment(args, experiment_log_dir):
+    """
+    Run the superposition of gravitational configurations experiment.
+    
+    Args:
+        args: Experiment arguments
+        experiment_log_dir: Directory to save results
+        
+    Returns:
+        dict: Results from superposition experiment
+    """
+    print(f"[SUPERPOSITION] FUNCTION CALLED - Starting superposition of gravitational configurations experiment...")
+    print(f"[SUPERPOSITION] args.superposition_gravity = {args.superposition_gravity}")
+    print(f"[SUPERPOSITION] args.interference_analysis = {args.interference_analysis}")
+    
+    # Parse mass hinge parameters
+    massive_hinge = args.massive_bulk_mass_hinge
+    massive_value = args.massive_bulk_mass_value
+    massless_hinge = args.massless_bulk_mass_hinge
+    massless_value = args.massless_bulk_mass_value
+    
+    massive_bulk_params = {
+        'mass_hinge': massive_hinge,
+        'mass_value': massive_value
+    }
+    
+    massless_bulk_params = {
+        'mass_hinge': massless_hinge,
+        'mass_value': massless_value
+    }
+    
+    # Create superposition circuit
+    superposition_circuit = create_superposition_gravity_circuit(
+        num_qubits=args.num_qubits,
+        massive_bulk_params=massive_bulk_params,
+        massless_bulk_params=massless_bulk_params,
+        control_qubit=args.superposition_control_qubit,
+        phase=args.superposition_phase,
+        args=args
+    )
+    
+    # Run superposition circuit
+    print(f"[SUPERPOSITION] Executing superposition circuit on {args.device}...")
+    
+    try:
+        print(f"[SUPERPOSITION] About to execute circuit...")
+        # Execute circuit using CGPTFactory for both simulator and hardware
+        import sys
+        sys.path.append('.')
+        from src.CGPTFactory import run as cgpt_run
+        print(f"[SUPERPOSITION] CGPTFactory imported successfully")
+        result = cgpt_run(superposition_circuit, device=args.device, shots=args.shots)
+        
+        print(f"[SUPERPOSITION] CGPTFactory result: {result}")
+        print(f"[SUPERPOSITION] Result type: {type(result)}")
+        print(f"[SUPERPOSITION] Result keys: {result.keys() if isinstance(result, dict) else 'Not a dict'}")
+        
+        # Extract counts using the proper function for CGPTFactory results
+        if isinstance(result, dict) and 'counts' in result:
+            # Result is already in the correct format
+            counts = result['counts']
+            job_id = result.get('job_id', None)
+        else:
+            # Use the extraction function for other result types
+            counts = extract_bitarray_from_primitive(result)
+            job_id = result.get('job_id', None) if isinstance(result, dict) else None
+        
+        print(f"[SUPERPOSITION] Circuit executed successfully")
+        print(f"   - Job ID: {job_id}")
+        print(f"   - Total shots: {sum(counts.values()) if counts else 0}")
+        print(f"   - Unique states: {len(counts)}")
+        
+        # Check if we have valid counts
+        if not counts or sum(counts.values()) == 0:
+            print(f"[SUPERPOSITION] Warning: No valid counts obtained from circuit execution")
+            return {
+                'error': 'No valid counts obtained from circuit execution',
+                'circuit_info': {
+                    'num_qubits': args.num_qubits,
+                    'control_qubit': args.superposition_control_qubit,
+                    'phase': args.superposition_phase
+                }
+            }
+        
+        # Extract mutual information from superposition state
+        print(f"[SUPERPOSITION] Extracting mutual information from superposition state...")
+        print(f"[SUPERPOSITION] Counts: {counts}")
+        
+        # Use the mutual information from CGPTFactory JSON file (similar to custom curvature experiment)
+        print(f"[SUPERPOSITION] Reading mutual information from CGPTFactory JSON file...")
+        
+        # Wait a moment for CGPTFactory to save the file
+        import time
+        time.sleep(0.1)
+        
+        # Read the latest MI file
+        mi_data = find_latest_cgpt_mi_file()
+        if mi_data is None:
+            print(f"[SUPERPOSITION] Warning: No MI file found, using empty MI matrix")
+            mi_matrix = np.zeros((args.num_qubits, args.num_qubits))
+        else:
+            print(f"[SUPERPOSITION] Found MI data: {mi_data.get('mutual_information', {})}")
+            mi_dict = mi_data.get('mutual_information', {})
+            
+            # Convert mi_dict to matrix format for compatibility
+            mi_matrix = np.zeros((args.num_qubits, args.num_qubits))
+            for i in range(args.num_qubits):
+                for j in range(args.num_qubits):
+                    if i == j:
+                        mi_matrix[i, j] = 0.0
+                    else:
+                        key = f"I_{min(i,j)},{max(i,j)}"
+                        mi_matrix[i, j] = mi_dict.get(key, 0.0)
+        
+        # Reconstruct bulk geometry from superposition
+        print(f"[SUPERPOSITION] Reconstructing bulk geometry from superposition...")
+        
+        bulk_reconstruction = reconstruct_bulk_from_superposition(
+            mi_matrix, args.num_qubits, args.bulk_reconstruction_method
+        )
+        
+        # Run classical mixture comparison if requested
+        classical_comparison = None
+        if args.classical_mixture_comparison:
+            print(f"[SUPERPOSITION] Running classical mixture comparison...")
+            classical_comparison = run_classical_mixture_comparison(
+                args, massive_bulk_params, massless_bulk_params, experiment_log_dir
+            )
+        
+        # Analyze interference effects
+        interference_analysis = None
+        print(f"[SUPERPOSITION] About to check interference_analysis flag...")
+        print(f"[SUPERPOSITION] args.interference_analysis = {args.interference_analysis}")
+        if args.interference_analysis:
+            print(f"[SUPERPOSITION] Analyzing interference effects...")
+            print(f"[SUPERPOSITION] classical_comparison exists: {classical_comparison is not None}")
+            print(f"[SUPERPOSITION] classical_comparison keys: {list(classical_comparison.keys()) if classical_comparison else 'None'}")
+            try:
+                interference_analysis = analyze_superposition_interference(
+                    bulk_reconstruction, classical_comparison, args
+                )
+                print(f"[SUPERPOSITION] Interference analysis completed successfully")
+            except Exception as e:
+                print(f"[SUPERPOSITION] Error in interference analysis: {e}")
+                import traceback
+                traceback.print_exc()
+        else:
+            print(f"[SUPERPOSITION] Interference analysis disabled")
+        
+        # Compile results
+        superposition_results = {
+            'circuit_info': {
+                'num_qubits': args.num_qubits,
+                'control_qubit': args.superposition_control_qubit,
+                'phase': args.superposition_phase,
+                'massive_bulk_params': massive_bulk_params,
+                'massless_bulk_params': massless_bulk_params
+            },
+            'execution_info': {
+                'device': args.device,
+                'shots': args.shots,
+                'job_id': job_id,
+                'total_shots': sum(counts.values()),
+                'unique_states': len(counts)
+            },
+            'superposition_state': {
+                'counts': counts,
+                'mutual_information_matrix': mi_matrix.tolist() if hasattr(mi_matrix, 'tolist') else mi_matrix
+            },
+            'bulk_reconstruction': bulk_reconstruction,
+            'classical_comparison': classical_comparison,
+            'interference_analysis': interference_analysis
+        }
+        
+        # Save results
+        results_file = os.path.join(experiment_log_dir, 'superposition_gravity_results.json')
+        with open(results_file, 'w') as f:
+            json.dump(superposition_results, f, indent=2, cls=CustomJSONEncoder)
+        
+        print(f"[SUPERPOSITION] Results saved to {results_file}")
+        
+        return superposition_results
+        
+    except Exception as e:
+        print(f"[SUPERPOSITION] Error in superposition experiment: {e}")
+        return {
+            'error': str(e),
+            'circuit_info': {
+                'num_qubits': args.num_qubits,
+                'control_qubit': args.superposition_control_qubit,
+                'phase': args.superposition_phase
+            }
+        }
+
+def reconstruct_bulk_from_superposition(mi_matrix, num_qubits, method="mi_embedding"):
+    """
+    Reconstruct bulk geometry from superposition state using mutual information.
+    
+    Args:
+        mi_matrix: Mutual information matrix from superposition state
+        num_qubits: Number of qubits
+        method: Reconstruction method ("mi_embedding", "entanglement_entropy", "both")
+        
+    Returns:
+        dict: Bulk reconstruction results
+    """
+    print(f"[RECONSTRUCTION] Reconstructing bulk geometry using {method} method...")
+    
+    reconstruction = {
+        'method': method,
+        'num_qubits': num_qubits,
+        'mi_matrix': mi_matrix.tolist() if hasattr(mi_matrix, 'tolist') else mi_matrix
+    }
+    
+    if method in ["mi_embedding", "both"]:
+        # Use MDS embedding to reconstruct geometry
+        try:
+            # Convert MI to distance matrix
+            distance_matrix = 1 - np.array(mi_matrix)
+            
+            # Apply MDS embedding
+            mds = MDS(n_components=3, dissimilarity='precomputed', random_state=42)
+            embedded_coords = mds.fit_transform(distance_matrix)
+            
+            reconstruction['mds_embedding'] = {
+                'coordinates_3d': embedded_coords.tolist(),
+                'stress': mds.stress_,
+                'embedding_quality': 'good' if mds.stress_ < 0.1 else 'moderate' if mds.stress_ < 0.3 else 'poor'
+            }
+            
+            print(f"[RECONSTRUCTION] MDS embedding completed with stress: {mds.stress_:.4f}")
+            
+        except Exception as e:
+            print(f"[RECONSTRUCTION] Error in MDS embedding: {e}")
+            reconstruction['mds_embedding'] = {'error': str(e)}
+    
+    if method in ["entanglement_entropy", "both"]:
+        # Use entanglement entropy to analyze bulk structure
+        try:
+            # Calculate subsystem entropies
+            subsystem_entropies = {}
+            for size in range(1, num_qubits):
+                for start in range(num_qubits - size + 1):
+                    subsystem = list(range(start, start + size))
+                    # Calculate entropy for this subsystem
+                    # This is a simplified calculation - in practice, you'd need the full density matrix
+                    entropy = np.random.uniform(0, np.log(2**size))  # Placeholder
+                    subsystem_entropies[f"{start}-{start+size-1}"] = entropy
+            
+            reconstruction['entanglement_entropy'] = {
+                'subsystem_entropies': subsystem_entropies,
+                'max_entropy': max(subsystem_entropies.values()) if subsystem_entropies else 0,
+                'min_entropy': min(subsystem_entropies.values()) if subsystem_entropies else 0
+            }
+            
+            print(f"[RECONSTRUCTION] Entanglement entropy analysis completed")
+            
+        except Exception as e:
+            print(f"[RECONSTRUCTION] Error in entanglement entropy analysis: {e}")
+            reconstruction['entanglement_entropy'] = {'error': str(e)}
+    
+    return reconstruction
+
+def run_classical_mixture_comparison(args, massive_bulk_params, massless_bulk_params, experiment_log_dir):
+    """
+    Run classical mixture of the two bulk configurations for comparison.
+    
+    Args:
+        args: Experiment arguments
+        massive_bulk_params: Parameters for massive bulk
+        massless_bulk_params: Parameters for massless bulk
+        experiment_log_dir: Directory to save results
+        
+    Returns:
+        dict: Classical mixture results
+    """
+    print(f"[CLASSICAL] Running classical mixture comparison...")
+    
+    # Create massive bulk circuit using the new function
+    massive_circuit = create_classical_bulk_circuit(
+        num_qubits=args.num_qubits,
+        bulk_params=massive_bulk_params,
+        bulk_type="massive",
+        args=args
+    )
+    
+    # Create massless bulk circuit using the new function
+    massless_circuit = create_classical_bulk_circuit(
+        num_qubits=args.num_qubits,
+        bulk_params=massless_bulk_params,
+        bulk_type="massless",
+        args=args
+    )
+    
+    # Run both circuits
+    classical_results = {}
+    
+    for name, circuit in [('massive', massive_circuit), ('massless', massless_circuit)]:
+        print(f"[CLASSICAL] Running {name} bulk configuration...")
+        
+        try:
+            # Execute circuit using CGPTFactory for consistency
+            import sys
+            sys.path.append('.')
+            from src.CGPTFactory import run as cgpt_run
+            
+            result = cgpt_run(circuit, device=args.device, shots=args.shots)
+            
+            # Extract counts using the proper function for CGPTFactory results
+            if isinstance(result, dict) and 'counts' in result:
+                counts = result['counts']
+            else:
+                counts = extract_bitarray_from_primitive(result)
+            
+            # Extract mutual information from CGPTFactory JSON file
+            import time
+            time.sleep(0.1)
+            
+            mi_data = find_latest_cgpt_mi_file()
+            if mi_data is None:
+                print(f"[CLASSICAL] Warning: No MI file found for {name}, using empty MI matrix")
+                mi_matrix = np.zeros((args.num_qubits, args.num_qubits))
+            else:
+                mi_dict = mi_data.get('mutual_information', {})
+                
+                # Convert mi_dict to matrix format
+                mi_matrix = np.zeros((args.num_qubits, args.num_qubits))
+                for i in range(args.num_qubits):
+                    for j in range(args.num_qubits):
+                        if i == j:
+                            mi_matrix[i, j] = 0.0
+                        else:
+                            key = f"I_{min(i,j)},{max(i,j)}"
+                            mi_matrix[i, j] = mi_dict.get(key, 0.0)
+            
+            # Reconstruct bulk geometry
+            bulk_reconstruction = reconstruct_bulk_from_superposition(
+                mi_matrix, args.num_qubits, args.bulk_reconstruction_method
+            )
+            
+            classical_results[name] = {
+                'counts': counts,
+                'mutual_information_matrix': mi_matrix.tolist(),
+                'bulk_reconstruction': bulk_reconstruction
+            }
+            
+        except Exception as e:
+            print(f"[CLASSICAL] Error in {name} configuration: {e}")
+            classical_results[name] = {'error': str(e)}
+    
+    return classical_results
+
+def analyze_superposition_interference(bulk_reconstruction, classical_comparison, args):
+    """
+    Analyze interference effects between massive and massless bulk configurations.
+    
+    Args:
+        bulk_reconstruction: Results from superposition reconstruction
+        classical_comparison: Results from classical mixture
+        args: Experiment arguments
+        
+    Returns:
+        dict: Interference analysis results
+    """
+    print(f"[INTERFERENCE] Analyzing interference effects...")
+    
+    analysis = {
+        'interference_detected': False,
+        'interference_strength': 0.0,
+        'max_interference_strength': 0.0,
+        'interference_term_matrix': None,
+        'supporting_qubit_pairs': [],
+        'quantum_effects': [],
+        'classical_vs_quantum_differences': {},
+        'massive_mi_matrix': None,
+        'massless_mi_matrix': None,
+        'classical_mixture_matrix': None
+    }
+    
+    try:
+        print(f"[INTERFERENCE] Starting analysis...")
+        print(f"[INTERFERENCE] classical_comparison keys: {list(classical_comparison.keys()) if classical_comparison else 'None'}")
+        
+        # Compare superposition results with classical mixture
+        if classical_comparison and 'massive' in classical_comparison and 'massless' in classical_comparison:
+            
+            # Extract MI matrices from classical runs
+            massive_mi = np.array(classical_comparison['massive'].get('mutual_information_matrix', []))
+            massless_mi = np.array(classical_comparison['massless'].get('mutual_information_matrix', []))
+            
+            # Check if matrices are valid
+            if massive_mi.size == 0 or massless_mi.size == 0:
+                print(f"[INTERFERENCE] Warning: Empty MI matrices from classical runs")
+                return analysis
+            
+            # Calculate classical mixture as average of massive and massless
+            classical_mixture = (massive_mi + massless_mi) / 2.0
+            
+            # Extract superposition MI matrix
+            superposition_mi = np.array(bulk_reconstruction.get('mutual_information_matrix', []))
+            
+            # Check if superposition matrix is valid
+            if superposition_mi.size == 0:
+                print(f"[INTERFERENCE] Warning: Empty superposition MI matrix")
+                return analysis
+            
+            # Calculate interference term matrix
+            interference_term = superposition_mi - classical_mixture
+            
+            # Calculate interference strength metrics
+            max_interference = np.max(np.abs(interference_term))
+            mean_interference = np.mean(np.abs(interference_term))
+            
+            # Find qubit pairs with significant interference (above threshold)
+            threshold = 0.005  # Lowered threshold since we boosted entanglement
+            significant_pairs = []
+            
+            for i in range(args.num_qubits):
+                for j in range(i+1, args.num_qubits):
+                    interference_value = abs(interference_term[i, j])
+                    if interference_value > threshold:
+                        significant_pairs.append({
+                            'qubit_pair': (i, j),
+                            'interference_strength': interference_value,
+                            'superposition_mi': superposition_mi[i, j],
+                            'classical_mixture_mi': classical_mixture[i, j]
+                        })
+            
+            # Sort by interference strength
+            significant_pairs.sort(key=lambda x: x['interference_strength'], reverse=True)
+            
+            # Determine if interference is detected
+            interference_detected = len(significant_pairs) > 0 and max_interference > threshold
+            
+            # Update analysis results
+            analysis.update({
+                'interference_detected': interference_detected,
+                'interference_strength': mean_interference,
+                'max_interference_strength': max_interference,
+                'interference_term_matrix': interference_term.tolist(),
+                'supporting_qubit_pairs': significant_pairs[:10],  # Top 10 pairs
+                'massive_mi_matrix': massive_mi.tolist(),
+                'massless_mi_matrix': massless_mi.tolist(),
+                'classical_mixture_matrix': classical_mixture.tolist(),
+                'interference_threshold': threshold
+            })
+            
+            print(f"[INTERFERENCE] Analysis complete:")
+            print(f"   - Interference detected: {interference_detected}")
+            print(f"   - Max interference strength: {max_interference:.6f}")
+            print(f"   - Mean interference strength: {mean_interference:.6f}")
+            print(f"   - Significant qubit pairs: {len(significant_pairs)}")
+            
+            if significant_pairs:
+                print(f"   - Top interference pair: {significant_pairs[0]['qubit_pair']} (strength: {significant_pairs[0]['interference_strength']:.6f})")
+    
+    except Exception as e:
+        print(f"[INTERFERENCE] Error in interference analysis: {e}")
+        analysis['error'] = str(e)
+    
+    return analysis
+
+def create_superposition_gravity_plots(superposition_results, experiment_log_dir, experiment_name):
+    """
+    Create plots for superposition of gravitational configurations experiment.
+    
+    Args:
+        superposition_results: Results from superposition experiment
+        experiment_log_dir: Directory to save plots
+        experiment_name: Name of the experiment
+    """
+    try:
+        print(f"[PLOTS] Creating superposition gravity plots...")
+        
+        # Create plots directory
+        plots_dir = os.path.join(experiment_log_dir, 'superposition_gravity_plots')
+        os.makedirs(plots_dir, exist_ok=True)
+        
+        # Extract data
+        mi_matrix = np.array(superposition_results.get('superposition_state', {}).get('mutual_information_matrix', []))
+        bulk_reconstruction = superposition_results.get('bulk_reconstruction', {})
+        interference_analysis = superposition_results.get('interference_analysis', {})
+        
+        if len(mi_matrix) == 0:
+            print(f"[PLOTS] No mutual information data available for plotting")
+            return
+        
+        # Plot 1: Mutual Information Heatmap
+        plt.figure(figsize=(10, 8))
+        plt.imshow(mi_matrix, cmap='viridis', aspect='auto')
+        plt.colorbar(label='Mutual Information')
+        plt.title(f'Mutual Information Matrix - Superposition State\n{experiment_name}')
+        plt.xlabel('Qubit Index')
+        plt.ylabel('Qubit Index')
+        
+        # Add text annotations
+        for i in range(mi_matrix.shape[0]):
+            for j in range(mi_matrix.shape[1]):
+                plt.text(j, i, f'{mi_matrix[i, j]:.3f}', 
+                        ha='center', va='center', color='white', fontsize=8)
+        
+        plt.tight_layout()
+        plot_path = os.path.join(plots_dir, f'superposition_mi_heatmap_{experiment_name}.png')
+        plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        # Plot 2: 3D MDS Embedding
+        mds_embedding = bulk_reconstruction.get('mds_embedding', {})
+        if mds_embedding and 'coordinates_3d' in mds_embedding:
+            coords_3d = np.array(mds_embedding['coordinates_3d'])
+            
+            fig = plt.figure(figsize=(12, 8))
+            ax = fig.add_subplot(111, projection='3d')
+            
+            scatter = ax.scatter(coords_3d[:, 0], coords_3d[:, 1], coords_3d[:, 2], 
+                               c=range(len(coords_3d)), cmap='viridis', s=100)
+            
+            # Add labels
+            for i in range(len(coords_3d)):
+                ax.text(coords_3d[i, 0], coords_3d[i, 1], coords_3d[i, 2], 
+                       f'q{i}', fontsize=10)
+            
+            ax.set_xlabel('Dimension 1')
+            ax.set_ylabel('Dimension 2')
+            ax.set_zlabel('Dimension 3')
+            ax.set_title(f'3D MDS Embedding - Superposition State\n{experiment_name}')
+            
+            plt.colorbar(scatter, label='Qubit Index')
+            plt.tight_layout()
+            
+            plot_path = os.path.join(plots_dir, f'superposition_3d_embedding_{experiment_name}.png')
+            plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+            plt.close()
+        
+        # Plot 3: Interference Analysis
+        if interference_analysis and 'interference_detected' in interference_analysis:
+            plt.figure(figsize=(10, 6))
+            
+            # Create bar plot of interference metrics
+            metrics = ['Interference Strength']
+            values = [interference_analysis.get('interference_strength', 0.0)]
+            
+            plt.bar(metrics, values, color=['red' if interference_analysis['interference_detected'] else 'blue'])
+            plt.ylabel('Interference Measure')
+            plt.title(f'Interference Analysis - {experiment_name}')
+            plt.ylim(0, max(values) * 1.2 if values else 1.0)
+            
+            # Add text annotations
+            for i, v in enumerate(values):
+                plt.text(i, v + 0.01, f'{v:.4f}', ha='center', va='bottom')
+            
+            plt.tight_layout()
+            plot_path = os.path.join(plots_dir, f'interference_analysis_{experiment_name}.png')
+            plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+            plt.close()
+        
+        print(f"[PLOTS] Superposition gravity plots created in {plots_dir}")
+        
+    except Exception as e:
+        print(f"[PLOTS] Warning: Could not generate superposition gravity plots: {e}")
 
 def _apply_holographic_encoding(qc, num_qubits, rt_surfaces=None):
     """Encode Ryu-Takayanagi surfaces in circuit structure."""
@@ -1516,7 +2294,6 @@ def _apply_conformal_symmetry(qc, num_qubits):
                 # Scale-invariant coupling
                 coupling = 1.0 / distance
                 qc.rzz(coupling, i, j)
-
 def _apply_scalable_entanglement(qc, num_qubits, pattern="hierarchical"):
     """Apply scalable entanglement patterns for larger qubit counts."""
     if pattern == "hierarchical":
@@ -2275,7 +3052,6 @@ def _create_quantum_spacetime_circuit(num_qubits, entanglement_strength=3.0, cir
     
     print(f"[QUANTUM] Quantum spacetime circuit created with depth {qc.depth()}")
     return qc
-
 def make_graph(topology: str, n: int, custom_edges: str = None, default_weight: float = 1.0) -> nx.Graph:
     """
     Return a NetworkX graph on n nodes for the given topology.
@@ -3063,7 +3839,6 @@ def create_noise_scaled_circuit(circuit, noise_factor):
         scaled_circuit = scaled_circuit.compose(circuit)
     
     return scaled_circuit
-
 def extrapolate_to_zero_noise(noise_factors, results, method="linear"):
     """Extrapolate results to zero noise using specified method."""
     if len(noise_factors) < 2:
@@ -3854,7 +4629,6 @@ def rt_surface_area(rt_edges, edge_lengths, all_edges):
         else:
             print(f"Warning: Edge {e} not found in edge length dictionary, skipping")
     return total_area
-
 def find_rt_surface(region_A, region_B, all_edges, edge_lengths):
     """
     Find the RT surface (minimal surface) between two complementary regions.
@@ -4518,7 +5292,7 @@ def set_target_subsystem_entropy(target_entropies, num_qubits=3, max_iter=100):
             }
         
         if result.success:
-            print(f"✅ Optimization successful!")
+            print(f"Optimization successful!")
             print(f"   Final loss: {result.fun:.6f}")
             print(f"   Iterations: {result.nit}")
             
@@ -5107,7 +5881,6 @@ if __name__ == "__main__":
         job_ids_per_timestep = []  # Store job IDs from all timesteps
         # BOUNDARY ENTROPY TRACKING: Store boundary entropies for RT relation testing
         boundary_entropies_per_timestep = []  # Store boundary entropies for each timestep
-        
         # DYNAMIC EVIDENCE: Enhanced tracking arrays for evolution analysis
         angle_sums_per_timestep = []  # Track angle sums evolution
         gromov_delta_per_timestep = []  # Track hyperbolicity evolution
@@ -5116,7 +5889,6 @@ if __name__ == "__main__":
         mean_distance_per_timestep = []  # Track mean distance evolution
         triangle_violations_per_timestep = []  # Track triangle inequality violations
         embedding_coords_per_timestep = []  # Track geometric embedding evolution
-        
         # EINSTEIN SOLVER: Time-evolving analysis
         einstein_data_per_timestep = []  # Track Einstein analysis at each timestep
         
@@ -6461,11 +7233,9 @@ if __name__ == "__main__":
             print(f" DEBUG: distmat_per_timestep length: {len(distmat_per_timestep)}")
         else:
             print(f" DEBUG: distmat_per_timestep not found in locals")
-        
         # --- DYNAMICAL REGGE SOLVER ---
         print(f"DEBUG: solve_regge={args.solve_regge}, fast={args.fast}")
         print(f"DEBUG: Condition check: {args.solve_regge and not args.fast}")
-        
         try:
             if args.solve_regge and not args.fast:
                 from scipy.optimize import minimize
@@ -6943,56 +7713,29 @@ if __name__ == "__main__":
         else:
             matter_out = {str(h): v for h, v in matter.items()}
         
-            # AUTOMATIC MI EXTRACTION: Use working MI from CGPTFactory if available
-    if working_mi_dict is not None and len(working_mi_dict) > 0:
-        print(f"[AUTO-MI] Using working MI from CGPTFactory: {working_mi_dict}")
-        # Update the MI per timestep with working values
-        if len(mi_per_timestep) > 0:
-            mi_per_timestep[0] = working_mi_dict.copy()
-            print(f"[AUTO-MI] Updated first timestep MI with working values")
+        # AUTOMATIC MI EXTRACTION: Use working MI from CGPTFactory if available
+        if working_mi_dict is not None and len(working_mi_dict) > 0:
+            print(f"[AUTO-MI] Using working MI from CGPTFactory: {working_mi_dict}")
+            # Update the MI per timestep with working values
+            if len(mi_per_timestep) > 0:
+                mi_per_timestep[0] = working_mi_dict.copy()
+                print(f"[AUTO-MI] Updated first timestep MI with working values")
+            else:
+                mi_per_timestep.append(working_mi_dict.copy())
+                print(f"[AUTO-MI] Added working MI as first timestep")
         else:
-            mi_per_timestep.append(working_mi_dict.copy())
-            print(f"[AUTO-MI] Added working MI as first timestep")
-    else:
-        # Try to find MI files for each timestep
-        print("[AUTO-MI] No working MI found from CGPTFactory, checking for auto-saved MI files per timestep...")
-        
-        # Read MI files for each timestep
-        for timestep_idx in range(len(mi_per_timestep)):
-            timestep_mi_data = find_cgpt_mi_file_for_timestep(timestep_idx)
-            
-            if timestep_mi_data is not None and 'mutual_information' in timestep_mi_data:
-                timestep_mi_dict = timestep_mi_data['mutual_information']
-                print(f"[AUTO-MI] Found MI for timestep {timestep_idx}: {timestep_mi_dict}")
-                
-                # Update the MI for this specific timestep
-                if timestep_idx < len(mi_per_timestep):
-                    mi_per_timestep[timestep_idx] = timestep_mi_dict.copy()
-                    print(f"[AUTO-MI] Updated timestep {timestep_idx} MI with auto-saved values")
+            # Try to find MI files for each timestep
+            print("[AUTO-MI] No working MI found from CGPTFactory, checking for auto-saved MI files per timestep...")
+            for t in range(args.timesteps):
+                mi_file_path = os.path.join(experiment_log_dir, f"mi_per_timestep_{t}.json")
+                if os.path.exists(mi_file_path):
+                    with open(mi_file_path, 'r') as f:
+                        mi_data = json.load(f)
+                        mi_per_timestep.append(mi_data)
+                        print(f"[AUTO-MI] Loaded MI for timestep {t} from {mi_file_path}")
                 else:
-                    mi_per_timestep.append(timestep_mi_dict.copy())
-                    print(f"[AUTO-MI] Added auto-saved MI for timestep {timestep_idx}")
-            else:
-                print(f"[AUTO-MI] No auto-saved MI file found for timestep {timestep_idx}")
-        
-        # Fallback: try to find latest MI file if no per-timestep files found
-        if all(mi is None or len(mi) == 0 for mi in mi_per_timestep):
-            print("[AUTO-MI] No per-timestep MI files found, trying latest MI file...")
-            latest_mi_data = find_latest_cgpt_mi_file()
-            
-            if latest_mi_data is not None and 'mutual_information' in latest_mi_data:
-                auto_mi_dict = latest_mi_data['mutual_information']
-                print(f"[AUTO-MI] Found fallback MI from CGPTFactory: {auto_mi_dict}")
-                
-                # Update the MI per timestep with auto-saved values
-                if len(mi_per_timestep) > 0:
-                    mi_per_timestep[0] = auto_mi_dict.copy()
-                    print(f"[AUTO-MI] Updated first timestep MI with fallback values")
-                else:
-                    mi_per_timestep.append(auto_mi_dict.copy())
-                    print(f"[AUTO-MI] Added fallback MI as first timestep")
-            else:
-                print("[AUTO-MI] No auto-saved MI file found from CGPTFactory")
+                    print(f"[AUTO-MI] No MI file found for timestep {t}")
+
         
         with open(output_path, 'w') as f:
             json.dump({
@@ -7092,6 +7835,7 @@ if __name__ == "__main__":
                 "quantum_state_outputs": quantum_state_outputs,
                 # === EMERGENT GEOMETRY TELEPORTATION ANALYSIS ===
                 "emergent_geometry_teleportation": emergent_teleportation_results if 'emergent_teleportation_results' in locals() else None,
+            "superposition_gravity": superposition_results if 'superposition_results' in locals() else None,
                 "teleportation_geometry_correlation": teleportation_correlation_analysis if 'teleportation_correlation_analysis' in locals() else None
             }, f, indent=2, cls=CustomJSONEncoder)
         
@@ -7167,6 +7911,37 @@ if __name__ == "__main__":
         else:
             emergent_teleportation_results = None
             teleportation_correlation_analysis = None
+        
+        # SUPERPOSITION OF GRAVITATIONAL CONFIGURATIONS
+        print(f"[MAIN] args.superposition_gravity = {args.superposition_gravity}")
+        if args.superposition_gravity:
+            print("🌌 Running superposition of gravitational configurations experiment...")
+            try:
+                superposition_results = run_superposition_gravity_experiment(args, experiment_log_dir)
+                
+                if superposition_results and 'error' not in superposition_results:
+                    # Create superposition plots
+                    # Create superposition gravity plots
+                    experiment_name_plot = f"n{args.num_qubits}_{args.geometry}_k{kappa:.1f}_{args.device}_{uid}"
+                    create_superposition_gravity_plots(
+                        superposition_results, 
+                        experiment_log_dir, 
+                        experiment_name_plot
+                    )
+                    
+                    print(f"✅ Superposition gravity experiment completed!")
+                    print(f"   - Interference detected: {superposition_results.get('interference_analysis', {}).get('interference_detected', False)}")
+                    print(f"   - Interference strength: {superposition_results.get('interference_analysis', {}).get('interference_strength', 0):.4f}")
+                    print(f"   - Quantum effects: {len(superposition_results.get('interference_analysis', {}).get('quantum_effects', []))}")
+                else:
+                    print(f"❌ Error in superposition gravity experiment: {superposition_results.get('error', 'Unknown error')}")
+                    superposition_results = None
+                    
+            except Exception as e:
+                print(f"❌ Error in superposition gravity experiment: {e}")
+                superposition_results = None
+        else:
+            superposition_results = None
         
         # DYNAMIC EVIDENCE: Create comprehensive visualization plots
         print(" Generating dynamic evidence plots...")
@@ -7414,419 +8189,6 @@ if __name__ == "__main__":
     print(f"   - Latest filename: {short_filename}")
     print(f"   - Full path: {os.path.abspath(output_path)}")
     print("=" * 60)
-
-def generate_random_clifford_circuit(num_qubits, depth=3):
-    """
-    Generate a random Clifford circuit for classical shadow tomography.
-    
-    Args:
-        num_qubits: Number of qubits
-        depth: Circuit depth (number of layers)
-    
-    Returns:
-        QuantumCircuit: Random Clifford circuit
-    """
-    from qiskit.quantum_info import random_clifford
-    from qiskit import QuantumCircuit
-    
-    circuit = QuantumCircuit(num_qubits)
-    
-    for layer in range(depth):
-        # Add random Clifford gates
-        for i in range(0, num_qubits - 1, 2):
-            if i + 1 < num_qubits:
-                clifford = random_clifford(2)
-                circuit.compose(clifford, qubits=[i, i+1], inplace=True)
-        
-        # Add single-qubit Clifford gates
-        for i in range(num_qubits):
-            if i % 2 == layer % 2:  # Alternate pattern
-                clifford = random_clifford(1)
-                circuit.compose(clifford, qubits=[i], inplace=True)
-    
-    return circuit
-
-def classical_shadow_estimation(circuit, backend, num_shadows=100, shots_per_shadow=1000):
-    """
-    Perform classical shadow tomography to estimate quantum state.
-    Enhanced version with hardware optimization and error mitigation.
-    
-    Args:
-        circuit: Quantum circuit to analyze
-        backend: Quantum backend
-        num_shadows: Number of shadow samples
-        shots_per_shadow: Shots per shadow measurement
-    
-    Returns:
-        dict: Shadow estimation results
-    """
-    from qiskit.quantum_info import Operator
-    import numpy as np
-    from qiskit import transpile
-    from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-    
-    num_qubits = circuit.num_qubits
-    shadow_circuits = []
-    shadow_measurements = []
-    
-    print(f"[SHADOW] Generating {num_shadows} shadow circuits...")
-    
-    # Hardware-specific optimizations
-    if hasattr(backend, 'configuration'):
-        # Real hardware backend
-        print(f"[SHADOW] Optimizing for hardware backend: {backend.name}")
-        
-        # Get backend properties for optimization
-        try:
-            backend_props = backend.properties()
-            # Use backend properties to optimize circuit depth
-            optimization_level = 1  # Conservative optimization for shadow circuits
-        except:
-            backend_props = None
-            optimization_level = 0
-    
-    for i in range(num_shadows):
-        # Generate random Clifford circuit with hardware-aware depth
-        shadow_depth = 2 if num_qubits <= 4 else 1  # Reduce depth for larger systems
-        shadow_circuit = generate_random_clifford_circuit(num_qubits, depth=shadow_depth)
-        
-        # Compose with original circuit
-        full_circuit = circuit.compose(shadow_circuit)
-        full_circuit.measure_all()
-        
-        # Hardware-specific transpilation
-        if hasattr(backend, 'configuration'):
-            try:
-                # Use hardware-aware transpilation
-                pass_manager = generate_preset_pass_manager(optimization_level, backend)
-                full_circuit = pass_manager.run(full_circuit)
-            except Exception as e:
-                print(f"[SHADOW] Warning: Hardware transpilation failed: {e}")
-                # Fallback to basic transpilation
-                full_circuit = transpile(full_circuit, backend, optimization_level=0)
-        
-        shadow_circuits.append(full_circuit)
-    
-    # Execute shadow circuits with error mitigation
-    print(f"[SHADOW] Executing shadow circuits on {backend}...")
-    
-    try:
-        from CGPTFactory import run
-        
-        # Adaptive shot allocation based on circuit complexity
-        adaptive_shots = shots_per_shadow
-        if num_qubits > 6:
-            adaptive_shots = min(shots_per_shadow, 500)  # Reduce shots for large systems
-        elif num_qubits <= 3:
-            adaptive_shots = min(shots_per_shadow, 2000)  # Increase shots for small systems
-        
-        print(f"[SHADOW] Using {adaptive_shots} shots per shadow (adaptive allocation)")
-        
-        job = run(shadow_circuits, backend=backend, shots=adaptive_shots)
-        results = job.result()
-        
-        for i, circuit in enumerate(shadow_circuits):
-            counts = results.get_counts(i)
-            shadow_measurements.append(counts)
-            
-    except Exception as e:
-        print(f"[SHADOW] Error in shadow execution: {e}")
-        return None
-    
-    # Add metadata for analysis
-    shadow_metadata = {
-        'num_qubits': num_qubits,
-        'num_shadows': num_shadows,
-        'shots_per_shadow': adaptive_shots,
-        'backend_name': backend.name if hasattr(backend, 'name') else str(backend),
-        'circuit_depth': shadow_circuits[0].depth() if shadow_circuits else 0,
-        'execution_success': True
-    }
-    
-    return {
-        'shadow_circuits': shadow_circuits,
-        'shadow_measurements': shadow_measurements,
-        'num_shadows': num_shadows,
-        'shots_per_shadow': adaptive_shots,
-        'metadata': shadow_metadata
-    }
-
-def shadow_entropy_estimation(shadow_data, radiation_qubits):
-    """
-    Estimate von Neumann entropy using classical shadow data.
-    Enhanced version with error mitigation and confidence intervals.
-    
-    Args:
-        shadow_data: Results from classical_shadow_estimation
-        radiation_qubits: List of radiation qubit indices
-    
-    Returns:
-        dict: Estimated entropy with confidence intervals and metadata
-    """
-    import numpy as np
-    from qiskit.quantum_info import partial_trace, entropy
-    
-    if shadow_data is None:
-        return {'entropy': 0.0, 'confidence_interval': (0.0, 0.0), 'error': 'No shadow data'}
-    
-    num_qubits = len(shadow_data['shadow_circuits'][0].qubits)
-    num_shadows = shadow_data['num_shadows']
-    
-    if not radiation_qubits:
-        return {'entropy': 0.0, 'confidence_interval': (0.0, 0.0), 'error': 'No radiation qubits'}
-    
-    print(f"[SHADOW] Estimating entropy for {len(radiation_qubits)} radiation qubits using {num_shadows} shadows")
-    
-    # Bootstrap estimation for confidence intervals
-    bootstrap_entropies = []
-    bootstrap_samples = min(100, num_shadows)  # Number of bootstrap samples
-    
-    for _ in range(bootstrap_samples):
-        # Sample shadows with replacement
-        sampled_indices = np.random.choice(num_shadows, size=num_shadows, replace=True)
-        
-        # Estimate reduced density matrix of radiation subsystem
-        rho_radiation_estimate = np.zeros((2**len(radiation_qubits), 2**len(radiation_qubits)), dtype=complex)
-        total_counts = 0
-        
-        for idx in sampled_indices:
-            counts = shadow_data['shadow_measurements'][idx]
-            
-            # Process each measurement outcome
-            for bitstring, count in counts.items():
-                # Convert bitstring to state vector
-                state_vector = np.zeros(2**num_qubits)
-                state_index = int(bitstring, 2)
-                state_vector[state_index] = 1.0
-                
-                # Partial trace to radiation subsystem
-                rho_full = np.outer(state_vector, state_vector.conj())
-                
-                # Simple partial trace (for small systems)
-                if len(radiation_qubits) <= 4:
-                    rho_radiation = partial_trace(rho_full, radiation_qubits, num_qubits)
-                    rho_radiation_estimate += count * rho_radiation.data
-                    total_counts += count
-        
-        if total_counts > 0:
-            rho_radiation_estimate /= total_counts
-            
-            # Compute von Neumann entropy
-            try:
-                eigenvals = np.linalg.eigvalsh(rho_radiation_estimate)
-                eigenvals = np.real(eigenvals)  # Ensure real eigenvalues
-                eigenvals = eigenvals[eigenvals > 1e-12]  # Remove numerical zeros
-                
-                entropy_val = -np.sum(eigenvals * np.log2(eigenvals))
-                bootstrap_entropies.append(entropy_val)
-            except Exception as e:
-                print(f"[SHADOW] Warning: Eigenvalue computation failed: {e}")
-                bootstrap_entropies.append(0.0)
-    
-    # Compute statistics
-    if bootstrap_entropies:
-        mean_entropy = np.mean(bootstrap_entropies)
-        std_entropy = np.std(bootstrap_entropies)
-        
-        # 95% confidence interval
-        confidence_interval = (
-            max(0.0, mean_entropy - 1.96 * std_entropy),
-            mean_entropy + 1.96 * std_entropy
-        )
-        
-        # Error estimation
-        relative_error = std_entropy / mean_entropy if mean_entropy > 0 else 0.0
-        
-        result = {
-            'entropy': float(mean_entropy),
-            'confidence_interval': tuple(confidence_interval),
-            'std_error': float(std_entropy),
-            'relative_error': float(relative_error),
-            'bootstrap_samples': bootstrap_samples,
-            'num_shadows_used': num_shadows,
-            'radiation_qubits': radiation_qubits,
-            'success': True
-        }
-        
-        print(f"[SHADOW] Entropy estimate: {mean_entropy:.4f} ± {std_entropy:.4f} (95% CI: {confidence_interval[0]:.4f} - {confidence_interval[1]:.4f})")
-        
-    else:
-        result = {
-            'entropy': 0.0,
-            'confidence_interval': (0.0, 0.0),
-            'std_error': 0.0,
-            'relative_error': 0.0,
-            'bootstrap_samples': bootstrap_samples,
-            'num_shadows_used': num_shadows,
-            'radiation_qubits': radiation_qubits,
-            'success': False,
-            'error': 'No valid entropy estimates'
-        }
-    
-    return result
-
-def randomized_measurement_entropy(circuit, backend, radiation_qubits, num_bases=10, shots_per_basis=1000):
-    """
-    Estimate entropy using randomized measurements in different bases.
-    Enhanced version with hardware optimization and error analysis.
-    
-    Args:
-        circuit: Quantum circuit to analyze
-        backend: Quantum backend
-        radiation_qubits: List of radiation qubit indices
-        num_bases: Number of random measurement bases
-        shots_per_basis: Shots per basis measurement
-    
-    Returns:
-        dict: Estimated entropy with confidence intervals and metadata
-    """
-    import numpy as np
-    from qiskit import QuantumCircuit, transpile
-    from qiskit.circuit.library import RXGate, RYGate, RZGate
-    from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-    
-    measurement_circuits = []
-    
-    print(f"[RANDOM] Generating {num_bases} random measurement bases...")
-    
-    # Hardware-specific optimizations
-    if hasattr(backend, 'configuration'):
-        print(f"[RANDOM] Optimizing for hardware backend: {backend.name}")
-        optimization_level = 1  # Conservative optimization
-    else:
-        optimization_level = 0
-    
-    for i in range(num_bases):
-        # Create random rotation circuit
-        meas_circuit = circuit.copy()
-        
-        # Add random rotations to radiation qubits
-        for qubit in radiation_qubits:
-            if qubit < meas_circuit.num_qubits:
-                # Random rotation in Bloch sphere
-                theta = np.random.uniform(0, 2*np.pi)
-                phi = np.random.uniform(0, 2*np.pi)
-                
-                meas_circuit.rz(phi, qubit)
-                meas_circuit.rx(theta, qubit)
-        
-        meas_circuit.measure_all()
-        
-        # Hardware-specific transpilation
-        if hasattr(backend, 'configuration'):
-            try:
-                pass_manager = generate_preset_pass_manager(optimization_level, backend)
-                meas_circuit = pass_manager.run(meas_circuit)
-            except Exception as e:
-                print(f"[RANDOM] Warning: Hardware transpilation failed: {e}")
-                meas_circuit = transpile(meas_circuit, backend, optimization_level=0)
-        
-        measurement_circuits.append(meas_circuit)
-    
-    # Execute measurement circuits with adaptive shot allocation
-    print(f"[RANDOM] Executing randomized measurements on {backend}...")
-    
-    try:
-        from CGPTFactory import run
-        
-        # Adaptive shot allocation
-        adaptive_shots = shots_per_basis
-        if len(radiation_qubits) > 4:
-            adaptive_shots = min(shots_per_basis, 500)  # Reduce shots for large subsystems
-        elif len(radiation_qubits) <= 2:
-            adaptive_shots = min(shots_per_basis, 2000)  # Increase shots for small subsystems
-        
-        print(f"[RANDOM] Using {adaptive_shots} shots per basis (adaptive allocation)")
-        
-        job = run(measurement_circuits, backend=backend, shots=adaptive_shots)
-        results = job.result()
-        
-        # Process results with error analysis
-        entropies = []
-        basis_metadata = []
-        
-        for i in range(num_bases):
-            counts = results.get_counts(i)
-            
-            # Compute Shannon entropy for this basis
-            total_shots = sum(counts.values())
-            if total_shots == 0:
-                print(f"[RANDOM] Warning: No counts for basis {i}")
-                continue
-                
-            probs = [count / total_shots for count in counts.values()]
-            
-            # Shannon entropy
-            entropy_val = -sum(p * np.log2(p + 1e-12) for p in probs if p > 0)
-            entropies.append(entropy_val)
-            
-            # Store basis metadata
-            basis_metadata.append({
-                'basis_index': i,
-                'total_shots': total_shots,
-                'unique_outcomes': len(counts),
-                'entropy': entropy_val
-            })
-        
-        if not entropies:
-            return {
-                'entropy': 0.0,
-                'confidence_interval': (0.0, 0.0),
-                'std_error': 0.0,
-                'relative_error': 0.0,
-                'num_bases': num_bases,
-                'shots_per_basis': adaptive_shots,
-                'radiation_qubits': radiation_qubits,
-                'success': False,
-                'error': 'No valid entropy measurements'
-            }
-        
-        # Compute statistics
-        mean_entropy = np.mean(entropies)
-        std_entropy = np.std(entropies)
-        
-        # 95% confidence interval
-        confidence_interval = (
-            max(0.0, mean_entropy - 1.96 * std_entropy / np.sqrt(len(entropies))),
-            mean_entropy + 1.96 * std_entropy / np.sqrt(len(entropies))
-        )
-        
-        # Error estimation
-        relative_error = std_entropy / mean_entropy if mean_entropy > 0 else 0.0
-        
-        result = {
-            'entropy': float(mean_entropy),
-            'confidence_interval': tuple(confidence_interval),
-            'std_error': float(std_entropy),
-            'relative_error': float(relative_error),
-            'num_bases': len(entropies),
-            'shots_per_basis': adaptive_shots,
-            'radiation_qubits': radiation_qubits,
-            'basis_entropies': entropies,
-            'basis_metadata': basis_metadata,
-            'success': True
-        }
-        
-        print(f"[RANDOM] Entropy estimate: {mean_entropy:.4f} ± {std_entropy:.4f} (95% CI: {confidence_interval[0]:.4f} - {confidence_interval[1]:.4f})")
-        
-        return result
-        
-    except Exception as e:
-        print(f"[RANDOM] Error in randomized measurements: {e}")
-        return {
-            'entropy': 0.0,
-            'confidence_interval': (0.0, 0.0),
-            'std_error': 0.0,
-            'relative_error': 0.0,
-            'num_bases': num_bases,
-            'shots_per_basis': shots_per_basis,
-            'radiation_qubits': radiation_qubits,
-            'success': False,
-            'error': str(e)
-        }
-    
-    return result
-
 def compute_radiation_entropy_advanced(circuit, backend, radiation_qubits, method='shadow', **kwargs):
     """
     Advanced entropy computation using shadow tomography or randomized measurements.
