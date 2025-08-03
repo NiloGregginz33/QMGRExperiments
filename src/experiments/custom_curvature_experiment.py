@@ -2127,30 +2127,30 @@ def analyze_superposition_interference(bulk_reconstruction, classical_comparison
             # Sort by interference strength
             significant_pairs.sort(key=lambda x: x['interference_strength'], reverse=True)
             
-            # Determine if interference is detected
-            interference_detected = len(significant_pairs) > 0 and max_interference > threshold
-            
-            # Update analysis results
-            analysis.update({
-                'interference_detected': interference_detected,
-                'interference_strength': mean_interference,
-                'max_interference_strength': max_interference,
-                'interference_term_matrix': interference_term.tolist(),
-                'supporting_qubit_pairs': significant_pairs[:10],  # Top 10 pairs
-                'massive_mi_matrix': massive_mi.tolist(),
-                'massless_mi_matrix': massless_mi.tolist(),
-                'classical_mixture_matrix': classical_mixture.tolist(),
-                'interference_threshold': threshold
-            })
-            
-            print(f"[INTERFERENCE] Analysis complete:")
-            print(f"   - Interference detected: {interference_detected}")
-            print(f"   - Max interference strength: {max_interference:.6f}")
-            print(f"   - Mean interference strength: {mean_interference:.6f}")
-            print(f"   - Significant qubit pairs: {len(significant_pairs)}")
-            
-            if significant_pairs:
-                print(f"   - Top interference pair: {significant_pairs[0]['qubit_pair']} (strength: {significant_pairs[0]['interference_strength']:.6f})")
+                    # Determine if interference is detected
+        interference_detected = len(significant_pairs) > 0 and max_interference > threshold
+        
+        # Update analysis results
+        analysis.update({
+            'interference_detected': interference_detected,
+            'interference_strength': mean_interference,
+            'max_interference_strength': max_interference,
+            'interference_term_matrix': interference_term.tolist(),
+            'supporting_qubit_pairs': significant_pairs[:10],  # Top 10 pairs
+            'massive_mi_matrix': massive_mi.tolist(),
+            'massless_mi_matrix': massless_mi.tolist(),
+            'classical_mixture_matrix': classical_mixture.tolist(),
+            'interference_threshold': threshold
+        })
+        
+        print(f"[INTERFERENCE] Analysis complete:")
+        print(f"   - Interference detected: {interference_detected}")
+        print(f"   - Max interference strength: {max_interference:.6f}")
+        print(f"   - Mean interference strength: {mean_interference:.6f}")
+        print(f"   - Significant qubit pairs: {len(significant_pairs)}")
+        
+        if significant_pairs:
+            print(f"   - Top interference pair: {significant_pairs[0]['qubit_pair']} (strength: {significant_pairs[0]['interference_strength']:.6f})")
     
     except Exception as e:
         print(f"[INTERFERENCE] Error in interference analysis: {e}")
