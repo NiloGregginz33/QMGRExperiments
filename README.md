@@ -20,7 +20,7 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 | **Holographic Mapping** | ✅ **COMPLETE** | **HIGH** | Bulk-boundary correspondence verified |
 | **CTC Experiments** | 🔄 **IN PROGRESS** | **MEDIUM** | Closed timelike curve behavior observed |
 
-*CTC evidence has strengthened and is very high now, but we are not releasing the public implementation of that early 
+*CTC evidence has strengthened and is very high now and in fact we have a range of non trivial solutions, but we are not releasing the public implementation of that early 
 ## 🚀 Key Achievements
 
 ### **1. Statistical Significance Analysis (COMPLETE)**
