@@ -6,6 +6,9 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **This work builds upon foundational experiments in quantum gravity and quantum information theory, particularly the Deutsch Closed Timelike Curve (CTC) experiment and theoretical geometric embedding work like Multi Dimensional Scaling (MDS).**
 
+**It is understood that early experiments that drew analogies to black hole processes are not arguments for cosmological phenomena, rather an informational phenomena
+
+
 ## 🌌 Current Status
 
 | Experiment | Status | Evidence Level | Key Findings |
