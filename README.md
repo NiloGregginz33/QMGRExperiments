@@ -10,6 +10,8 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **This is a simulation via geometry reconstruction with a twist of curvature 
 
+**A history of the thought behind this can be found in the repo commit history, though note that early experiments may be considered speculative however only truth survives repeated testing. 
+
 ## 🌌 Current Status
 
 | Experiment | Status | Evidence Level | Key Findings |
