@@ -8,7 +8,7 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **It is understood that early experiments that drew analogies to black hole processes are not arguments for cosmological phenomena, rather an informational phenomena
 
-**This is a simulation via geometry reconstruction
+**This is a simulation via geometry reconstruction with a twist of curvature 
 
 ## 🌌 Current Status
 
