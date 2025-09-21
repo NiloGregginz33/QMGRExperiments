@@ -10,7 +10,7 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **This is a simulation via geometry reconstruction with a twist of curvature with MDS being a single example 
 
-**A history of the thought behind this can be found in the repo commit history, though note that early experiments may be considered speculative, but its better to systematically test ideas than to hand wave 
+**A history of the thought behind this can be found in the repo commit history, though note that early experiments may be considered speculative, but its better to systematically test ideas than to hand wave. Its meant to show that even though holography was the original target of study, I spent time ruling out other possible explanations of the subsystem entropy anomoly. 
 
 **Compilation to specific alternative hardware gate sets is semi manual though can be automated. 
 
