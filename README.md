@@ -12,6 +12,8 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **A history of the thought behind this can be found in the repo commit history, though note that early experiments may be considered speculative however only truth survives repeated testing. 
 
+**Compilation to specific alternative hardware gate sets is semi manual though can be automated. 
+
 ## 🌌 Current Status
 
 | Experiment | Status | Evidence Level | Key Findings |
