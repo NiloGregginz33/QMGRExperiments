@@ -36,6 +36,9 @@ from typing import List, Dict
 from scipy.optimize import minimize
 import os
 
+#This set of experiments show why early work took ideas like multiverse seriously before veering back on topic about holography
+#Ultimately this is the reason why multiverse was eventually ruled out.
+
 #Test functions until dotted line beginning with exN
 ############################################################################################################################################################################################
 #EX1
