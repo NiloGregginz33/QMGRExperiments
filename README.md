@@ -4,11 +4,11 @@
 
 This project aims to achieve **"undeniable" evidence for quantum holographic phenomena** through systematic quantum experiments on IBM quantum hardware. The research explores the emergence of geometric structure from quantum entanglement, testing fundamental aspects of quantum gravity and holographic duality.
 
-**This work builds upon foundational experiments in quantum gravity and quantum information theory, particularly the Deutsch Closed Timelike Curve (CTC) experiment and theoretical geometric embedding work like Multi Dimensional Scaling (MDS).**
+**This work builds upon foundational experiments in quantum gravity and quantum information theory, particularly the curved emergent geometries experiment and theoretical geometric embedding work like Multi Dimensional Scaling (MDS).**
 
 **It is understood that early experiments that drew analogies to black hole processes are not arguments for cosmological phenomena, rather an informational phenomena
 
-**This is a simulation via geometry reconstruction with a twist of curvature 
+**This is a simulation via geometry reconstruction with a twist of curvature with MDS being a single example 
 
 **A history of the thought behind this can be found in the repo commit history, though note that early experiments may be considered speculative however only truth survives repeated testing. 
 
