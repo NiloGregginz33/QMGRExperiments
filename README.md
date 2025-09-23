@@ -14,6 +14,9 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **Compilation to specific alternative hardware gate sets is semi manual though can be automated. 
 
+**EX1-EX7 or so are important. They demonstrate an example of a curvature injector that can be used 
+
+
 ## 🌌 Current Status
 
 | Experiment | Status | Evidence Level | Key Findings |
