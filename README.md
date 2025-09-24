@@ -6,15 +6,15 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **This work builds upon foundational experiments in quantum gravity and quantum information theory, particularly the curved emergent geometries experiment and theoretical geometric embedding work like Multi Dimensional Scaling (MDS).**
 
-**It is understood that early experiments that drew analogies to black hole processes are not arguments for cosmological phenomena, rather an informational phenomena
+**It is understood that early experiments that drew analogies to black hole processes are not literal arguments for cosmological phenomena, rather an informational phenomena.
 
-**This is a simulation via geometry reconstruction with a twist of curvature with MDS being a single example 
+**This is a simulation via geometry reconstruction with a twist of programmable curvature (+other features), and MDS being a single example. we achieve smooth mi/subsystem entropy gradients, and try to put it to use. 
 
 **A history of the thought behind this can be found in the repo commit history, though note that early experiments may be considered speculative, but its better to systematically test ideas than to hand wave. Its meant to show that even though holography was the original target of study, I spent time ruling out other possible explanations of the subsystem entropy anomoly. 
 
 **Compilation to specific alternative hardware gate sets is semi manual though can be automated. 
 
-** The experiments demonstrate that entanglement topology, phase, and timing together form a minimal but sufficient set of controls to reach a continuous spectrum of subsystem entropies, rather than being limited to discrete distributions as previously assumed. These controls are not exclusive—other levers may exist or be added—but they represent the first explicit, experimentally validated set of knobs that cover a wide range of accessible entropy values without violating consistency constraints (subadditivity, SSA, Araki–Lieb, monogamy) and with accuracy constraints on hardware readouts due to certain quantizations on the machine or noise or whatever.
+** The experiments demonstrate that entanglement topology, phase, and timing together form a minimal but sufficient set of controls to reach a continuous spectrum of subsystem entropies, rather than being limited to discrete distributions as previously assumed. These controls are not exclusive—other levers may exist or be added—but they represent the first explicit, experimentally validated set of knobs that cover a wide range of accessible smooth entropy values without violating consistency constraints (subadditivity, SSA, Araki–Lieb, monogamy) and with accuracy constraints limited only by hardware readouts due to certain quantizations on the machine or noise or whatever. qc.id can be read as a delay (idle) informally but technically this is bad practice and formally it is an identity operator we are simply using to take up space/time, though later examples explicitly use delay to avoid unneccesary confusion. Hopefully, the consistent function definition naming will have made things clear.
 
 
 ## 🌌 Current Status
@@ -31,7 +31,12 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 | **Holographic Mapping** | ✅ **COMPLETE** | **HIGH** | Bulk-boundary correspondence verified |
 | **CTC Experiments** | 🔄 **IN PROGRESS** | **MEDIUM** | Closed timelike curve behavior observed |
 
-*CTC evidence has strengthened and is very high now and in fact we have a range of non trivial solutions, but we are not releasing the public implementation of that early 
+**CTC evidence has strengthened and is very high now
+
+**The MOST important feature of a CTC is its solution, as it provides key evidence both mathematical and physical for our arguments 
+
+**Basically we are solving for special cases of CTC's where we are the only loops allowed are essentially U1 phase rotations.
+
 ## 🚀 Key Achievements
 
 ### **1. Statistical Significance Analysis (COMPLETE)**
