@@ -14,7 +14,9 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **Compilation to specific alternative hardware gate sets is semi manual though can be automated. 
 
-**EX1-EX7 or so are important. They demonstrate an example of a curvature injector that can be used 
+**Ex1-Ex4 demonstrate the first realized set of minimal considerations taken into account for the purpose of sculpting to an arbitrary range of strong, tunable, and repeatable curvatures, which is entanglement topology, phase, and timing.
+Quantum consistency (subadditivity/SSA/Araki–Lieb, monogamy) and graph-induced constraints still obviously apply I cant break the laws of physics or math or graphs still :(
+Hardware realities: coupling map, dt quantization, gate set, T1/T2/readout noise, depth/shot budgets.
 
 
 ## 🌌 Current Status
