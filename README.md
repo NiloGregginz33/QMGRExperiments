@@ -14,9 +14,7 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **Compilation to specific alternative hardware gate sets is semi manual though can be automated. 
 
-**Ex1-Ex4 demonstrate the first realized set of minimal considerations taken into account for the purpose of sculpting to an arbitrary range of strong, tunable, and repeatable curvatures, which is entanglement topology, phase, and timing.
-Quantum consistency (subadditivity/SSA/Araki–Lieb, monogamy) and graph-induced constraints still obviously apply I cant break the laws of physics or math or graphs still :(
-Hardware realities: coupling map, dt quantization, gate set, T1/T2/readout noise, depth/shot budgets.
+** The experiments demonstrate that entanglement topology, phase, and timing together form a minimal but sufficient set of controls to reach a continuous spectrum of subsystem entropies, rather than being limited to discrete distributions as previously assumed. These controls are not exclusive—other levers may exist or be added—but they represent the first explicit, experimentally validated set of knobs that cover a wide range of accessible entropy values without violating consistency constraints (subadditivity, SSA, Araki–Lieb, monogamy) and with accuracy constraints on hardware readouts due to certain quantizations on the machine or noise or whatever.
 
 
 ## 🌌 Current Status
