@@ -1,0 +1,5 @@
+ex4_delay_time_gaps (per-gap):
+gap_ns=60
+device=simulation
+shots=512
+MI autosave: present

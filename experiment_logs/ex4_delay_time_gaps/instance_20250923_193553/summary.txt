@@ -1,0 +1,9 @@
+ex4_delay_time_gaps: Delay sweep (no Aer)
+num_injections=6
+num_radiation_qubits=4
+device=simulation
+shots=512
+gaps_ns=20,30,40,50,60,70
+
+Each gap run logs under a per-gap subdirectory.
+MI autosaves from CGPTFactory are stored alongside per-gap results.
