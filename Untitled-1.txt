@@ -1,3 +1,6 @@
 bad = set(open("../commits-to-remove.txt").read().split())
 if commit.original_id.hex() in bad:
     commit.ignore = True
+
+
+originally created bc i uploaded some stuff i didnt mean to thats all.
