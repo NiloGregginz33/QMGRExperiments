@@ -14180,8 +14180,16 @@ def run(qc, device="simulator", shots=2048, return_timing: bool = True, output_d
     for outcome, cnt in counts.items():
         last_bit = outcome[-1]
         teleported[last_bit] += cnt
-    f0 = teleported['0'] / total
-    f1 = teleported['1'] / total
+
+    # Fix division by zero error when counts is empty
+    if total == 0:
+        print("Warning: No counts received from hardware execution, using uniform distribution")
+        f0 = 0.5
+        f1 = 0.5
+    else:
+        f0 = teleported['0'] / total
+        f1 = teleported['1'] / total
+
     dist = (f0, f1)
     print(f"Distribution on R (hw): |0> = {f0:.3f}, |1> = {f1:.3f}")
 

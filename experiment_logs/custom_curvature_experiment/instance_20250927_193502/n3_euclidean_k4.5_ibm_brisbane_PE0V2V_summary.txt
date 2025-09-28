@@ -1,0 +1,36 @@
+================================================================================
+CUSTOM CURVATURE EXPERIMENT - COMPREHENSIVE SUMMARY
+================================================================================
+
+EXPERIMENT PARAMETERS:
+----------------------------------------
+Number of qubits: 3
+Geometry: euclidean
+Curvature: 4.5
+Device: ibm_brisbane
+Timesteps: 1
+Topology: chain
+Einstein solver enabled: True
+Page curve enabled: True
+Emergent geometry teleportation enabled: False
+Page curve timesteps: 15
+
+KEY METRICS:
+----------------------------------------
+Max Angle Deficit: 0.000000
+Min Edge Length: 0.000000
+Max Edge Length: 0.000000
+Edges at Floor: 0
+
+DYNAMIC EVIDENCE SUMMARY:
+----------------------------------------
+Gromov Delta Range: [0.500, 0.500]
+Mean Distance Range: [2.000, 2.000]
+Total Triangle Violations: 0
+
+
+================================================================================
+EXPERIMENT COMPLETED SUCCESSFULLY
+================================================================================
+Results saved to: C:\Users\manav\Desktop\Experiments\QMGR-fresh\src\experiments\..\..\experiment_logs\custom_curvature_experiment\instance_20250927_193502
+Timestamp: 2025-09-27 19:36:01
