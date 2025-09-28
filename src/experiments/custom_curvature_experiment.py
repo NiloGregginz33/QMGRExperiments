@@ -4795,12 +4795,43 @@ def run_mi_with_excitation(qc, bulk_point_location, excite=False, shots=1024, de
         # For hardware, use the existing run function
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
         from CGPTFactory import run
-        counts = run(qc_excited, device=device_name, shots=shots)
+        result = run(qc_excited, device=device_name, shots=shots)
+
+        # Handle cases where run returns None or empty counts
+        if result is None:
+            print(f"Warning: CGPTFactory.run returned None for hardware execution")
+            counts = {}
+        elif isinstance(result, dict):
+            counts = result.get('counts', {})
+        else:
+            # If it's a different format, try to extract counts
+            counts = result if isinstance(result, dict) else {}
+
+        # Check if counts is empty and provide fallback
+        if not counts or sum(counts.values()) == 0:
+            print(f"Warning: No valid counts received from hardware, using empty counts")
+            counts = {}
     
     # Calculate mutual information matrix and boundary entropies
-    from qiskit.quantum_info import Statevector
+    from qiskit.quantum_info import Statevector, partial_trace, entropy
     import numpy as np
-    
+
+    # Handle empty counts case
+    if not counts or sum(counts.values()) == 0:
+        print("Warning: No counts available, returning empty MI matrix")
+        return {
+            'mi_matrix': np.zeros((qc_excited.num_qubits, qc_excited.num_qubits)),
+            'counts': counts,
+            'excited': excite,
+            'bulk_point': bulk_point_location,
+            'shots': shots,
+            'boundary_entropies': {
+                'entropy_A': 0.0,
+                'entropy_B': 0.0,
+                'mi_AB': 0.0
+            }
+        }
+
     # Get statevector for MI calculation
     qc_no_measure = qc_excited.copy()
     # Remove all measurement operations

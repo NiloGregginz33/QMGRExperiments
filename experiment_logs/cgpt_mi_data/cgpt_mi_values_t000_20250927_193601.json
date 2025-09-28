@@ -1,0 +1,9 @@
+{
+  "timestamp": "20250927_193601",
+  "timestep": 0,
+  "num_qubits": 3,
+  "shots": 1000,
+  "device": "ibm_brisbane",
+  "mutual_information": {},
+  "counts": {}
+}
