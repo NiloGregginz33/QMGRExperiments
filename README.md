@@ -207,6 +207,19 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 - **Installation Guide**: Setup and configuration instructions
 - **Troubleshooting**: Common issues and solutions
 
+## 🧭 Developer Productivity
+
+### **Cursor IDE Recommendation**
+- **Why Cursor**: Cursor’s repository-wide, semantic search makes it fast to locate the right item across this large codebase—whether it’s an experiment in `src/experiments`, a dataset in `experiment_logs`, an analysis tool in `analysis`, or a specific function/class anywhere under `src` or `tools`.
+- **Find the right experiment**: Search by intent (e.g., "custom curvature spherical" or "bulk excitation") to jump directly to files like `src/experiments/custom_curvature_experiment.py` and related analysis scripts.
+- **Locate data quickly**: Search for an instance folder name or a metric (e.g., "MDS stress", "Lorentzian action") to land on the corresponding `experiment_logs/<experiment>/<instance>/results_*.json` and `*_summary.txt` files.
+- **Discover analysis utilities**: Use semantic queries (e.g., "Regge calculus analysis" or "mutual information correlation") to surface the right scripts in `analysis/` and their helper utilities in `src/` and `tools/`.
+- **Trace functions and usages**: Ask natural-language queries like "where is mutual information computed?" to find definitions and call sites across modules without remembering exact symbol names.
+- **Suggested workflow**:
+  1. Open the repo in Cursor and use the search panel for natural-language queries.
+  2. Jump between `src/experiments`, `analysis`, `experiment_logs`, and `tools` as you refine searches.
+  3. Use inline navigation to follow function definitions, references, and related files.
+
 ## 🤝 Collaboration
 
 ### **Open Science**
