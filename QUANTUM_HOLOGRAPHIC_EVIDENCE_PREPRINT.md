@@ -1,10 +1,11 @@
 # Experimental Evidence for Quantum Holographic Phenomena: 
 ## Quantum Emergent Spacetime and Statistical Validation on IBM Quantum Hardware
 
-preprint 10.5281/zenodo.15686533
+preprint DOI 10.5281/zenodo.15686532
 name Manav Naik
-date check the first preprint version release
+date preprint jun 17 2025
 company Matrix Solutions LLC
+date first enabling disclosure dec 20 2024
 
 ---
 
