@@ -40,7 +40,7 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **Basically we are solving for special cases of CTC's where we are the only loops allowed are essentially U1 phase rotations.
 
-**Universal hardware compilation is not listed here despite the name of a particular legacy function. Instead, the compilation work here is meant to focus on a narrow slice of the quantum computing space. 
+**Universal hardware compilation is not listed here despite the name of a particular legacy function. Instead, the compilation work here is meant to focus on a narrow slice of the qubit based quantum computing space. 
 
 ## 🚀 Key Achievements
 
