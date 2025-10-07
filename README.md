@@ -20,6 +20,8 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **More rigorous mathematical foundations for this line of experiments is available that show things like why this methodology is not stumbled on but predicted, and a more mathematical formalism of the original analogies. Just ask me for it if its important to you. Im leaving it out bc at this point bc its not like I invented new math and I think the data here speaks for itself. Maybe it is new like a lot of things here have turned out to be but still the data speaks louder than math.
 
+**Some experiments in the ex[n].py series that were described as being not relevant - kind of sloppy language they show why I rejected superdeterminism.
+
 ## 🌌 Current Status
 
 | Experiment | Status | Evidence Level | Key Findings |
