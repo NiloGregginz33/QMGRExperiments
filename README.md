@@ -22,7 +22,7 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **Some experiments in the ex[n].py series that were described as being not relevant - kind of sloppy language they show why I rejected superdeterminism.
 
-**All work in later internal/3rd party experimental files (eg. wedge comparison, multiverse holography comparisons) post date the first public disclosure and are considered non enabling beyond demonstration. Matrix Solutions LLC is aware of the pre existing prior art on static wedge reconstruction.
+**All work in later internal/3rd party experimental files (eg. wedge comparison, multiverse holography comparisons) post date the first public disclosure and are considered non enabling. Matrix Solutions LLC is aware of the pre existing prior art on static wedge reconstruction.
 
 ## 🌌 Current Status
 
