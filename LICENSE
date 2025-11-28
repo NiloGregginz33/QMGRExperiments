@@ -58,7 +58,7 @@ The monetary charge for exclusive use, reproduce, modify, merge, publish, distri
 
 2.1 If You in the past have accessed the source code or are making into your work or a derivitive without permission from the author (manavnaik123@gmail.com) an actionable lawsuit will be initiated by Matrix Solutions LLC.
 
-12. This current LICENSE extends to any and all use during the 2024-2025 year, as well as all work in this repository and it's branches and commit history during that time. This current LICENSE extends to  If this LICENSE is not updated in any given year, and retains the LICENSE from a previous year, that LICENSE from the previously mentioned previous year extends to the year this Work is accessed.
+2.2. This current LICENSE extends to any and all use during the 2024-2025 year, as well as all work in this repository and it's branches and commit history during that time. This current LICENSE extends to  If this LICENSE is not updated in any given year, and retains the LICENSE from a previous year, that LICENSE from the previously mentioned previous year extends to the year this Work is accessed.
 
 4. Modification of License: You may not add Your own copyright notice to Your modifications and may provide additional or different license terms and conditions for use, reproduction, or distribution of Your modifications, or for any such Derivative Works as a whole, provided Your use, reproduction, and distribution of the Work otherwise complies with the conditions stated in this License.
 
@@ -122,25 +122,26 @@ filed by Matrix Solutions LLC.
    - Use for non-commercial academic research is permitted
    - Educational purposes at accredited institutions are allowed
    - Scientific collaboration with proper attribution is permitted. This attribution should include the names of the Original Author(s) (both entities and individuals), and when citing academically,  use the DOI 10.5281/zenodo.15686532. Include a link to the main branch of this repository in said attribution as well.
-   - Contact the provided email (manavnaik123@gmail.com) for explicit permission for any and all academic research use. Any use without contacting the provided email (manaavnaik123@gmail.com) is considered unlicensed and will be subject to statutory patent damages in the user's jurisdiction.
+   - Contact the provided email (manavnaik123@gmail.com) for explicit permission for any and all academic research use. Any use without contacting the provided email (manaavnaik123@gmail.com) is considered unlicensed and will be subject to statutory patent damages in the user's jurisdiction (or Original Author(s)' jurisdiction if applicable).
 
 
 2. RESTRICTIONS:
    - Commercial use is strictly prohibited without written permission
    - Redistribution, modification, or derivative works are not permitted
    - Reverse engineering or decompilation is prohibited
-   - Public posting or sharing outside of peer review contexts is not allowed, without explicit permission from Manav Naik, via contact at the provided email address (manavnaik123@gmail.com). Any public posting or sharing without explicit permission from Manav Naik (provided email: manavnaik123@gmail.com) is considered unlicensed and is subject to statutory patent damages in the user's jurisdiction (or Original Author(s)' jurisdiction if applicable)
+   - Public posting or sharing outside of peer review contexts is not allowed, without explicit permission from Manav Naik, via contact at the provided email address (manavnaik123@gmail.com). Any public posting or sharing without explicit permission from Manav Naik (provided email: manavnaik123@gmail.com) is considered unlicensed and is subject to statutory patent damages in the user's jurisdiction (or Original Author(s)' jurisdiction if applicable).
 
 GENERAL TERMS FOR ALL SOFTWARE:
 
 1. OWNERSHIP:
    - All rights, title, and interest in the Software remain with Matrix Solutions LLC and Manav Naik
-   - No ownership rights are transferred under this license
+   - No ownership rights are transferred under this license 
 
 2. CONFIDENTIALITY:
    - The Software contains confidential and proprietary information
    - Recipients must maintain confidentiality of the Software
    - Disclosure to third parties is prohibited without written consent
+   - Violations of these terms will  the user with the applicable statutory copyright or applicable statutory trade secret damages in the user's jurisdiction (or Original Author(s)' jurisdiction if applicable).
 
 3. NO WARRANTY:
    - THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND
@@ -151,7 +152,7 @@ GENERAL TERMS FOR ALL SOFTWARE:
 
 5. TERMINATION:
    - This license terminates automatically if any terms are violated
-   - Upon termination, all rights to use the Software cease immediately, and any continued use is considered unlicensed and will be subject to applicable statutory copyright damages and applicable statutory patent damages in the user's jurisdiction.
+   - Upon termination, all rights to use the Software cease immediately, and any continued use is considered unlicensed and will be subject to applicable statutory copyright damages and applicable statutory patent damages in the user's jurisdiction (or Original Author(s)' jurisdiction if applicable).
 
 6. GOVERNING LAW:
    - This agreement is governed by the laws of the jurisdiction where Matrix Solutions LLC is incorporated
