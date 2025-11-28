@@ -72,6 +72,7 @@ This software includes contributions from Matrix Solutions LLC and may be subjec
 
 11. All rights reserved 
 
+
 END OF TERMS AND CONDITIONS
 
 Copyright 2025 Matrix Solutions LLC
@@ -112,13 +113,17 @@ filed by Matrix Solutions LLC.
 1. ACADEMIC RESEARCH:
    - Use for non-commercial academic research is permitted
    - Educational purposes at accredited institutions are allowed
-   - Scientific collaboration with proper attribution is permitted
+   - Scientific collaboration with proper attribution is permitted. This attribution should include the names of the Original Author(s) (both entities and individuals), and when citing academically,  use the DOI 10.5281/zenodo.15686532. Include a link to the main branch of this repository in said attribution as well.
+   - Contact the provided email (manavnaik123@gmail.com) for explicit permission for any and all academic research use. 
+
+   
+
 
 2. RESTRICTIONS:
    - Commercial use is strictly prohibited without written permission
    - Redistribution, modification, or derivative works are not permitted
    - Reverse engineering or decompilation is prohibited
-   - Public posting or sharing outside of peer review contexts is not allowed
+   - Public posting or sharing outside of peer review contexts is not allowed, or without explicit permission from Manav Naik, via contact at the provided email address (manavnaik123@gmail.com)
 
 GENERAL TERMS FOR ALL SOFTWARE:
 
