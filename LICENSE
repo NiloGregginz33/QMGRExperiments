@@ -37,12 +37,12 @@ The monetary charge for exclusive use, reproduce, modify, merge, publish, distri
 
 2.4 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Work.
 
-2.5 This LICENSE grants no rights or permissions to any individual or organization until the owner of this work has been contacted at the provided email address (manavnaik123@gmail.com) and has granted written authorization. The owner of this work is Matrix Solutions LLC acting through its principal investigator Manav Naik. Any use, copying, modification, distribution, decompilation, reverse engineering, derivative creation, or commercial deployment of this work prior to written authorization is considered unlicensed usage. Unlicensed usage is subject to applicable statutory copyright damages in the user’s jurisdiction. 
+2.5 This LICENSE grants no rights or permissions to any individual or organization until the owner of this work has been contacted at the provided email address (manavnaik123@gmail.com) and has granted written authorization. The owner of this work is Matrix Solutions LLC acting through its principal investigator Manav Naik. Any use, copying, modification, distribution, decompilation, reverse engineering, derivative creation, or commercial deployment of this work prior to written authorization is considered unlicensed usage. Unlicensed usage is subject to applicable statutory copyright damages in the user’s jurisdiction (or Original Author(s)' jurisdiction if applicable).
 
 3. Grant of Patent License. . Subject to the terms and conditions of this License, each Contributor will no longer retain rights to the information they contributed. 
 The monetary charge for exclusive use, reproduce, modify, merge, publish, distribute, sublicense, and/or sell copies of the Work, and to permit persons to whom the Work is furnished to do so, is $320,110,191,200 USD or BTC, (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted. If You institute patent litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Work or a Contribution incorporated within the Work constitutes direct or contributory patent infringement, then any patent licenses granted to You under this License for that Work shall terminate as of the date such litigation is filed. Do not assume if the monetary charge is paid or expected to be paid, permission is/was granted, unless confirmed through direct contact and inquiry with the email address manavnaik123@gmail.com. If You previously assumed permission had been automatically granted, consider any and all patent licenses granted to You under this License for that Work terminated immediately.
 
-2.5 This LICENSE grants no rights or permissions to any individual or organization until the owner of this work has been contacted at the provided email address (manavnaik123@gmail.com) and has granted written authorization. The owner of this work is Matrix Solutions LLC acting through its principal investigator Manav Naik. Any use, copying, modification, distribution, decompilation, reverse engineering, derivative creation, or commercial deployment of this work prior to written authorization is considered unlicensed usage. Unlicensed usage is subject to applicable statutory patent damages in the user’s jurisdiction. 
+2.5 This LICENSE grants no rights or permissions to any individual or organization until the owner of this work has been contacted at the provided email address (manavnaik123@gmail.com) and has granted written authorization. The owner of this work is Matrix Solutions LLC acting through its principal investigator Manav Naik. Any use, copying, modification, distribution, decompilation, reverse engineering, derivative creation, or commercial deployment of this work prior to written authorization is considered unlicensed usage. Unlicensed usage is subject to applicable statutory patent damages in the user’s jurisdiction (or Original Author(s)' jurisdiction if applicable).
 
 4. Redistribution. You may reproduce and distribute copies of Derivative Works thereof in any medium, with or without modifications, and in Source or Object form, provided that You meet the following conditions:
 
@@ -114,16 +114,14 @@ filed by Matrix Solutions LLC.
    - Use for non-commercial academic research is permitted
    - Educational purposes at accredited institutions are allowed
    - Scientific collaboration with proper attribution is permitted. This attribution should include the names of the Original Author(s) (both entities and individuals), and when citing academically,  use the DOI 10.5281/zenodo.15686532. Include a link to the main branch of this repository in said attribution as well.
-   - Contact the provided email (manavnaik123@gmail.com) for explicit permission for any and all academic research use. 
-
-   
+   - Contact the provided email (manavnaik123@gmail.com) for explicit permission for any and all academic research use. Any use without contacting the provided email (manaavnaik123@gmail.com) is considered unlicensed and will be subject to statutory patent damages in the user's jurisdiction.
 
 
 2. RESTRICTIONS:
    - Commercial use is strictly prohibited without written permission
    - Redistribution, modification, or derivative works are not permitted
    - Reverse engineering or decompilation is prohibited
-   - Public posting or sharing outside of peer review contexts is not allowed, or without explicit permission from Manav Naik, via contact at the provided email address (manavnaik123@gmail.com)
+   - Public posting or sharing outside of peer review contexts is not allowed, without explicit permission from Manav Naik, via contact at the provided email address (manavnaik123@gmail.com). Any public posting or sharing without explicit permission from Manav Naik (provided email: manavnaik123@gmail.com) is considered unlicensed and is subject to statutory patent damages in the user's jurisdiction (or Original Author(s)' jurisdiction if applicable)
 
 GENERAL TERMS FOR ALL SOFTWARE:
 
