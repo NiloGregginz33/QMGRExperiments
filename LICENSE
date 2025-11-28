@@ -35,7 +35,7 @@ The monetary charge for exclusive use, reproduce, modify, merge, publish, distri
 
 2.3 This current LICENSE extends to any and all use during the 2024-2025 year.
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Work.
+2.4 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Work.
 
 3. Grant of Patent License. . Subject to the terms and conditions of this License, each Contributor will no longer retain rights to the information they contributed. 
 The monetary charge for exclusive use, reproduce, modify, merge, publish, distribute, sublicense, and/or sell copies of the Work, and to permit persons to whom the Work is furnished to do so, is $20,110,191,200 USD or BTC, (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted. If You institute patent litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Work or a Contribution incorporated within the Work constitutes direct or contributory patent infringement, then any patent licenses granted to You under this License for that Work shall terminate as of the date such litigation is filed. Do not assume if the monetary charge is paid or expected to be paid, permission is/was granted, unless confirmed through direct contact and inquiry with the email address manavnaik123@gmail.com. If You previously assumed permission had been automatically granted, consider any and all patent licenses granted to You under this License for that Work terminated immediately.
@@ -66,9 +66,11 @@ You may not add Your own copyright notice to Your modifications and may provide 
 
 This software includes contributions from Matrix Solutions LLC and may be subject to patents held by Matrix Solutions LLC. Commercial use may require separate licensing arrangements.
 
+11. All rights reserved 
+
 END OF TERMS AND CONDITIONS
 
-Copyright 2025 Matrix Solutions LLC and contributors
+Copyright 2025 Matrix Solutions LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -81,8 +83,6 @@ distributed under the License is distributed on an "AS IS" or EXCLUSIVE BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
-All rights reserved.
 
 @software{qmgr_experiments_2025,
   author = {Matrix Solutions LLC},
