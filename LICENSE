@@ -85,7 +85,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 @software{qmgr_experiments_2025,
-  author = {Matrix Solutions LLC},
+  author = {Matrix Solutions LLC, Manav Naik},
   title = {QMGRExperiments: Quantum Information Experiments for Holographic Principle Investigation},
   year = {2025},
   url = {https://github.com/NiloGregginz33/QMGRExperiments},
@@ -103,8 +103,7 @@ limitations under the License.
 
 ## Patent Notice
 The original quantum simulation methods are subject to patent applications 
-filed by Matrix Solutions LLC. Contributors retain copyright to their 
-specific contributions under the Apache 2.0 license.
+filed by Matrix Solutions LLC. 
 
 1. ACADEMIC RESEARCH:
    - Use for non-commercial academic research is permitted
