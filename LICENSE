@@ -28,6 +28,8 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
 "Author" shall mean Manav Naik, NiloGregginz33, and the owner/controller of the provided email (manavnaik123@gmail.com) so long as they all simultaneously describe the same individual.
 
+1. Contributions. No contributions grant any rights to ownership, copyright, patent, authority, over the "Work", trade secret, or shares of Matrix Solution LLC. Contributors give up all rights to their contributions to Matrix Solutions LLC.
+
 2. Grant of Copyright License. Subject to the terms and conditions of this License, each Contributor will no longer retain rights to the information they contributed. 
 The monetary charge for exclusive use, reproduce, modify, merge, publish, distribute, sublicense, and/or sell copies of the Work, and to permit persons to whom the Work is furnished to do so, is $10,320,110,191,200 USD or BTC (except as stated in this section), copyright license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those copyright claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted. If You institute copyright litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Work or a Contribution incorporated within the Work constitutes direct or contributory copyright infringement, then any copyright licenses granted to You under this License for that Work shall terminate as of the date such litigation is filed. The monetary charge payable in USD or BTC in this section, is always the most recent rate as per the currently published TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION (LICENSE). Do not assume if the monetary charge is paid or expected to be paid, permission is/was granted, unless confirmed through direct contact and inquiry with the email address manavnaik123@gmail.com. If You previously assumed permission had been automatically granted, consider any and all copyright licenses granted to You under this License for that Work terminated immediately.
 
@@ -74,7 +76,7 @@ The monetary charge for exclusive use, reproduce, modify, merge, publish, distri
 
 10. Redistribution, Reproduction and Works as a Whole. You may not distribute copies of this Work in object code form alone; any distribution must include the source code, with the permission of the SOURCE Author. When distributing the Work, you must include a prominent notice in a file named NOTICE at the top level of the distribution which includes the following statement:
 
-This software includes contributions from Matrix Solutions LLC and may be subject to patents held by Matrix Solutions LLC. Commercial requires separate licensing arrangements, which can only have been made by contacting the provided email (manavnaik123@gmail.com).
+10.1 This software includes contributions from Matrix Solutions LLC and may be subject to patents held by Matrix Solutions LLC. Commercial requires separate licensing arrangements, which can only have been made by contacting the provided email (manavnaik123@gmail.com).
 
 11. This current LICENSE extends to any and all use during the 2024-2025 year, as well as all work in this repository and it's branches and commit history during that time. This current LICENSE extends to  If this LICENSE is not updated in any given year, and retains the LICENSE from a previous year, that LICENSE from the previously mentioned previous year extends to the year this Work is accessed.
 
@@ -112,7 +114,7 @@ limitations under the License.
 - Manav Naik - Founder, Pricipal Investigator, and CEO at Matrix Solutions LLC
 
 ## Contributors
-- Sidak Sohi - Recommended I use Cursor and showed me how to use it with a commit. That original commit is no longer around, but I still use Cursor.
+- Sidak Sohi - Recommended I use Cursor and showed me how to use it with a commit. That original commit is no longer around, but I still use Cursor. 
 
 ## Patent Notice
 The original quantum simulation methods are subject to patent applications 
@@ -158,7 +160,7 @@ filed by Matrix Solutions LLC.
 GENERAL TERMS FOR ALL SOFTWARE:
 
 1. OWNERSHIP:
-   - All rights, title, and interest in the Software remain with Matrix Solutions LLC and Manav Naik
+   - All rights, title, and interest in the Software (the "Work") remain with Matrix Solutions LLC and Manav Naik
    - No ownership rights are transferred under this license 
 
 2. CONFIDENTIALITY:
