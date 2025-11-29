@@ -78,7 +78,7 @@ This software includes contributions from Matrix Solutions LLC and may be subjec
 
 11. This current LICENSE extends to any and all use during the 2024-2025 year, as well as all work in this repository and it's branches and commit history during that time. This current LICENSE extends to  If this LICENSE is not updated in any given year, and retains the LICENSE from a previous year, that LICENSE from the previously mentioned previous year extends to the year this Work is accessed.
 
-12. All rights are reserved by Matrix Solutions LLC and the Author.
+12. All rights are reserved by Matrix Solutions LLC and the "Author".
 
 
 END OF TERMS AND CONDITIONS
@@ -179,7 +179,10 @@ GENERAL TERMS FOR ALL SOFTWARE:
    - Upon termination, all rights to use the Software cease immediately, and any continued use is considered unlicensed and will be subject to applicable statutory copyright damages and applicable statutory patent damages and applicable statutory trade secret damages in the user's jurisdiction (or Original Author(s)' jurisdiction if applicable).
 
 6. GOVERNING LAW:
-   - This agreement is governed by the laws of the jurisdiction where Matrix Solutions LLC is incorporated
+   - This agreement is governed by the laws of the jurisdiction where Matrix Solutions LLC is incorporated.
+
+7. ALL RIGHTS RESERVED:
+   - All rights are reserved by Matrix Solutions LLC and the "Author".
 
 For licensing inquiries, commercial use requests, or questions about this agreement, 
 contact: manavnaik123@gmail.com
