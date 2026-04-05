@@ -8,7 +8,7 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 
 **It is understood that early experiments that drew analogies to black hole processes are not literal arguments for cosmological phenomena, rather an informational phenomena.
 
-**This is a simulation via geometry reconstruction with a twist of programmable curvature (+other features), and MDS being a single example. we achieve smooth mi/subsystem entropy gradients, and try to put it to use. 
+**This is a "simulation" via geometry reconstruction with a twist of programmable curvature (+other features), and MDS being a single example. we achieve smooth mi/subsystem entropy gradients, and try to put it to use. 
 
 **partial commits of old licenses are accidental and the newest license should always be used
 
