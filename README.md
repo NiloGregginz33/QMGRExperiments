@@ -57,7 +57,7 @@ This project aims to achieve **"undeniable" evidence for quantum holographic phe
 ****
 **Universal hardware compilation is not listed here despite the name of a particular legacy function. Instead, the compilation work here is meant to focus on a narrow slice of the qubit based quantum computing space. 
 
-**IBM quantum computers are used as they are very good.
+**IBM quantum computers are used as they are the best.
 
 ## 🚀 Key Achievements
 
