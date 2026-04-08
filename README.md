@@ -1,4 +1,5 @@
 # Quantum Holographic Evidence Project
+# Dont use this code without reading the license, consider this your second cease and desist, as a previous publkic cease and desist was already mentioned in the repo historuy.
 
 # The previously disclosed novelty from an umbrella patent filing (now being restated) was quantum state manipulation without decoherence or measurement, is now described under the charge injection language in the patent. Previously, it was disclosed as information steering, though that is technically not true. Both of these languages partially support the idea, though charge injection is more technically correct in patent language.
 #already included since august
