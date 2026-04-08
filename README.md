@@ -1,5 +1,7 @@
 # Quantum Holographic Evidence Project
 
+# The previously disclosed novelty from an umbrella patent filing (now being restated) was quantum state manipulation without decoherence or measurement, is now described under the charge injection language in the patent. Previously, it was disclosed as information steering, though that is technically not true. Both of these languages partially support the idea, though charge injection is more technically correct in patent language.
+
 ## 🎯 Project Overview
 
 This project aims to achieve **"undeniable" evidence for quantum holographic phenomena** through systematic quantum experiments on IBM quantum hardware. The research explores the emergence of geometric structure from quantum entanglement, testing fundamental aspects of quantum gravity and holographic duality.
