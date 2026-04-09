@@ -11,6 +11,8 @@
 
 #This extends to containerized images, because if certain functionalities that are not possible without breaching the patent. Consider this a cease and desist to prevent sharing of such, even if provided by Matrix Solutions LLC.
 
+#CGPTFactory.py is called that because I thought I could give ChatGPT my code and have it run hardware tests for me, and this naming convention has just kind of stuck around when I realized it was not possible.
+
 ## 🎯 Project Overview
 
 This project aims to achieve **"undeniable" evidence for quantum holographic phenomena** through systematic quantum experiments on IBM quantum hardware. The research explores the emergence of geometric structure from quantum entanglement, testing fundamental aspects of quantum gravity and holographic duality.
