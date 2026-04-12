@@ -13,6 +13,8 @@
 
 # If you cannot pay the amount listed in the IP penalties in the license, maximum damages will be sought after in relationship to your assets and any punitive damages
 
+# Any distribution not authorized explicitly by manavnaik123@gmail.com is considered a breach of license
+
 #already included since august
 
 #This extends to containerized images, because if certain functionalities that are not possible without breaching the patent. Consider this a cease and desist to prevent sharing of such, even if provided by Matrix Solutions LLC.
