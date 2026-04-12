@@ -13,7 +13,7 @@
 
 # If you cannot pay the amount listed in the IP penalties in the license, maximum damages will be sought after in relationship to your assets and any punitive damages
 
-# Any distribution not authorized explicitly by manavnaik123@gmail.com is considered a breach of license
+# Any distribution not authorized explicitly by manavnaik123@gmail.com is considered a breach of license and incurs the copyright penalties as well as the patent penalties
 
 #already included since august
 
