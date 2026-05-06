@@ -9,6 +9,8 @@
 
 # The previously disclosed novelty from an umbrella patent filing (now being restated) was quantum state manipulation without decoherence or measurement, is now described under the charge injection language in the patent. Previously, it was disclosed as information steering, though that is technically not true. Both of these languages partially support the idea, though charge injection is more technically correct in patent language.
 
+# Minor commend - a single thing was changed in the numpy env (which was never intended to leak). I believe at this point in time the patched numpy distribution was recalled as there was no intent to distribute that information. Apologies to the developers.
+
 # Validation must NOT occur on a problem set not listed here, and may not be done in containerized applications
 
 #Expect legal action id misusing material in a way described by the license (aka. LICENSE, License) or the README or its previous versions
