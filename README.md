@@ -19,6 +19,7 @@
 
 # Any distribution not authorized explicitly by manavnaik123@gmail.com is considered a breach of license and incurs the copyright penalties as well as the patent penalties
 
+# Some definitions are being cleared up
 #already included since august
 
 #This extends to containerized images, because if certain functionalities that are not possible without breaching the patent. Consider this a cease and desist to prevent sharing of such, even if provided by Matrix Solutions LLC.
