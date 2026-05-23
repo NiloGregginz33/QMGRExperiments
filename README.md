@@ -21,6 +21,8 @@
 
 # matrix_ctc_000_v7 (aka Matrix_ctc_000_v7)  treats Deutsch-style CTC computation as an operational fixed-point workflow: a submitted problem is normalized into a canonical problem specification, associated with a declared fixed-point regime, mapped to a loop subsystem, update/channel, self-consistency condition, observable/readout, and validation envelope, then executed or analyzed through backend-equivalent gate/circuit realizations that preserve the same DCTC invariants. Supported fixed-point regimes may include planning/Bellman-style updates, game/equilibrium updates, message-passing inference, spectral/eigenvector iteration, contraction-style iteration, and compiler/interpreter stabilization, depending on the submitted workload and public API contract. Public outputs expose routing explanation, validation evidence, timing metadata, and nonclaim limitations, while private solver mechanics, route thresholds, internal mappings, and backend implementation details remain confidential. This is an operational computing architecture, not a claim that empirical runs prove P=NP, PSPACE=P, or physical time travel.
 
+# Generic non-causal problem-solving is prior art: it reduces to known Deutsch fixed-point or postselected circuit semantics plus measurement and classical decoding. Engineered DCTC implementations, physical bridge realizations, and functionally equivalent fixed-point solver stacks are separate technical embodiments.
+
 # Any distribution not authorized explicitly by manavnaik123@gmail.com is considered a breach of license and incurs the copyright penalties as well as the patent penalties
 
 # Some definitions are being cleared up
