@@ -9,6 +9,8 @@
 
 # Bellman iterations are good at big O exp time problems but do not work on larger PSPACE problems.
 
+# Novelty was in part established by a custom timestamped patent search done w some code I have.
+
 # The previously disclosed novelty from an umbrella patent filing (now being restated) was quantum state manipulation without decoherence or measurement, is now described under the charge injection language in the patent. Previously, it was disclosed as information steering, though that is technically not true. Both of these languages partially support the idea, though charge injection is more technically correct in patent language.
 
 # Minor commend - a single thing was changed in the numpy env (which was never intended to leak). I believe at this point in time the patched numpy distribution was recalled as there was no intent to distribute that information. Apologies to the developers.
