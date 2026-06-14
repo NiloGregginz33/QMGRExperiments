@@ -1,7 +1,7 @@
 # Quantum Holographic Evidence Project
 
 # Website is found at matrixsolutionsllc.net and the first product implementation can be found on rapidAPI named matrix_ctc_001_v1
-# Dont use this code without reading the license, consider this your second cease and desist, as a previous publkic cease and desist was already mentioned in the repo history. This repository is to not infringe on the novelties of the patent, which are discussed here.
+# Dont use this code without reading the license, consider this your second cease and desist, as a previous public cease and desist was already mentioned in the repo history. This repository is to not infringe on the novelties of the patent, which are discussed here.
 
 # If any virtual enviornments have accidentally been uploaded to the repo, please check the respective licensing before using
 
