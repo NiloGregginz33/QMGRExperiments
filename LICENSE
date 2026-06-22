@@ -78,6 +78,8 @@ The monetary charge for exclusive use, reproduce, modify, merge, publish, distri
 
 11. This current LICENSE extends to any and all use during the 2024-2025 year, as well as all work in this repository and it's branches and commit history during that time. This current LICENSE extends to  If this LICENSE is not updated in any given year, and retains the LICENSE from a previous year, that LICENSE from the previously mentioned previous year extends to the year this Work is accessed.
 
+11.2. No reverse compiltion or decompiltion or adaption to other uses allowed.
+
 12. All rights are reserved by Matrix Solutions LLC and the "Author".
 
 13."Validation" or "validation" must not comprise of your own data and must be procured using the arguments provided in the Work.
@@ -182,6 +184,8 @@ GENERAL TERMS FOR ALL SOFTWARE:
 5. TERMINATION:
    - This license terminates automatically if any terms are violated
    - Upon termination, all rights to use the Software cease immediately, and any continued use is considered unlicensed and will be subject to applicable statutory copyright damages and applicable statutory patent damages and applicable statutory trade secret damages in the user's jurisdiction (or Original Author(s)' jurisdiction if applicable).
+
+5.1 No reverse compiltion or decompiltion or adaption to other uses allowed.
 
 6. GOVERNING LAW:
    - This agreement is governed by the laws of the jurisdiction where Matrix Solutions LLC is incorporated and may be settled in any court of Matrix Solution LLC's choosing.
