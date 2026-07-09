@@ -6,6 +6,8 @@
 
 # Using my phone number is a legitimate way to get approval to share or validate. The number to text for approval is +1 5105090232. 
 
+# Using other fixed point calculations will be considered a natural extension of this.
+
 # If any virtual enviornments have accidentally been uploaded to the repo, please check the respective licensing before using
 
 # The newest version of the README has been read if you have used,modified,distributed,misused,decompiled any of the code in the repository and penalties for such are seen in the license (aka License, LICENSE)
