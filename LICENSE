@@ -107,9 +107,6 @@ limitations under the License.
 - Matrix Solutions LLC - Primary Patent holder and Primary Contribution Source
 - Manav Naik - Founder, Pricipal Investigator, and CEO at Matrix Solutions LLC
 
-## Contributors
-- Sidak Sohi - Recommended I use Cursor and showed me how to use it with a commit. That original commit is no longer around, but I still use Cursor. 
-
 ## Patent Notice
 The original quantum simulation methods are subject to patent applications 
 filed by Matrix Solutions LLC. 
@@ -177,7 +174,7 @@ GENERAL TERMS FOR ALL SOFTWARE:
    - This license terminates automatically if any terms are violated
    - Upon termination, all rights to use the Software cease immediately, and any continued use is considered unlicensed and will be subject to applicable statutory copyright damages and applicable statutory patent damages and applicable statutory trade secret damages in the user's jurisdiction (or Original Author(s)' jurisdiction if applicable).
 
-5.1 No reverse compiltion or decompiltion or adaption to other uses allowed.
+5.1 No reverse compiltion, decompiltion, integration adaption to other uses allowed.
 
 6. GOVERNING LAW:
    - This agreement is governed by the laws of the jurisdiction where Matrix Solutions LLC is incorporated and may be settled in any court of Matrix Solution LLC's choosing.
@@ -188,9 +185,9 @@ GENERAL TERMS FOR ALL SOFTWARE:
 8. Validation must NOT occur on a problem set listed here, and may not be done in containerized applications.
 
 For licensing inquiries, commercial use requests, or questions about this agreement, 
-contact: manavnaik123@gmail.com
+contact: manavnaik123@gmail.com or manav@matrixsolutionsllc.net
 
-By using, reproducing, modifying, merging, publishing, distributing, sublicensing, and/or selling copies of the Software (the "Work") , you acknowledge that you have 
+By using, viewing, reproducing, modifying, merging, publishing, distributing, sublicensing, and/or selling copies of the Software (the "Work") , you acknowledge that you have 
 read, understood, and agree to be bound by the terms of this published newest license (LICENSE) agreement and the newest README.md.
 
 """
