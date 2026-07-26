@@ -11,7 +11,7 @@
 
 # Overall Manav Naik is the creator of the simulation (trademark/TM: The Creator of the Simulation (caps insensitive))
 
-# Next move may be autonomous construction vehicles
+# Next move may be autonomous construction vehicles or a reetrofitting system for construction vehicles that will also allow them to operate autonomously and orchestrate their work to maximize productivity.
 
 
 # Using my phone number is a legitimate way to get approval to share or validate. The number to text for approval is +1 5105090232. 
