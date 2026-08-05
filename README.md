@@ -24,9 +24,6 @@ The story: So I (Manav Abhijeet Naik) used to be a drug addict when I was in hig
 
 # The newest version of the README has been read if you have used,modified,distributed,misused,decompiled any of the code in the repository and penalties for such are seen in the license (aka License, LICENSE)
 # The ONLY preapproved use for this code is validation, otherwise you must have contacted manavnaik123@gmail.com and have been granted use on a specific project. This line supercedes the License.
-
-# Bellman iterations are good at big O exp time problems but do not work on larger PSPACE problems.
-
 # Novelty was in part established by a custom timestamped patent search done w some code I have.
 
 # The previously disclosed novelty from an umbrella patent filing (now being restated) was quantum state manipulation without decoherence or measurement, is now described under the charge injection language in the patent. Previously, it was disclosed as information steering, though that is technically not true. Both of these languages partially support the idea, though charge injection is more technically correct in patent language.
