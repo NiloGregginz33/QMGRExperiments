@@ -12,6 +12,8 @@ The story: So I (Manav Abhijeet Naik) used to be a drug addict when I was in hig
 
 # Overall Manav Naik is the creator of the simulation (trademark/TM: The Creator of the Simulation (caps insensitive))
 
+# Bellman solvers and other fuxed point solvers have been tedsted 
+
 # Next move may be autonomous construction vehicles or a reetrofitting system for construction vehicles/machines that will also allow them to operate autonomously and orchestrate their work to maximize productivity. This would be done using AI and using on board computation. The computation gets converted into signals for the construction machine/vehicle. The orchestration can be done more efficiency using products of Matrix Solutions LLC but it is not required.
 
 # History has been rewritten to remove accidentally committed confidential material and to standardize licensing.
