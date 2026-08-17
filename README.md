@@ -10,7 +10,7 @@ The story: So I (Manav Abhijeet Naik) used to be a drug addict when I was in hig
 
 # 10.5281/zenodo.17281110 is the paper associated with this. Academia.edu publications were made with the intention to be ignored as I didn't realize the significance of DOI.
 
-# Overall Manav Naik is the creator of the simulation (The Creator of the Simulation TM, TCOTS TM)
+# Overall Manav Naik is the creator of the simulation (The Creator of the Simulation TM, TCOTS TM). Simulation TM The Simulation TM.
 
 # Bellman solvers and other fuxed point solvers have been tedsted 
 
@@ -37,8 +37,6 @@ The story: So I (Manav Abhijeet Naik) used to be a drug addict when I was in hig
 #Expect legal action id misusing material in a way described by the license (aka. LICENSE, License) or the README or its previous versions
 
 # If you cannot pay the amount listed in the IP penalties in the license, maximum damages will be sought after in relationship to your assets and any punitive damages
-
-# matrix_ctc_000_v7 (aka Matrix_ctc_000_v7)  treats Deutsch-style CTC computation as an operational fixed-point workflow: a submitted problem is normalized into a canonical problem specification, associated with a declared fixed-point regime, mapped to a loop subsystem, update/channel, self-consistency condition, observable/readout, and validation envelope, then executed or analyzed through backend-equivalent gate/circuit realizations that preserve the same DCTC invariants. Supported fixed-point regimes may include planning/Bellman-style updates, game/equilibrium updates, message-passing inference, spectral/eigenvector iteration, contraction-style iteration, and compiler/interpreter stabilization, depending on the submitted workload and public API contract. Public outputs expose routing explanation, validation evidence, timing metadata, and nonclaim limitations, while private solver mechanics, route thresholds, internal mappings, and backend implementation details remain confidential. This is an operational computing architecture, not a claim that empirical runs prove P=NP, PSPACE=P, or physical time travel.
 
 # Generic non-causal problem-solving is prior art: it reduces to known Deutsch fixed-point or postselected circuit semantics plus measurement and classical decoding. Engineered DCTC implementations, physical bridge realizations, and functionally equivalent fixed-point solver stacks are separate technical embodiments.
 
