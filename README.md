@@ -10,7 +10,7 @@ The story: So I (Manav Abhijeet Naik) used to be a drug addict when I was in hig
 
 # 10.5281/zenodo.17281110 is the paper associated with this. Academia.edu publications were made with the intention to be ignored as I didn't realize the significance of DOI.
 
-# Overall Manav Naik is the creator of the simulation (The Creator of the Simulation TM, TCOTS TM). Simulation TM The Simulation TM.
+# Overall Manav Naik is the creator of the simulation (The Creator of the Simulation TM, TCOTS TM). Simulation TM The Simulation TM. The Omegle incident TM. The Omegle Prophecy TH.
 
 # Bellman solvers and other fuxed point solvers have been tedsted 
 
