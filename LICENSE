@@ -264,3 +264,269 @@ read, understood, and agree to be bound by the terms of this newest published li
 
 
 END OF PROPRIETARY SOFTWARE NOTICE
+STRICTLY PROPRIETARY SOFTWARE — NO PUBLIC LICENSE
+Version 1.1 — August 22, 2026
+
+Copyright © 2024–2026 Matrix Solutions LLC. All rights reserved.
+
+1. SCOPE
+
+This notice applies to the source code, object code, documentation, datasets,
+configuration files, benchmark materials, model or experiment artifacts,
+graphics, and other original materials distributed with this notice
+(collectively, the “Materials”).
+
+The Materials are proprietary to Matrix Solutions LLC or to the respective
+third-party owners identified in applicable notices. The Materials are not
+released as open-source software, free software, or public-domain material.
+
+2. NO PUBLIC LICENSE
+
+Except for:
+
+(a) the limited rights granted by GitHub’s applicable Terms of Service solely
+as necessary to view, display, and fork a public repository through GitHub’s
+service;
+
+(b) rights expressly granted for identified third-party materials; and
+
+(c) rights that cannot lawfully be restricted, including applicable statutory
+exceptions;
+
+no license or permission is granted, expressly, implicitly, by estoppel, or
+otherwise, under any copyright, patent, trademark, trade-secret, or other
+intellectual-property right.
+
+Access to, possession of, or viewing of the Materials does not by itself grant
+permission beyond the limited rights described above. Payment, an offer of
+payment, correspondence, discussion, or submission of proposed terms does not
+create a license.
+
+Any additional permission must be stated in a separate written agreement
+signed by an authorized representative of Matrix Solutions LLC.
+
+For the avoidance of doubt, no academic, scientific, research, evaluation,
+validation, benchmarking, testing, educational, personal, internal, nonprofit,
+governmental, or commercial license is granted by this notice. A person's or
+entity's purpose, status, affiliation, or lack of profit does not create an
+exception.
+
+3. PROHIBITED ACTIVITIES
+
+Without such a separate written agreement, no authorization is granted to:
+
+(a) access, download, reproduce, display, perform, or distribute the Materials
+outside the limited scope required by the applicable hosting platform;
+
+(b) execute, run, compile, test, evaluate, validate, benchmark, profile,
+compare, analyze, or otherwise use the Materials or their outputs;
+
+(c) modify, translate, adapt, or prepare derivative works based upon the
+copyrightable expression in the Materials;
+
+(d) reverse engineer, decompile, disassemble, decode, circumvent, or attempt to
+derive source code, nonpublic design information, architecture, models,
+parameters, methods, or implementation details, except only to the extent a
+specific restriction is prohibited by nonwaivable applicable law;
+
+(e) sublicense, sell, rent, lease, transfer, publish, or otherwise make the
+Materials available to another person or entity;
+
+(f) deploy or use the Materials to provide, operate, develop, train, support,
+or improve a commercial product or service;
+
+(g) scrape, crawl, data-mine, index, ingest, or use the Materials or their
+outputs to train, fine-tune, evaluate, benchmark, or improve an artificial
+intelligence system, machine-learning system, dataset, model, or competing
+technology, except for rights that Matrix Solutions LLC has granted to the
+applicable hosting platform under binding platform terms; or
+
+(h) remove, conceal, or alter an applicable copyright, patent, trademark,
+attribution, or proprietary-rights notice.
+
+Nothing in this notice claims exclusive rights in ideas, facts, discoveries,
+mathematical relationships, procedures, systems, methods of operation, or
+independently developed materials that applicable law does not protect through
+copyright.
+
+4. EXPRESS VALIDATION AUTHORIZATION
+
+Validation is permitted only when Matrix Solutions LLC issues a separate,
+express written validation authorization signed by an authorized
+representative of Matrix Solutions LLC (a “Validation Authorization”). An
+email, conversation, repository issue, pull request, social-media message,
+course of dealing, access credential, delivery of Materials, or informal
+statement is not a Validation Authorization unless it contains or attaches the
+signed authorization.
+
+A Validation Authorization must identify, at minimum:
+
+(a) the authorized individual or legal entity;
+
+(b) the precise Materials, repository, version, release, or commit covered;
+
+(c) the validation question, protocol, permitted inputs, datasets, arguments,
+commands, and computing environment;
+
+(d) the authorized duration and any access, security, confidentiality,
+retention, and destruction requirements; and
+
+(e) whether and how results, logs, reports, quotations, screenshots, derived
+data, or conclusions may be disclosed or published.
+
+Unless a Validation Authorization expressly states otherwise, it is personal,
+limited, nonexclusive, nontransferable, nonsublicensable, revocable, and valid
+only for the identified validation. It grants no commercial, production,
+training, competitive, redistribution, publication, derivative-work, patent,
+trademark, or ownership rights.
+
+An authorized validator may not exceed the express scope of the Validation
+Authorization, provide access to another person, substitute different data or
+arguments, retain copies beyond the authorized period, or publish results
+without express written permission. Silence or failure to object does not
+expand the authorization.
+
+Unless the Validation Authorization expressly provides otherwise, permission
+terminates automatically upon expiration, completion of the authorized
+validation, or breach, whichever occurs first. Upon termination, the validator
+must immediately stop using the Materials and permanently delete or return all
+copies, outputs, credentials, and nonpublic information as directed by Matrix
+Solutions LLC, and must certify compliance in writing if requested.
+
+5. PATENTS
+
+Certain subject matter described in or implemented by the Materials may be
+covered by pending patent applications or issued patents owned or controlled
+by Matrix Solutions LLC or another identified owner.
+
+No license is granted under any patent or patent application. The existence of
+this notice does not expand, accelerate, predetermine, or replace any right or
+remedy available under applicable patent law.
+
+6. TRADEMARKS
+
+No permission is granted to use the names, logos, trademarks, service marks,
+or product names of Matrix Solutions LLC except as required by law for
+accurate identification of the origin of the Materials.
+
+7. CONFIDENTIAL AND TRADE-SECRET MATERIAL
+
+Information intentionally made available in a public repository is not
+designated as confidential merely by this notice. Nonpublic information
+separately disclosed under a nondisclosure, evaluation, employment,
+contractor, or other confidentiality agreement remains governed by that
+agreement and applicable law.
+
+8. CONTRIBUTIONS
+
+External contributions are not accepted unless Matrix Solutions LLC first
+approves the contribution in writing and the contributor signs a separate
+contributor agreement addressing ownership and licensing.
+
+Submitting code, documentation, an issue, a suggestion, a pull request, or
+other material does not by itself transfer copyright, patent ownership,
+company ownership, equity, employment status, agency authority, or any other
+ownership or contractual right to or from Matrix Solutions LLC.
+
+9. THIRD-PARTY MATERIALS
+
+Third-party software, content, or data included with the Materials remains
+subject to its respective license, notice, or terms. This notice does not
+restrict rights expressly granted by a third-party owner and does not grant
+rights that Matrix Solutions LLC does not possess.
+
+10. VERSIONING AND PRIOR RELEASES
+
+This notice governs only versions of the Materials distributed with this
+notice. It does not retroactively modify, revoke, or replace rights, if any,
+validly granted under a license that accompanied an earlier version when that
+earlier version was distributed.
+
+No README file, email, conversation, issue, commit message, social-media post,
+or other informal communication changes this notice. A change must appear in
+a written agreement signed by an authorized representative of Matrix
+Solutions LLC or in a later license or notice distributed with a later version
+of the Materials.
+
+11. NO PROFESSIONAL OR OTHER RELATIONSHIP
+
+Access to the Materials or communications concerning the Materials does not
+create an employment, contractor, partnership, joint-venture, agency,
+fiduciary, legal, technical-advisory, or other professional relationship.
+
+No person may represent that they are authorized to bind or act on behalf of
+Matrix Solutions LLC without a separate written authorization signed by an
+authorized representative of Matrix Solutions LLC.
+
+12. DISCLAIMER OF WARRANTY
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE MATERIALS ARE PROVIDED
+“AS IS” AND “AS AVAILABLE,” WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+WHETHER EXPRESS, IMPLIED, OR STATUTORY, INCLUDING WARRANTIES OF TITLE,
+NONINFRINGEMENT, MERCHANTABILITY, ACCURACY, OR FITNESS FOR A PARTICULAR
+PURPOSE.
+
+13. LIMITATION OF LIABILITY
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, MATRIX SOLUTIONS LLC AND ITS
+OWNERS, OFFICERS, EMPLOYEES, CONTRACTORS, AND CONTRIBUTORS WILL NOT BE LIABLE
+FOR INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, CONSEQUENTIAL, OR PUNITIVE
+DAMAGES, OR FOR LOSS OF DATA, PROFITS, REVENUE, GOODWILL, OR BUSINESS
+OPPORTUNITY, ARISING FROM ACCESS TO OR USE OF, OR INABILITY TO ACCESS OR USE,
+THE MATERIALS.
+
+Nothing in this notice predetermines damages or remedies for infringement or
+other unlawful conduct. Available remedies are determined by applicable law
+and, where relevant, an enforceable written agreement.
+
+14. ENFORCEMENT AND REMEDIES
+
+Matrix Solutions LLC expressly reserves all rights and remedies. Unauthorized
+activity may, depending on the facts and applicable law, constitute copyright
+infringement, patent infringement, trade-secret misappropriation, breach of
+contract, circumvention of technological protections, unfair competition, or
+another civil or criminal violation.
+
+Matrix Solutions LLC intends to investigate suspected unauthorized activity
+and enforce its rights to the fullest extent permitted by law. Where legally
+available, Matrix Solutions LLC may seek temporary, preliminary, and permanent
+injunctive relief; preservation of evidence; expedited discovery; impoundment,
+return, deletion, or destruction of unauthorized copies and derived materials;
+actual damages; infringer profits; statutory damages; reasonable royalties;
+enhanced damages; interest; costs; attorneys' fees; and any other available
+legal or equitable remedy.
+
+This notice is intended to provide clear notice of claimed ownership, reserved
+rights, prohibited conduct, and the absence of public permission. The legal and
+evidentiary effect of the notice, and the availability and amount of any
+remedy, are determined exclusively by applicable law and enforceable written
+agreements. No fixed or automatic damages are imposed by this notice.
+
+15. SEVERABILITY AND NONWAIVER
+
+If a provision of this notice is held unenforceable, that provision will be
+applied to the maximum extent permitted by law, and the remaining provisions
+will remain unaffected to the extent legally possible.
+
+Failure to enforce a right in a particular instance does not waive that right
+in another instance.
+
+16. CONTACT
+
+Requests for a Validation Authorization must be sent to:
+
+Matrix Solutions LLC
+Email: manav@matrixsolutionsllc.org
+
+No license is effective unless it is contained in a separate written agreement
+signed by an authorized representative of Matrix Solutions LLC.
+
+17. Extra Terms
+
+Any work found to be derivitive is subject to a lawsuit if it is used to create intellectua
+
+By using, viewing, reproducing, modifying, merging, publishing, distributing, sublicensing, and/or selling copies of the Software (the "Work"), you acknowledge that you have 
+read, understood, and agree to be bound by the terms of this newest published license (LICENSE) agreement and the newest README.md. Any work using permissions from a previous license have permissions voided.
+
+
+END OF PROPRIETARY SOFTWARE NOTICE
